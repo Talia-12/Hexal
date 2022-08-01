@@ -63,6 +63,7 @@ dependencies {
     compileOnly project(":Common")
 
     modImplementation "at.petra-k.paucal:paucal-fabric-$minecraftVersion:$paucalVersion"
+    modImplementation "at.petra-k.hexcasting:hexcasting-fabric-$minecraftVersion:$hexcastingVersion"
     modImplementation "vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FABRIC"
 
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"

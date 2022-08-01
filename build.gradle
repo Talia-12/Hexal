@@ -52,11 +52,11 @@ void setupJar(Object project) {
         manifest {
             attributes([
                     'Specification-Title'     : modID,
-                    'Specification-Vendor'    : "petra-kat",
+                    'Specification-Vendor'    : "talia",
                     'Specification-Version'   : project.jar.archiveVersion,
                     'Implementation-Title'    : project.name,
                     'Implementation-Version'  : project.jar.archiveVersion,
-                    'Implementation-Vendor'   : "petra-kat",
+                    'Implementation-Vendor'   : "talia",
                     'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                     'Timestampe'              : System.currentTimeMillis(),
                     'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
@@ -196,22 +196,22 @@ def getGitChangelog = { ->
     }
 }
 
-task sendWebhook {
-    doLast {
-        try {
-            if (System.getenv('discordWebhook') == null || System.getenv("BUILD_URL") == null) {
-                println "Cannot send the webhook without the webhook url or the build url"
-                return
-            }
-            def webhook = new Webhook(System.getenv('discordWebhook'), 'Petrak@ Patreon Gradle')
-
-            def message = new Message()
-            message.setUsername("Patreon Early Access")
-            message.setContent("New **$modName** release! Download it here: ${System.getenv("BUILD_URL")}\nChangelog:\n${getGitChangelog()}")
-
-            webhook.sendMessage(message)
-        } catch (ignored) {
-            project.logger.error("Failed to push Discord webhook.")
-        }
-    }
-}
+//task sendWebhook {
+//    doLast {
+//        try {
+//            if (System.getenv('discordWebhook') == null || System.getenv("BUILD_URL") == null) {
+//                println "Cannot send the webhook without the webhook url or the build url"
+//                return
+//            }
+//            def webhook = new Webhook(System.getenv('discordWebhook'), 'Petrak@ Patreon Gradle')
+//
+//            def message = new Message()
+//            message.setUsername("Patreon Early Access")
+//            message.setContent("New **$modName** release! Download it here: ${System.getenv("BUILD_URL")}\nChangelog:\n${getGitChangelog()}")
+//
+//            webhook.sendMessage(message)
+//        } catch (ignored) {
+//            project.logger.error("Failed to push Discord webhook.")
+//        }
+//    }
+//}

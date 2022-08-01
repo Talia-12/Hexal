@@ -119,6 +119,10 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+    maven {
+        name = "BlameJared"
+        url = 'https://maven.blamejared.com'
+    }
 }
 
 dependencies {
@@ -132,6 +136,8 @@ dependencies {
 
     compileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
     runtimeOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    compileOnly fg.deobf("at.petra-k.hexcasting:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    runtimeOnly fg.deobf("at.petra-k.hexcasting:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
 
@@ -140,6 +146,7 @@ dependencies {
 
     // aughh
     testCompileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    testCompileOnly fg.deobf("at.petra-k.hexcasting:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     testCompileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
 
     api fg.deobf("com.github.Virtuoel:Pehkui:${pehkuiVersion}-${minecraftVersion}-forge")

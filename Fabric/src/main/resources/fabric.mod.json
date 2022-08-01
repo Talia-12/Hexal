@@ -3,10 +3,10 @@
   "id": "hexcasting",
   "version": "${version}",
 
-  "name": "Hex Casting",
-  "description": "Cast powerful Hexes on the fly by drawing patterns with a staff.",
+  "name": "Hexal",
+  "description": "Extension mod for Hex Casting to add new patterns (and whatever else I feel like).",
   "authors": [
-    "petrak@ (aka gamma-delta)"
+    "Talia"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/hexcasting",
