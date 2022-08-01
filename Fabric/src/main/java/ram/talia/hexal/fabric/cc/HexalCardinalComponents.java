@@ -1,4 +1,4 @@
-package com.talia.hexal.fabric.cc;
+package ram.talia.hexal.fabric.cc;
 
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;

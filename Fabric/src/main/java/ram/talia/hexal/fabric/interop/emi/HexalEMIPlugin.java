@@ -1,4 +1,4 @@
-package com.talia.hexal.fabric.interop.emi;
+package ram.talia.hexal.fabric.interop.emi;
 
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;

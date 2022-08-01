@@ -1,4 +1,4 @@
-package com.talia.hexal.fabric
+package ram.talia.hexal.fabric
 
 import net.fabricmc.api.ClientModInitializer
 

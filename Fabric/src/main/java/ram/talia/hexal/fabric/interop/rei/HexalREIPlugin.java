@@ -1,4 +1,4 @@
-package com.talia.hexal.fabric.interop.rei;
+package ram.talia.hexal.fabric.interop.rei;
 
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;

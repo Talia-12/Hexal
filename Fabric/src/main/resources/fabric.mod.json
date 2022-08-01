@@ -19,22 +19,22 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      {"adapter": "kotlin", "value": "com.talia.hexal.fabric.FabricHexalInitializer"}
+      {"adapter": "kotlin", "value": "ram.talia.hexal.fabric.FabricHexalInitializer"}
     ],
     "client": [
-      {"adapter": "kotlin", "value": "com.talia.hexal.fabric.FabricHexalClientInitializer"}
+      {"adapter": "kotlin", "value": "ram.talia.hexal.fabric.FabricHexalClientInitializer"}
     ],
     "fabric-datagen": [
-      "com.talia.hexal.fabric.datagen.HexalFabricDataGenerators"
+      "ram.talia.hexal.fabric.datagen.HexalFabricDataGenerators"
     ],
     "cardinal-components": [
-      "com.talia.hexal.fabric.cc.HexalCardinalComponents"
+      "ram.talia.hexal.fabric.cc.HexalCardinalComponents"
     ],
     "rei_plugins_v0": [
-      "com.talia.hexal.fabric.interop.rei.HexalREIPlugin"
+      "ram.talia.hexal.fabric.interop.rei.HexalREIPlugin"
     ],
     "emi": [
-      "com.talia.hexal.fabric.interop.emi.HexalEMIPlugin"
+      "ram.talia.hexal.fabric.interop.emi.HexalEMIPlugin"
     ]
   },
   "mixins": [
@@ -61,17 +61,7 @@
 
   "custom": {
     "cardinal-components": [
-      "hexcasting:brainswept",
-      "hexcasting:favored_colorizer",
-      "hexcasting:sentinel",
-      "hexcasting:flight",
-      "hexcasting:harness",
-      "hexcasting:patterns",
 
-      "hexcasting:colorizer",
-      "hexcasting:iota_holder",
-      "hexcasting:media_holder",
-      "hexcasting:hex_holder"
     ]
   }
 }

@@ -1,4 +1,4 @@
-package com.talia.hexal.fabric.datagen;
+package ram.talia.hexal.fabric.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

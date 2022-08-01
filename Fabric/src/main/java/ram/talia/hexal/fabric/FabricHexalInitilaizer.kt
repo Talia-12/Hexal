@@ -1,7 +1,6 @@
-package com.talia.hexal.fabric
+package ram.talia.hexal.fabric
 
-import com.talia.hexal.api.HexalAPI
-import com.talia.hexal.common.casting.RegisterPatterns
+import ram.talia.hexal.api.HexalAPI
 import net.fabricmc.api.ModInitializer
 
 object FabricHexalInitializer : ModInitializer {

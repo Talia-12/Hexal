@@ -3,7 +3,7 @@
   "required": true,
   "compatibilityLevel": "JAVA_17",
   "refmap": "hexal.mixins.refmap.json",
-  "package": "com.talia.hexal.mixin",
+  "package": "ram.talia.hexal.mixin",
   "mixins": [
 
   ],

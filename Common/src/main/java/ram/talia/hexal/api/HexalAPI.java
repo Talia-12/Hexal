@@ -1,4 +1,4 @@
-package com.talia.hexal.api;
+package ram.talia.hexal.api;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.resources.ResourceLocation;
