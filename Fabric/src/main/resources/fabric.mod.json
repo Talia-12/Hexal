@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "hexcasting",
+  "id": "hexal",
   "version": "${version}",
 
   "name": "Hexal",
@@ -9,8 +9,8 @@
     "Talia"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/hexcasting",
-    "sources": "https://github.com/gamma-delta/HexMod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/hexal",
+    "sources": "https://github.com/Talia-12/Hexal"
   },
 
   "license": "MIT",
@@ -19,29 +19,29 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      {"adapter": "kotlin", "value": "at.petrak.hexcasting.fabric.FabricHexInitializer"}
+      {"adapter": "kotlin", "value": "com.talia.hexal.fabric.FabricHexalInitializer"}
     ],
     "client": [
-      {"adapter": "kotlin", "value": "at.petrak.hexcasting.fabric.FabricHexClientInitializer"}
+      {"adapter": "kotlin", "value": "com.talia.hexal.fabric.FabricHexalClientInitializer"}
     ],
     "fabric-datagen": [
-      "at.petrak.hexcasting.fabric.datagen.HexFabricDataGenerators"
+      "com.talia.hexal.fabric.datagen.HexalFabricDataGenerators"
     ],
     "cardinal-components": [
-      "at.petrak.hexcasting.fabric.cc.HexCardinalComponents"
+      "com.talia.hexal.fabric.cc.HexalCardinalComponents"
     ],
     "rei_plugins_v0": [
-      "at.petrak.hexcasting.fabric.interop.rei.HexREIPlugin"
+      "com.talia.hexal.fabric.interop.rei.HexalREIPlugin"
     ],
     "emi": [
-      "at.petrak.hexcasting.fabric.interop.emi.HexEMIPlugin"
+      "com.talia.hexal.fabric.interop.emi.HexalEMIPlugin"
     ]
   },
   "mixins": [
-    "hexplat.mixins.json",
-    "fabricasting.mixins.json"
+    "hexalplat.mixins.json",
+    "hexal.mixins.json"
   ],
-  "accessWidener": "fabricasting.accesswidener",
+  "accessWidener": "hexal.accesswidener",
 
   "depends": {
     "fabricloader": ">=0.13",
@@ -51,7 +51,8 @@
     "fabric-language-kotlin": ">=1.7.4+kotlin.1.6.21",
     "cardinal-components": "~4.1.4",
     "patchouli": ">=1.18.2-69",
-    "paucal": "~0.4.6"
+    "paucal": "~0.4.6",
+    "hexcasting": "~0.9.1"
   },
   "suggests": {
     "gravitychanger": "0.7.7+fabric",
