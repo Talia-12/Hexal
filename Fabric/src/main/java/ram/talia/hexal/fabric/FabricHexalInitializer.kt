@@ -5,6 +5,8 @@ import net.fabricmc.api.ModInitializer
 
 object FabricHexalInitializer : ModInitializer {
     override fun onInitialize() {
-        HexalAPI.LOGGER.info("Hello Fabric World!"
+        HexalAPI.LOGGER.info("Hello Fabric World!")
+
+        RegisterPatterns.registerPatterns()
     }
 }
