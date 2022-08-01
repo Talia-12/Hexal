@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "side": "hexcasting:block/edified_planks",
-    "bottom": "hexcasting:block/edified_planks",
-    "top": "hexcasting:block/edified_planks"
-  }
-}
