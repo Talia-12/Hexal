@@ -1,12 +1,12 @@
-package com.talia.hexal.common.casting;
+package ram.talia.hexal.common.casting;
 
 import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
-import com.talia.hexal.common.casting.actions.OpCompareBlocks;
-import com.talia.hexal.common.casting.actions.OpCompareTypes;
+import ram.talia.hexal.common.casting.actions.OpCompareBlocks;
+import ram.talia.hexal.common.casting.actions.OpCompareTypes;
 
-import static com.talia.hexal.api.HexalAPI.modLoc;
+import static ram.talia.hexal.api.HexalAPI.modLoc;
 
 public class RegisterPatterns {
 	public static void registerPatterns () {

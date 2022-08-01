@@ -1,4 +1,4 @@
-package com.talia.hexal.common.casting.actions
+package ram.talia.hexal.common.casting.actions
 
 import at.petrak.hexcasting.api.spell.ConstManaOperator
 import at.petrak.hexcasting.api.spell.SpellDatum
