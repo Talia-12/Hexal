@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.math.HexPattern;
 import ram.talia.hexal.common.casting.actions.OpCompareBlocks;
 import ram.talia.hexal.common.casting.actions.OpCompareEntities;
 import ram.talia.hexal.common.casting.actions.OpCompareTypes;
+import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
 
 import static ram.talia.hexal.api.HexalAPI.modLoc;
 
@@ -22,6 +23,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST),
 									   modLoc("compare_types"),
 									   OpCompareTypes.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("wqqqwqqadad", HexDir.EAST),
+									   modLoc("smelt"),
+									   OpSmelt.INSTANCE);
 		}
 		catch (PatternRegistry.RegisterPatternException e) {
 			e.printStackTrace();
