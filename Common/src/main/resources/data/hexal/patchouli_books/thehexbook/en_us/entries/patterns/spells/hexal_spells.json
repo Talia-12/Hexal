@@ -1,0 +1,22 @@
+{
+  "name": "hexal.entry.hexal_spell",
+  "category": "hexcasting:patterns/spells",
+  "icon": "minecraft:furnace",
+  "sortnum": 10,
+  "advancement": "hexcasting:root",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:smelt",
+      "anchor": "hexal:smelt",
+      "input": "vec/entity",
+      "output": "",
+      "text": "hexal.page.hexal_spell.smelt.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.hexal_spell.smelt.1"
+    }
+  ]
+}
