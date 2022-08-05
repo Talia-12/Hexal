@@ -17,23 +17,21 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import java.util.*
 
 object OpSmelt : SpellOperator {
-    const val COST_PER_SMELT = 0.75 * ManaConstants.DUST_UNIT
+    private const val COST_PER_SMELT = 0.75 * ManaConstants.DUST_UNIT
 
     override val argc = 1
-
     fun numToSmelt(toSmelt: Either<Vec3, ItemEntity>): Int {
         return toSmelt.map({ 1 }, { item -> item.item.count })
     }
 
-    override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-        val toSmelt = when (val _toSmelt = args[0].payload) {
-            is Vec3 -> Either.left(Vec3.atCenterOf(BlockPos(_toSmelt)))
-            is ItemEntity -> Either.right(_toSmelt)
+    override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+        val toSmelt = when (val rawToSmelt = args[0].payload) {
+            is Vec3 -> Either.left(Vec3.atCenterOf(BlockPos(rawToSmelt)))
+            is ItemEntity -> Either.right(rawToSmelt)
             else -> throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent)
         }
 
@@ -52,7 +50,10 @@ object OpSmelt : SpellOperator {
         override fun cast(ctx: CastingContext) {
             vOrI.map({vec -> // runs this code if the player passed a BlockPos
                 val pos = BlockPos(vec)
+
+                if (!ctx.world.mayInteract(ctx.caster, pos)) return@map
                 // if (!ctx.canEditBlockAt(pos)) return@map
+
                 val blockState = ctx.world.getBlockState(pos)
                 // if (!IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockstate, ctx.caster)) return@map
 
