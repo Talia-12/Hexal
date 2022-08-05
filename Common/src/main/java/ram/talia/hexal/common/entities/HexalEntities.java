@@ -21,13 +21,13 @@ public class HexalEntities {
 	
 	private static final Map<ResourceLocation, EntityType<?>> ENTITIES = new LinkedHashMap<>();
 	
-	public static final EntityType<TestHurtingProjectile> TEST_HURTING_PROJECTILE = register(
-			"test_hurting_projectile",
-			EntityType.Builder.<TestHurtingProjectile>of(TestHurtingProjectile::new,
-														 MobCategory.MISC).sized(0.1f, 0.1f)
-							  .clientTrackingRange(10)
-							  .updateInterval(1)
-							  .build(HexalAPI.MOD_ID + ":test_hurting_projectile"));
+	public static final EntityType<BaseWisp> BASE_WISP = register(
+					"base_wisp",
+					EntityType.Builder.of((EntityType.EntityFactory<BaseWisp>) BaseWisp::new, MobCategory.MISC)
+														.sized(0.1f, 0.1f)
+														.clientTrackingRange(10)
+														.updateInterval(1)
+														.build(HexalAPI.MOD_ID + ":base_wisp"));
 	
 	private static <T extends Entity> EntityType<T> register (String id, EntityType<T> type) {
 		var old = ENTITIES.put(modLoc(id), type);
