@@ -1,9 +1,12 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.ParticleSpray
-import net.minecraft.client.particle.Particle
-import net.minecraft.core.particles.ParticleOptions
-import net.minecraft.core.particles.ParticleTypes
+import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.utils.putCompound
+import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.syncher.EntityDataAccessor
+import net.minecraft.network.syncher.EntityDataSerializers
+import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
@@ -15,11 +18,12 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 
 
-class BaseWisp : Projectile {
+open class BaseWisp : Projectile {
 	var isAffectedByGravity = true
 
 	private var lifespan = 20 // how long the wisp has left to live, in ticks
@@ -64,15 +68,17 @@ class BaseWisp : Projectile {
 
 		traceAnyHit(position(), position() + vel)
 
+		setPos(position() + vel)
+
 		if(level.isClientSide) {
 			playParticles();
 		}
-
-		setPos(position() + vel)
 	}
 
+	/**
+	 * Set the look vector of the wisp equal to its movement direction
+	 */
 	fun setLookVector(vel: Vec3) {
-		// set the look vector of the wisp equal to its movement direction
 		if (xRotO == 0.0f && yRotO == 0.0f) {
 			val horizontalDistance = vel.horizontalDistance()
 			yRot = (Mth.atan2(vel.x, vel.z) * 57.2957763671875).toFloat()
@@ -82,7 +88,7 @@ class BaseWisp : Projectile {
 		}
 	}
 
-	public fun getHitResult(start: Vec3, end: Vec3) = level.clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
+	fun getHitResult(start: Vec3, end: Vec3): BlockHitResult = level.clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
 
 	protected fun findHitEntity(start: Vec3, end: Vec3): EntityHitResult? =
 		ProjectileUtil.getEntityHitResult(
@@ -132,21 +138,56 @@ class BaseWisp : Projectile {
 	}
 
 	protected fun playParticles() {
+		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+
 		val delta = position() - oldPos
 		val dist = delta.length() * 6
 
 		for (i in 0..dist.toInt()) {
+			val colour: Int = colouriser.getColor(
+				random.nextFloat() * 16384,
+				Vec3(
+					random.nextFloat().toDouble(),
+					random.nextFloat().toDouble(),
+					random.nextFloat().toDouble()
+				).scale((random.nextFloat() * 3).toDouble())
+			)
+
 			val coeff = i / dist
-			level.addParticle(ParticleTypes.ENTITY_EFFECT,
-				(xo + delta.x * coeff),
-				(yo + delta.y * coeff) + 0.1,
-				(zo + delta.z * coeff),
+			level.addParticle(
+				ConjureParticleOptions(colour, false),
+				(oldPos.x + delta.x * coeff),
+				(oldPos.y + delta.y * coeff),
+				(oldPos.z + delta.z * coeff),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5))
 		}
 	}
 
-	override fun defineSynchedData() {}
+	fun setColouriser(colouriser: FrozenColorizer) {
+		entityData.set(COLOURISER, colouriser.serializeToNBT())
+	}
+	override fun load(compound: CompoundTag)
+	{
+		// assuming this is for saving/loading chunks and the game
+		super.load(compound)
+		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
+	}
+
+	override fun addAdditionalSaveData(compound: CompoundTag) {
+		super.addAdditionalSaveData(compound)
+		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
+	}
+	override fun defineSynchedData() {
+		// defines the entry in SynchedEntityData associated with the EntityDataAccessor COLOURISER, and gives it a default value
+		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
+	}
+
+	companion object {
+		@JvmField
+		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+		const val TAG_COLOURISER = "tag_colouriser"
+	}
 }
 

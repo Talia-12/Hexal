@@ -3,7 +3,9 @@ package ram.talia.hexal.common.casting.actions.spells
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.entities.BaseWisp
 
 object OpSummonWisp : SpellOperator {
@@ -26,7 +28,9 @@ object OpSummonWisp : SpellOperator {
 
     private data class Spell(val pos: Vec3, val vel: Vec3) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
+            val colouriser = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
             val wisp = BaseWisp(ctx.world, pos, ctx.caster)
+            wisp.setColouriser(colouriser)
             wisp.shoot(vel.x, vel.y, vel.z, vel.length().toFloat(), 0.0f)
             ctx.world.addFreshEntity(wisp)
         }
