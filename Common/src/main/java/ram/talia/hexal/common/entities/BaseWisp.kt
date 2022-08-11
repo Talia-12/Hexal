@@ -1,31 +1,36 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.casting.CastingHarness
+import at.petrak.hexcasting.api.spell.casting.SpellCircleContext
 import at.petrak.hexcasting.api.utils.putCompound
+import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundSource
 import net.minecraft.util.Mth
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.EntityType
-import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.Projectile
 import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
-import net.minecraft.world.phys.BlockHitResult
-import net.minecraft.world.phys.EntityHitResult
-import net.minecraft.world.phys.HitResult
-import net.minecraft.world.phys.Vec3
+import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 
 
-open class BaseWisp : Projectile {
-	var isAffectedByGravity = true
-
+abstract class BaseWisp : Projectile {
 	private var lifespan = 20 // how long the wisp has left to live, in ticks
 
 	private var oldPos: Vec3 = position()
@@ -37,18 +42,18 @@ open class BaseWisp : Projectile {
 	// error here isn't actually a problem
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
 
-	constructor(world: Level, pos: Vec3) : super(HexalEntities.BASE_WISP, world) {
+	constructor(world: Level, pos: Vec3) : super(HexalEntities.PROJECTILE_WISP, world) {
 		setPos(pos)
 	}
 
-	constructor(world: Level, pos: Vec3, shooter: LivingEntity) : super(HexalEntities.BASE_WISP, world) {
+	constructor(world: Level, pos: Vec3, caster: Player) : super(HexalEntities.PROJECTILE_WISP, world) {
 		setPos(pos)
-		owner = shooter
+		owner = caster
 	}
 
-	constructor(world: Level, pos: Vec3, shooter: LivingEntity, lifespan: Int) : super(HexalEntities.BASE_WISP, world) {
+	constructor(world: Level, pos: Vec3, caster: Player, lifespan: Int) : super(HexalEntities.PROJECTILE_WISP, world) {
 		setPos(pos)
-		owner = shooter
+		owner = caster
 		this.lifespan = lifespan
 	}
 
@@ -59,21 +64,18 @@ open class BaseWisp : Projectile {
 		if (lifespan-- <= 0) discard()
 
 		oldPos = position()
-		var vel = deltaMovement
 
-		setLookVector(vel)
-
-		if (isAffectedByGravity)
-			vel += Vec3(0.0, 0.05000000074505806, 0.0)
-
-		traceAnyHit(position(), position() + vel)
-
-		setPos(position() + vel)
+		move()
 
 		if(level.isClientSide) {
 			playParticles();
 		}
 	}
+
+	/**
+	 * Called in [tick], expected to update the Wisp's position.
+	 */
+	abstract fun move()
 
 	/**
 	 * Set the look vector of the wisp equal to its movement direction
@@ -127,14 +129,54 @@ open class BaseWisp : Projectile {
 
 	override fun onHitEntity(result: EntityHitResult) {
 		super.onHitEntity(result)
-
-		discard()
 	}
 
 	override fun onHitBlock(result: BlockHitResult) {
 		super.onHitBlock(result)
+	}
 
-		discard()
+	/**
+	 * Casts the spell passed as [hex], with the initial stack [initialStack] and initial ravenmind [initialRavenmind], and returns a pair containing the final state
+	 * of the stack and ravenmind.
+	 */
+	fun castSpell(
+		hex: List<SpellDatum<*>>,
+		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
+		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL)
+	): Pair<MutableList<SpellDatum<*>>, SpellDatum<*>> {
+		if (level.isClientSide)
+			return Pair(initialStack, initialRavenmind) // return dummy data, not expecting anything to be done with it
+
+		HexalAPI.LOGGER.info(position())
+
+		val sPlayer = owner as ServerPlayer
+		val ctx = CastingContext(
+			sPlayer,
+			InteractionHand.MAIN_HAND,
+			// janky, effectively pretending that the projectile is a spell circle at whatever BlockPos is nearest to position(), with
+			// a cubic bounding box with radius 5.
+			SpellCircleContext(
+				BlockPos(position()),
+				AABB(position() - Vec3(2.5, 2.5, 2.5), position() + Vec3(2.5, 2.5, 2.5)),
+				false
+			)
+		)
+		val harness = CastingHarness(ctx)
+
+		harness.stack = initialStack
+		harness.localIota = initialRavenmind
+
+		val info = harness.executeIotas(hex, sPlayer.getLevel())
+
+		if (info.makesCastSound) {
+			sPlayer.level.playSound(
+				null, position().x, position().y, position().z,
+				HexSounds.ACTUALLY_CAST, SoundSource.PLAYERS, 1f,
+				1f + (Math.random().toFloat() - 0.5f) * 0.2f
+			)
+		}
+
+		return Pair(harness.stack, harness.localIota)
 	}
 
 	protected fun playParticles() {
@@ -187,6 +229,7 @@ open class BaseWisp : Projectile {
 	companion object {
 		@JvmField
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+
 		const val TAG_COLOURISER = "tag_colouriser"
 	}
 }

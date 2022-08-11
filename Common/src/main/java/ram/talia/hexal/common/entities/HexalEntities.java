@@ -21,9 +21,9 @@ public class HexalEntities {
 	
 	private static final Map<ResourceLocation, EntityType<?>> ENTITIES = new LinkedHashMap<>();
 	
-	public static final EntityType<BaseWisp> BASE_WISP = register(
+	public static final EntityType<ProjectileWisp> PROJECTILE_WISP = register(
 					"base_wisp",
-					EntityType.Builder.of((EntityType.EntityFactory<BaseWisp>) BaseWisp::new, MobCategory.MISC)
+					EntityType.Builder.of((EntityType.EntityFactory<ProjectileWisp>) ProjectileWisp::new, MobCategory.MISC)
 														.sized(0.1f, 0.1f)
 														.clientTrackingRange(10)
 														.updateInterval(1)

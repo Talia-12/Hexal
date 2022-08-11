@@ -8,6 +8,6 @@ public class RegisterClientStuff {
 	public static void init () {
 		var x = IClientXplatAbstractions.INSTANCE;
 		
-		x.registerEntityRenderer(HexalEntities.BASE_WISP, WispRenderer::new);
+		x.registerEntityRenderer(HexalEntities.PROJECTILE_WISP, WispRenderer::new);
 	}
 }
