@@ -28,6 +28,7 @@ import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
+import ram.talia.hexal.api.casting.MixinCastingContextInterface
 
 
 abstract class BaseWisp : Projectile {
@@ -152,15 +153,13 @@ abstract class BaseWisp : Projectile {
 		val sPlayer = owner as ServerPlayer
 		val ctx = CastingContext(
 			sPlayer,
-			InteractionHand.MAIN_HAND,
-			// janky, effectively pretending that the projectile is a spell circle at whatever BlockPos is nearest to position(), with
-			// a cubic bounding box with radius 5.
-			SpellCircleContext(
-				BlockPos(position()),
-				AABB(position() - Vec3(2.5, 2.5, 2.5), position() + Vec3(2.5, 2.5, 2.5)),
-				false
-			)
+			InteractionHand.MAIN_HAND
 		)
+
+		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
+		val int = ctx as? MixinCastingContextInterface
+		int?.wisp = this
+
 		val harness = CastingHarness(ctx)
 
 		harness.stack = initialStack
@@ -231,6 +230,8 @@ abstract class BaseWisp : Projectile {
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
 		const val TAG_COLOURISER = "tag_colouriser"
+
+		const val MAX_DISTANCE_TO_WISP = 2.5
 	}
 }
 
