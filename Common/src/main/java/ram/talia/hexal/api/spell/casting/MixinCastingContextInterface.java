@@ -1,4 +1,4 @@
-package ram.talia.hexal.api.casting;
+package ram.talia.hexal.api.spell.casting;
 
 import ram.talia.hexal.common.entities.BaseWisp;
 

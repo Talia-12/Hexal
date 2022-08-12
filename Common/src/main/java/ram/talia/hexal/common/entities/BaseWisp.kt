@@ -1,15 +1,14 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.CastingHarness
-import at.petrak.hexcasting.api.spell.casting.SpellCircleContext
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
-import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
@@ -27,42 +26,36 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 
 
 abstract class BaseWisp : Projectile {
-	private var lifespan = 20 // how long the wisp has left to live, in ticks
+	var media = WISP_COST_PER_TICK * ManaConstants.DUST_UNIT
 
 	private var oldPos: Vec3 = position()
 
-	fun addLifespan(dLifespan: Int) {
-		lifespan += dLifespan
+	fun addMedia(dMedia: Int) {
+		media += dMedia
 	}
 
 	// error here isn't actually a problem
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
 
-	constructor(world: Level, pos: Vec3) : super(HexalEntities.PROJECTILE_WISP, world) {
-		setPos(pos)
-	}
-
-	constructor(world: Level, pos: Vec3, caster: Player) : super(HexalEntities.PROJECTILE_WISP, world) {
+	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world) {
 		setPos(pos)
 		owner = caster
-	}
-
-	constructor(world: Level, pos: Vec3, caster: Player, lifespan: Int) : super(HexalEntities.PROJECTILE_WISP, world) {
-		setPos(pos)
-		owner = caster
-		this.lifespan = lifespan
+		this.media = media
 	}
 
 	override fun tick() {
 		super.tick()
 
+		HexalAPI.LOGGER.info("media: $media")
+		HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
+
 		// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
-		if (lifespan-- <= 0) discard()
+		if (media <= 0) discard()
+		media -= WISP_COST_PER_TICK
 
 		oldPos = position()
 
@@ -157,8 +150,8 @@ abstract class BaseWisp : Projectile {
 		)
 
 		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
-		val int = ctx as? MixinCastingContextInterface
-		int?.wisp = this
+		val mCast = ctx as? MixinCastingContextInterface
+		mCast?.wisp = this
 
 		val harness = CastingHarness(ctx)
 
@@ -232,6 +225,7 @@ abstract class BaseWisp : Projectile {
 		const val TAG_COLOURISER = "tag_colouriser"
 
 		const val MAX_DISTANCE_TO_WISP = 2.5
+		const val WISP_COST_PER_TICK = (3.0/20.0 * ManaConstants.DUST_UNIT).toInt()
 	}
 }
 

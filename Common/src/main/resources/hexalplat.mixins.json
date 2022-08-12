@@ -5,7 +5,8 @@
   "refmap": "hexal.mixins.refmap.json",
   "package": "ram.talia.hexal.mixin",
   "mixins": [
-    "MixinCastingContext"
+    "MixinCastingContext",
+    "MixinCastingHarness"
   ],
   "client": [
   ]
