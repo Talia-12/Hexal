@@ -1,7 +1,6 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.asSpellResult
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
@@ -10,6 +9,7 @@ import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
+import ram.talia.hexal.api.spell.casting.WispCastingManager
 
 class ProjectileWisp : BaseWisp {
 	var isAffectedByGravity = true
@@ -37,9 +37,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playParticles()
 
-		castSpell(onCollisionHex, listOf(SpellDatum.make(this), SpellDatum.make(result.entity)).toMutableList())
-
-		discard()
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, onCollisionHex, listOf(SpellDatum.make(this), SpellDatum.make(result.entity)).toMutableList())
 	}
 
 	override fun onHitBlock(result: BlockHitResult) {
@@ -49,8 +47,16 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playParticles()
 
-		castSpell(onCollisionHex, listOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toMutableList())
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, onCollisionHex, listOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toMutableList())
+	}
 
+	override fun castCallback(result: WispCastingManager.WispCastResult) {
 		discard()
+	}
+
+	//TODO: setup actually *saving* onCollisionHex
+
+	companion object {
+		const val CASTING_SCHEDULE_PRIORITY = 0
 	}
 }

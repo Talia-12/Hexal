@@ -4,19 +4,14 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.utils.putCompound
-import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.sounds.SoundSource
 import net.minecraft.util.Mth
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.Projectile
@@ -26,11 +21,15 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 
 abstract class BaseWisp : Projectile {
-	var media = WISP_COST_PER_TICK * ManaConstants.DUST_UNIT
+	var media: Int
+
+	private var scheduledCast = false
+	private var lastTick: Long
 
 	private var oldPos: Vec3 = position()
 
@@ -39,29 +38,41 @@ abstract class BaseWisp : Projectile {
 	}
 
 	// error here isn't actually a problem
-	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
+	//TODO: if the owner is null on the server we need to do SOMETHING to handle it
+	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world) {
+		media = 20*WISP_COST_PER_TICK
+		lastTick = world.gameTime - 1
+	}
 
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world) {
+	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world) {
 		setPos(pos)
 		owner = caster
 		this.media = media
+		lastTick = world.gameTime - 1
 	}
 
 	override fun tick() {
-		super.tick()
+		// make sure tick isn't called twice, since tick() is also called by castCallback to ensure wisps that need ticking don't actually get skipped on the tick that their
+		// cast is successful.
+		if (lastTick == level.gameTime)
+			return
 
-		HexalAPI.LOGGER.info("media: $media")
-		HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
+		if (!scheduledCast) {
+			super.tick()
 
-		// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
-		if (media <= 0) discard()
-		media -= WISP_COST_PER_TICK
+			HexalAPI.LOGGER.info("media: $media")
+			HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
 
-		oldPos = position()
+			// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
+			if (media <= 0) discard()
+			media -= WISP_COST_PER_TICK
 
-		move()
+			oldPos = position()
 
-		if(level.isClientSide) {
+			move()
+		}
+
+		if (level.isClientSide) {
 			playParticles();
 		}
 	}
@@ -130,45 +141,32 @@ abstract class BaseWisp : Projectile {
 	}
 
 	/**
-	 * Casts the spell passed as [hex], with the initial stack [initialStack] and initial ravenmind [initialRavenmind], and returns a pair containing the final state
-	 * of the stack and ravenmind.
+	 * Schedules casting the hex passed as [hex], with the initial stack [initialStack] and initial ravenmind [initialRavenmind]. If a callback is needed (e.g. to save
+	 * the results of the cast somewhere) a callback can be provided as [castCallback]. Returns whether the hex was successfully scheduled.
 	 */
-	fun castSpell(
+	fun scheduleCast(
+		priority: Int,
 		hex: List<SpellDatum<*>>,
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
-		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL)
-	): Pair<MutableList<SpellDatum<*>>, SpellDatum<*>> {
-		if (level.isClientSide)
-			return Pair(initialStack, initialRavenmind) // return dummy data, not expecting anything to be done with it
+		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
+	): Boolean {
+		if (level.isClientSide || owner == null)
+			return false // return dummy data, not expecting anything to be done with it
+
+		val sPlayer = owner as ServerPlayer
 
 		HexalAPI.LOGGER.info(position())
 
-		val sPlayer = owner as ServerPlayer
-		val ctx = CastingContext(
-			sPlayer,
-			InteractionHand.MAIN_HAND
-		)
+		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
-		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
-		val mCast = ctx as? MixinCastingContextInterface
-		mCast?.wisp = this
+		scheduledCast = true
 
-		val harness = CastingHarness(ctx)
+		return true
+	}
 
-		harness.stack = initialStack
-		harness.localIota = initialRavenmind
-
-		val info = harness.executeIotas(hex, sPlayer.getLevel())
-
-		if (info.makesCastSound) {
-			sPlayer.level.playSound(
-				null, position().x, position().y, position().z,
-				HexSounds.ACTUALLY_CAST, SoundSource.PLAYERS, 1f,
-				1f + (Math.random().toFloat() - 0.5f) * 0.2f
-			)
-		}
-
-		return Pair(harness.stack, harness.localIota)
+	open fun castCallback(result: WispCastingManager.WispCastResult) {
+		scheduledCast = false
+		tick()
 	}
 
 	protected fun playParticles() {
@@ -195,24 +193,30 @@ abstract class BaseWisp : Projectile {
 				(oldPos.z + delta.z * coeff),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5),
-				0.0125 * (random.nextDouble() - 0.5))
+				0.0125 * (random.nextDouble() - 0.5)
+			)
 		}
 	}
 
 	fun setColouriser(colouriser: FrozenColorizer) {
 		entityData.set(COLOURISER, colouriser.serializeToNBT())
 	}
-	override fun load(compound: CompoundTag)
-	{
+
+	override fun load(compound: CompoundTag) {
 		// assuming this is for saving/loading chunks and the game
 		super.load(compound)
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
+		media = compound.getInt(TAG_MEDIA)
+		scheduledCast = compound.getBoolean(TAG_SCHEDULED_CAST)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
+		compound.putInt(TAG_MEDIA, media)
+		compound.putBoolean(TAG_SCHEDULED_CAST, scheduledCast)
 	}
+
 	override fun defineSynchedData() {
 		// defines the entry in SynchedEntityData associated with the EntityDataAccessor COLOURISER, and gives it a default value
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
@@ -222,10 +226,12 @@ abstract class BaseWisp : Projectile {
 		@JvmField
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
-		const val TAG_COLOURISER = "tag_colouriser"
+		const val TAG_COLOURISER = "colouriser"
+		const val TAG_MEDIA = "media"
+		const val TAG_SCHEDULED_CAST = "scheduled_cast"
 
 		const val MAX_DISTANCE_TO_WISP = 2.5
-		const val WISP_COST_PER_TICK = (3.0/20.0 * ManaConstants.DUST_UNIT).toInt()
+		const val WISP_COST_PER_TICK = (3.0 / 20.0 * ManaConstants.DUST_UNIT).toInt()
 	}
 }
 

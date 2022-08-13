@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static at.petrak.hexcasting.api.HexAPI.modLoc;
+import static ram.talia.hexal.api.HexalAPI.modLoc;
 
 public class HexalEntities {
 	public static void registerEntities (BiConsumer<EntityType<?>, ResourceLocation> r) {
