@@ -3,10 +3,7 @@ package ram.talia.hexal.common.casting;
 import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
-import ram.talia.hexal.common.casting.actions.OpCompareBlocks;
-import ram.talia.hexal.common.casting.actions.OpCompareEntities;
-import ram.talia.hexal.common.casting.actions.OpCompareTypes;
-import ram.talia.hexal.common.casting.actions.OpWispMedia;
+import ram.talia.hexal.common.casting.actions.*;
 import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
 import ram.talia.hexal.common.casting.actions.spells.OpSummonWisp;
 
@@ -16,20 +13,33 @@ public class RegisterPatterns {
 	public static void registerPatterns () {
 		try {
 			
+			// ============================ Type Comparison ===================================
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qaqqaea", HexDir.EAST),
-																 modLoc("compare_blocks"),
+																 modLoc("compare/blocks"),
 																 OpCompareBlocks.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST),
-																 modLoc("compare_entities"),
+																 modLoc("compare/entities"),
 																 OpCompareEntities.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST),
-																 modLoc("compare_types"),
+																 modLoc("compare/types"),
 																 OpCompareTypes.INSTANCE);
+			
+			// ========================== Misc Info Gathering =================================
+			
+			PatternRegistry.mapPattern(HexPattern.fromAngles("ddwaa", HexDir.NORTH_WEST),
+																 modLoc("current_tick"),
+																 OpCurrentTick.INSTANCE);
+			
+			// ============================== Misc Spells =====================================
+			
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wqqqwqqadad", HexDir.EAST),
 																 modLoc("smelt"),
 																 OpSmelt.INSTANCE);
+			
+			// =============================== Wisp Stuff =====================================
+
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaeqeeeee", HexDir.NORTH_WEST),
-																 modLoc("summon_wisp"),
+																 modLoc("summon_wisp/projectile"),
 																 OpSummonWisp.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST),
 																 modLoc("wisp_media"),
