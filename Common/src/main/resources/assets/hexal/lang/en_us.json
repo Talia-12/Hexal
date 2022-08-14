@@ -1,19 +1,33 @@
 {
-  "hexcasting.spell.hexal:compare_blocks": "Surveyor's Distillation",
-  "hexcasting.spell.hexal:compare_entities": "Physician's Distillation",
-  "hexcasting.spell.hexal:compare_types": "Classifier's Distillation",
+  "hexcasting.spell.hexal:compare/blocks": "Surveyor's Distillation",
+  "hexcasting.spell.hexal:compare/entities": "Physician's Distillation",
+  "hexcasting.spell.hexal:compare/types": "Classifier's Distillation",
+
+  "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
 
   "hexcasting.spell.hexal:smelt": "Smelt",
+
+  "hexcasting.spell.hexal:summon_wisp/projectile": "Summon Projectile Wisp",
+  "hexcasting.spell.hexal:wisp_media": "Reservoir Reflection",
 
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
 
 
+  "hexal.entry.hexal_basics": "Hexal Basic Patterns",
+
+  "hexal.page.basics_pattern.current_tick": "Adds a number to the stack which seems to be related to how Nature represents time; If I cast the pattern, then cast the same pattern a second later, the number it adds has increased by 20.",
 
   "hexal.entry.hexal_spell": "Hexal Spells",
 
   "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",
   "hexal.page.hexal_spell.smelt.1": "Costs three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ per item smelted (i.e. three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ for smelting a block, 6 $(l:items/amethyst)$(item)Amethyst Dust/$ to smelt a stack of 8 items.)",
+
+  "hexal.entry.wisps": "Wisps",
+
+  "hexal.page.wisps.summon_wisp/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$",
+  "hexal.page.wisps.summon_wisp/projectile.1": "The first vector accepted represents the location this 'wisp' projectile should be summoned, while the second seems to affect its velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
+  "hexal.page.wisps.wisp_media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; drying to cast it through a staff will fail rather spectacularly.",
 
   "hexal.entry.type_comparison": "Type Comparisons",
 

@@ -2,30 +2,30 @@
   "name": "hexal.entry.type_comparison",
   "category": "hexcasting:patterns",
   "icon": "minecraft:lectern",
-  "sortnum": 15,
+  "sortnum": 5.5,
   "advancement": "hexcasting:root",
   "read_by_default": true,
   "pages": [
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:compare_blocks",
-      "anchor": "hexal:compare_blocks",
+      "op_id": "hexal:compare/blocks",
+      "anchor": "hexal:compare/blocks",
       "input": "vec, vec",
       "output": "number",
       "text": "hexal.page.type_comparison.compare_blocks"
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:compare_entities",
-      "anchor": "hexal:compare_entities",
+      "op_id": "hexal:compare/entities",
+      "anchor": "hexal:compare/entities",
       "input": "entity, entity",
       "output": "number",
       "text": "hexal.page.type_comparison.compare_entities"
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:compare_types",
-      "anchor": "hexal:compare_types",
+      "op_id": "hexal:compare/types",
+      "anchor": "hexal:compare/types",
       "input": "any, any",
       "output": "number",
       "text": "hexal.page.type_comparison.compare_types"

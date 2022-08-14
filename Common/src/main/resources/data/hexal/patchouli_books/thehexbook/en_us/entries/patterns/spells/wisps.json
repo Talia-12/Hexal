@@ -1,0 +1,30 @@
+{
+  "name": "hexal.entry.wisps",
+  "category": "hexcasting:patterns/spells",
+  "icon": "minecraft:glowstone_dust",
+  "sortnum": 14,
+  "advancement": "hexcasting:root",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:summon_wisp/projectile",
+      "anchor": "hexal:summon_wisp/projectile",
+      "input": "[pattern], vec, vec, number",
+      "output": "",
+      "text": "hexal.page.wisps.summon_wisp/projectile.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.wisps.summon_wisp/projectile.1"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp_media",
+      "anchor": "hexal:wisp_media",
+      "input": "",
+      "output": "number",
+      "text": "hexal.page.wisps.wisp_media"
+    }
+  ]
+}
