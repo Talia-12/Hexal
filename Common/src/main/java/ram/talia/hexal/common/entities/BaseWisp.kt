@@ -21,12 +21,21 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
+import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.times
 import ram.talia.hexal.xplat.IXplatAbstractions
+import kotlin.math.pow
 
 
 abstract class BaseWisp : Projectile {
 	var media: Int
+		get() = entityData.get(MEDIA)
+		set(value) {
+			deltaMovement = scaleVecByMedia(deltaMovement, entityData.get(MEDIA), value)
+
+			entityData.set(MEDIA, value)
+		}
 
 	private var scheduledCast = false
 	private var lastTick: Long
@@ -40,11 +49,12 @@ abstract class BaseWisp : Projectile {
 	// error here isn't actually a problem
 	//TODO: if the owner is null on the server we need to do SOMETHING to handle it
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world) {
-		media = 20*WISP_COST_PER_TICK
+		HexalAPI.LOGGER.info("constructor for $uuid called!")
 		lastTick = world.gameTime - 1
 	}
 
 	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world) {
+		HexalAPI.LOGGER.info("constructor for $uuid called!")
 		setPos(pos)
 		owner = caster
 		this.media = media
@@ -64,8 +74,13 @@ abstract class BaseWisp : Projectile {
 //			HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
 
 			// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
-			if (media <= 0) discard()
-			media -= WISP_COST_PER_TICK
+			HexalAPI.LOGGER.info("wisp has ${media.toDouble()/ManaConstants.DUST_UNIT} media remaining")
+			if (media <= 0) {
+				HexalAPI.LOGGER.info("wisp $uuid has run out of media at ${level.gameTime}")
+				discard()
+			}
+			if (!level.isClientSide)
+				media -= WISP_COST_PER_TICK
 
 			oldPos = position()
 
@@ -81,6 +96,25 @@ abstract class BaseWisp : Projectile {
 	 * Called in [tick], expected to update the Wisp's position.
 	 */
 	abstract fun move()
+
+	fun setVelocity(vel: Vec3) {
+		deltaMovement = scaleVecByMedia(vel)
+	}
+
+	fun addVelocity(vel: Vec3) {
+		deltaMovement += scaleVecByMedia(vel)
+	}
+
+	fun scaleVecByMedia(vec: Vec3) = scaleVecByMedia(vec, 1, media)
+
+	fun scaleVecByMedia(vec: Vec3, oldMedia: Int, newMedia: Int): Vec3 {
+		val WIDTH_SCALE = 0.015
+		val LIMIT = 0.25
+
+		val oldScale = (1 - LIMIT) / ((oldMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) * (oldMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) + 1) + LIMIT
+		val newScale = (1 - LIMIT) / ((newMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) * (newMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) + 1) + LIMIT
+		return (newScale / oldScale) * vec
+	}
 
 	/**
 	 * Set the look vector of the wisp equal to its movement direction
@@ -170,8 +204,10 @@ abstract class BaseWisp : Projectile {
 	protected fun playParticles() {
 		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 
+		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10
+
 		val delta = position() - oldPos
-		val dist = delta.length() * 6
+		val dist = delta.length() * 6 * radius*radius*radius
 
 		for (i in 0..dist.toInt()) {
 			val colour: Int = colouriser.getColor(
@@ -189,6 +225,28 @@ abstract class BaseWisp : Projectile {
 				(oldPos.x + delta.x * coeff),
 				(oldPos.y + delta.y * coeff),
 				(oldPos.z + delta.z * coeff),
+				0.0125 * (random.nextDouble() - 0.5),
+				0.0125 * (random.nextDouble() - 0.5),
+				0.0125 * (random.nextDouble() - 0.5)
+			)
+		}
+
+		// this doesn't actually look very good
+		for (i in 0..(4*radius*radius*radius).toInt()) {
+			val colour: Int = colouriser.getColor(
+				random.nextFloat() * 16384,
+				Vec3(
+					random.nextFloat().toDouble(),
+					random.nextFloat().toDouble(),
+					random.nextFloat().toDouble()
+				).scale((random.nextFloat() * 3).toDouble())
+			)
+
+			level.addParticle(
+				ConjureParticleOptions(colour, true),
+				(position().x + radius*random.nextGaussian()),
+				(position().y + radius*random.nextGaussian()),
+				(position().z + radius*random.nextGaussian()),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5)
@@ -217,12 +275,15 @@ abstract class BaseWisp : Projectile {
 
 	override fun defineSynchedData() {
 		// defines the entry in SynchedEntityData associated with the EntityDataAccessor COLOURISER, and gives it a default value
+		HexalAPI.LOGGER.info("defineSynchedData for $uuid called!")
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
+		entityData.define(MEDIA, 20*ManaConstants.DUST_UNIT)
 	}
 
 	companion object {
 		@JvmField
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
 
 		const val TAG_COLOURISER = "colouriser"
 		const val TAG_MEDIA = "media"

@@ -24,7 +24,7 @@ class ProjectileWisp : BaseWisp {
 		setLookVector(deltaMovement)
 
 		if (isAffectedByGravity)
-			deltaMovement -= Vec3(0.0, 0.05, 0.0)
+			addVelocity(Vec3(0.0, -0.05, 0.0))
 
 		traceAnyHit(position(), position() + deltaMovement)
 

@@ -34,7 +34,7 @@ object OpSummonWisp : SpellOperator {
             val colouriser = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
             val wisp = ProjectileWisp(ctx.world, pos, ctx.caster, media)
             wisp.setColouriser(colouriser)
-            wisp.shoot(vel.x, vel.y, vel.z, vel.length().toFloat(), 0.0f)
+            wisp.setVelocity(vel)
             wisp.onCollisionHex = hex
             ctx.world.addFreshEntity(wisp)
         }
