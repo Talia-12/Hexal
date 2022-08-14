@@ -17,7 +17,8 @@ class ProjectileWisp : BaseWisp {
 	var onCollisionHex: List<SpellDatum<*>> = ArrayList()
 
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(world, pos, caster, media)
+	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media)
+	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media)
 
 	override fun move() {
 		setLookVector(deltaMovement)

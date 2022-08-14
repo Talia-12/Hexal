@@ -60,8 +60,8 @@ abstract class BaseWisp : Projectile {
 		if (!scheduledCast) {
 			super.tick()
 
-			HexalAPI.LOGGER.info("media: $media")
-			HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
+//			HexalAPI.LOGGER.info("media: $media")
+//			HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
 
 			// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
 			if (media <= 0) discard()
@@ -154,8 +154,6 @@ abstract class BaseWisp : Projectile {
 			return false // return dummy data, not expecting anything to be done with it
 
 		val sPlayer = owner as ServerPlayer
-
-		HexalAPI.LOGGER.info(position())
 
 		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 

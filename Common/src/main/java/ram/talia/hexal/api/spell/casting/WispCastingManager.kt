@@ -17,10 +17,9 @@ import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.writeIotaNbtList
 import ram.talia.hexal.common.entities.BaseWisp
-import java.util.PriorityQueue
-import java.util.UUID
+import java.util.*
 
-class WispCastingManager(val caster: ServerPlayer) {
+class WispCastingManager(private val caster: ServerPlayer) {
 
 	val queue: PriorityQueue<WispCast> = PriorityQueue()
 
@@ -36,7 +35,7 @@ class WispCastingManager(val caster: ServerPlayer) {
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
 		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	) {
-		queue.add(WispCast(wisp.uuid, priority, caster.level.gameTime, hex, initialStack, initialRavenmind))
+		queue.add(WispCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind))
 	}
 
 	/**
@@ -53,11 +52,13 @@ class WispCastingManager(val caster: ServerPlayer) {
 			itr.remove()
 
 			// if the wisp isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
-			if (cast.wisp == null)
-				continue
+			if (cast.wisp == null) {
+				cast.wisp = (caster.level as ServerLevel).getEntity(cast.wispUUID) as BaseWisp
 
-			if (specialHandlers.any { handler -> handler.invoke(this, cast) })
-				continue
+				if (cast.wisp == null) continue
+			}
+
+			if (specialHandlers.any { handler -> handler.invoke(this, cast) }) continue
 
 			cast(cast)
 
@@ -74,9 +75,11 @@ class WispCastingManager(val caster: ServerPlayer) {
 			InteractionHand.MAIN_HAND
 		)
 
+		val wisp = cast.wisp!!
+
 		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
 		val mCast = ctx as? MixinCastingContextInterface
-		mCast?.wisp = cast.wisp!!
+		mCast?.wisp = wisp
 
 		val harness = CastingHarness(ctx)
 
@@ -87,13 +90,15 @@ class WispCastingManager(val caster: ServerPlayer) {
 
 		if (info.makesCastSound) {
 			caster.level.playSound(
-				null, cast.wisp!!.position().x, cast.wisp!!.position().y, cast.wisp!!.position().z,
+				null, wisp.position().x, wisp.position().y, wisp.position().z,
 				HexSounds.ACTUALLY_CAST, SoundSource.PLAYERS, 1f,
 				1f + (Math.random().toFloat() - 0.5f) * 0.2f
 			)
 		}
 
-		cast.wisp!!.castCallback(WispCastResult(harness.stack, harness.localIota))
+		// the wisp will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
+		// stack and ravenmind is.
+		wisp.castCallback(WispCastResult(harness.stack, harness.localIota))
 	}
 
 	fun readFromNbt(tag: CompoundTag, level: ServerLevel) {
