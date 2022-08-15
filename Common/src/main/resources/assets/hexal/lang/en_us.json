@@ -7,8 +7,9 @@
 
   "hexcasting.spell.hexal:smelt": "Smelt",
 
-  "hexcasting.spell.hexal:summon_wisp/projectile": "Summon Projectile Wisp",
-  "hexcasting.spell.hexal:wisp_media": "Reservoir Reflection",
+  "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
+  "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
+  "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
 
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
@@ -25,13 +26,18 @@
 
   "hexal.entry.wisps": "Wisps",
 
-  "hexal.page.wisps.summon_wisp/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$",
-  "hexal.page.wisps.summon_wisp/projectile.1": "The first vector accepted represents the location this 'wisp' projectile will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the wisp's velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
-  "hexal.page.wisps.wisp_media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; drying to cast it through a staff will fail rather spectacularly.",
+  "hexal.page.wisps.wisp/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$",
+  "hexal.page.wisps.wisp/summon/projectile.1": "The first vector accepted represents the location this 'wisp' projectile will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the wisp's velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
+  "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; drying to cast it through a staff will fail rather spectacularly.",
+
+  "hexal.entry.great_wisps": "Great Wisp Spells",
+
+  "hexal.page.great_wisps.wisp/consume.0": "Remove a Wisp from the stack, and disassemble it. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
+  "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
 
   "hexal.entry.type_comparison": "Type Comparisons",
 
-  "hexal.page.type_comparison.compare_blocks": "Remove two locations from the stack; if the block at the first is equal to the block at the second, return 1. Otherwise, return 0.",
-  "hexal.page.type_comparison.compare_entities": "Remove two entities from the stack; if the entities are the same type (with items comparing the type of item) return 1. Otherwise, return 0.",
-  "hexal.page.type_comparison.compare_types": "Remove two iota from the stack; if iota are the same type, return 1. Otherwise, return 0. For example, removing 0 and 5 would return 1, as would removing [] and [12], while removing 1 and (1,2,3) would return 0."
+  "hexal.page.type_comparison.compare/blocks": "Remove two locations from the stack; if the block at the first is equal to the block at the second, return 1. Otherwise, return 0.",
+  "hexal.page.type_comparison.compare/entities": "Remove two entities from the stack; if the entities are the same type (with items comparing the type of item) return 1. Otherwise, return 0.",
+  "hexal.page.type_comparison.compare/types": "Remove two iota from the stack; if iota are the same type, return 1. Otherwise, return 0. For example, removing 0 and 5 would return 1, as would removing [] and [12], while removing 1 and (1,2,3) would return 0."
 }

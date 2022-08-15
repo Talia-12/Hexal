@@ -12,7 +12,7 @@
       "anchor": "hexal:compare/blocks",
       "input": "vec, vec",
       "output": "number",
-      "text": "hexal.page.type_comparison.compare_blocks"
+      "text": "hexal.page.type_comparison.compare/blocks"
     },
     {
       "type": "hexcasting:pattern",
@@ -20,7 +20,7 @@
       "anchor": "hexal:compare/entities",
       "input": "entity, entity",
       "output": "number",
-      "text": "hexal.page.type_comparison.compare_entities"
+      "text": "hexal.page.type_comparison.compare/entities"
     },
     {
       "type": "hexcasting:pattern",
@@ -28,7 +28,7 @@
       "anchor": "hexal:compare/types",
       "input": "any, any",
       "output": "number",
-      "text": "hexal.page.type_comparison.compare_types"
+      "text": "hexal.page.type_comparison.compare/types"
     }
   ]
 }

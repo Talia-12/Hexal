@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.math.HexPattern;
 import ram.talia.hexal.common.casting.actions.*;
 import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
 import ram.talia.hexal.common.casting.actions.spells.OpSummonWisp;
+import ram.talia.hexal.common.casting.actions.spells.great.OpConsumeWisp;
 
 import static ram.talia.hexal.api.HexalAPI.modLoc;
 
@@ -39,11 +40,14 @@ public class RegisterPatterns {
 			// =============================== Wisp Stuff =====================================
 
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaeqeeeee", HexDir.NORTH_WEST),
-																 modLoc("summon_wisp/projectile"),
+																 modLoc("wisp/summon/projectile"),
 																 OpSummonWisp.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST),
-																 modLoc("wisp_media"),
+																 modLoc("wisp/media"),
 																 OpWispMedia.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
+																 modLoc("wisp/consume"),
+																 OpConsumeWisp.INSTANCE, true);
 			// pattern for summon ticking wisp: aqaweewaqawee northwest
 		}
 		catch (PatternRegistry.RegisterPatternException e) {
