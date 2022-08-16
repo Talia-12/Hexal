@@ -5,8 +5,6 @@ import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.entities.ProjectileWisp
 
 object OpSummonWisp : SpellOperator {
@@ -35,7 +33,7 @@ object OpSummonWisp : SpellOperator {
             val wisp = ProjectileWisp(ctx.world, pos, ctx.caster, media)
             wisp.setColouriser(colouriser)
             wisp.setVelocity(vel)
-            wisp.onCollisionHex = hex
+            wisp.hex = hex
             ctx.world.addFreshEntity(wisp)
         }
     }

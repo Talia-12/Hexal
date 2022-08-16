@@ -19,9 +19,9 @@ fun ListTag.toIotaList(level: ServerLevel): MutableList<SpellDatum<*>> {
 	return out
 }
 
-fun writeIotaNbtList(patterns: List<SpellDatum<*>>): ListTag {
+fun List<SpellDatum<*>>.toNbtList(): ListTag {
 	val patsTag = ListTag()
-	for (pat in patterns) {
+	for (pat in this) {
 		patsTag.add(pat.serializeToNBT())
 	}
 	return patsTag

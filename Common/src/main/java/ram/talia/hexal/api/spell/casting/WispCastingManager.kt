@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.spell.toIotaList
-import ram.talia.hexal.api.spell.writeIotaNbtList
+import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.common.entities.BaseWisp
 import java.util.*
 
@@ -35,7 +35,13 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
 		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	) {
-		queue.add(WispCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind))
+		val cast = WispCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind)
+
+		// if the wisp is one that is hard enough to forkbomb with (specifically, lasting wisps), let it go through without reaching the queue
+		if (specialHandlers.any { handler -> handler.invoke(this, cast) })
+			return
+
+		queue.add(cast)
 	}
 
 	/**
@@ -57,8 +63,6 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 				if (cast.wisp == null) continue
 			}
-
-			if (specialHandlers.any { handler -> handler.invoke(this, cast) }) continue
 
 			cast(cast)
 
@@ -160,9 +164,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			tag.putInt(TAG_PRIORITY, priority)
 			tag.putLong(TAG_TIME_ADDED, timeAdded)
 			tag.putInt(TAG_HEX_LENGTH, hex.size)
-			tag.putList(TAG_HEX, writeIotaNbtList(hex))
+			tag.putList(TAG_HEX, hex.toNbtList())
 			tag.putInt(TAG_INITIAL_STACK_LENGTH, initialStack.size)
-			tag.putList(TAG_INITIAL_STACK, writeIotaNbtList(initialStack))
+			tag.putList(TAG_INITIAL_STACK, initialStack.toNbtList())
 			tag.putCompound(TAG_INITIAL_RAVENMIND, initialRavenmind.serializeToNBT())
 
 			return tag

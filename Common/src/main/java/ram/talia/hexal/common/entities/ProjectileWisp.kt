@@ -7,17 +7,14 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 
 class ProjectileWisp : BaseWisp {
 	var isAffectedByGravity = true
 
-	var onCollisionHex: List<SpellDatum<*>> = ArrayList()
-
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
-	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media)
+	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media)
 	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media)
 
 	override fun move() {
@@ -38,7 +35,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playParticles()
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, onCollisionHex, listOf(SpellDatum.make(this), SpellDatum.make(result.entity)).toMutableList())
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, listOf(SpellDatum.make(this), SpellDatum.make(result.entity)).toMutableList())
 	}
 
 	override fun onHitBlock(result: BlockHitResult) {
@@ -48,7 +45,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playParticles()
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, onCollisionHex, listOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toMutableList())
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, listOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toMutableList())
 	}
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {

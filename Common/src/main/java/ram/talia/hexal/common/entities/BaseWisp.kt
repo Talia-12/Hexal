@@ -4,12 +4,15 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
+import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.EntityType
@@ -23,6 +26,8 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.spell.toIotaList
+import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.api.times
 import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.pow
@@ -37,10 +42,13 @@ abstract class BaseWisp : Projectile {
 			entityData.set(MEDIA, value)
 		}
 
+	var hex: List<SpellDatum<*>> = ArrayList()
+
 	private var scheduledCast = false
 	private var lastTick: Long
 
 	private var oldPos: Vec3 = position()
+
 
 	fun addMedia(dMedia: Int) {
 		media += dMedia
@@ -84,6 +92,7 @@ abstract class BaseWisp : Projectile {
 
 			oldPos = position()
 
+			childTick()
 			move()
 		}
 
@@ -92,8 +101,15 @@ abstract class BaseWisp : Projectile {
 		}
 	}
 
+
 	/**
-	 * Called in [tick], expected to update the Wisp's position.
+	 * Called in [tick] to execute other code that child classes may want to execute every tick; respects not executing if the wisp is waiting for a cast to be executed.
+	 * Is called before [move]
+	 */
+	open fun childTick() {}
+
+	/**
+	 * Called in [tick], expected to update the Wisp's position. Is called after [childTick].
 	 */
 	abstract fun move()
 
@@ -262,6 +278,9 @@ abstract class BaseWisp : Projectile {
 		// assuming this is for saving/loading chunks and the game
 		super.load(compound)
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
+		if (!level.isClientSide) {
+			hex = compound.getList(TAG_HEX, compound.getInt(TAG_HEX_LENGTH)).toIotaList(level as ServerLevel)
+		}
 		media = compound.getInt(TAG_MEDIA)
 		scheduledCast = compound.getBoolean(TAG_SCHEDULED_CAST)
 	}
@@ -269,6 +288,10 @@ abstract class BaseWisp : Projectile {
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
+		if (!level.isClientSide) {
+			compound.putInt(TAG_HEX_LENGTH, hex.size)
+			compound.putList(TAG_HEX, hex.toNbtList())
+		}
 		compound.putInt(TAG_MEDIA, media)
 		compound.putBoolean(TAG_SCHEDULED_CAST, scheduledCast)
 	}
@@ -286,6 +309,8 @@ abstract class BaseWisp : Projectile {
 		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
 
 		const val TAG_COLOURISER = "colouriser"
+		const val TAG_HEX_LENGTH = "hex_length"
+		const val TAG_HEX = "hex"
 		const val TAG_MEDIA = "media"
 		const val TAG_SCHEDULED_CAST = "scheduled_cast"
 
