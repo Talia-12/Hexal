@@ -41,14 +41,16 @@ public class RegisterPatterns {
 
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaeqeeeee", HexDir.NORTH_WEST),
 																 modLoc("wisp/summon/projectile"),
-																 OpSummonWisp.INSTANCE);
+																 new OpSummonWisp(false));
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaweewaqawee", HexDir.NORTH_WEST),
+																 modLoc("wisp/summon/ticking"),
+																 new OpSummonWisp(true));
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST),
 																 modLoc("wisp/media"),
 																 OpWispMedia.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
 																 modLoc("wisp/consume"),
 																 OpConsumeWisp.INSTANCE, true);
-			// pattern for summon ticking wisp: aqaweewaqawee northwest
 		}
 		catch (PatternRegistry.RegisterPatternException e) {
 			e.printStackTrace();

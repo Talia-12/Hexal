@@ -22,12 +22,20 @@ public class HexalEntities {
 	private static final Map<ResourceLocation, EntityType<?>> ENTITIES = new LinkedHashMap<>();
 	
 	public static final EntityType<ProjectileWisp> PROJECTILE_WISP = register(
-					"base_wisp",
+					"wisp/projectile",
 					EntityType.Builder.of((EntityType.EntityFactory<ProjectileWisp>) ProjectileWisp::new, MobCategory.MISC)
 														.sized(0.1f, 0.1f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
-														.build(HexalAPI.MOD_ID + ":base_wisp"));
+														.build(HexalAPI.MOD_ID + ":wisp/projectile"));
+	
+	public static final EntityType<TickingWisp> TICKING_WISP = register(
+					"wisp/ticking",
+					EntityType.Builder.of((EntityType.EntityFactory<TickingWisp>) TickingWisp::new, MobCategory.MISC)
+														.sized(0.1f, 0.1f)
+														.clientTrackingRange(10)
+														.updateInterval(1)
+														.build(HexalAPI.MOD_ID + ":wisp/ticking"));
 	
 	private static <T extends Entity> EntityType<T> register (String id, EntityType<T> type) {
 		var old = ENTITIES.put(modLoc(id), type);

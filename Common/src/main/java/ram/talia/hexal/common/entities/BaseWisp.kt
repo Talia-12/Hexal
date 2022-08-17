@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
@@ -36,11 +35,7 @@ import kotlin.math.pow
 abstract class BaseWisp : Projectile {
 	var media: Int
 		get() = entityData.get(MEDIA)
-		set(value) {
-			deltaMovement = scaleVecByMedia(deltaMovement, entityData.get(MEDIA), value)
-
-			entityData.set(MEDIA, value)
-		}
+		set(value) = entityData.set(MEDIA, value)
 
 	var hex: List<SpellDatum<*>> = ArrayList()
 
@@ -49,6 +44,9 @@ abstract class BaseWisp : Projectile {
 
 	private var oldPos: Vec3 = position()
 
+	var velocity: Vec3
+		get() = scaleVecByMedia(deltaMovement)
+		set(value) { deltaMovement = value }
 
 	fun addMedia(dMedia: Int) {
 		media += dMedia
@@ -70,35 +68,46 @@ abstract class BaseWisp : Projectile {
 	}
 
 	override fun tick() {
+		super.tick()
+
+		processTick()
+
+		if (level.isClientSide) {
+			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+			playParticles(colouriser)
+		}
+	}
+
+	fun processTick() {
 		// make sure tick isn't called twice, since tick() is also called by castCallback to ensure wisps that need ticking don't actually get skipped on the tick that their
 		// cast is successful.
 		if (lastTick == level.gameTime)
 			return
+		lastTick = level.gameTime
+
+		// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
+		HexalAPI.LOGGER.info("wisp has ${media.toDouble()/ManaConstants.DUST_UNIT} media remaining")
+		if (media <= 0) {
+			HexalAPI.LOGGER.info("wisp $uuid has run out of media at ${level.gameTime}")
+			discard()
+		}
 
 		if (!scheduledCast) {
-			super.tick()
-
-//			HexalAPI.LOGGER.info("media: $media")
-//			HexalAPI.LOGGER.info("cost: $WISP_COST_PER_TICK")
-
-			// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
-			HexalAPI.LOGGER.info("wisp has ${media.toDouble()/ManaConstants.DUST_UNIT} media remaining")
-			if (media <= 0) {
-				HexalAPI.LOGGER.info("wisp $uuid has run out of media at ${level.gameTime}")
-				discard()
-			}
 			if (!level.isClientSide)
-				media -= WISP_COST_PER_TICK
+				deductMedia()
 
 			oldPos = position()
 
 			childTick()
 			move()
 		}
+	}
 
-		if (level.isClientSide) {
-			playParticles();
-		}
+	/**
+	 * Called in [tick], expected to reduce the amount of [media] remaining in the wisp.
+	 */
+	open fun deductMedia() {
+		media -= WISP_COST_PER_TICK
 	}
 
 
@@ -113,17 +122,47 @@ abstract class BaseWisp : Projectile {
 	 */
 	abstract fun move()
 
-	fun setVelocity(vel: Vec3) {
-		deltaMovement = scaleVecByMedia(vel)
+	/**
+	 * Called in [ram.talia.hexal.mixin.MixinCastingContext.isVecInRangeWisp] to determine the
+	 * maximum range the wisp should be able to affect and make them able to affect things inside that range.
+	 */
+	abstract fun maxSqrCastingDistance(): Double
+
+	/**
+	 * Schedules casting the hex passed as [hex], with the initial stack [initialStack] and initial ravenmind [initialRavenmind]. If a callback is needed (e.g. to save
+	 * the results of the cast somewhere) a callback can be provided as [castCallback]. Returns whether the hex was successfully scheduled.
+	 */
+	fun scheduleCast(
+		priority: Int,
+		hex: List<SpellDatum<*>>,
+		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
+		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
+	): Boolean {
+		if (level.isClientSide || owner == null)
+			return false // return dummy data, not expecting anything to be done with it
+
+		val sPlayer = owner as ServerPlayer
+
+		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
+
+		scheduledCast = true
+
+		return true
+	}
+
+	open fun castCallback(result: WispCastingManager.WispCastResult) {
+		scheduledCast = false
+		// turned off since it's causing PROBLEMS. TODO: Figure out how to actually do this properly.
+//		processTick()
 	}
 
 	fun addVelocity(vel: Vec3) {
-		deltaMovement += scaleVecByMedia(vel)
+		deltaMovement += vel
 	}
 
-	fun scaleVecByMedia(vec: Vec3) = scaleVecByMedia(vec, 1, media)
+	private fun scaleVecByMedia(vec: Vec3) = scaleVecByMedia(vec, 1, media)
 
-	fun scaleVecByMedia(vec: Vec3, oldMedia: Int, newMedia: Int): Vec3 {
+	private fun scaleVecByMedia(vec: Vec3, oldMedia: Int, newMedia: Int): Vec3 {
 		val WIDTH_SCALE = 0.015
 		val LIMIT = 0.25
 
@@ -153,7 +192,7 @@ abstract class BaseWisp : Projectile {
 			this,
 			start,
 			end,
-			boundingBox.expandTowards(deltaMovement).inflate(1.0),
+			boundingBox.expandTowards(velocity).inflate(1.0),
 			this::canHitEntity
 		)
 
@@ -190,50 +229,18 @@ abstract class BaseWisp : Projectile {
 		super.onHitBlock(result)
 	}
 
-	/**
-	 * Schedules casting the hex passed as [hex], with the initial stack [initialStack] and initial ravenmind [initialRavenmind]. If a callback is needed (e.g. to save
-	 * the results of the cast somewhere) a callback can be provided as [castCallback]. Returns whether the hex was successfully scheduled.
-	 */
-	fun scheduleCast(
-		priority: Int,
-		hex: List<SpellDatum<*>>,
-		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
-		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
-	): Boolean {
-		if (level.isClientSide || owner == null)
-			return false // return dummy data, not expecting anything to be done with it
-
-		val sPlayer = owner as ServerPlayer
-
-		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
-
-		scheduledCast = true
-
-		return true
-	}
-
-	open fun castCallback(result: WispCastingManager.WispCastResult) {
-		scheduledCast = false
-		tick()
-	}
-
-	protected fun playParticles() {
+	fun playParticles() {
 		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
-
+		playParticles(colouriser)
+	}
+	open protected fun playParticles(colouriser: FrozenColorizer) {
 		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10
 
 		val delta = position() - oldPos
 		val dist = delta.length() * 6 * radius*radius*radius
 
 		for (i in 0..dist.toInt()) {
-			val colour: Int = colouriser.getColor(
-				random.nextFloat() * 16384,
-				Vec3(
-					random.nextFloat().toDouble(),
-					random.nextFloat().toDouble(),
-					random.nextFloat().toDouble()
-				).scale((random.nextFloat() * 3).toDouble())
-			)
+			val colour: Int = colouriser.nextColour()
 
 			val coeff = i / dist
 			level.addParticle(
@@ -249,14 +256,7 @@ abstract class BaseWisp : Projectile {
 
 		// this doesn't actually look very good
 		for (i in 0..(4*radius*radius*radius).toInt()) {
-			val colour: Int = colouriser.getColor(
-				random.nextFloat() * 16384,
-				Vec3(
-					random.nextFloat().toDouble(),
-					random.nextFloat().toDouble(),
-					random.nextFloat().toDouble()
-				).scale((random.nextFloat() * 3).toDouble())
-			)
+			val colour: Int = colouriser.nextColour()
 
 			level.addParticle(
 				ConjureParticleOptions(colour, true),
@@ -268,6 +268,17 @@ abstract class BaseWisp : Projectile {
 				0.0125 * (random.nextDouble() - 0.5)
 			)
 		}
+	}
+
+	fun FrozenColorizer.nextColour(): Int {
+		return getColor(
+			random.nextFloat() * 16384,
+			Vec3(
+				random.nextFloat().toDouble(),
+				random.nextFloat().toDouble(),
+				random.nextFloat().toDouble()
+			).scale((random.nextFloat() * 3).toDouble())
+		)
 	}
 
 	fun setColouriser(colouriser: FrozenColorizer) {

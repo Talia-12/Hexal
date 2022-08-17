@@ -9,5 +9,6 @@ public class RegisterClientStuff {
 		var x = IClientXplatAbstractions.INSTANCE;
 		
 		x.registerEntityRenderer(HexalEntities.PROJECTILE_WISP, WispRenderer::new);
+		x.registerEntityRenderer(HexalEntities.TICKING_WISP, WispRenderer::new);
 	}
 }

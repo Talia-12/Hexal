@@ -14,10 +14,12 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.common.entities.BaseWisp
 import java.util.*
+import kotlin.collections.ArrayList
 
 class WispCastingManager(private val caster: ServerPlayer) {
 
@@ -49,9 +51,20 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	 * without decrementing the counter).
 	 */
 	fun executeCasts() {
+		if (caster.level.isClientSide) {
+			HexalAPI.LOGGER.info("HOW DID THIS HAPPEN")
+			return
+		}
+
+		if (queue.size > 0) {
+			HexalAPI.LOGGER.info("player ${caster.uuid} is executing up to $WISP_EVALS_PER_TICK of ${queue.size} on tick ${caster.level.gameTime}")
+		}
+
 		var evalsLeft = WISP_EVALS_PER_TICK
 
 		val itr = queue.iterator()
+
+		val results = ArrayList<WispCastResult>()
 
 		while (evalsLeft > 0 && itr.hasNext()) {
 			val cast = itr.next()
@@ -64,16 +77,18 @@ class WispCastingManager(private val caster: ServerPlayer) {
 				if (cast.wisp == null) continue
 			}
 
-			cast(cast)
+			results += cast(cast)
 
 			evalsLeft--
 		}
+
+		results.forEach { result -> result.callback() }
 	}
 
 	/**
 	 * Actually executes the cast described in [cast]. Will throw a NullPointerException if it somehow got here with [cast] == null.
 	 */
-	public fun cast(cast: WispCast) {
+	public fun cast(cast: WispCast): WispCastResult {
 		val ctx = CastingContext(
 			caster,
 			InteractionHand.MAIN_HAND
@@ -92,17 +107,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 		val info = harness.executeIotas(cast.hex, caster.getLevel())
 
-		if (info.makesCastSound) {
-			caster.level.playSound(
-				null, wisp.position().x, wisp.position().y, wisp.position().z,
-				HexSounds.ACTUALLY_CAST, SoundSource.PLAYERS, 1f,
-				1f + (Math.random().toFloat() - 0.5f) * 0.2f
-			)
-		}
-
 		// the wisp will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
-		// stack and ravenmind is.
-		wisp.castCallback(WispCastResult(harness.stack, harness.localIota))
+		// stack and ravenmind is. This is returned and added to a list that [executeCasts] will loop over to hopefully prevent concurrent modification problems.
+		return WispCastResult(wisp, info.makesCastSound, harness.stack, harness.localIota)
 	}
 
 	fun readFromNbt(tag: CompoundTag, level: ServerLevel) {
@@ -212,7 +219,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>)
+	data class WispCastResult(val wisp: BaseWisp, val makesCastSound: Boolean, val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>) {
+		fun callback() { wisp.castCallback(this) }
+	}
 
 	companion object {
 		const val TAG_NUM_CASTS = "num_casts"

@@ -14,19 +14,25 @@ class ProjectileWisp : BaseWisp {
 	var isAffectedByGravity = true
 
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
-	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media)
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media)
+	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
+		velocity = vel
+	}
+	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
+		velocity = vel
+	}
 
 	override fun move() {
-		setLookVector(deltaMovement)
+		setLookVector(velocity)
 
 		if (isAffectedByGravity)
 			addVelocity(Vec3(0.0, -0.05, 0.0))
 
-		traceAnyHit(position(), position() + deltaMovement)
+		traceAnyHit(position(), position() + velocity)
 
-		setPos(position() + deltaMovement)
+		setPos(position() + velocity)
 	}
+
+	override fun maxSqrCastingDistance() = 4.0
 
 	override fun onHitEntity(result: EntityHitResult) {
 		super.onHitEntity(result)
