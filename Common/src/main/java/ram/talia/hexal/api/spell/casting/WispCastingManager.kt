@@ -56,9 +56,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			return
 		}
 
-		if (queue.size > 0) {
-			HexalAPI.LOGGER.info("player ${caster.uuid} is executing up to $WISP_EVALS_PER_TICK of ${queue.size} on tick ${caster.level.gameTime}")
-		}
+//		if (queue.size > 0) {
+//			HexalAPI.LOGGER.info("player ${caster.uuid} is executing up to $WISP_EVALS_PER_TICK of ${queue.size} on tick ${caster.level.gameTime}")
+//		}
 
 		var evalsLeft = WISP_EVALS_PER_TICK
 

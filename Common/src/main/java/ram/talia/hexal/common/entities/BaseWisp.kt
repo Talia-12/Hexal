@@ -40,7 +40,7 @@ abstract class BaseWisp : Projectile {
 	var hex: List<SpellDatum<*>> = ArrayList()
 
 	private var scheduledCast = false
-	private var lastTick: Long
+//	private var lastTick: Long
 
 	private var oldPos: Vec3 = position()
 
@@ -55,40 +55,29 @@ abstract class BaseWisp : Projectile {
 	// error here isn't actually a problem
 	//TODO: if the owner is null on the server we need to do SOMETHING to handle it
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world) {
-		HexalAPI.LOGGER.info("constructor for $uuid called!")
-		lastTick = world.gameTime - 1
+//		HexalAPI.LOGGER.info("constructor for $uuid called!")
+//		lastTick = world.gameTime - 1
 	}
 
 	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world) {
-		HexalAPI.LOGGER.info("constructor for $uuid called!")
+//		HexalAPI.LOGGER.info("constructor for $uuid called!")
 		setPos(pos)
 		owner = caster
 		this.media = media
-		lastTick = world.gameTime - 1
+//		lastTick = world.gameTime - 1
 	}
 
 	override fun tick() {
 		super.tick()
 
-		processTick()
-
-		if (level.isClientSide) {
-			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
-			playParticles(colouriser)
-		}
-	}
-
-	fun processTick() {
 		// make sure tick isn't called twice, since tick() is also called by castCallback to ensure wisps that need ticking don't actually get skipped on the tick that their
-		// cast is successful.
-		if (lastTick == level.gameTime)
-			return
-		lastTick = level.gameTime
+		// cast is successful. Not actually doing anything right now since tick() isn't currently being called twice.
+//		if (lastTick == level.gameTime)
+//			return
+//		lastTick = level.gameTime
 
 		// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
-		HexalAPI.LOGGER.info("wisp has ${media.toDouble()/ManaConstants.DUST_UNIT} media remaining")
 		if (media <= 0) {
-			HexalAPI.LOGGER.info("wisp $uuid has run out of media at ${level.gameTime}")
 			discard()
 		}
 
@@ -101,7 +90,13 @@ abstract class BaseWisp : Projectile {
 			childTick()
 			move()
 		}
+
+		if (level.isClientSide) {
+			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+			playParticles(colouriser)
+		}
 	}
+	
 
 	/**
 	 * Called in [tick], expected to reduce the amount of [media] remaining in the wisp.
@@ -309,7 +304,7 @@ abstract class BaseWisp : Projectile {
 
 	override fun defineSynchedData() {
 		// defines the entry in SynchedEntityData associated with the EntityDataAccessor COLOURISER, and gives it a default value
-		HexalAPI.LOGGER.info("defineSynchedData for $uuid called!")
+//		HexalAPI.LOGGER.info("defineSynchedData for $uuid called!")
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20*ManaConstants.DUST_UNIT)
 	}
@@ -325,8 +320,7 @@ abstract class BaseWisp : Projectile {
 		const val TAG_MEDIA = "media"
 		const val TAG_SCHEDULED_CAST = "scheduled_cast"
 
-		const val MAX_DISTANCE_TO_WISP = 2.5
-		const val WISP_COST_PER_TICK = (3.0 / 20.0 * ManaConstants.DUST_UNIT).toInt()
+		const val WISP_COST_PER_TICK = (ManaConstants.SHARD_UNIT / 20.0).toInt()
 	}
 }
 

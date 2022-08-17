@@ -8,8 +8,9 @@
   "hexcasting.spell.hexal:smelt": "Smelt",
 
   "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
-  "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
+  "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Ticking Wisp",
   "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
+  "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
 
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
@@ -26,8 +27,10 @@
 
   "hexal.entry.wisps": "Wisps",
 
-  "hexal.page.wisps.wisp/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$",
+  "hexal.page.wisps.wisp/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$.",
   "hexal.page.wisps.wisp/summon/projectile.1": "The first vector accepted represents the location this 'wisp' projectile will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the wisp's velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
+  "hexal.page.wisps.wisp/summon/ticking.0": "Similar to Summon Projectile Wisp, but with only one vector input for the position to summon the wisp.",
+  "hexal.page.wisps.wisp/summon/ticking.1": "This wisp executes its spell up to 10 times per second, and has a less stable form making it lose significantly more media every second.",
   "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; drying to cast it through a staff will fail rather spectacularly.",
 
   "hexal.entry.great_wisps": "Great Wisp Spells",
