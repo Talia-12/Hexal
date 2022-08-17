@@ -21,7 +21,7 @@ public abstract class MixinOperatorSideEffectConsumeMana {
 	private void performEffectLemma (CastingHarness harness, CallbackInfoReturnable<Boolean> cir, boolean overcastOk, int leftoverMana) {
 		MixinCastingContextInterface ctxi = (MixinCastingContextInterface)(Object) harness.getCtx();
 		
-		HexalAPI.LOGGER.info("performEffectWisp called");
+//		HexalAPI.LOGGER.info("performEffectLemma called");
 		
 		if (ctxi.hasLemma()) {
 			if (ctxi.getLemma().getShouldComplainNotEnoughMedia())

@@ -1,5 +1,5 @@
 {
-  "name": "hexal.entry.wisps",
+  "name": "hexal.entry.lemmas",
   "category": "hexcasting:patterns/spells",
   "icon": "minecraft:glowstone_dust",
   "sortnum": 14,
@@ -8,35 +8,35 @@
   "pages": [
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:wisp/summon/projectile",
-      "anchor": "hexal:wisp/summon/projectile",
+      "op_id": "hexal:lemma/summon/projectile",
+      "anchor": "hexal:lemma/summon/projectile",
       "input": "[pattern], vec, vec, number",
       "output": "",
-      "text": "hexal.page.wisps.wisp/summon/projectile.0"
+      "text": "hexal.page.lemmas.lemma/summon/projectile.0"
     },
     {
       "type": "patchouli:text",
-      "text": "hexal.page.wisps.wisp/summon/projectile.1"
+      "text": "hexal.page.lemmas.lemma/summon/projectile.1"
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:wisp/summon/ticking",
-      "anchor": "hexal:wisp/summon/ticking",
+      "op_id": "hexal:lemma/summon/ticking",
+      "anchor": "hexal:lemma/summon/ticking",
       "input": "[pattern], vec, number",
       "output": "",
-      "text": "hexal.page.wisps.wisp/summon/ticking.0"
+      "text": "hexal.page.lemmas.lemma/summon/ticking.0"
     },
     {
       "type": "patchouli:text",
-      "text": "hexal.page.wisps.wisp/summon/ticking.1"
+      "text": "hexal.page.lemmas.lemma/summon/ticking.1"
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:wisp/media",
-      "anchor": "hexal:wisp/media",
+      "op_id": "hexal:lemma/media",
+      "anchor": "hexal:lemma/media",
       "input": "",
       "output": "number",
-      "text": "hexal.page.wisps.wisp/media"
+      "text": "hexal.page.lemmas.lemma/media"
     }
   ]
 }

@@ -49,18 +49,18 @@ public abstract class MixinCastingHarness {
 		
 //		HexalAPI.LOGGER.info("manaCost: %d".formatted(manaCost));
 
-		MixinCastingContextInterface wispContext = (MixinCastingContextInterface)(Object)((CastingHarness)(Object)this).getCtx();
+		MixinCastingContextInterface lemmaContext = (MixinCastingContextInterface)(Object)((CastingHarness)(Object)this).getCtx();
 		
-		BaseLemma wisp = wispContext.getLemma();
+		BaseLemma lemma = lemmaContext.getLemma();
 		
-		if (wisp != null) {
-			int mediaAvailable = wisp.getMedia();
-//			HexalAPI.LOGGER.info("charging wisp %s for casting".formatted(wisp.getStringUUID()));
+		if (lemma != null) {
+			int mediaAvailable = lemma.getMedia();
+//			HexalAPI.LOGGER.info("charging lemma %s for casting".formatted(lemma.getStringUUID()));
 //			HexalAPI.LOGGER.info("mediaAvailable: %d".formatted(mediaAvailable));
 //			HexalAPI.LOGGER.info("manaCost: %d".formatted(manaCost));
 			int mediaToTake = Math.min(manaCost, mediaAvailable);
 			manaCost -= mediaToTake;
-			wisp.addMedia(-mediaToTake);
+			lemma.addMedia(-mediaToTake);
 			cir.setReturnValue(manaCost);
 		}
 	}

@@ -37,7 +37,7 @@ public class RegisterPatterns {
 																 modLoc("smelt"),
 																 OpSmelt.INSTANCE);
 			
-			// =============================== Wisp Stuff =====================================
+			// ============================== Lemma Stuff =====================================
 
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaeqeeeee", HexDir.NORTH_WEST),
 																 modLoc("lemma/summon/projectile"),

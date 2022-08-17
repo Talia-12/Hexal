@@ -54,7 +54,7 @@ class TickingLemma : BaseLemma {
 			false -> LEMMA_COST_PER_TICK + (EXP_SCALE * sqrt(media.toDouble())).toInt()
 		}
 
-//		HexalAPI.LOGGER.info("ticking wisp $uuid had ${deduct.toDouble()/ManaConstants.DUST_UNIT} media deducted.")
+//		HexalAPI.LOGGER.info("ticking lemma $uuid had ${deduct.toDouble()/ManaConstants.DUST_UNIT} media deducted.")
 
 //		HexalAPI.LOGGER.info("media before: ${media.toDouble()/ManaConstants.DUST_UNIT}")
 		media -= deduct
@@ -70,7 +70,7 @@ class TickingLemma : BaseLemma {
 	override fun maxSqrCastingDistance() = if (lasting) 16.0 else 8.0
 
 	override fun castCallback(result: LemmaCastingManager.LemmaCastResult) {
-//		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
+//		HexalAPI.LOGGER.info("ticking lemma $uuid had a cast successfully completed!")
 		stack = result.endStack
 		ravenmind = result.endRavenmind
 

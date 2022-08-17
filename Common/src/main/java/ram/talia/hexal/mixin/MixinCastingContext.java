@@ -12,7 +12,7 @@ import ram.talia.hexal.common.entities.BaseLemma;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
 
 /**
- * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow wisps to affect things within their range.
+ * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow lemmas to affect things within their range.
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements MixinCastingContextInterface {
@@ -22,8 +22,8 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 		return lemma;
 	}
 	
-	public BaseLemma setLemma (BaseLemma wisp) {
-		this.lemma = wisp;
+	public BaseLemma setLemma (BaseLemma lemma) {
+		this.lemma = lemma;
 		return this.lemma;
 	}
 	
@@ -32,7 +32,7 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 	}
 	
 	/**
-	 * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow wisps to affect things within their range.
+	 * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow lemmas to affect things within their range.
 	 */
 	@Inject(method = "isVecInRange", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					slice = @Slice(

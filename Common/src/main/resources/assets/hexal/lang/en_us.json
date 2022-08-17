@@ -1,4 +1,7 @@
 {
+  "entity.hexal.lemma.projectile": "Auxiliary Lemma",
+  "entity.hexal.lemma.ticking": "Pumping Lemma",
+
   "hexcasting.spell.hexal:compare/blocks": "Surveyor's Distillation",
   "hexcasting.spell.hexal:compare/entities": "Physician's Distillation",
   "hexcasting.spell.hexal:compare/types": "Classifier's Distillation",
@@ -28,9 +31,9 @@
   "hexal.entry.lemmas": "Lemmas",
 
   "hexal.page.lemmas.lemma/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$.",
-  "hexal.page.lemmas.lemma/summon/projectile.1": "The first vector accepted represents the location this 'Lemma' will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the lemma's velocity. The number accepted determines how long the lemma will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
+  "hexal.page.lemmas.lemma/summon/projectile.1": "The first vector accepted represents the location this 'Lemma' will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the lemma's velocity. The number accepted determines how long the lemma will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed. It looses one $(l:items/amethyst)$(item)Amethyst Shard/$ worth of media every second.",
   "hexal.page.lemmas.lemma/summon/ticking.0": "Similar to Summon Auxiliary Lemma, but with only one vector input for the position to summon the lemma.",
-  "hexal.page.lemmas.lemma/summon/ticking.1": "This lemma executes its spell up to 20 times per second, and has a less stable form making it lose significantly more media every second.",
+  "hexal.page.lemmas.lemma/summon/ticking.1": "This lemma executes its spell up to 20 times per second, and has a less stable form making it lose significantly more media every second, losing one $(l:items/amethyst)$(item)Amethyst Shard/$ per second as well as an amount proportional to the amount remaining.",
   "hexal.page.lemmas.lemma/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a lemma; trying to cast it through a staff will fail rather spectacularly.",
 
   "hexal.entry.great_lemmas": "Great Lemma Spells",

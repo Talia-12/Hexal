@@ -25,19 +25,19 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 
 	/**
 	 * Schedule a given cast to be added to this LemmaCastingManager's priority queue. It will be evaluated in the next tick unless the player is doing something that
-	 * is producing a lot of Wisp casts. Higher [priority] casts will always be executed first - between casts of equal [priority], the first one added to the stack is
+	 * is producing a lot of Lemma casts. Higher [priority] casts will always be executed first - between casts of equal [priority], the first one added to the stack is
 	 * preferred.
 	 */
 	fun scheduleCast(
-		wisp: BaseLemma,
+		lemma: BaseLemma,
 		priority: Int,
 		hex: List<SpellDatum<*>>,
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
 		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	) {
-		val cast = LemmaCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind)
+		val cast = LemmaCast(lemma, priority, caster.level.gameTime, hex, initialStack, initialRavenmind)
 
-		// if the wisp is one that is hard enough to forkbomb with (specifically, lasting wisps), let it go through without reaching the queue
+		// if the lemma is one that is hard enough to forkbomb with (specifically, lasting lemmas), let it go through without reaching the queue
 		if (specialHandlers.any { handler -> handler.invoke(this, cast) })
 			return
 
@@ -45,8 +45,8 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 	}
 
 	/**
-	 * Called by CCWispCastingManager (Fabric) and XXX (Forge) each tick, evaluates up to WISP_EVALS_PER_TICK Wisp casts (letting through any handled by specialHandlers
-	 * without decrementing the counter).
+	 * Called by [ram.talia.hexal.fabric.cc.CCLemmaCastingManager] (Fabric) and XXX (Forge) each tick, evaluates up to LEMMA_EVALS_PER_TICK Lemma casts
+	 * (letting through any handled by specialHandlers without decrementing the counter).
 	 */
 	fun executeCasts() {
 		if (caster.level.isClientSide) {
@@ -55,7 +55,7 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 		}
 
 //		if (queue.size > 0) {
-//			HexalAPI.LOGGER.info("player ${caster.uuid} is executing up to $WISP_EVALS_PER_TICK of ${queue.size} on tick ${caster.level.gameTime}")
+//			HexalAPI.LOGGER.info("player ${caster.uuid} is executing up to $LEMMA_EVALS_PER_TICK of ${queue.size} on tick ${caster.level.gameTime}")
 //		}
 
 		var evalsLeft = LEMMA_EVALS_PER_TICK
@@ -68,12 +68,15 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 			val cast = itr.next()
 			itr.remove()
 
-			// if the wisp isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
+			// if the lemma isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
 			if (cast.lemma == null) {
 				cast.lemma = (caster.level as ServerLevel).getEntity(cast.lemmaUUID) as BaseLemma
 
 				if (cast.lemma == null) continue
 			}
+
+			if (cast.lemma!!.isRemoved)
+				continue
 
 			results += cast(cast)
 
@@ -92,11 +95,11 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 			InteractionHand.MAIN_HAND
 		)
 
-		val wisp = cast.lemma!!
+		val lemma = cast.lemma!!
 
 		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
 		val mCast = ctx as? MixinCastingContextInterface
-		mCast?.wisp = wisp
+		mCast?.lemma = lemma
 
 		val harness = CastingHarness(ctx)
 
@@ -105,9 +108,9 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 
 		val info = harness.executeIotas(cast.hex, caster.getLevel())
 
-		// the wisp will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
+		// the lemma will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
 		// stack and ravenmind is. This is returned and added to a list that [executeCasts] will loop over to hopefully prevent concurrent modification problems.
-		return LemmaCastResult(wisp, info.makesCastSound, harness.stack, harness.localIota)
+		return LemmaCastResult(lemma, info.makesCastSound, harness.stack, harness.localIota)
 	}
 
 	fun readFromNbt(tag: CompoundTag, level: ServerLevel) {
@@ -178,7 +181,7 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 		}
 
 		companion object {
-			const val TAG_LEMMA = "wisp"
+			const val TAG_LEMMA = "lemma"
 			const val TAG_PRIORITY = "priority"
 			const val TAG_TIME_ADDED = "time_added"
 			const val TAG_HEX_LENGTH = "hex_length"
@@ -188,8 +191,8 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 			const val TAG_INITIAL_RAVENMIND = "initial_ravenmind"
 
 			fun makeFromNbt(tag: CompoundTag, level: ServerLevel): LemmaCast {
-				val wispUUID = tag.getUUID(TAG_LEMMA)
-				val lemma: BaseLemma? = level.getEntity(wispUUID) as? BaseLemma
+				val lemmaUUID = tag.getUUID(TAG_LEMMA)
+				val lemma: BaseLemma? = level.getEntity(lemmaUUID) as? BaseLemma
 
 				if (lemma != null) {
 					return LemmaCast(
@@ -215,7 +218,7 @@ class LemmaCastingManager(private val caster: ServerPlayer) {
 	}
 
 	/**
-	 * the result passed back to the Wisp after its cast is successfully executed.
+	 * the result passed back to the Lemma after its cast is successfully executed.
 	 */
 	data class LemmaCastResult(val lemma: BaseLemma, val makesCastSound: Boolean, val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>) {
 		fun callback() { lemma.castCallback(this) }

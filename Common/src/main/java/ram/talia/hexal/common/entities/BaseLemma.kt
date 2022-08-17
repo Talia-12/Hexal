@@ -71,13 +71,13 @@ abstract class BaseLemma : Projectile {
 	override fun tick() {
 		super.tick()
 
-		// make sure tick isn't called twice, since tick() is also called by castCallback to ensure wisps that need ticking don't actually get skipped on the tick that their
+		// make sure tick isn't called twice, since tick() is also called by castCallback to ensure lemmas that need ticking don't actually get skipped on the tick that their
 		// cast is successful. Not actually doing anything right now since tick() isn't currently being called twice.
 //		if (lastTick == level.gameTime)
 //			return
 //		lastTick = level.gameTime
 
-		// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
+		// check if media is <= 0 ; destroy the lemma if it is, decrement the lifespan otherwise.
 		if (media <= 0) {
 			discard()
 		}
@@ -100,7 +100,7 @@ abstract class BaseLemma : Projectile {
 
 
 	/**
-	 * Called in [tick], expected to reduce the amount of [media] remaining in the wisp.
+	 * Called in [tick], expected to reduce the amount of [media] remaining in the lemma.
 	 */
 	open fun deductMedia() {
 		media -= LEMMA_COST_PER_TICK
@@ -108,19 +108,19 @@ abstract class BaseLemma : Projectile {
 
 
 	/**
-	 * Called in [tick] to execute other code that child classes may want to execute every tick; respects not executing if the wisp is waiting for a cast to be executed.
+	 * Called in [tick] to execute other code that child classes may want to execute every tick; respects not executing if the lemma is waiting for a cast to be executed.
 	 * Is called before [move]
 	 */
 	open fun childTick() {}
 
 	/**
-	 * Called in [tick], expected to update the Wisp's position. Is called after [childTick].
+	 * Called in [tick], expected to update the Lemma's position. Is called after [childTick].
 	 */
 	abstract fun move()
 
 	/**
-	 * Called in [ram.talia.hexal.mixin.MixinCastingContext.isVecInRangeWisp] to determine the
-	 * maximum range the wisp should be able to affect and make them able to affect things inside that range.
+	 * Called in [ram.talia.hexal.mixin.MixinCastingContext.isVecInRangeLemma] to determine the
+	 * maximum range the lemma should be able to affect and make them able to affect things inside that range.
 	 */
 	abstract fun maxSqrCastingDistance(): Double
 
@@ -168,7 +168,7 @@ abstract class BaseLemma : Projectile {
 	}
 
 	/**
-	 * Set the look vector of the wisp equal to its movement direction
+	 * Set the look vector of the lemma equal to its movement direction
 	 */
 	fun setLookVector(vel: Vec3) {
 		if (xRotO == 0.0f && yRotO == 0.0f) {
