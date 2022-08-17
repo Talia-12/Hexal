@@ -33,6 +33,8 @@ import kotlin.math.pow
 
 
 abstract class BaseWisp : Projectile {
+	open val shouldComplainNotEnoughMedia = true
+
 	var media: Int
 		get() = entityData.get(MEDIA)
 		set(value) = entityData.set(MEDIA, value)

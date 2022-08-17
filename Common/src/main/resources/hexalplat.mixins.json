@@ -6,7 +6,8 @@
   "package": "ram.talia.hexal.mixin",
   "mixins": [
     "MixinCastingContext",
-    "MixinCastingHarness"
+    "MixinCastingHarness",
+    "MixinOperatorSideEffectConsumeMana"
   ],
   "client": [
   ]

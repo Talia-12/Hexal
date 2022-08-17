@@ -22,6 +22,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class TickingWisp : BaseWisp {
+	override val shouldComplainNotEnoughMedia = false
+
 	var lasting: Boolean
 		get() = entityData.get(LASTING)
 		set(value) = entityData.set(LASTING, value)

@@ -27,6 +27,10 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 		return this.wisp;
 	}
 	
+	public boolean hasWisp () {
+		return wisp != null;
+	}
+	
 	/**
 	 * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow wisps to affect things within their range.
 	 */
