@@ -4,10 +4,10 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
-import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.hexal.common.entities.BaseLemma
 import kotlin.math.ln
 
-object OpConsumeWisp : SpellOperator {
+object OpConsumeLemma : SpellOperator {
 	const val COST_FOR_OWN = ManaConstants.CRYSTAL_UNIT
 	const val COST_FOR_OTHERS_PER_MEDIA = 1.5
 
@@ -16,7 +16,7 @@ object OpConsumeWisp : SpellOperator {
 	override val isGreat = true
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-		val consumed = args.getChecked<BaseWisp>(0, argc)
+		val consumed = args.getChecked<BaseLemma>(0, argc)
 
 		ctx.assertEntityInRange(consumed)
 
@@ -32,12 +32,12 @@ object OpConsumeWisp : SpellOperator {
 		)
 	}
 
-	private data class Spell(val consumed: BaseWisp) : RenderedSpell {
+	private data class Spell(val consumed: BaseLemma) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			val mCast = ctx as? MixinCastingContextInterface
 
-			if (mCast != null && mCast.wisp != null)
-				mCast.wisp.media += 19 * consumed.media / 20
+			if (mCast != null && mCast.lemma != null)
+				mCast.lemma.media += 19 * consumed.media / 20
 
 			consumed.discard()
 		}

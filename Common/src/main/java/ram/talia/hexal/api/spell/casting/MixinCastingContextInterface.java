@@ -1,10 +1,10 @@
 package ram.talia.hexal.api.spell.casting;
 
-import ram.talia.hexal.common.entities.BaseWisp;
+import ram.talia.hexal.common.entities.BaseLemma;
 
 public interface MixinCastingContextInterface {
-	BaseWisp getWisp();
-	BaseWisp setWisp(BaseWisp wisp);
+	BaseLemma getLemma ();
+	BaseLemma setLemma (BaseLemma lemma);
 	
-	boolean hasWisp();
+	boolean hasLemma ();
 }

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
-import ram.talia.hexal.common.entities.BaseWisp;
+import ram.talia.hexal.common.entities.BaseLemma;
 
 import java.util.List;
 
@@ -22,14 +22,14 @@ public abstract class MixinCastingHarness {
 									value="INVOKE",
 									target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
 					))
-	private boolean updateWithPatternWisp (List<OperatorSideEffect> sideEffects, Object o) {
+	private boolean updateWithPatternLemma (List<OperatorSideEffect> sideEffects, Object o) {
 		
 		if (o instanceof OperatorSideEffect.Particles particles) {
 			
 			CastingContext ctx = ((CastingHarness)(Object)this).getCtx();
 			MixinCastingContextInterface ctxi = (MixinCastingContextInterface)(Object) ctx;
 			
-			if (!ctxi.hasWisp())
+			if (!ctxi.hasLemma())
 				return sideEffects.add(particles);
 		}
 		
@@ -41,7 +41,7 @@ public abstract class MixinCastingHarness {
 					cancellable = true,
 					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					remap = false)
-	private void withdrawManaWisp (int manaCost, boolean allowOvercast, CallbackInfoReturnable<Integer> cir) {
+	private void withdrawManaLemma (int manaCost, boolean allowOvercast, CallbackInfoReturnable<Integer> cir) {
 		if (manaCost <= 0) {
 			cir.setReturnValue(0);
 			return;
@@ -51,7 +51,7 @@ public abstract class MixinCastingHarness {
 
 		MixinCastingContextInterface wispContext = (MixinCastingContextInterface)(Object)((CastingHarness)(Object)this).getCtx();
 		
-		BaseWisp wisp = wispContext.getWisp();
+		BaseLemma wisp = wispContext.getLemma();
 		
 		if (wisp != null) {
 			int mediaAvailable = wisp.getMedia();

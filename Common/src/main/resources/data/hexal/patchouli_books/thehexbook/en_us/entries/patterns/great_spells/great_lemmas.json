@@ -1,5 +1,5 @@
 {
-  "name": "hexal.entry.great_wisps",
+  "name": "hexal.entry.great_lemmas",
   "category": "hexcasting:patterns/great_spells",
   "icon": "minecraft:nether_star",
   "sortnum": 14,
@@ -8,15 +8,15 @@
   "pages": [
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:wisp/consume",
-      "anchor": "hexal:wisp/consime",
+      "op_id": "hexal:lemma/consume",
+      "anchor": "hexal:lemma/consime",
       "input": "entity",
       "output": "",
-      "text": "hexal.page.great_wisps.wisp/consume.0"
+      "text": "hexal.page.great_lemmas.lemma/consume.0"
     },
     {
       "type": "patchouli:text",
-      "text": "hexal.page.great_wisps.wisp/consume.1"
+      "text": "hexal.page.great_lemmas.lemma/consume.1"
     }
   ]
 }

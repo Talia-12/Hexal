@@ -18,13 +18,13 @@ public abstract class MixinOperatorSideEffectConsumeMana {
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;sendMessage(Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"),
 					cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION, remap = false
 	)
-	private void performEffectWisp (CastingHarness harness, CallbackInfoReturnable<Boolean> cir, boolean overcastOk, int leftoverMana) {
+	private void performEffectLemma (CastingHarness harness, CallbackInfoReturnable<Boolean> cir, boolean overcastOk, int leftoverMana) {
 		MixinCastingContextInterface ctxi = (MixinCastingContextInterface)(Object) harness.getCtx();
 		
 		HexalAPI.LOGGER.info("performEffectWisp called");
 		
-		if (ctxi.hasWisp()) {
-			if (ctxi.getWisp().getShouldComplainNotEnoughMedia())
+		if (ctxi.hasLemma()) {
+			if (ctxi.getLemma().getShouldComplainNotEnoughMedia())
 				harness.getCtx().getCaster().sendMessage(
 								new TranslatableComponent("hexcasting.message.cant_overcast"),
 								Util.NIL_UUID

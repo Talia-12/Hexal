@@ -8,16 +8,16 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.spell.casting.LemmaCastingManager
 
-class ProjectileWisp : BaseWisp {
+class ProjectileLemma : BaseLemma {
 	var isAffectedByGravity = true
 
-	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
-	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
+	constructor(entityType: EntityType<out BaseLemma>, world: Level) : super(entityType, world)
+	constructor(entityType: EntityType<out ProjectileLemma>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
 		velocity = vel
 	}
-	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_LEMMA, world, pos, caster, media) {
 		velocity = vel
 	}
 
@@ -54,7 +54,7 @@ class ProjectileWisp : BaseWisp {
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, listOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toMutableList())
 	}
 
-	override fun castCallback(result: WispCastingManager.WispCastResult) {
+	override fun castCallback(result: LemmaCastingManager.LemmaCastResult) {
 		discard()
 	}
 

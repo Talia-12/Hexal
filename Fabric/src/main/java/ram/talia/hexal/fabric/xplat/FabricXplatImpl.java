@@ -1,7 +1,7 @@
 package ram.talia.hexal.fabric.xplat;
 
 import net.minecraft.server.level.ServerPlayer;
-import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.api.spell.casting.LemmaCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -56,8 +56,8 @@ public class FabricXplatImpl implements IXplatAbstractions {
 //    }
     
     @Override
-    public WispCastingManager getWispCastingManager (ServerPlayer caster) {
-        var cc = HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster);
+    public LemmaCastingManager getLemmaCastingManager (ServerPlayer caster) {
+        var cc = HexalCardinalComponents.LEMMA_CASTING_MANAGER.get(caster);
         return cc.getManager();
     }
 

@@ -7,10 +7,10 @@
 
   "hexcasting.spell.hexal:smelt": "Smelt",
 
-  "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
-  "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Ticking Wisp",
-  "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
-  "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
+  "hexcasting.spell.hexal:lemma/summon/projectile": "Summon Auxiliary Lemma",
+  "hexcasting.spell.hexal:lemma/summon/ticking": "Summon Pumping Lemma",
+  "hexcasting.spell.hexal:lemma/consume": "Consume Lemma",
+  "hexcasting.spell.hexal:lemma/media": "Reservoir Reflection",
 
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
@@ -25,18 +25,18 @@
   "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",
   "hexal.page.hexal_spell.smelt.1": "Costs three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ per item smelted (i.e. three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ for smelting a block, 6 $(l:items/amethyst)$(item)Amethyst Dust/$ to smelt a stack of 8 items.)",
 
-  "hexal.entry.wisps": "Wisps",
+  "hexal.entry.lemmas": "Lemmas",
 
-  "hexal.page.wisps.wisp/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$.",
-  "hexal.page.wisps.wisp/summon/projectile.1": "The first vector accepted represents the location this 'wisp' projectile will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the wisp's velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
-  "hexal.page.wisps.wisp/summon/ticking.0": "Similar to Summon Projectile Wisp, but with only one vector input for the position to summon the wisp.",
-  "hexal.page.wisps.wisp/summon/ticking.1": "This wisp executes its spell up to 10 times per second, and has a less stable form making it lose significantly more media every second.",
-  "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; drying to cast it through a staff will fail rather spectacularly.",
+  "hexal.page.lemmas.lemma/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$.",
+  "hexal.page.lemmas.lemma/summon/projectile.1": "The first vector accepted represents the location this 'Lemma' will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the lemma's velocity. The number accepted determines how long the lemma will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
+  "hexal.page.lemmas.lemma/summon/ticking.0": "Similar to Summon Auxiliary Lemma, but with only one vector input for the position to summon the lemma.",
+  "hexal.page.lemmas.lemma/summon/ticking.1": "This lemma executes its spell up to 20 times per second, and has a less stable form making it lose significantly more media every second.",
+  "hexal.page.lemmas.lemma/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a lemma; trying to cast it through a staff will fail rather spectacularly.",
 
-  "hexal.entry.great_wisps": "Great Wisp Spells",
+  "hexal.entry.great_lemmas": "Great Lemma Spells",
 
-  "hexal.page.great_wisps.wisp/consume.0": "Remove a Wisp from the stack, and disassemble it. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
-  "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
+  "hexal.page.great_lemmas.lemma/consume.0": "Remove a lemma from the stack, and disassemble it. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another lemma.",
+  "hexal.page.great_lemmas.lemma/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the lemma is owned by you, or half again as much media as the consumed lemma contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed lemma's reserve in transfer.",
 
   "hexal.entry.type_comparison": "Type Comparisons",
 

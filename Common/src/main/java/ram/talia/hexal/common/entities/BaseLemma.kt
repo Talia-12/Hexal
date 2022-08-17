@@ -21,10 +21,9 @@ import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.spell.casting.LemmaCastingManager
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.api.times
@@ -32,7 +31,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.pow
 
 
-abstract class BaseWisp : Projectile {
+abstract class BaseLemma : Projectile {
 	open val shouldComplainNotEnoughMedia = true
 
 	var media: Int
@@ -56,12 +55,12 @@ abstract class BaseWisp : Projectile {
 
 	// error here isn't actually a problem
 	//TODO: if the owner is null on the server we need to do SOMETHING to handle it
-	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world) {
+	constructor(entityType: EntityType<out BaseLemma>, world: Level) : super(entityType, world) {
 //		HexalAPI.LOGGER.info("constructor for $uuid called!")
 //		lastTick = world.gameTime - 1
 	}
 
-	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world) {
+	constructor(entityType: EntityType<out BaseLemma>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world) {
 //		HexalAPI.LOGGER.info("constructor for $uuid called!")
 		setPos(pos)
 		owner = caster
@@ -98,13 +97,13 @@ abstract class BaseWisp : Projectile {
 			playParticles(colouriser)
 		}
 	}
-	
+
 
 	/**
 	 * Called in [tick], expected to reduce the amount of [media] remaining in the wisp.
 	 */
 	open fun deductMedia() {
-		media -= WISP_COST_PER_TICK
+		media -= LEMMA_COST_PER_TICK
 	}
 
 
@@ -140,14 +139,14 @@ abstract class BaseWisp : Projectile {
 
 		val sPlayer = owner as ServerPlayer
 
-		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
+		IXplatAbstractions.INSTANCE.getLemmaCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
 		scheduledCast = true
 
 		return true
 	}
 
-	open fun castCallback(result: WispCastingManager.WispCastResult) {
+	open fun castCallback(result: LemmaCastingManager.LemmaCastResult) {
 		scheduledCast = false
 		// turned off since it's causing PROBLEMS. TODO: Figure out how to actually do this properly.
 //		processTick()
@@ -313,8 +312,8 @@ abstract class BaseWisp : Projectile {
 
 	companion object {
 		@JvmField
-		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
-		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
+		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseLemma::class.java, EntityDataSerializers.COMPOUND_TAG)
+		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseLemma::class.java, EntityDataSerializers.INT)
 
 		const val TAG_COLOURISER = "colouriser"
 		const val TAG_HEX_LENGTH = "hex_length"
@@ -322,7 +321,7 @@ abstract class BaseWisp : Projectile {
 		const val TAG_MEDIA = "media"
 		const val TAG_SCHEDULED_CAST = "scheduled_cast"
 
-		const val WISP_COST_PER_TICK = (ManaConstants.SHARD_UNIT / 20.0).toInt()
+		const val LEMMA_COST_PER_TICK = (ManaConstants.SHARD_UNIT / 20.0).toInt()
 	}
 }
 

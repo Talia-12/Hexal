@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import ram.talia.hexal.common.entities.BaseWisp;
+import ram.talia.hexal.common.entities.BaseLemma;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
 
 /**
@@ -16,19 +16,19 @@ import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements MixinCastingContextInterface {
-	private BaseWisp wisp;
+	private BaseLemma lemma;
 	
-	public BaseWisp getWisp () {
-		return wisp;
+	public BaseLemma getLemma () {
+		return lemma;
 	}
 	
-	public BaseWisp setWisp (BaseWisp wisp) {
-		this.wisp = wisp;
-		return this.wisp;
+	public BaseLemma setLemma (BaseLemma wisp) {
+		this.lemma = wisp;
+		return this.lemma;
 	}
 	
-	public boolean hasWisp () {
-		return wisp != null;
+	public boolean hasLemma () {
+		return lemma != null;
 	}
 	
 	/**
@@ -39,9 +39,9 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 						from = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;distanceToSqr(Lnet/minecraft/world/phys/Vec3;)D"),
 						to = @At("TAIL")
 					))
-	private void isVecInRangeWisp (Vec3 vec, CallbackInfoReturnable<Boolean> cir) {
-		if (this.wisp != null) {
-			cir.setReturnValue(vec.distanceToSqr(this.wisp.position()) < this.wisp.maxSqrCastingDistance());
+	private void isVecInRangeLemma (Vec3 vec, CallbackInfoReturnable<Boolean> cir) {
+		if (this.lemma != null) {
+			cir.setReturnValue(vec.distanceToSqr(this.lemma.position()) < this.lemma.maxSqrCastingDistance());
 		}
 	}
 }

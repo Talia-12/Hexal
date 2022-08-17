@@ -21,21 +21,21 @@ public class HexalEntities {
 	
 	private static final Map<ResourceLocation, EntityType<?>> ENTITIES = new LinkedHashMap<>();
 	
-	public static final EntityType<ProjectileWisp> PROJECTILE_WISP = register(
-					"wisp/projectile",
-					EntityType.Builder.of((EntityType.EntityFactory<ProjectileWisp>) ProjectileWisp::new, MobCategory.MISC)
+	public static final EntityType<ProjectileLemma> PROJECTILE_LEMMA = register(
+					"lemma/projectile",
+					EntityType.Builder.of((EntityType.EntityFactory<ProjectileLemma>) ProjectileLemma::new, MobCategory.MISC)
 														.sized(0.1f, 0.1f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
-														.build(HexalAPI.MOD_ID + ":wisp/projectile"));
+														.build(HexalAPI.MOD_ID + ":lemma/projectile"));
 	
-	public static final EntityType<TickingWisp> TICKING_WISP = register(
-					"wisp/ticking",
-					EntityType.Builder.of((EntityType.EntityFactory<TickingWisp>) TickingWisp::new, MobCategory.MISC)
+	public static final EntityType<TickingLemma> TICKING_LEMMA = register(
+					"lemma/ticking",
+					EntityType.Builder.of((EntityType.EntityFactory<TickingLemma>) TickingLemma::new, MobCategory.MISC)
 														.sized(0.1f, 0.1f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
-														.build(HexalAPI.MOD_ID + ":wisp/ticking"));
+														.build(HexalAPI.MOD_ID + ":lemma/ticking"));
 	
 	private static <T extends Entity> EntityType<T> register (String id, EntityType<T> type) {
 		var old = ENTITIES.put(modLoc(id), type);

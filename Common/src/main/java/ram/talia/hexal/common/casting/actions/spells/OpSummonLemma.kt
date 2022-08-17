@@ -5,10 +5,10 @@ import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.common.entities.ProjectileWisp
-import ram.talia.hexal.common.entities.TickingWisp
+import ram.talia.hexal.common.entities.ProjectileLemma
+import ram.talia.hexal.common.entities.TickingLemma
 
-class OpSummonWisp(val ticking: Boolean) : SpellOperator {
+class OpSummonLemma(val ticking: Boolean) : SpellOperator {
     override val argc = if (ticking) 3 else 4
 
     override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -32,7 +32,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
 
         return Triple(
             spell,
-            COST_SUMMON_WISP + (media * ManaConstants.DUST_UNIT).toInt(),
+            COST_SUMMON_LEMMA + (media * ManaConstants.DUST_UNIT).toInt(),
             listOf(ParticleSpray.burst(pos, 1.5), ParticleSpray.cloud(pos, 0.5))
         )
     }
@@ -40,17 +40,17 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<SpellDatum<*>>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             val colouriser = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
-            val wisp = when (ticking) {
-                true -> TickingWisp(ctx.world, pos, ctx.caster, media, false)
-                false -> ProjectileWisp(ctx.world, pos, vel, ctx.caster, media)
+            val lemma = when (ticking) {
+                true -> TickingLemma(ctx.world, pos, ctx.caster, media, false)
+                false -> ProjectileLemma(ctx.world, pos, vel, ctx.caster, media)
             }
-            wisp.setColouriser(colouriser)
-            wisp.hex = hex
-            ctx.world.addFreshEntity(wisp)
+            lemma.setColouriser(colouriser)
+            lemma.hex = hex
+            ctx.world.addFreshEntity(lemma)
         }
     }
 
     companion object {
-        private const val COST_SUMMON_WISP = ManaConstants.CRYSTAL_UNIT
+        private const val COST_SUMMON_LEMMA = ManaConstants.CRYSTAL_UNIT
     }
 }

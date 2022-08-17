@@ -15,13 +15,11 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.casting.WispCastingManager
-import kotlin.math.ln
+import ram.talia.hexal.api.spell.casting.LemmaCastingManager
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class TickingWisp : BaseWisp {
+class TickingLemma : BaseLemma {
 	override val shouldComplainNotEnoughMedia = false
 
 	var lasting: Boolean
@@ -31,9 +29,9 @@ class TickingWisp : BaseWisp {
 	private var stack: MutableList<SpellDatum<*>> = mutableListOf(SpellDatum.make(this))
 	private var ravenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL)
 
-	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
+	constructor(entityType: EntityType<out BaseLemma>, world: Level) : super(entityType, world)
 	constructor(
-		entityType: EntityType<out TickingWisp>,
+		entityType: EntityType<out TickingLemma>,
 		world: Level,
 		pos: Vec3,
 		caster: Player,
@@ -44,7 +42,7 @@ class TickingWisp : BaseWisp {
 		this.lasting = lasting
 	}
 
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int, lasting: Boolean) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, caster: Player, media: Int, lasting: Boolean) : super(HexalEntities.TICKING_LEMMA, world, pos, caster, media) {
 		this.lasting = lasting
 	}
 
@@ -52,8 +50,8 @@ class TickingWisp : BaseWisp {
 		val EXP_SCALE = 1.0/30
 
 		val deduct = when (lasting) {
-			true -> WISP_COST_PER_TICK
-			false -> WISP_COST_PER_TICK + (EXP_SCALE * sqrt(media.toDouble())).toInt()
+			true -> LEMMA_COST_PER_TICK
+			false -> LEMMA_COST_PER_TICK + (EXP_SCALE * sqrt(media.toDouble())).toInt()
 		}
 
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had ${deduct.toDouble()/ManaConstants.DUST_UNIT} media deducted.")
@@ -71,7 +69,7 @@ class TickingWisp : BaseWisp {
 
 	override fun maxSqrCastingDistance() = if (lasting) 16.0 else 8.0
 
-	override fun castCallback(result: WispCastingManager.WispCastResult) {
+	override fun castCallback(result: LemmaCastingManager.LemmaCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
 		stack = result.endStack
 		ravenmind = result.endRavenmind
@@ -121,7 +119,7 @@ class TickingWisp : BaseWisp {
 	}
 
 	companion object {
-		val LASTING: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.BOOLEAN)
+		val LASTING: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(TickingLemma::class.java, EntityDataSerializers.BOOLEAN)
 
 		const val LASTING_TAG = "lasting"
 
