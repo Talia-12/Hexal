@@ -7,12 +7,10 @@ import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.api.utils.putList
-import at.petrak.hexcasting.common.lib.HexSounds
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.toIotaList
@@ -76,6 +74,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 				if (cast.wisp == null) continue
 			}
+
+			if (cast.wisp!!.isRemoved)
+				continue
 
 			results += cast(cast)
 

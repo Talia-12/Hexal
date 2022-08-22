@@ -21,7 +21,6 @@ import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -78,7 +77,7 @@ abstract class BaseWisp : Projectile {
 //			return
 //		lastTick = level.gameTime
 
-		// check if lifespan is < 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
+		// check if media is <= 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
 		if (media <= 0) {
 			discard()
 		}

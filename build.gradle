@@ -8,8 +8,8 @@ buildscript {
     }
 }
 
-import com.diluv.schoomp.Webhook
-import com.diluv.schoomp.message.Message
+//import com.diluv.schoomp.Webhook
+//import com.diluv.schoomp.message.Message
 
 plugins {
     id 'java'

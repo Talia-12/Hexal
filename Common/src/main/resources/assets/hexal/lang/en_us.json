@@ -1,4 +1,7 @@
 {
+  "entity.hexal.wisp.projectile": "Projectile Wisp",
+  "entity.hexal.wisp.ticking": "Cyclic Wisp",
+
   "hexcasting.spell.hexal:compare/blocks": "Surveyor's Distillation",
   "hexcasting.spell.hexal:compare/entities": "Physician's Distillation",
   "hexcasting.spell.hexal:compare/types": "Classifier's Distillation",
@@ -8,7 +11,7 @@
   "hexcasting.spell.hexal:smelt": "Smelt",
 
   "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
-  "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Ticking Wisp",
+  "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Cyclic Wisp",
   "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
   "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
 
@@ -28,14 +31,14 @@
   "hexal.entry.wisps": "Wisps",
 
   "hexal.page.wisps.wisp/summon/projectile.0": "This spell creates a construct out of the media that is stable enough to last a couple seconds and execute a list of patterns when it arrives at a location, similar to $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$.",
-  "hexal.page.wisps.wisp/summon/projectile.1": "The first vector accepted represents the location this 'wisp' projectile will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the wisp's velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed.",
+  "hexal.page.wisps.wisp/summon/projectile.1": "The first vector accepted represents the location this 'Wisp' will be summoned, while the direction of the second determines the direction the wisp will be launched, and its magnitude seems to affect the wisp's velocity. The number accepted determines how long the wisp will be able to hold itself together, as well as how much media the pattern it contains will have access to when it is executed. It looses one $(l:items/amethyst)$(item)Amethyst Shard/$ worth of media every second.",
   "hexal.page.wisps.wisp/summon/ticking.0": "Similar to Summon Projectile Wisp, but with only one vector input for the position to summon the wisp.",
-  "hexal.page.wisps.wisp/summon/ticking.1": "This wisp executes its spell up to 10 times per second, and has a less stable form making it lose significantly more media every second.",
-  "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; drying to cast it through a staff will fail rather spectacularly.",
+  "hexal.page.wisps.wisp/summon/ticking.1": "This wisp executes its spell up to 20 times per second, and has a less stable form making it lose significantly more media every second, losing one $(l:items/amethyst)$(item)Amethyst Shard/$ per second as well as an amount proportional to the amount remaining.",
+  "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; trying to cast it through a staff will fail rather spectacularly.",
 
   "hexal.entry.great_wisps": "Great Wisp Spells",
 
-  "hexal.page.great_wisps.wisp/consume.0": "Remove a Wisp from the stack, and disassemble it. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
+  "hexal.page.great_wisps.wisp/consume.0": "Remove a wisp from the stack, and disassemble it. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
   "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
 
   "hexal.entry.type_comparison": "Type Comparisons",
