@@ -67,7 +67,7 @@ class TickingWisp : BaseWisp {
 
 	override fun move() {}
 
-	override fun maxSqrCastingDistance() = if (lasting) 16.0 else 8.0
+	override fun maxSqrCastingDistance() = if (lasting) CASTING_RADIUS_LASTING * CASTING_RADIUS_LASTING else CASTING_RADIUS_NONLASTING * CASTING_RADIUS_NONLASTING
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
@@ -124,5 +124,7 @@ class TickingWisp : BaseWisp {
 		const val LASTING_TAG = "lasting"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
+		const val CASTING_RADIUS_LASTING = 16.0
+		const val CASTING_RADIUS_NONLASTING = 8.0
 	}
 }

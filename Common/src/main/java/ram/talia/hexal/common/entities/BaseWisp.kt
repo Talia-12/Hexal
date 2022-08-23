@@ -28,6 +28,7 @@ import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.api.times
 import ram.talia.hexal.xplat.IXplatAbstractions
+import kotlin.math.ceil
 import kotlin.math.pow
 
 
@@ -40,8 +41,9 @@ abstract class BaseWisp : Projectile {
 
 	var hex: List<SpellDatum<*>> = ArrayList()
 
-	private var scheduledCast = false
-//	private var lastTick: Long
+	private var scheduledCast: Boolean
+		get() = entityData.get(SCHEDULED_CAST)
+		set(value) = entityData.set(SCHEDULED_CAST, value)
 
 	private var oldPos: Vec3 = position()
 
@@ -153,7 +155,7 @@ abstract class BaseWisp : Projectile {
 	}
 
 	fun addVelocity(vel: Vec3) {
-		deltaMovement += vel
+		deltaMovement += scaleVecByMedia(vel)
 	}
 
 	private fun scaleVecByMedia(vec: Vec3) = scaleVecByMedia(vec, 1, media)
@@ -192,11 +194,11 @@ abstract class BaseWisp : Projectile {
 			this::canHitEntity
 		)
 
-	public fun traceAnyHit(start: Vec3, end: Vec3) {
-		traceAnyHit(getHitResult(start, end), start, end)
+	public fun traceAnyHit(start: Vec3, end: Vec3): Vec3 {
+		return traceAnyHit(getHitResult(start, end), start, end)
 	}
 
-	public fun traceAnyHit(raytraceResult: HitResult?, start: Vec3, end: Vec3) {
+	public fun traceAnyHit(raytraceResult: HitResult?, start: Vec3, end: Vec3): Vec3 {
 		var tEnd = end
 
 
@@ -215,6 +217,8 @@ abstract class BaseWisp : Projectile {
 			onHit(tRaytraceResult)
 			hasImpulse = true
 		}
+
+		return tEnd
 	}
 
 	override fun onHitEntity(result: EntityHitResult) {
@@ -230,10 +234,10 @@ abstract class BaseWisp : Projectile {
 		playParticles(colouriser)
 	}
 	open protected fun playParticles(colouriser: FrozenColorizer) {
-		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10
+		val radius = ceil((media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
 
 		val delta = position() - oldPos
-		val dist = delta.length() * 6 * radius*radius*radius
+		val dist = delta.length() * 12 * radius*radius*radius
 
 		for (i in 0..dist.toInt()) {
 			val colour: Int = colouriser.nextColour()
@@ -251,19 +255,19 @@ abstract class BaseWisp : Projectile {
 		}
 
 		// this doesn't actually look very good
-		for (i in 0..(4*radius*radius*radius).toInt()) {
-			val colour: Int = colouriser.nextColour()
-
-			level.addParticle(
-				ConjureParticleOptions(colour, true),
-				(position().x + radius*random.nextGaussian()),
-				(position().y + radius*random.nextGaussian()),
-				(position().z + radius*random.nextGaussian()),
-				0.0125 * (random.nextDouble() - 0.5),
-				0.0125 * (random.nextDouble() - 0.5),
-				0.0125 * (random.nextDouble() - 0.5)
-			)
-		}
+//		for (i in 0..(4*radius*radius*radius).toInt()) {
+//			val colour: Int = colouriser.nextColour()
+//
+//			level.addParticle(
+//				ConjureParticleOptions(colour, true),
+//				(position().x + radius*random.nextGaussian()),
+//				(position().y + radius*random.nextGaussian()),
+//				(position().z + radius*random.nextGaussian()),
+//				0.0125 * (random.nextDouble() - 0.5),
+//				0.0125 * (random.nextDouble() - 0.5),
+//				0.0125 * (random.nextDouble() - 0.5)
+//			)
+//		}
 	}
 
 	fun FrozenColorizer.nextColour(): Int {
@@ -308,12 +312,14 @@ abstract class BaseWisp : Projectile {
 //		HexalAPI.LOGGER.info("defineSynchedData for $uuid called!")
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20*ManaConstants.DUST_UNIT)
+		entityData.define(SCHEDULED_CAST, false)
 	}
 
 	companion object {
 		@JvmField
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
+		val SCHEDULED_CAST: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.BOOLEAN)
 
 		const val TAG_COLOURISER = "colouriser"
 		const val TAG_HEX_LENGTH = "hex_length"
