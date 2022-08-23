@@ -7,6 +7,14 @@
   "read_by_default": true,
   "pages": [
     {
+      "type": "patchouli:text",
+      "text": "hexal.page.wisps.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.wisps.1"
+    },
+    {
       "type": "hexcasting:pattern",
       "op_id": "hexal:wisp/summon/projectile",
       "anchor": "hexal:wisp/summon/projectile",
