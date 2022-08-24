@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.common.entities.BaseWisp;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
 
@@ -36,11 +37,12 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 	 */
 	@Inject(method = "isVecInRange", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					slice = @Slice(
-						from = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;distanceToSqr(Lnet/minecraft/world/phys/Vec3;)D"),
+						from = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;distanceToSqr(Lnet/minecraft/world/phys/Vec3;)D", ordinal = 2),
 						to = @At("TAIL")
 					))
 	private void isVecInRangeWisp (Vec3 vec, CallbackInfoReturnable<Boolean> cir) {
 		if (this.wisp != null) {
+			HexalAPI.LOGGER.info("Checking if %s is in range of wisp!".formatted(vec.toString()));
 			cir.setReturnValue(vec.distanceToSqr(this.wisp.position()) < this.wisp.maxSqrCastingDistance());
 		}
 	}

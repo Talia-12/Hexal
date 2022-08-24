@@ -4,18 +4,23 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.utils.putCompound
+import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.spell.toIotaList
+import ram.talia.hexal.api.spell.toNbtList
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -36,7 +41,6 @@ class TickingWisp : BaseWisp {
 		pos: Vec3,
 		caster: Player,
 		media: Int,
-		tickPeriod: Int,
 		lasting: Boolean
 	) : super(entityType, world, pos, caster, media) {
 		this.lasting = lasting
@@ -106,11 +110,20 @@ class TickingWisp : BaseWisp {
 	override fun load(compound: CompoundTag) {
 		super.load(compound)
 		lasting = compound.getBoolean(LASTING_TAG)
+		if (level is ServerLevel) {
+			stack = compound.getList(STACK_TAG, compound.getInt(STACK_LEN_TAG)).toIotaList(level as ServerLevel)
+			ravenmind = SpellDatum.Companion.fromNBT(compound.getCompound(RAVENMIND_TAG), level as ServerLevel)
+		}
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 		compound.putBoolean(LASTING_TAG, lasting)
+		if (level is ServerLevel) {
+			compound.putInt(STACK_LEN_TAG, stack.size)
+			compound.putList(STACK_TAG, stack.toNbtList())
+			compound.putCompound(RAVENMIND_TAG, ravenmind.serializeToNBT())
+		}
 	}
 
 	override fun defineSynchedData() {
@@ -122,6 +135,9 @@ class TickingWisp : BaseWisp {
 		val LASTING: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.BOOLEAN)
 
 		const val LASTING_TAG = "lasting"
+		const val STACK_LEN_TAG = "stack_len"
+		const val STACK_TAG = "stack"
+		const val RAVENMIND_TAG = "ravenmind"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
 		const val CASTING_RADIUS_LASTING = 16.0

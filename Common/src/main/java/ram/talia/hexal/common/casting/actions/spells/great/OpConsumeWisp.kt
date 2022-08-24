@@ -8,7 +8,7 @@ import ram.talia.hexal.common.entities.BaseWisp
 import kotlin.math.ln
 
 object OpConsumeWisp : SpellOperator {
-	const val COST_FOR_OWN = ManaConstants.CRYSTAL_UNIT
+	const val COST_FOR_OWN = ManaConstants.SHARD_UNIT
 	const val COST_FOR_OTHERS_PER_MEDIA = 1.5
 
 	override val argc = 1
