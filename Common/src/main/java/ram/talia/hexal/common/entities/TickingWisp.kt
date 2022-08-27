@@ -51,7 +51,7 @@ class TickingWisp : BaseWisp {
 	}
 
 	override fun deductMedia() {
-		val EXP_SCALE = 1.0/30
+		val EXP_SCALE = 1.0/60
 
 		val deduct = when (lasting) {
 			true -> WISP_COST_PER_TICK

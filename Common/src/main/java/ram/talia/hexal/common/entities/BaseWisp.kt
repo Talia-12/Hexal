@@ -327,7 +327,7 @@ abstract class BaseWisp : Projectile {
 		const val TAG_MEDIA = "media"
 		const val TAG_SCHEDULED_CAST = "scheduled_cast"
 
-		const val WISP_COST_PER_TICK = (ManaConstants.SHARD_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK = (ManaConstants.DUST_UNIT / 20.0).toInt()
 	}
 }
 

@@ -55,6 +55,6 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     }
 
     companion object {
-        private const val COST_SUMMON_WISP = ManaConstants.CRYSTAL_UNIT
+        private const val COST_SUMMON_WISP = 3 * ManaConstants.DUST_UNIT
     }
 }
