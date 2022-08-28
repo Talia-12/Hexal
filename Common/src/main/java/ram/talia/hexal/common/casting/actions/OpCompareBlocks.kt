@@ -17,13 +17,12 @@ object OpCompareBlocks : ConstManaOperator {
         val blockPos0 = BlockPos(vec0)
         val blockPos1 = BlockPos(vec1)
 
+        if (!ctx.isVecInRange(Vec3.atCenterOf(blockPos0)) || !ctx.isVecInRange(Vec3.atCenterOf(blockPos1)))
+            return null.asSpellResult
+
         val blockState0 = ctx.world.getBlockState(blockPos0)
         val blockState1 = ctx.world.getBlockState(blockPos1)
 
-        return if (ctx.isVecInRange(Vec3.atCenterOf(blockPos0)) && ctx.isVecInRange(Vec3.atCenterOf(blockPos1))) {
-            blockState0.block.equals(blockState1.block).asSpellResult
-        } else {
-            null.asSpellResult
-        }
+        return blockState0.block.equals(blockState1.block).asSpellResult
     }
 }
