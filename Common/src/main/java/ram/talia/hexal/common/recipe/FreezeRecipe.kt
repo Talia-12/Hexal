@@ -1,10 +1,8 @@
 package ram.talia.hexal.common.recipe
 
-import at.petrak.hexcasting.common.recipe.BrainsweepRecipe
 import at.petrak.hexcasting.common.recipe.RecipeSerializerBase
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredient
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
-import at.petrak.hexcasting.common.recipe.ingredient.VillagerIngredient
 import com.google.gson.JsonObject
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
