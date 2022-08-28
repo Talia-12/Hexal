@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import ram.talia.hexal.common.casting.actions.*;
+import ram.talia.hexal.common.casting.actions.spells.OpFallingBlock;
 import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
 import ram.talia.hexal.common.casting.actions.spells.OpSummonWisp;
 import ram.talia.hexal.common.casting.actions.spells.great.OpConsumeWisp;
@@ -36,6 +37,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wqqqwqqadad", HexDir.EAST),
 																 modLoc("smelt"),
 																 OpSmelt.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("wqwawqwqwqwqwqw", HexDir.EAST),
+																 modLoc("falling_block"),
+																 OpFallingBlock.INSTANCE);
 			
 			// =============================== Wisp Stuff =====================================
 

@@ -9,6 +9,7 @@
   "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
 
   "hexcasting.spell.hexal:smelt": "Smelt",
+  "hexcasting.spell.hexal:falling_block": "Falling Block",
 
   "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
   "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Cyclic Wisp",
@@ -25,6 +26,7 @@
   "hexal.entry.hexal_spell": "Hexal Spells",
   "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",
   "hexal.page.hexal_spell.smelt.1": "Costs three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ per item smelted (i.e. three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ for smelting a block, 6 $(l:items/amethyst)$(item)Amethyst Dust/$ to smelt a stack of 8 items.)",
+  "hexal.page.hexal_spell.falling_block": "Remove a location from the stack, and force the block there to fall as if it were sand or gravel. Costs one and a half $(l:items/amethyst)$(item)Amethyst Dust/$.",
 
   "hexal.entry.wisps": "Wisps",
   "hexal.page.wisps.0": "I have discovered a way to create constructs from the media itself, visible to others and able to move and act somewhat on their own. They are able to cast hexes in my place, similar to how a $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$ evaluates patterns. They do take some of my attention to operate this however, and if too many try and execute at once I will only be able to run some of them, leaving the rest for the next instant.",
