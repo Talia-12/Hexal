@@ -40,7 +40,6 @@ object OpFreeze : SpellOperator {
 				return
 
 			if (fluidstate.type == Fluids.WATER && blockstate.block is LiquidBlock) {
-				HexalAPI.LOGGER.info(blockstate.block.toString())
 				ctx.world.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState())
 				return
 			}

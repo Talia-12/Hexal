@@ -1,0 +1,10 @@
+{
+  "type": "hexal:freeze",
+  "blockIn": {
+    "type": "block",
+    "block": "minecraft:ice"
+  },
+  "result": {
+    "name": "minecraft:packed_ice"
+  }
+}
