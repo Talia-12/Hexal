@@ -57,6 +57,7 @@ object OpFallingBlock : SpellOperator {
 				&& !blockstate.isAir
 				&& blockstate.getDestroySpeed(ctx.world, pos) >= 0f // fix being able to break bedrock &c
 				&& IXplatAbstractions.INSTANCE.isCorrectTierForDrops(tier, blockstate)
+				&& canSilkTouch(ctx.world, pos, blockstate, tier.level, ctx.caster)
 			) {
 				val falling: FallingBlockEntity = FallingBlockEntity.fall(ctx.world, pos, blockstate)
 				falling.time = 1
@@ -71,6 +72,48 @@ object OpFallingBlock : SpellOperator {
 					0.45,
 					5.0
 				)
+			}
+		}
+
+		fun canSilkTouch(level: ServerLevel, pos: BlockPos, state: BlockState, harvestLevel: Int, owner: Entity?): Boolean {
+			val harvestToolStack: ItemStack = getHarvestToolStack(harvestLevel, state)
+			if (harvestToolStack.isEmpty) {
+				return false
+			}
+			harvestToolStack.enchant(Enchantments.SILK_TOUCH, 1)
+			val drops: List<ItemStack> = Block.getDrops(state, level, pos, null, owner, harvestToolStack)
+			val blockItem: Item = state.block.asItem()
+			return drops.any { s -> s.item === blockItem }
+		}
+
+		companion object {
+			fun getHarvestToolStack(harvestLevel: Int, state: BlockState): ItemStack {
+				return getTool(harvestLevel, state).copy()
+			}
+
+			private fun getTool(harvestLevel: Int, state: BlockState): ItemStack {
+				if (!state.requiresCorrectToolForDrops()) {
+					return HARVEST_TOOLS_BY_LEVEL[0][0]
+				}
+				val idx = min(harvestLevel, HARVEST_TOOLS_BY_LEVEL.size - 1)
+				for (tool in HARVEST_TOOLS_BY_LEVEL[idx]) {
+					if (tool.isCorrectToolForDrops(state)) {
+						return tool
+					}
+				}
+				return ItemStack.EMPTY
+			}
+
+			private val HARVEST_TOOLS_BY_LEVEL: List<List<ItemStack>> = listOf(
+				stacks(Items.WOODEN_PICKAXE, Items.WOODEN_AXE, Items.WOODEN_HOE, Items.WOODEN_SHOVEL),
+				stacks(Items.STONE_PICKAXE, Items.STONE_AXE, Items.STONE_HOE, Items.STONE_SHOVEL),
+				stacks(Items.IRON_PICKAXE, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SHOVEL),
+				stacks(Items.DIAMOND_PICKAXE, Items.DIAMOND_AXE, Items.DIAMOND_HOE, Items.DIAMOND_SHOVEL),
+				stacks(Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SHOVEL)
+			)
+
+			private fun stacks(vararg items: Item): List<ItemStack> {
+				return items.map { item -> ItemStack(item) }
 			}
 		}
 	}
