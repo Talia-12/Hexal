@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.LiquidBlock
 import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.recipe.CopyProperties
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 
@@ -51,6 +50,8 @@ object OpFreeze : SpellOperator {
 				ctx.world.setBlockAndUpdate(pos, Blocks.COBBLESTONE.defaultBlockState())
 				return
 			}
+
+			//TODO: save cauldron fill as well when going water_cauldron to powder_snow_cauldron
 
 			val recman = ctx.world.recipeManager
 			val recipes = recman.getAllRecipesFor(HexalRecipeSerializers.FREEZE_TYPE!!)
