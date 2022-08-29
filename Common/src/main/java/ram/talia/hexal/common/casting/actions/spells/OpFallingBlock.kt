@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.BlockParticleOption
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.tags.BlockTags
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.FallingBlockEntity
 import net.minecraft.world.item.Item
@@ -16,6 +17,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.FallingBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
@@ -43,19 +45,22 @@ object OpFallingBlock : SpellOperator {
 		override fun cast(ctx: CastingContext) {
 			val pos = BlockPos(v)
 
-			if (!ctx.canEditBlockAt(pos))
-				return
-
 			val blockstate = ctx.world.getBlockState(pos)
-			if (!IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockstate, ctx.caster))
+			if (!ctx.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockstate, ctx.caster))
 				return
 
 			val tier = HexConfig.server().opBreakHarvestLevel()
 
-			if (
-				FallingBlock.isFree(ctx.world.getBlockState(pos.below()))
+			val stateBelow = ctx.world.getBlockState(pos.below())
+
+			if ((
+					FallingBlock.isFree(stateBelow)
+					|| !stateBelow.canOcclude()
+					|| stateBelow.`is`(BlockTags.SLABS)
+				)
 				&& !blockstate.isAir
 				&& blockstate.getDestroySpeed(ctx.world, pos) >= 0f // fix being able to break bedrock &c
+				&& ctx.world.getBlockEntity(pos) == null
 				&& IXplatAbstractions.INSTANCE.isCorrectTierForDrops(tier, blockstate)
 				&& canSilkTouch(ctx.world, pos, blockstate, tier.level, ctx.caster)
 			) {
@@ -92,10 +97,10 @@ object OpFallingBlock : SpellOperator {
 			}
 
 			private fun getTool(harvestLevel: Int, state: BlockState): ItemStack {
-				if (!state.requiresCorrectToolForDrops()) {
-					return HARVEST_TOOLS_BY_LEVEL[0][0]
-				}
 				val idx = min(harvestLevel, HARVEST_TOOLS_BY_LEVEL.size - 1)
+				if (!state.requiresCorrectToolForDrops()) {
+					return HARVEST_TOOLS_BY_LEVEL[idx][0]
+				}
 				for (tool in HARVEST_TOOLS_BY_LEVEL[idx]) {
 					if (tool.isCorrectToolForDrops(state)) {
 						return tool
