@@ -84,6 +84,9 @@ abstract class BaseWisp : Projectile {
 			discard()
 		}
 
+		// change the wisp to look where its velocity points, useful for blinking
+		setLookVector(velocity)
+
 		if (!scheduledCast) {
 			if (!level.isClientSide)
 				deductMedia()

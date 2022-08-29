@@ -24,8 +24,6 @@ class ProjectileWisp : BaseWisp {
 	}
 
 	override fun move() {
-		setLookVector(velocity)
-
 		if (isAffectedByGravity)
 			addVelocity(Vec3(0.0, -0.05, 0.0))
 
