@@ -2,42 +2,49 @@ modLoader = "kotlinforforge"
 loaderVersion = "[3,)"
 license = "MIT"
 
-issueTrackerURL = "https://github.com/gamma-delta/HexMod/issues"
+issueTrackerURL = "https://github.com/Talia-12/Hexal/issues"
 
 [[mods]]
-modId = "hexcasting"
+modId = "hexal"
 version = "${file.jarVersion}"
-displayName = "Hex Casting"
-displayURL = "https://github.com/gamma-delta/HexMod"
+displayName = "Hexal"
+displayURL = "https://github.com/Talia-12/Hexal"
 logoFile = "logo.png"
-credits = "Falkory for textures; Wiresegal for lots of polish; Alwinfy for visual effects, proofreading, and code help; Kra3tor for sound effects; naj77 for the nice logo; and all of my wonderful patrons for supporting me!"
+credits = "petrak@ and other developers of Hex Casting for the mod that this is an addon for."
 authors = "petrak@ (aka gamma-delta)"
-description = "Cast powerful Hexes on the fly by drawing patterns with a staff."
+description = ""
 
-[[dependencies.hexcasting]]
+[[dependencies.hexal]]
 modId = "forge"
 mandatory = true
 versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.hexcasting]]
+[[dependencies.hexal]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.18.2,1.19)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.hexcasting]]
+[[dependencies.hexal]]
 modId = "paucal"
 mandatory = true
 versionRange = "[0.4.6,0.5.0)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.hexcasting]]
+[[dependencies.hexal]]
 modId = "patchouli"
 mandatory = true
 versionRange = "[1.18.2-69,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.hexal]]
+modId = "hexcasting"
+mandatory = true
+versionRange = "[0.9.2,)"
 ordering = "NONE"
 side = "BOTH"
