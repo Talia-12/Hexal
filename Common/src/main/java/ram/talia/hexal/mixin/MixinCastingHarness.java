@@ -21,7 +21,8 @@ public abstract class MixinCastingHarness {
 						at = @At(
 									value="INVOKE",
 									target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
-					))
+					),
+      remap = false)
 	private boolean updateWithPatternWisp (List<OperatorSideEffect> sideEffects, Object o) {
 		
 		if (o instanceof OperatorSideEffect.Particles particles) {
