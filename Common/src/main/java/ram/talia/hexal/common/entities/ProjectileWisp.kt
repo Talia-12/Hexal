@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.times
@@ -25,7 +24,7 @@ class ProjectileWisp : BaseWisp {
 
 	override fun move() {
 		if (isAffectedByGravity)
-			addVelocity(Vec3(0.0, -0.05, 0.0))
+			addVelocityScaled(Vec3(0.0, -0.05, 0.0))
 
 		// either [position] + [velocity] if there was nothing in between the two points of the
 		// trace, or the collision point if there was.

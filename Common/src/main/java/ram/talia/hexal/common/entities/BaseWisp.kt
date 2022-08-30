@@ -13,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.util.Mth
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.Projectile
@@ -21,6 +20,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -28,8 +28,7 @@ import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.api.times
 import ram.talia.hexal.xplat.IXplatAbstractions
-import kotlin.math.ceil
-import kotlin.math.pow
+import kotlin.math.*
 
 
 abstract class BaseWisp : Projectile {
@@ -49,7 +48,11 @@ abstract class BaseWisp : Projectile {
 
 	var velocity: Vec3
 		get() = scaleVecByMedia(deltaMovement)
-		set(value) { deltaMovement = value }
+		set(value) {
+			// change the wisp to look where its velocity points, useful for blinking
+			setLookVector(value)
+			deltaMovement = value
+		}
 
 	fun addMedia(dMedia: Int) {
 		media += dMedia
@@ -83,9 +86,6 @@ abstract class BaseWisp : Projectile {
 		if (media <= 0) {
 			discard()
 		}
-
-		// change the wisp to look where its velocity points, useful for blinking
-		setLookVector(velocity)
 
 		if (!scheduledCast) {
 			if (!level.isClientSide)
@@ -153,12 +153,21 @@ abstract class BaseWisp : Projectile {
 
 	open fun castCallback(result: WispCastingManager.WispCastResult) {
 		scheduledCast = false
-		// turned off since it's causing PROBLEMS. TODO: Figure out how to actually do this properly.
-//		processTick()
 	}
 
-	fun addVelocity(vel: Vec3) {
+	fun addVelocityScaled(vel: Vec3) {
 		deltaMovement += scaleVecByMedia(vel)
+		// change the wisp to look where its velocity points, useful for blinking
+		setLookVector(deltaMovement)
+	}
+
+	override fun push(x: Double, y: Double, z: Double) {
+		// TODO: figure out how I actually want this to work since it is desireable for OpAddMove (or whatever) and OpGetMove to return what you'd expect
+		// TODO: but also desireable for it to be setup such that your ballistics maths doesn't need to account for the velocity scaling stuff at all
+		deltaMovement += Vec3(x,y,z)
+		// change the wisp to look where its velocity points, useful for blinking
+		setLookVector(deltaMovement)
+		hasImpulse = true
 	}
 
 	private fun scaleVecByMedia(vec: Vec3) = scaleVecByMedia(vec, 1, media)
@@ -173,16 +182,18 @@ abstract class BaseWisp : Projectile {
 	}
 
 	/**
-	 * Set the look vector of the wisp equal to its movement direction
+	 * Set the look vector of the wisp equal a given vector
 	 */
 	fun setLookVector(vel: Vec3) {
-		if (xRotO == 0.0f && yRotO == 0.0f) {
-			val horizontalDistance = vel.horizontalDistance()
-			yRot = (Mth.atan2(vel.x, vel.z) * 57.2957763671875).toFloat()
-			xRot = (Mth.atan2(vel.y, horizontalDistance) * 57.2957763671875).toFloat()
-			yRotO = yRot
-			xRotO = xRot
-		}
+		val direction = vel.normalize()
+
+		val pitch = asin(direction.y)
+		val yaw = asin(max(min(direction.x / cos(pitch), 1.0), -1.0))
+
+		xRot = (-pitch * 180 / Math.PI).toFloat()
+		yRot = (-yaw * 180 / Math.PI).toFloat()
+		xRotO = xRot
+		yRotO = yRot
 	}
 
 	fun getHitResult(start: Vec3, end: Vec3): BlockHitResult = level.clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
