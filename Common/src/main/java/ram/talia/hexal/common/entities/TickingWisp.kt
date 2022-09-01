@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.mojang.datafixers.util.Either
@@ -21,17 +20,13 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.WispCastingManager
-import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import kotlin.math.pow
-import kotlin.math.sqrt
 
 class TickingWisp : BaseWisp {
 	override val shouldComplainNotEnoughMedia = false
 
-	var lasting: Boolean
-		get() = entityData.get(LASTING)
-		set(value) = entityData.set(LASTING, value)
+
 
 	private var stack: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(mutableListOf(SpellDatum.make(this)))
 	private var ravenmind: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL))
@@ -43,26 +38,12 @@ class TickingWisp : BaseWisp {
 		pos: Vec3,
 		caster: Player,
 		media: Int,
-		lasting: Boolean
-	) : super(entityType, world, pos, caster, media) {
-		this.lasting = lasting
-	}
+	) : super(entityType, world, pos, caster, media)
 
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int, lasting: Boolean) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
-		this.lasting = lasting
-	}
+	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.TICKING_WISP, world, pos, caster, media)
 
 	override fun deductMedia() {
-		val deduct = when (lasting) {
-			true -> WISP_COST_PER_TICK
-			false -> WISP_COST_PER_TICK + (TICK_COST_EXP_SCALE * sqrt(media.toDouble())).toInt()
-		}
-
-//		HexalAPI.LOGGER.info("ticking wisp $uuid had ${deduct.toDouble()/ManaConstants.DUST_UNIT} media deducted.")
-
-//		HexalAPI.LOGGER.info("media before: ${media.toDouble()/ManaConstants.DUST_UNIT}")
-		media -= deduct
-//		HexalAPI.LOGGER.info("media after: ${media.toDouble()/ManaConstants.DUST_UNIT}")
+		media -= 2 * WISP_COST_PER_TICK
 	}
 
 	override fun childTick() {
@@ -71,7 +52,7 @@ class TickingWisp : BaseWisp {
 
 	override fun move() {}
 
-	override fun maxSqrCastingDistance() = if (lasting) CASTING_RADIUS_LASTING * CASTING_RADIUS_LASTING else CASTING_RADIUS_NONLASTING * CASTING_RADIUS_NONLASTING
+	override fun maxSqrCastingDistance() = CASTING_RADIUS * CASTING_RADIUS
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
@@ -109,7 +90,6 @@ class TickingWisp : BaseWisp {
 
 	override fun load(compound: CompoundTag) {
 		super.load(compound)
-		lasting = compound.getBoolean(LASTING_TAG)
 		if (level is ServerLevel) {
 			val stackNbt = compound.get(STACK_TAG) as ListTag
 			HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
@@ -121,7 +101,6 @@ class TickingWisp : BaseWisp {
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
-		compound.putBoolean(LASTING_TAG, lasting)
 		if (level is ServerLevel) {
 			stack.map(
 				{compound.put(STACK_TAG, it.toNbtList())},
@@ -149,8 +128,7 @@ class TickingWisp : BaseWisp {
 		const val RAVENMIND_TAG = "ravenmind"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
-		const val CASTING_RADIUS_LASTING = 16.0
-		const val CASTING_RADIUS_NONLASTING = 8.0
+		const val CASTING_RADIUS = 8.0
 
 		const val TICK_COST_EXP_SCALE = 1.0/60
 	}

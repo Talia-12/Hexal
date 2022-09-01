@@ -11,7 +11,7 @@ SHARD_UNIT = 5 * DUST_UNIT
 WISP_COST_PER_TICK = 0.65*DUST_UNIT/20
 EXP_SCALE = 1/60
 
-cost = lambda x: WISP_COST_PER_TICK + EXP_SCALE * math.sqrt(x)
+cost = lambda x: WISP_COST_PER_TICK # + EXP_SCALE * math.sqrt(x)
 
 def get_life_ticks(media: float):
     ticks = 1 # media check happens before deducting media
@@ -24,7 +24,7 @@ def get_life_ticks(media: float):
     # print(total_exp_cost/DUST_UNIT)
     return ticks
 
-target_life = 6000
+target_life = 60*20
 media = 1
 life = 0
 while True:

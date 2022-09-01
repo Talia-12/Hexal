@@ -349,7 +349,7 @@ abstract class BaseWisp : Projectile {
 		const val TAG_HEX = "hex"
 		const val TAG_MEDIA = "media"
 
-		const val WISP_COST_PER_TICK = (0.65 * ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()
 	}
 }
 

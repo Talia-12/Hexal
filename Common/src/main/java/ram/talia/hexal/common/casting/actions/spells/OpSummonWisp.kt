@@ -46,7 +46,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
         override fun cast(ctx: CastingContext) {
             val colouriser = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
             val wisp = when (ticking) {
-                true -> TickingWisp(ctx.world, pos, ctx.caster, media, false)
+                true -> TickingWisp(ctx.world, pos, ctx.caster, media)
                 false -> ProjectileWisp(ctx.world, pos, vel, ctx.caster, media)
             }
             wisp.setColouriser(colouriser)
