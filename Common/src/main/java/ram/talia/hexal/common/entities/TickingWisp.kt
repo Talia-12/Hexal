@@ -5,9 +5,9 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.utils.putCompound
-import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -33,8 +33,8 @@ class TickingWisp : BaseWisp {
 		get() = entityData.get(LASTING)
 		set(value) = entityData.set(LASTING, value)
 
-	private var stack: MutableList<SpellDatum<*>> = mutableListOf(SpellDatum.make(this))
-	private var ravenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL)
+	private var stack: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(mutableListOf(SpellDatum.make(this)))
+	private var ravenmind: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL))
 
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
 	constructor(
@@ -75,8 +75,8 @@ class TickingWisp : BaseWisp {
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
-		stack = result.endStack
-		ravenmind = result.endRavenmind
+		stack = Either.left(result.endStack)
+		ravenmind = Either.left(result.endRavenmind)
 
 		if (result.makesCastSound) {
 			level.playSound(
@@ -113,10 +113,9 @@ class TickingWisp : BaseWisp {
 		if (level is ServerLevel) {
 			val stackNbt = compound.get(STACK_TAG) as ListTag
 			HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
-			stack = stackNbt.toIotaList(level as ServerLevel)
+			stack = Either.right(stackNbt)
 			HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stack")
-			ravenmind = SpellDatum.Companion.fromNBT(compound.getCompound(RAVENMIND_TAG), level as ServerLevel)
-			HexalAPI.LOGGER.info("loaded wisp $uuid's ravenmind as $ravenmind")
+			ravenmind = Either.right(compound.getCompound(RAVENMIND_TAG))
 		}
 	}
 
@@ -124,9 +123,15 @@ class TickingWisp : BaseWisp {
 		super.addAdditionalSaveData(compound)
 		compound.putBoolean(LASTING_TAG, lasting)
 		if (level is ServerLevel) {
-			compound.put(STACK_TAG, stack.toNbtList())
+			stack.map(
+				{compound.put(STACK_TAG, it.toNbtList())},
+				{compound.put(STACK_TAG, it)}
+			)
 			HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}")
-			compound.putCompound(RAVENMIND_TAG, ravenmind.serializeToNBT())
+			ravenmind.map(
+				{compound.put(RAVENMIND_TAG, it.serializeToNBT())},
+				{compound.put(RAVENMIND_TAG, it)}
+			)
 			HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}")
 		}
 	}

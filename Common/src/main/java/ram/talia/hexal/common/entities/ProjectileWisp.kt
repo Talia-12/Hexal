@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.spell.SpellDatum
+import com.mojang.datafixers.util.Either
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
@@ -42,7 +43,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playParticles()
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, listOf(SpellDatum.make(this), SpellDatum.make(result.entity)).toMutableList())
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, Either.left(mutableListOf(SpellDatum.make(this), SpellDatum.make(result.entity))))
 	}
 
 	override fun onHitBlock(result: BlockHitResult) {
@@ -52,7 +53,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playParticles()
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, listOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toMutableList())
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, Either.left(mutableListOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos)))))
 	}
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {

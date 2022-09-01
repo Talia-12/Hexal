@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.xplat.IXplatAbstractions
+import com.mojang.datafixers.util.Either
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.div
 import ram.talia.hexal.common.entities.ProjectileWisp
@@ -49,7 +50,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
                 false -> ProjectileWisp(ctx.world, pos, vel, ctx.caster, media)
             }
             wisp.setColouriser(colouriser)
-            wisp.hex = hex
+            wisp.hex = Either.left(hex)
             ctx.world.addFreshEntity(wisp)
         }
     }

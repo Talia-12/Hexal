@@ -5,8 +5,8 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.utils.putCompound
-import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -21,7 +21,6 @@ import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -39,7 +38,10 @@ abstract class BaseWisp : Projectile {
 		get() = entityData.get(MEDIA)
 		set(value) = entityData.set(MEDIA, max(value, 0))
 
-	var hex: List<SpellDatum<*>> = ArrayList()
+	// Either used so that loading from NBT results in lazy loading where the ListTag
+	// is only converted into a List of SpellDatum's when needed, meaning that it's
+	// guaranteed to happen at the point where Level.getEntity works properly.
+	var hex: Either<List<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -136,19 +138,23 @@ abstract class BaseWisp : Projectile {
 	 */
 	fun scheduleCast(
 		priority: Int,
-		hex: List<SpellDatum<*>>,
-		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
-		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
+		hex: Either<List<SpellDatum<*>>, ListTag>,
+		initialStack: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList<SpellDatum<*>>().toMutableList()),
+		initialRavenmind: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL)),
 	): Boolean {
 		if (level.isClientSide || owner == null)
 			return false // return dummy data, not expecting anything to be done with it
 
 		val sPlayer = owner as ServerPlayer
 
+		val rHex = hex.map({it}, {it.toIotaList(level as ServerLevel)})
+		val rInitialStack = initialStack.map({it}, {it.toIotaList(level as ServerLevel)})
+		val rInitialRavenmind = initialRavenmind.map({it}, {SpellDatum.Companion.fromNBT(it, level as ServerLevel)})
+
 //		HexalAPI.LOGGER.info("attempting to schedule cast")
 
 		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).ifPresent {
-			it.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
+			it.scheduleCast(this, priority, rHex, rInitialStack, rInitialRavenmind)
 
 //			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $hex, stack was $initialStack, ravenmind was $initialRavenmind")
 
@@ -311,8 +317,7 @@ abstract class BaseWisp : Projectile {
 		super.load(compound)
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
 		if (!level.isClientSide) {
-			val hexNbt = compound.get(TAG_HEX) as ListTag
-			hex = hexNbt.toIotaList(level as ServerLevel)
+			hex = Either.right(compound.get(TAG_HEX) as ListTag)
 		}
 		media = compound.getInt(TAG_MEDIA)
 	}
@@ -321,7 +326,7 @@ abstract class BaseWisp : Projectile {
 		super.addAdditionalSaveData(compound)
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
 		if (!level.isClientSide) {
-			compound.put(TAG_HEX, hex.toNbtList())
+			compound.put(TAG_HEX, hex.map({it.toNbtList()}, {it}))
 		}
 		compound.putInt(TAG_MEDIA, media)
 	}
