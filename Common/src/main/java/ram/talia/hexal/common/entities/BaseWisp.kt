@@ -8,6 +8,7 @@ import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -36,7 +37,7 @@ abstract class BaseWisp : Projectile {
 
 	var media: Int
 		get() = entityData.get(MEDIA)
-		set(value) = entityData.set(MEDIA, value)
+		set(value) = entityData.set(MEDIA, max(value, 0))
 
 	var hex: List<SpellDatum<*>> = ArrayList()
 
@@ -144,11 +145,17 @@ abstract class BaseWisp : Projectile {
 
 		val sPlayer = owner as ServerPlayer
 
-		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
+//		HexalAPI.LOGGER.info("attempting to schedule cast")
 
-		scheduledCast = true
+		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).ifPresent {
+			it.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
-		return true
+//			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $hex, stack was $initialStack, ravenmind was $initialRavenmind")
+
+			scheduledCast = true
+		}
+
+		return scheduledCast
 	}
 
 	open fun castCallback(result: WispCastingManager.WispCastResult) {
@@ -304,21 +311,19 @@ abstract class BaseWisp : Projectile {
 		super.load(compound)
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
 		if (!level.isClientSide) {
-			hex = compound.getList(TAG_HEX, compound.getInt(TAG_HEX_LENGTH)).toIotaList(level as ServerLevel)
+			val hexNbt = compound.get(TAG_HEX) as ListTag
+			hex = hexNbt.toIotaList(level as ServerLevel)
 		}
 		media = compound.getInt(TAG_MEDIA)
-		scheduledCast = compound.getBoolean(TAG_SCHEDULED_CAST)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
 		if (!level.isClientSide) {
-			compound.putInt(TAG_HEX_LENGTH, hex.size)
-			compound.putList(TAG_HEX, hex.toNbtList())
+			compound.put(TAG_HEX, hex.toNbtList())
 		}
 		compound.putInt(TAG_MEDIA, media)
-		compound.putBoolean(TAG_SCHEDULED_CAST, scheduledCast)
 	}
 
 	override fun defineSynchedData() {
@@ -336,12 +341,10 @@ abstract class BaseWisp : Projectile {
 		val SCHEDULED_CAST: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.BOOLEAN)
 
 		const val TAG_COLOURISER = "colouriser"
-		const val TAG_HEX_LENGTH = "hex_length"
 		const val TAG_HEX = "hex"
 		const val TAG_MEDIA = "media"
-		const val TAG_SCHEDULED_CAST = "scheduled_cast"
 
-		const val WISP_COST_PER_TICK = (ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK = (0.65 * ManaConstants.DUST_UNIT / 20.0).toInt()
 	}
 }
 

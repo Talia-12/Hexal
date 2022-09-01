@@ -114,9 +114,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	}
 
 	fun readFromNbt(tag: CompoundTag, level: ServerLevel) {
-		val numCasts = tag.getInt(TAG_NUM_CASTS)
 
-		val list = tag.getList(TAG_CAST_LIST, numCasts)
+		val list = tag.get(TAG_CAST_LIST) as ListTag
 
 		for (castTag in list) {
 			queue.add(WispCast.makeFromNbt(castTag.asCompound, level))
@@ -124,15 +123,13 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	}
 
 	fun writeToNbt(tag: CompoundTag) {
-		tag.putInt(TAG_NUM_CASTS, queue.size)
-
 		val list = ListTag()
 
 		for (cast in queue) {
 			list.add(cast.writeToNbt())
 		}
 
-		tag.putList(TAG_CAST_LIST, list)
+		tag.put(TAG_CAST_LIST, list)
 	}
 
 	data class WispCast(
@@ -171,10 +168,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			tag.putUUID(TAG_WISP, wispUUID)
 			tag.putInt(TAG_PRIORITY, priority)
 			tag.putLong(TAG_TIME_ADDED, timeAdded)
-			tag.putInt(TAG_HEX_LENGTH, hex.size)
-			tag.putList(TAG_HEX, hex.toNbtList())
-			tag.putInt(TAG_INITIAL_STACK_LENGTH, initialStack.size)
-			tag.putList(TAG_INITIAL_STACK, initialStack.toNbtList())
+			tag.put(TAG_HEX, hex.toNbtList())
+			tag.put(TAG_INITIAL_STACK, initialStack.toNbtList())
 			tag.putCompound(TAG_INITIAL_RAVENMIND, initialRavenmind.serializeToNBT())
 
 			return tag
@@ -184,9 +179,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			const val TAG_WISP = "wisp"
 			const val TAG_PRIORITY = "priority"
 			const val TAG_TIME_ADDED = "time_added"
-			const val TAG_HEX_LENGTH = "hex_length"
 			const val TAG_HEX = "hex"
-			const val TAG_INITIAL_STACK_LENGTH = "initial_stack_length"
 			const val TAG_INITIAL_STACK = "initial_stack"
 			const val TAG_INITIAL_RAVENMIND = "initial_ravenmind"
 
@@ -199,8 +192,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 						wisp,
 						tag.getInt(TAG_PRIORITY),
 						tag.getLong(TAG_TIME_ADDED),
-						tag.getList(TAG_HEX, tag.getInt(TAG_HEX_LENGTH)).toIotaList(level),
-						tag.getList(TAG_INITIAL_STACK, tag.getInt(TAG_INITIAL_STACK_LENGTH)).toIotaList(level),
+						(tag.get(TAG_HEX) as ListTag).toIotaList(level),
+						(tag.get(TAG_INITIAL_STACK) as ListTag).toIotaList(level),
 						SpellDatum.fromNBT(tag.getCompound(TAG_INITIAL_RAVENMIND), level)
 					)
 				}
@@ -209,8 +202,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 					level.getEntity(tag.getUUID(TAG_WISP)) as BaseWisp,
 					tag.getInt(TAG_PRIORITY),
 					tag.getLong(TAG_TIME_ADDED),
-					tag.getList(TAG_HEX, tag.getInt(TAG_HEX_LENGTH)).toIotaList(level),
-					tag.getList(TAG_INITIAL_STACK, tag.getInt(TAG_INITIAL_STACK_LENGTH)).toIotaList(level),
+					(tag.get(TAG_HEX) as ListTag).toIotaList(level),
+					(tag.get(TAG_INITIAL_STACK) as ListTag).toIotaList(level),
 					SpellDatum.fromNBT(tag.getCompound(TAG_INITIAL_RAVENMIND), level)
 				)
 			}
@@ -225,7 +218,6 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	}
 
 	companion object {
-		const val TAG_NUM_CASTS = "num_casts"
 		const val TAG_CAST_LIST = "cast_list"
 		const val WISP_EVALS_PER_TICK = 10
 

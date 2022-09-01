@@ -9,6 +9,7 @@ import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
@@ -51,11 +53,9 @@ class TickingWisp : BaseWisp {
 	}
 
 	override fun deductMedia() {
-		val EXP_SCALE = 1.0/60
-
 		val deduct = when (lasting) {
 			true -> WISP_COST_PER_TICK
-			false -> WISP_COST_PER_TICK + (EXP_SCALE * sqrt(media.toDouble())).toInt()
+			false -> WISP_COST_PER_TICK + (TICK_COST_EXP_SCALE * sqrt(media.toDouble())).toInt()
 		}
 
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had ${deduct.toDouble()/ManaConstants.DUST_UNIT} media deducted.")
@@ -111,8 +111,12 @@ class TickingWisp : BaseWisp {
 		super.load(compound)
 		lasting = compound.getBoolean(LASTING_TAG)
 		if (level is ServerLevel) {
-			stack = compound.getList(STACK_TAG, compound.getInt(STACK_LEN_TAG)).toIotaList(level as ServerLevel)
+			val stackNbt = compound.get(STACK_TAG) as ListTag
+			HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
+			stack = stackNbt.toIotaList(level as ServerLevel)
+			HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stack")
 			ravenmind = SpellDatum.Companion.fromNBT(compound.getCompound(RAVENMIND_TAG), level as ServerLevel)
+			HexalAPI.LOGGER.info("loaded wisp $uuid's ravenmind as $ravenmind")
 		}
 	}
 
@@ -120,9 +124,10 @@ class TickingWisp : BaseWisp {
 		super.addAdditionalSaveData(compound)
 		compound.putBoolean(LASTING_TAG, lasting)
 		if (level is ServerLevel) {
-			compound.putInt(STACK_LEN_TAG, stack.size)
-			compound.putList(STACK_TAG, stack.toNbtList())
+			compound.put(STACK_TAG, stack.toNbtList())
+			HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}")
 			compound.putCompound(RAVENMIND_TAG, ravenmind.serializeToNBT())
+			HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}")
 		}
 	}
 
@@ -135,12 +140,13 @@ class TickingWisp : BaseWisp {
 		val LASTING: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.BOOLEAN)
 
 		const val LASTING_TAG = "lasting"
-		const val STACK_LEN_TAG = "stack_len"
 		const val STACK_TAG = "stack"
 		const val RAVENMIND_TAG = "ravenmind"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
 		const val CASTING_RADIUS_LASTING = 16.0
 		const val CASTING_RADIUS_NONLASTING = 8.0
+
+		const val TICK_COST_EXP_SCALE = 1.0/60
 	}
 }
