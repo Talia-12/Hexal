@@ -5,6 +5,8 @@ import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+import java.util.Optional;
+
 public class FabricXplatImpl implements IXplatAbstractions {
 //    @Override
 //    public Platform platform() {
@@ -56,9 +58,9 @@ public class FabricXplatImpl implements IXplatAbstractions {
 //    }
     
     @Override
-    public WispCastingManager getWispCastingManager (ServerPlayer caster) {
+    public Optional<WispCastingManager> getWispCastingManager (ServerPlayer caster) {
         var cc = HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster);
-        return cc.getManager();
+        return Optional.ofNullable(cc.getManager());
     }
 
 //    @Override

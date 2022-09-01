@@ -1,6 +1,5 @@
 package ram.talia.hexal.forge
 
-import at.petrak.hexcasting.forge.datagen.HexForgeDataGenerators
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraftforge.common.MinecraftForge
@@ -16,6 +15,7 @@ import ram.talia.hexal.common.casting.RegisterPatterns
 import ram.talia.hexal.common.entities.HexalEntities
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators
+import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler
 import thedarkcolour.kotlinforforge.KotlinModLoadingContext.Companion.get
 import java.util.function.BiConsumer
 import java.util.function.Consumer
@@ -24,6 +24,8 @@ import java.util.function.Consumer
 class ForgeHexalInitializer {
 
 	init {
+		HexalAPI.LOGGER.info("Hello Forge World!")
+
 		initConfig()
 		initRegistry()
 		initListeners()
@@ -34,6 +36,7 @@ class ForgeHexalInitializer {
 	}
 
 	private fun initRegistry() {
+		// it seems like this is more mixin problems? RecipeSerializer being mixined to extend IForgeRegistryEntry but the IDE not knowing that
 		bind(ForgeRegistries.RECIPE_SERIALIZERS, HexalRecipeSerializers::registerSerializers)
 
 		bind(ForgeRegistries.ENTITIES, HexalEntities::registerEntities)
@@ -57,6 +60,8 @@ class ForgeHexalInitializer {
 		modBus.addGenericListener(Item::class.java) { evt: RegistryEvent<Item> -> HexalRecipeSerializers.registerTypes() }
 
 		modBus.register(HexalForgeDataGenerators::class.java)
+
+		evBus.register(WispCastingMangerEventHandler::class.java)
 	}
 
 	// https://github.com/VazkiiMods/Botania/blob/1.18.x/Forge/src/main/java/vazkii/botania/forge/ForgeCommonInitializer.java

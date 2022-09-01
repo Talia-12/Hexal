@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.HexAPI;
 import net.minecraft.server.level.ServerPlayer;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public interface IXplatAbstractions {
 
     // Things that used to be caps
 
-    WispCastingManager getWispCastingManager(ServerPlayer caster);
+    Optional<WispCastingManager> getWispCastingManager(ServerPlayer caster);
     
     // Blocks
 
