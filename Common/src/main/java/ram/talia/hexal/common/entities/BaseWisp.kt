@@ -4,35 +4,61 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.utils.asCompound
+import at.petrak.hexcasting.api.utils.asList
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import com.google.common.base.MoreObjects
 import com.mojang.datafixers.util.Either
+import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.entity.projectile.Projectile
-import net.minecraft.world.entity.projectile.ProjectileUtil
-import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
+import ram.talia.hexal.api.spell.*
 import ram.talia.hexal.api.spell.casting.WispCastingManager
-import ram.talia.hexal.api.spell.toIotaList
-import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.api.times
 import ram.talia.hexal.xplat.IXplatAbstractions
+import java.util.*
 import kotlin.math.*
 
 
-abstract class BaseWisp : Projectile {
+abstract class BaseWisp : LinkableEntity {
 	open val shouldComplainNotEnoughMedia = true
+
+	private var casterUUID: UUID? = null
+	private var cachedCaster: Entity? = null
+
+	var caster: Entity?
+		get() {
+			return if (cachedCaster != null && !cachedCaster!!.isRemoved) {
+				cachedCaster
+			} else if (casterUUID != null && level is ServerLevel) {
+				cachedCaster = (level as ServerLevel).getEntity(casterUUID!!)
+				cachedCaster
+			} else {
+				null
+			}
+		}
+		set(value) {
+			if (value != null) {
+				casterUUID = value.uuid
+				cachedCaster = value
+			}
+		}
 
 	var media: Int
 		get() = entityData.get(MEDIA)
@@ -42,6 +68,17 @@ abstract class BaseWisp : Projectile {
 	// is only converted into a List of SpellDatum's when needed, meaning that it's
 	// guaranteed to happen at the point where Level.getEntity works properly.
 	var hex: Either<List<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
+
+	private var linked: Either<MutableList<LinkableEntity>, ListTag> = Either.left(ArrayList())
+	var renderLinks: MutableList<UUID>
+		get() = entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)!!.asList.toUUIDList()
+		set(value) {
+			val compound = CompoundTag()
+			compound.put(TAG_RENDER_LINKS, value.toNbtList())
+			entityData.set(RENDER_LINKS, compound)
+		}
+
+	var receivedIotas: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -71,10 +108,16 @@ abstract class BaseWisp : Projectile {
 	constructor(entityType: EntityType<out BaseWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : super(entityType, world) {
 //		HexalAPI.LOGGER.info("constructor for $uuid called!")
 		setPos(pos)
-		owner = caster
+		this.caster = caster
 		this.media = media
 //		lastTick = world.gameTime - 1
 	}
+
+	open fun getEffectSource(): Entity {
+		return MoreObjects.firstNonNull(this.caster, this)
+	}
+
+
 
 	override fun tick() {
 		super.tick()
@@ -90,6 +133,8 @@ abstract class BaseWisp : Projectile {
 			discard()
 		}
 
+		HexalAPI.LOGGER.info("wisp id is $id")
+
 		if (!scheduledCast) {
 			if (!level.isClientSide)
 				deductMedia()
@@ -102,7 +147,8 @@ abstract class BaseWisp : Projectile {
 
 		if (level.isClientSide) {
 			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
-			playParticles(colouriser)
+			playWispParticles(colouriser)
+			playLinkParticles(colouriser)
 		}
 	}
 	
@@ -142,10 +188,10 @@ abstract class BaseWisp : Projectile {
 		initialStack: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList<SpellDatum<*>>().toMutableList()),
 		initialRavenmind: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL)),
 	): Boolean {
-		if (level.isClientSide || owner == null)
+		if (level.isClientSide || caster == null)
 			return false // return dummy data, not expecting anything to be done with it
 
-		val sPlayer = owner as ServerPlayer
+		val sPlayer = caster as ServerPlayer
 
 		val rHex = hex.map({it}, {it.toIotaList(level as ServerLevel)})
 		val rInitialStack = initialStack.map({it}, {it.toIotaList(level as ServerLevel)})
@@ -162,6 +208,93 @@ abstract class BaseWisp : Projectile {
 		}
 
 		return scheduledCast
+	}
+
+	override fun link(other: LinkableEntity, linkOther: Boolean) {
+		if (level.isClientSide) {
+			HexalAPI.LOGGER.info("wisp $uuid had linkWisp called in a clientside context.")
+			return
+		}
+
+		linked = Either.left(linked.map({it}, {it.toEntityList(level as ServerLevel)}))
+
+		if (other in linked.left().get())
+			return
+
+		HexalAPI.LOGGER.info("doing the ifLeft.")
+
+		linked.ifLeft{
+			HexalAPI.LOGGER.info("adding $other to $uuid's links.")
+			it.add(other)
+		}
+
+		if (linkOther) {
+			HexalAPI.LOGGER.info("adding $other to $uuid's render links.")
+			renderLinks.add(other.uuid)
+		}
+
+		if (linkOther) {
+			link(this, false)
+		}
+	}
+
+	override fun unlink(other: LinkableEntity, unlinkOther: Boolean) {
+		if (level.isClientSide) {
+			HexalAPI.LOGGER.info("wisp $uuid had linkWisp called in a clientside context.")
+			return
+		}
+
+		linked = Either.left(linked.map({it}, {it.toEntityList(level as ServerLevel)}))
+
+		linked.ifLeft{
+			it.remove(other)
+		}
+		renderLinks.remove(other.uuid)
+
+		if (unlinkOther) {
+			unlink(this, false)
+		}
+	}
+
+	override fun getLinked(index: Int): LinkableEntity {
+		linked = Either.left(linked.map({it}, {it.toEntityList(level as ServerLevel)}))
+
+		return linked.left().get()[index]
+	}
+
+	override fun numLinked(): Int {
+		linked = Either.left(linked.map({it}, {it.toEntityList(level as ServerLevel)}))
+
+		return linked.left().get().size
+	}
+
+	override fun receiveIota(iota: SpellDatum<*>) {
+		receivedIotas = Either.left(receivedIotas.map({it}, {it.toIotaList(level as ServerLevel)}))
+
+		receivedIotas.ifLeft{
+			it.add(iota)
+		}
+	}
+
+	override fun nextReceivedIota(): SpellDatum<*> {
+		receivedIotas = Either.left(receivedIotas.map({it}, {it.toIotaList(level as ServerLevel)}))
+
+		val rReceivedIotas = receivedIotas.left().get()
+
+		if (rReceivedIotas.size == 0) {
+			return SpellDatum.make(Widget.NULL)
+		}
+
+		val iota = receivedIotas.left().get()[0]
+		receivedIotas.left().get().removeAt(0)
+
+		return iota
+	}
+
+	override fun numRemainingIota(): Int {
+		receivedIotas = Either.left(receivedIotas.map({it}, {it.toIotaList(level as ServerLevel)}))
+
+		return receivedIotas.left().get().size
 	}
 
 	open fun castCallback(result: WispCastingManager.WispCastResult) {
@@ -209,58 +342,11 @@ abstract class BaseWisp : Projectile {
 		yRotO = yRot
 	}
 
-	fun getHitResult(start: Vec3, end: Vec3): BlockHitResult = level.clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
-
-	protected fun findHitEntity(start: Vec3, end: Vec3): EntityHitResult? =
-		ProjectileUtil.getEntityHitResult(
-			level,
-			this,
-			start,
-			end,
-			boundingBox.expandTowards(velocity).inflate(1.0),
-			this::canHitEntity
-		)
-
-	public fun traceAnyHit(start: Vec3, end: Vec3): Vec3 {
-		return traceAnyHit(getHitResult(start, end), start, end)
-	}
-
-	public fun traceAnyHit(raytraceResult: HitResult?, start: Vec3, end: Vec3): Vec3 {
-		var tEnd = end
-
-
-		if (raytraceResult != null && raytraceResult.type != HitResult.Type.MISS) {
-			tEnd = raytraceResult.location
-		}
-
-		// get any entities in between the start location and tEnd, which is either the
-		// first location on the line start-end intersecting a block, or end.
-		val entityRaytraceResult = findHitEntity(start, tEnd)
-
-		val tRaytraceResult = entityRaytraceResult ?: raytraceResult
-
-		//TODO: Figure out best way to keep !ForgeEventFactory.onProjectileImpact(this, tRaytraceResult)
-		if (tRaytraceResult != null && tRaytraceResult.type != HitResult.Type.MISS) {
-			onHit(tRaytraceResult)
-			hasImpulse = true
-		}
-
-		return tEnd
-	}
-
-	override fun onHitEntity(result: EntityHitResult) {
-		super.onHitEntity(result)
-	}
-
-	override fun onHitBlock(result: BlockHitResult) {
-		super.onHitBlock(result)
-	}
-
-	fun playParticles() {
+	fun playWispParticles() {
 		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
-		playParticles(colouriser)
+		playWispParticles(colouriser)
 	}
-	open protected fun playParticles(colouriser: FrozenColorizer) {
+	open protected fun playWispParticles(colouriser: FrozenColorizer) {
 		val radius = ceil((media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
 
 		val delta = position() - oldPos
@@ -280,20 +366,31 @@ abstract class BaseWisp : Projectile {
 				0.0125 * (random.nextDouble() - 0.5)
 			)
 		}
+	}
 
-		// this doesn't actually look very good
-//		for (i in 0..(4*radius*radius*radius).toInt()) {
-//			val colour: Int = colouriser.nextColour()
+	fun playLinkParticles(colouriser: FrozenColorizer) {
+		HexalAPI.LOGGER.info("wisp $uuid has ${renderLinks.size} links to render")
+
+//		for (renderLink in renderLinks) {
+//			val linked = (level as ClientLevel).getEntities()
 //
-//			level.addParticle(
-//				ConjureParticleOptions(colour, true),
-//				(position().x + radius*random.nextGaussian()),
-//				(position().y + radius*random.nextGaussian()),
-//				(position().z + radius*random.nextGaussian()),
-//				0.0125 * (random.nextDouble() - 0.5),
-//				0.0125 * (random.nextDouble() - 0.5),
-//				0.0125 * (random.nextDouble() - 0.5)
-//			)
+//			val delta = linked.position() - position()
+//			val dist = delta.length() * 12
+//
+//			for (i in 0..dist.toInt()) {
+//				val colour: Int = colouriser.nextColour()
+//
+//				val coeff = i / dist
+//				level.addParticle(
+//					ConjureParticleOptions(colour, false),
+//					(position().x + delta.x * coeff),
+//					(position().y + delta.y * coeff),
+//					(position().z + delta.z * coeff),
+//					0.0125 * (random.nextDouble() - 0.5),
+//					0.0125 * (random.nextDouble() - 0.5),
+//					0.0125 * (random.nextDouble() - 0.5)
+//				)
+//			}
 //		}
 	}
 
@@ -312,21 +409,30 @@ abstract class BaseWisp : Projectile {
 		entityData.set(COLOURISER, colouriser.serializeToNBT())
 	}
 
-	override fun load(compound: CompoundTag) {
-		// assuming this is for saving/loading chunks and the game
-		super.load(compound)
+	override fun readAdditionalSaveData(compound: CompoundTag) {
+		if (compound.hasUUID(TAG_CASTER))
+			casterUUID = compound.getUUID(TAG_CASTER)
+
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
 		if (!level.isClientSide) {
 			hex = Either.right(compound.get(TAG_HEX) as ListTag)
+			linked = Either.right(compound.get(TAG_LINKED_WISPS) as ListTag)
+			entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as CompoundTag)
+			receivedIotas = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
 		}
 		media = compound.getInt(TAG_MEDIA)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
-		super.addAdditionalSaveData(compound)
+		if (casterUUID != null)
+			compound.putUUID(TAG_CASTER, casterUUID!!)
+
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
 		if (!level.isClientSide) {
 			compound.put(TAG_HEX, hex.map({it.toNbtList()}, {it}))
+			compound.put(TAG_LINKED_WISPS, linked.map({it.toNbtList()}, {it}))
+			compound.put(TAG_RENDER_LINKS, entityData.get(RENDER_LINKS))
+			compound.put(TAG_RECEIVED_IOTAS, receivedIotas.map({it.toNbtList()}, {it}))
 		}
 		compound.putInt(TAG_MEDIA, media)
 	}
@@ -337,6 +443,20 @@ abstract class BaseWisp : Projectile {
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20*ManaConstants.DUST_UNIT)
 		entityData.define(SCHEDULED_CAST, false)
+
+		val tag = CompoundTag()
+		tag.put(TAG_RENDER_LINKS, ListTag())
+		entityData.define(RENDER_LINKS, tag)
+	}
+
+	override fun getAddEntityPacket(): Packet<*> = ClientboundAddEntityPacket(this, caster?.id ?: 0)
+
+	override fun recreateFromPacket(packet: ClientboundAddEntityPacket) {
+		super.recreateFromPacket(packet)
+		val caster = level.getEntity(packet.data)
+		if (caster != null) {
+			this.caster = caster
+		}
 	}
 
 	companion object {
@@ -344,9 +464,14 @@ abstract class BaseWisp : Projectile {
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
 		val SCHEDULED_CAST: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.BOOLEAN)
+		val RENDER_LINKS: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
+		const val TAG_CASTER = "caster"
 		const val TAG_COLOURISER = "colouriser"
 		const val TAG_HEX = "hex"
+		const val TAG_LINKED_WISPS = "linked_wisps"
+		const val TAG_RENDER_LINKS = "render_link_list"
+		const val TAG_RECEIVED_IOTAS = "received_iotas"
 		const val TAG_MEDIA = "media"
 
 		const val WISP_COST_PER_TICK = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()

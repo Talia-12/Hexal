@@ -20,7 +20,7 @@ object OpConsumeWisp : SpellOperator {
 
 		ctx.assertEntityInRange(consumed)
 
-		val cost = when (consumed.owner?.uuid) {
+		val cost = when (consumed.caster?.uuid) {
 			ctx.caster.uuid -> COST_FOR_OWN
 			else -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
 		}

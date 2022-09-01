@@ -28,7 +28,6 @@ object FabricHexalInitializer : ModInitializer {
         HexalEntities.registerEntities(bind(Registry.ENTITY_TYPE))
 
         HexalRecipeSerializers.registerSerializers(bind(Registry.RECIPE_SERIALIZER))
-
         HexalRecipeSerializers.registerTypes()
     }
 

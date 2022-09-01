@@ -70,7 +70,7 @@ class TickingWisp : BaseWisp {
 		super.castCallback(result)
 	}
 
-	override fun playParticles(colouriser: FrozenColorizer) {
+	override fun playWispParticles(colouriser: FrozenColorizer) {
 		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 100
 
 		for (i in 0..50) {

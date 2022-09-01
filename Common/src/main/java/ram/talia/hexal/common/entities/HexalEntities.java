@@ -19,12 +19,16 @@ public class HexalEntities {
 		}
 	}
 	
+	public static void registerEntityDataSerialisers () {
+	
+	}
+	
 	private static final Map<ResourceLocation, EntityType<?>> ENTITIES = new LinkedHashMap<>();
 	
 	public static final EntityType<ProjectileWisp> PROJECTILE_WISP = register(
 					"wisp/projectile",
 					EntityType.Builder.of((EntityType.EntityFactory<ProjectileWisp>) ProjectileWisp::new, MobCategory.MISC)
-														.sized(0.1f, 0.1f)
+														.sized(0.3f, 0.3f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
 														.build(HexalAPI.MOD_ID + ":wisp/projectile"));
@@ -32,7 +36,7 @@ public class HexalEntities {
 	public static final EntityType<TickingWisp> TICKING_WISP = register(
 					"wisp/ticking",
 					EntityType.Builder.of((EntityType.EntityFactory<TickingWisp>) TickingWisp::new, MobCategory.MISC)
-														.sized(0.1f, 0.1f)
+														.sized(0.3f, 0.3f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
 														.build(HexalAPI.MOD_ID + ":wisp/ticking"));

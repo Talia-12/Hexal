@@ -42,7 +42,6 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 					))
 	private void isVecInRangeWisp (Vec3 vec, CallbackInfoReturnable<Boolean> cir) {
 		if (this.wisp != null) {
-			HexalAPI.LOGGER.info("Checking if %s is in range of wisp!".formatted(vec.toString()));
 			cir.setReturnValue(vec.distanceToSqr(this.wisp.position()) < this.wisp.maxSqrCastingDistance());
 		}
 	}
