@@ -11,6 +11,7 @@ object OpNumReceivedIota : ConstManaOperator {
 	override val argc = 0
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
+		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
 		if (mCast == null || mCast.wisp == null)

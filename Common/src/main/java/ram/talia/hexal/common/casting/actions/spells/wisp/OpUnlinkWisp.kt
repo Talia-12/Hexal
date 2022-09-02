@@ -14,6 +14,7 @@ object OpUnlinkWisp : SpellOperator {
 	override val argc = 1
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
 		if (mCast == null || mCast.wisp == null)

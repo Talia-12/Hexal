@@ -19,6 +19,7 @@ object OpLinkWisp : SpellOperator {
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		HexalAPI.LOGGER.info("attempting to link")
 
+		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
 		if (mCast == null || mCast.wisp == null)

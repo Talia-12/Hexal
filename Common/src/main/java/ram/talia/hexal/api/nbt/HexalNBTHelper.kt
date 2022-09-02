@@ -3,12 +3,10 @@ package ram.talia.hexal.api.spell
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.asCompound
-import at.petrak.hexcasting.api.utils.asList
-import at.petrak.hexcasting.api.utils.asUUID
+import at.petrak.hexcasting.api.utils.asInt
+import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.syncher.EntityDataSerializer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import java.util.*
@@ -60,20 +58,20 @@ fun List<Entity>.toNbtList(): ListTag {
 	return listTag
 }
 
-fun ListTag.toUUIDList(): MutableList<UUID> {
-	val out = mutableListOf<UUID>()
+fun ListTag.toIntList(): MutableList<Int> {
+	val out = mutableListOf<Int>()
 
-	for (uuidTag in this) {
-		out.add(uuidTag.asUUID)
+	for (idTag in this) {
+		out.add(idTag.asInt)
 	}
 
 	return out
 }
 
-fun List<UUID>.toNbtList(): ListTag {
+fun List<Int>.toNbtList(): ListTag {
 	val listTag = ListTag()
 
-	this.forEach { uuid -> listTag.add(NbtUtils.createUUID(uuid)) }
+	this.forEach { i -> listTag.add(IntTag.valueOf(i)) }
 
 	return listTag
 }
