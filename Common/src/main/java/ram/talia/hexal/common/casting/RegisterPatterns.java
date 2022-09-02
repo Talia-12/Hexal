@@ -60,6 +60,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST),
 																 modLoc("wisp/link/link"),
 																 OpLinkWisp.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST),
+																 modLoc("wisp/link/link_two"),
+																 OpLinkWisps.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST),
 																 modLoc("wisp/link/unlink"),
 																 OpUnlinkWisp.INSTANCE);
