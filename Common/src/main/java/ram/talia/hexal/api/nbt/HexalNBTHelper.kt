@@ -7,6 +7,7 @@ import at.petrak.hexcasting.api.utils.asInt
 import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
+import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import java.util.*
@@ -68,10 +69,21 @@ fun ListTag.toIntList(): MutableList<Int> {
 	return out
 }
 
+@JvmName("toNbtListInt")
+
 fun List<Int>.toNbtList(): ListTag {
 	val listTag = ListTag()
 
-	this.forEach { i -> listTag.add(IntTag.valueOf(i)) }
+	this.forEach { listTag.add(IntTag.valueOf(it)) }
+
+	return listTag
+}
+
+@JvmName("toNbtListTag")
+fun List<Tag>.toNbtList(): ListTag {
+	val listTag = ListTag()
+
+	this.forEach { listTag.add(it) }
 
 	return listTag
 }

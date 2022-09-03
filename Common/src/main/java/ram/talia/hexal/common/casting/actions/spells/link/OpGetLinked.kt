@@ -1,4 +1,4 @@
-package ram.talia.hexal.common.casting.actions.spells.wisp
+package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import kotlin.math.max
 
-object OpGetLinkedWisp : ConstManaOperator {
+object OpGetLinked : ConstManaOperator {
 	override val argc = 1
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
@@ -23,6 +23,6 @@ object OpGetLinkedWisp : ConstManaOperator {
 
 		val other = mCast.wisp.getLinked(linkedIndex)
 
-		return if (ctx.isEntityInRange(other)) other.asSpellResult else Widget.NULL.asSpellResult
+		return if (ctx.isVecInRange(other.getPos())) other.asSpellResult else Widget.NULL.asSpellResult
 	}
 }

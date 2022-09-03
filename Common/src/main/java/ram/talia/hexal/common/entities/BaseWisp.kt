@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.utils.asList
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.google.common.base.MoreObjects
@@ -67,46 +66,6 @@ abstract class BaseWisp : LinkableEntity {
 	// guaranteed to happen at the point where Level.getEntity works properly.
 	var hex: Either<List<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
 
-	private var linked: Either<MutableList<LinkableEntity>, ListTag> = Either.left(ArrayList())
-	var renderLinks: MutableList<LinkableEntity>
-		get() {
-			if (level.isClientSide)
-				return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)!!.asList.toIntList().mapNotNull { level.getEntity(it) as LinkableEntity } as MutableList<LinkableEntity>
-			return renderLinksList.map({ it }, { it.toEntityList(level as ServerLevel) })
-		}
-		set(value) {
-			if (level.isClientSide)
-				return
-
-			renderLinksList = Either.left(value)
-
-			syncRenderLinks()
-		}
-
-	private var renderLinksList: Either<MutableList<LinkableEntity>, ListTag> = Either.left(ArrayList())
-
-	private fun syncRenderLinks() {
-		val compound = CompoundTag()
-		val rRenderLinksList = renderLinksList.map({ it }, { it.toEntityList(level as ServerLevel) })
-		compound.put(TAG_RENDER_LINKS, rRenderLinksList.map { it.id }.toNbtList())
-		entityData.set(RENDER_LINKS, compound)
-	}
-
-	fun addRenderLink(other: LinkableEntity) {
-		renderLinks.add(other)
-		syncRenderLinks()
-	}
-
-	fun removeRenderLink(other: LinkableEntity) {
-		renderLinks.remove(other)
-		syncRenderLinks()
-	}
-
-	fun removeRenderLink(index: Int) {
-		renderLinks.removeAt(index)
-		syncRenderLinks()
-	}
-
 	var receivedIotas: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
 
 	private var scheduledCast: Boolean
@@ -160,8 +119,6 @@ abstract class BaseWisp : LinkableEntity {
 		if (media <= 0) {
 			discard()
 		}
-
-		HexalAPI.LOGGER.info("wisp id is $id")
 
 		if (!scheduledCast) {
 			if (!level.isClientSide)
@@ -236,64 +193,6 @@ abstract class BaseWisp : LinkableEntity {
 		}
 
 		return scheduledCast
-	}
-
-	override fun link(other: LinkableEntity, linkOther: Boolean) {
-		if (level.isClientSide) {
-			HexalAPI.LOGGER.info("wisp $uuid had linkWisp called in a clientside context.")
-			return
-		}
-
-		linked = Either.left(linked.map({ it }, { it.toEntityList(level as ServerLevel) }))
-
-		if (other in linked.left().get())
-			return
-
-		HexalAPI.LOGGER.info("doing the ifLeft.")
-
-		linked.ifLeft {
-			HexalAPI.LOGGER.info("adding $other to $uuid's links.")
-			it.add(other)
-		}
-
-		if (linkOther) {
-			HexalAPI.LOGGER.info("adding $other to $uuid's render links.")
-			addRenderLink(other)
-		}
-
-		if (linkOther) {
-			link(this, false)
-		}
-	}
-
-	override fun unlink(other: LinkableEntity, unlinkOther: Boolean) {
-		if (level.isClientSide) {
-			HexalAPI.LOGGER.info("wisp $uuid had linkWisp called in a clientside context.")
-			return
-		}
-
-		linked = Either.left(linked.map({ it }, { it.toEntityList(level as ServerLevel) }))
-
-		linked.ifLeft {
-			it.remove(other)
-		}
-		removeRenderLink(other)
-
-		if (unlinkOther) {
-			unlink(this, false)
-		}
-	}
-
-	override fun getLinked(index: Int): LinkableEntity {
-		linked = Either.left(linked.map({ it }, { it.toEntityList(level as ServerLevel) }))
-
-		return linked.left().get()[index]
-	}
-
-	override fun numLinked(): Int {
-		linked = Either.left(linked.map({ it }, { it.toEntityList(level as ServerLevel) }))
-
-		return linked.left().get().size
 	}
 
 	override fun receiveIota(iota: SpellDatum<*>) {
@@ -401,7 +300,7 @@ abstract class BaseWisp : LinkableEntity {
 		HexalAPI.LOGGER.info("wisp $uuid has ${renderLinks.size} links to render")
 
 		for (renderLink in renderLinks) {
-			val delta = renderLink.position() - position()
+			val delta = renderLink.getPos() - position()
 			val dist = delta.length() * 12
 
 			for (i in 0..dist.toInt()) {
@@ -437,13 +336,17 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
+		super.readAdditionalSaveData(compound)
+
+		HexalAPI.LOGGER.info("this world is a ${if (level.isClientSide) "client side" else "server side"} level")
+
 		if (compound.hasUUID(TAG_CASTER))
 			casterUUID = compound.getUUID(TAG_CASTER)
 
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
 		if (!level.isClientSide) {
 			hex = Either.right(compound.get(TAG_HEX) as ListTag)
-			linked = Either.right(compound.get(TAG_LINKED_WISPS) as ListTag)
+			linked = Either.right(compound.get(TAG_LINKED) as ListTag)
 			entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as CompoundTag)
 			receivedIotas = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
 		}
@@ -451,29 +354,29 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
+		super.addAdditionalSaveData(compound)
+
+		HexalAPI.LOGGER.info("this world is a ${if (level.isClientSide) "client side" else "server side"} level")
+
 		if (casterUUID != null)
 			compound.putUUID(TAG_CASTER, casterUUID!!)
 
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
 		if (!level.isClientSide) {
 			compound.put(TAG_HEX, hex.map({ it.toNbtList() }, { it }))
-			compound.put(TAG_LINKED_WISPS, linked.map({ it.toNbtList() }, { it }))
-			compound.put(TAG_RENDER_LINKS, entityData.get(RENDER_LINKS))
 			compound.put(TAG_RECEIVED_IOTAS, receivedIotas.map({ it.toNbtList() }, { it }))
 		}
 		compound.putInt(TAG_MEDIA, media)
 	}
 
 	override fun defineSynchedData() {
+		super.defineSynchedData()
+
 		// defines the entry in SynchedEntityData associated with the EntityDataAccessor COLOURISER, and gives it a default value
 //		HexalAPI.LOGGER.info("defineSynchedData for $uuid called!")
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20 * ManaConstants.DUST_UNIT)
 		entityData.define(SCHEDULED_CAST, false)
-
-		val tag = CompoundTag()
-		tag.put(TAG_RENDER_LINKS, ListTag())
-		entityData.define(RENDER_LINKS, tag)
 	}
 
 	override fun getAddEntityPacket(): Packet<*> {
@@ -489,17 +392,16 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	companion object {
-		@JvmField
+		@JvmStatic
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+		@JvmStatic
 		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
+		@JvmStatic
 		val SCHEDULED_CAST: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.BOOLEAN)
-		val RENDER_LINKS: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
 		const val TAG_CASTER = "caster"
 		const val TAG_COLOURISER = "colouriser"
 		const val TAG_HEX = "hex"
-		const val TAG_LINKED_WISPS = "linked_wisps"
-		const val TAG_RENDER_LINKS = "render_link_list"
 		const val TAG_RECEIVED_IOTAS = "received_iotas"
 		const val TAG_MEDIA = "media"
 

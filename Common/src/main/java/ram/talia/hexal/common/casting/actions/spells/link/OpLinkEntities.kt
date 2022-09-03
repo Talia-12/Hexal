@@ -1,12 +1,11 @@
-package ram.talia.hexal.common.casting.actions.spells.wisp
+package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.entities.LinkableEntity
 
-object OpLinkWisps : SpellOperator {
+object OpLinkEntities : SpellOperator {
 	override val argc = 2
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -20,7 +19,7 @@ object OpLinkWisps : SpellOperator {
 
 		return Triple(
 			Spell(thisLinkable, other),
-			OpLinkWisp.LINK_COST,
+			OpLinkEntity.LINK_COST,
 			listOf(ParticleSpray.burst(other.position(), 1.5))
 		)
 	}

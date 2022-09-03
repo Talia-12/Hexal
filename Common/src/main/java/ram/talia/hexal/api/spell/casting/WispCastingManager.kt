@@ -97,6 +97,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		val wisp = cast.wisp!!
 
 		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
+		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 		mCast?.wisp = wisp
 

@@ -1,4 +1,4 @@
-package ram.talia.hexal.common.casting.actions.spells.wisp
+package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
@@ -11,7 +11,7 @@ import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.entities.LinkableEntity
 
-object OpLinkWisp : SpellOperator {
+object OpLinkEntity : SpellOperator {
 	const val LINK_COST = ManaConstants.SHARD_UNIT
 
 	override val argc = 1

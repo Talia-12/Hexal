@@ -3,11 +3,11 @@ package ram.talia.hexal.common.casting;
 import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
-import org.apache.commons.codec.binary.Hex;
 import ram.talia.hexal.common.casting.actions.*;
 import ram.talia.hexal.common.casting.actions.spells.OpFallingBlock;
 import ram.talia.hexal.common.casting.actions.spells.OpFreeze;
 import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
+import ram.talia.hexal.common.casting.actions.spells.link.*;
 import ram.talia.hexal.common.casting.actions.spells.wisp.*;
 import ram.talia.hexal.common.casting.actions.spells.great.OpConsumeWisp;
 
@@ -59,19 +59,19 @@ public class RegisterPatterns {
 																 OpWispMedia.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST),
 																 modLoc("wisp/link/link"),
-																 OpLinkWisp.INSTANCE);
+																 OpLinkEntity.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST),
 																 modLoc("wisp/link/link_two"),
-																 OpLinkWisps.INSTANCE);
+																 OpLinkEntities.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST),
 																 modLoc("wisp/link/unlink"),
-																 OpUnlinkWisp.INSTANCE);
+																 OpUnlink.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqaww", HexDir.EAST),
 																 modLoc("wisp/link/get"),
-																 OpGetLinkedWisp.INSTANCE);
+																 OpGetLinked.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qeeeeedww", HexDir.WEST),
 																 modLoc("wisp/link/num"),
-																 OpNumLinkedWisps.INSTANCE);
+																 OpNumLinked.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qqqqqwdeddw", HexDir.NORTH_WEST),
 																 modLoc("wisp/comm/send"),
 																 OpSendIota.INSTANCE);

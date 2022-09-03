@@ -34,6 +34,7 @@ object OpConsumeWisp : SpellOperator {
 
 	private data class Spell(val consumed: BaseWisp) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
+			@Suppress("CAST_NEVER_SUCCEEDS")
 			val mCast = ctx as? MixinCastingContextInterface
 
 			if (mCast != null && mCast.wisp != null)
