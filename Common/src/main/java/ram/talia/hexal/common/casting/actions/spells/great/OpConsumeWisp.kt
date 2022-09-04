@@ -3,9 +3,11 @@ package ram.talia.hexal.common.casting.actions.spells.great
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.BaseWisp
 import kotlin.math.ln
+import kotlin.math.min
 
 object OpConsumeWisp : SpellOperator {
 	const val COST_FOR_OWN = ManaConstants.SHARD_UNIT
@@ -18,12 +20,18 @@ object OpConsumeWisp : SpellOperator {
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
 		val consumed = args.getChecked<BaseWisp>(0, argc)
 
+		HexalAPI.LOGGER.info("consuming $consumed")
+
 		ctx.assertEntityInRange(consumed)
+
+		HexalAPI.LOGGER.info("$consumed in range")
 
 		val cost = when (consumed.caster?.uuid) {
 			ctx.caster.uuid -> COST_FOR_OWN
 			else -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
 		}
+
+		HexalAPI.LOGGER.info("cost to consume $consumed is $cost")
 
 		return Triple(
 			Spell(consumed),
@@ -34,12 +42,15 @@ object OpConsumeWisp : SpellOperator {
 
 	private data class Spell(val consumed: BaseWisp) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
+			HexalAPI.LOGGER.info("cast method of Spell of OpConsumeWisp triggered targeting $consumed")
+
 			@Suppress("CAST_NEVER_SUCCEEDS")
 			val mCast = ctx as? MixinCastingContextInterface
 
 			if (mCast != null && mCast.wisp != null)
 				mCast.wisp.media += 19 * consumed.media / 20
 
+			HexalAPI.LOGGER.info("discarding $consumed")
 			consumed.discard()
 		}
 	}

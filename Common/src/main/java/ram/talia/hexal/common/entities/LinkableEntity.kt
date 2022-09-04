@@ -27,7 +27,16 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	override val asSpellResult
 		get() = spellListOf(this)
 
-	var linked: Either<MutableList<ILinkable<*>>, ListTag> = Either.left(ArrayList())
+	var linked: MutableList<ILinkable<*>>
+		get() {
+			resolveLinked()
+			return linkedEither.left().get()
+		}
+		set(value) {
+			linkedEither = Either.left(value)
+		}
+
+	private var linkedEither: Either<MutableList<ILinkable<*>>, ListTag> = Either.left(ArrayList())
 	var renderLinks: MutableList<ILinkable<*>>
 		get() {
 			if (level.isClientSide)
@@ -53,7 +62,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	private fun resolveLinked() {
-		linked = Either.left(linked.map({ it }, { listTag -> listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList }))
+		linkedEither = Either.left(linkedEither.map({ it }, { listTag -> listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList }))
 	}
 
 	private fun addRenderLink(other: ILinkable<*>) {
@@ -83,17 +92,11 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 			return
 		}
 
-		resolveLinked()
-
-		if (other in linked.left().get())
+		if (other in linked)
 			return
 
-		HexalAPI.LOGGER.info("doing the ifLeft.")
-
-		linked.ifLeft {
-			HexalAPI.LOGGER.info("adding $other to $uuid's links.")
-			it.add(other)
-		}
+		HexalAPI.LOGGER.info("adding $other to $uuid's links.")
+		linked.add(other)
 
 		if (linkOther) {
 			HexalAPI.LOGGER.info("adding $other to $uuid's render links.")
@@ -111,11 +114,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 			return
 		}
 
-		resolveLinked()
-
-		linked.ifLeft {
-			it.remove(other)
-		}
+		linked.remove(other)
 		removeRenderLink(other)
 
 		if (unlinkOther) {
@@ -125,17 +124,15 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun getLinked(index: Int): ILinkable<*> {
 		if (level.isClientSide) {
-			HexalAPI.LOGGER.info("linkable $uuid had unlink called in a clientside context.")
+			HexalAPI.LOGGER.info("linkable $uuid had getLinked called in a clientside context.")
 			//TODO: throw error here
 		}
 
-		resolveLinked()
-		return linked.left().get()[index]
+		return linked[index]
 	}
 
 	override fun numLinked(): Int {
-		resolveLinked()
-		return linked.left().get().size
+		return linked.size
 	}
 
 	override fun writeToNbt(): Tag {
@@ -146,18 +143,21 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		return IntTag.valueOf(id)
 	}
 
+	override fun tick() {
+		super.tick()
+
+		if (isRemoved && removalReason?.shouldDestroy() == true)
+			linked.forEach { unlink(it) }
+	}
+
 	override fun readAdditionalSaveData(compound: CompoundTag) {
-		if (!level.isClientSide) {
-			linked = Either.right(compound.get(TAG_LINKED) as ListTag)
-			entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as CompoundTag)
-		}
+		linkedEither = Either.right(compound.get(TAG_LINKED) as ListTag)
+		entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as CompoundTag)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
-		if (!level.isClientSide) {
-			compound.put(TAG_LINKED, linked.map({ linkables -> linkables.map { LinkableRegistry.wrapNbt(it) }.toNbtList() }, { it }))
-			compound.put(TAG_RENDER_LINKS, entityData.get(RENDER_LINKS))
-		}
+		compound.put(TAG_LINKED, linkedEither.map({ linkables -> linkables.map { LinkableRegistry.wrapNbt(it) }.toNbtList() }, { it }))
+		compound.put(TAG_RENDER_LINKS, entityData.get(RENDER_LINKS))
 	}
 
 	override fun defineSynchedData() {

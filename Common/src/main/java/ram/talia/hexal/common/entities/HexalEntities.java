@@ -28,7 +28,7 @@ public class HexalEntities {
 	public static final EntityType<ProjectileWisp> PROJECTILE_WISP = register(
 					"wisp/projectile",
 					EntityType.Builder.of((EntityType.EntityFactory<ProjectileWisp>) ProjectileWisp::new, MobCategory.MISC)
-														.sized(0.3f, 0.3f)
+														.sized(0.5f, 0.5f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
 														.build(HexalAPI.MOD_ID + ":wisp/projectile"));
@@ -36,7 +36,7 @@ public class HexalEntities {
 	public static final EntityType<TickingWisp> TICKING_WISP = register(
 					"wisp/ticking",
 					EntityType.Builder.of((EntityType.EntityFactory<TickingWisp>) TickingWisp::new, MobCategory.MISC)
-														.sized(0.3f, 0.3f)
+														.sized(0.5f, 0.5f)
 														.clientTrackingRange(10)
 														.updateInterval(1)
 														.build(HexalAPI.MOD_ID + ":wisp/ticking"));

@@ -57,33 +57,33 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST),
 																 modLoc("wisp/media"),
 																 OpWispMedia.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST),
-																 modLoc("wisp/link/link"),
-																 OpLinkEntity.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST),
-																 modLoc("wisp/link/link_two"),
-																 OpLinkEntities.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST),
-																 modLoc("wisp/link/unlink"),
-																 OpUnlink.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqaww", HexDir.EAST),
-																 modLoc("wisp/link/get"),
-																 OpGetLinked.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("qeeeeedww", HexDir.WEST),
-																 modLoc("wisp/link/num"),
-																 OpNumLinked.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("qqqqqwdeddw", HexDir.NORTH_WEST),
-																 modLoc("wisp/comm/send"),
-																 OpSendIota.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("weeeeew", HexDir.NORTH_EAST),
-																 modLoc("wisp/comm/read"),
-																 OpReadReceivedIota.INSTANCE);
-			PatternRegistry.mapPattern(HexPattern.fromAngles("aweeeeewaa", HexDir.SOUTH_EAST),
-																 modLoc("wisp/comm/num"),
-																 OpNumReceivedIota.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
 																 modLoc("wisp/consume"),
 																 OpConsumeWisp.INSTANCE, true);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST),
+																 modLoc("link/link_entity"),
+																 OpLinkEntity.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST),
+																 modLoc("link/link_two_entities"),
+																 OpLinkEntities.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST),
+																 modLoc("link/unlink"),
+																 OpUnlink.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqaww", HexDir.EAST),
+																 modLoc("link/get"),
+																 OpGetLinked.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qeeeeedww", HexDir.WEST),
+																 modLoc("link/num"),
+																 OpNumLinked.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qqqqqwdeddw", HexDir.NORTH_WEST),
+																 modLoc("link/comm/send"),
+																 OpSendIota.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("weeeeew", HexDir.NORTH_EAST),
+																 modLoc("link/comm/read"),
+																 OpReadReceivedIota.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aweeeeewaa", HexDir.SOUTH_EAST),
+																 modLoc("link/comm/num"),
+																 OpNumReceivedIota.INSTANCE);
 		}
 		catch (PatternRegistry.RegisterPatternException e) {
 			e.printStackTrace();

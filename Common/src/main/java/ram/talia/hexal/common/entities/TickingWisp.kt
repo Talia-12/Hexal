@@ -9,10 +9,6 @@ import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
-import net.minecraft.network.syncher.EntityDataAccessor
-import net.minecraft.network.syncher.EntityDataSerializers
-import net.minecraft.network.syncher.SynchedEntityData
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
@@ -47,6 +43,7 @@ class TickingWisp : BaseWisp {
 	}
 
 	override fun childTick() {
+//		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, stack, ravenmind)
 	}
 
@@ -90,46 +87,33 @@ class TickingWisp : BaseWisp {
 
 	override fun load(compound: CompoundTag) {
 		super.load(compound)
-		if (level is ServerLevel) {
-			val stackNbt = compound.get(STACK_TAG) as ListTag
-			HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
-			stack = Either.right(stackNbt)
-			HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stack")
-			ravenmind = Either.right(compound.getCompound(RAVENMIND_TAG))
-		}
+		val stackNbt = compound.get(STACK_TAG) as ListTag
+		HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
+		stack = Either.right(stackNbt)
+		HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stack")
+		ravenmind = Either.right(compound.getCompound(RAVENMIND_TAG))
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
-		if (level is ServerLevel) {
-			stack.map(
-				{compound.put(STACK_TAG, it.toNbtList())},
-				{compound.put(STACK_TAG, it)}
-			)
-			HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}")
-			ravenmind.map(
-				{compound.put(RAVENMIND_TAG, it.serializeToNBT())},
-				{compound.put(RAVENMIND_TAG, it)}
-			)
-			HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}")
-		}
-	}
 
-	override fun defineSynchedData() {
-		super.defineSynchedData()
-		entityData.define(LASTING, false)
+		stack.map(
+			{compound.put(STACK_TAG, it.toNbtList())},
+			{compound.put(STACK_TAG, it)}
+		)
+		HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}, was $stack")
+		ravenmind.map(
+			{compound.put(RAVENMIND_TAG, it.serializeToNBT())},
+			{compound.put(RAVENMIND_TAG, it)}
+		)
+		HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}, was $ravenmind")
 	}
 
 	companion object {
-		val LASTING: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.BOOLEAN)
-
-		const val LASTING_TAG = "lasting"
 		const val STACK_TAG = "stack"
 		const val RAVENMIND_TAG = "ravenmind"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
 		const val CASTING_RADIUS = 8.0
-
-		const val TICK_COST_EXP_SCALE = 1.0/60
 	}
 }

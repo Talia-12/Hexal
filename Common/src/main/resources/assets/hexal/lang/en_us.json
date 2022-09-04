@@ -16,6 +16,16 @@
   "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
   "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
 
+  "hexcasting.spell.hexal:link/link_entity": "Link Entity",
+  "hexcasting.spell.hexal:link/link_two_entities": "Link Entities",
+  "hexcasting.spell.hexal:link/unlink": "Unlink",
+  "hexcasting.spell.hexal:link/get": "Linked Purification",
+  "hexcasting.spell.hexal:link/num": "Linked Count Reflection",
+
+  "hexcasting.spell.hexal:link/comm/send": "Send Iota",
+  "hexcasting.spell.hexal:link/comm/read": "Recitation Reflection",
+  "hexcasting.spell.hexal:link/comm/num": "Postmaster's Reflection",
+
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
 
@@ -36,6 +46,18 @@
   "hexal.page.wisps.wisp/summon/ticking.0": "Similar to Summon Projectile Wisp, but with only one vector input for the position to summon the wisp. Cyclic wisps are unmoving once summoned, instead executing their hex up to 20 times each second.",
   "hexal.page.wisps.wisp/summon/ticking.1": "The first time it casts the stack will start with a reference to itself, from which point it will always start with the stack and ravenmind in the state they finished on the last cast. This wisp has a less stable form making it lose significantly more media every second, losing one $(l:items/amethyst)$(item)Amethyst Dust/$ per second once summoned, as well as an amount proportional to the amount remaining. It has a range of influence of 8 blocks.",
   "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; trying to cast it through a staff will fail rather spectacularly.",
+
+  "hexal.entry.links": "Links",
+  "hexal.page.links.0": "These patterns outline a system that I have found for communicating information from one $(l:patterns/spells/wisps)$(action)wisp/$ to another, among other things. There are a number of patterns related to creating these links that are able to transmit information, and a number of patterns related to sending and receiving iotas over a link once it is created. A wisp can have any number of links active, with each costing a negligible amount of media to maintain each tick.",
+  "hexal.page.links.1": "As links are created connected to a wisp that wisp will assign an order to them, based on the order which they were created, which is used to reference the links in a number of patterns. Unless otherwise stated, these patterns must be evaluated by a wisp, with unpleasant consequences if I try to evaluate them myself.",
+  "hexal.page.links.link/link_entity": "Links the casting wisp to the entity removed from the stack, which must be linkable.",
+  "hexal.page.links.link/link_two_entities": "May be evaluated by any casting instrument. Links two entities, which must be linkable.",
+  "hexal.page.links.link/unlink": "Removes the link at the given index from the casting wisp's links.",
+  "hexal.page.links.link/get": "Removes an index from the stack, and adds the entity connected to the link at that index to the stack.",
+  "hexal.page.links.link/num": "Adds the number of links to the wisp to the stack.",
+  "hexal.page.links.link/comm/send": "Removes an index from the stack, then removes an iota from the stack and sends it along the link at the given index.",
+  "hexal.page.links.link/comm/read": "Adds the oldest unread iota that was sent to this wisp along a link to the stack.",
+  "hexal.page.links.link/comm/num": "Adds the number of unread iota that were sent to this wisp to the stack.",
 
   "hexal.entry.great_wisps": "Great Wisp Spells",
   "hexal.page.great_wisps.wisp/consume.0": "Remove a wisp from the stack, and disassemble it. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",

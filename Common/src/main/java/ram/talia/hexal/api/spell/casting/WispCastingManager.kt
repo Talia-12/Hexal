@@ -110,7 +110,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 		// the wisp will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
 		// stack and ravenmind is. This is returned and added to a list that [executeCasts] will loop over to hopefully prevent concurrent modification problems.
-		return WispCastResult(wisp, info.makesCastSound, harness.stack, harness.localIota)
+		return WispCastResult(wisp, info.resolutionType.success, info.makesCastSound, harness.stack, harness.localIota)
 	}
 
 	fun readFromNbt(tag: CompoundTag, level: ServerLevel) {
@@ -213,7 +213,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseWisp, val makesCastSound: Boolean, val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>) {
+	data class WispCastResult(val wisp: BaseWisp, val succeeded: Boolean, val makesCastSound: Boolean, val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>) {
 		fun callback() { wisp.castCallback(this) }
 	}
 

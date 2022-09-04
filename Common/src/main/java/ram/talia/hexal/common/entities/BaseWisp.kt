@@ -120,12 +120,15 @@ abstract class BaseWisp : LinkableEntity {
 			discard()
 		}
 
-		if (!scheduledCast) {
+//		HexalAPI.LOGGER.info("wisp $uuid ticked and ${if (scheduledCast) "does" else "doesn't"} have a cast scheduled.")
+
+		if (!scheduledCast || caster == null) {
 			if (!level.isClientSide)
 				deductMedia()
 
 			oldPos = position()
 
+//			HexalAPI.LOGGER.info("ticking child")
 			childTick()
 			move()
 		}
@@ -182,12 +185,12 @@ abstract class BaseWisp : LinkableEntity {
 		val rInitialStack = initialStack.map({ it }, { it.toIotaList(level as ServerLevel) })
 		val rInitialRavenmind = initialRavenmind.map({ it }, { SpellDatum.Companion.fromNBT(it, level as ServerLevel) })
 
-//		HexalAPI.LOGGER.info("attempting to schedule cast")
+//		HexalAPI.LOGGER.info("wisp $uuid attempting to schedule cast")
 
 		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).ifPresent {
 			it.scheduleCast(this, priority, rHex, rInitialStack, rInitialRavenmind)
 
-//			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $hex, stack was $initialStack, ravenmind was $initialRavenmind")
+//			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $rHex, stack was $rInitialStack, ravenmind was $rInitialRavenmind")
 
 			scheduledCast = true
 		}
@@ -196,6 +199,8 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	override fun receiveIota(iota: SpellDatum<*>) {
+//		HexalAPI.LOGGER.info("wisp $uuid received iota $iota")
+
 		receivedIotas = Either.left(receivedIotas.map({ it }, { it.toIotaList(level as ServerLevel) }))
 
 		receivedIotas.ifLeft {
@@ -204,6 +209,8 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	override fun nextReceivedIota(): SpellDatum<*> {
+//		HexalAPI.LOGGER.info("wisp $uuid nextReceivedIota clled")
+
 		receivedIotas = Either.left(receivedIotas.map({ it }, { it.toIotaList(level as ServerLevel) }))
 
 		val rReceivedIotas = receivedIotas.left().get()
@@ -215,16 +222,26 @@ abstract class BaseWisp : LinkableEntity {
 		val iota = receivedIotas.left().get()[0]
 		receivedIotas.left().get().removeAt(0)
 
+//		HexalAPI.LOGGER.info("returning $iota")
+
 		return iota
 	}
 
 	override fun numRemainingIota(): Int {
+//		HexalAPI.LOGGER.info("wisp $uuid numRemainingIota clled")
+
 		receivedIotas = Either.left(receivedIotas.map({ it }, { it.toIotaList(level as ServerLevel) }))
+
+//		HexalAPI.LOGGER.info("returning ${receivedIotas.left().get().size}")
 
 		return receivedIotas.left().get().size
 	}
 
 	open fun castCallback(result: WispCastingManager.WispCastResult) {
+		// the cast errored, delete the wisp
+		if (!result.succeeded)
+			discard()
+
 		scheduledCast = false
 	}
 
@@ -297,8 +314,6 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	fun playLinkParticles(colouriser: FrozenColorizer) {
-		HexalAPI.LOGGER.info("wisp $uuid has ${renderLinks.size} links to render")
-
 		for (renderLink in renderLinks) {
 			val delta = renderLink.getPos() - position()
 			val dist = delta.length() * 12
@@ -338,34 +353,33 @@ abstract class BaseWisp : LinkableEntity {
 	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)
 
-		HexalAPI.LOGGER.info("this world is a ${if (level.isClientSide) "client side" else "server side"} level")
-
-		if (compound.hasUUID(TAG_CASTER))
+		if (compound.hasUUID(TAG_CASTER)) {
 			casterUUID = compound.getUUID(TAG_CASTER)
+//			HexalAPI.LOGGER.info("loading wisp $uuid's casterUUID as $casterUUID")
+		}
+
 
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
-		if (!level.isClientSide) {
-			hex = Either.right(compound.get(TAG_HEX) as ListTag)
-			linked = Either.right(compound.get(TAG_LINKED) as ListTag)
-			entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as CompoundTag)
-			receivedIotas = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
-		}
+		val hexTag = compound.get(TAG_HEX)
+//		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
+		hex = Either.right(hexTag as ListTag)
+		receivedIotas = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
 		media = compound.getInt(TAG_MEDIA)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		HexalAPI.LOGGER.info("this world is a ${if (level.isClientSide) "client side" else "server side"} level")
+//		HexalAPI.LOGGER.info("saving wisp $uuid's caster $caster based on $casterUUID")
 
 		if (casterUUID != null)
 			compound.putUUID(TAG_CASTER, casterUUID!!)
 
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
-		if (!level.isClientSide) {
-			compound.put(TAG_HEX, hex.map({ it.toNbtList() }, { it }))
-			compound.put(TAG_RECEIVED_IOTAS, receivedIotas.map({ it.toNbtList() }, { it }))
-		}
+		val hexTag = hex.map({ it.toNbtList() }, { it })
+//		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
+		compound.put(TAG_HEX, hexTag)
+		compound.put(TAG_RECEIVED_IOTAS, receivedIotas.map({ it.toNbtList() }, { it }))
 		compound.putInt(TAG_MEDIA, media)
 	}
 
