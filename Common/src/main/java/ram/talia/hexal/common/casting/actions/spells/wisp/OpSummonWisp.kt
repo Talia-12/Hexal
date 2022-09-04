@@ -49,7 +49,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
                 false -> ProjectileWisp(ctx.world, pos, vel, ctx.caster, media)
             }
             wisp.setColouriser(colouriser)
-            wisp.hex = Either.left(hex)
+            wisp.hex = hex
             ctx.world.addFreshEntity(wisp)
         }
     }

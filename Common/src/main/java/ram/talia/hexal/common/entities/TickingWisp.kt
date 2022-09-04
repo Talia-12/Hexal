@@ -9,6 +9,7 @@ import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
@@ -16,6 +17,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import kotlin.math.pow
 
@@ -24,8 +26,33 @@ class TickingWisp : BaseWisp {
 
 
 
-	private var stack: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(mutableListOf(SpellDatum.make(this)))
-	private var ravenmind: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL))
+	var stack: MutableList<SpellDatum<*>>
+		get() {
+			resolveStack()
+			return stackEither.left().get()
+		}
+		set(value) {
+			stackEither = Either.left(value)
+		}
+	private var stackEither: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(mutableListOf(SpellDatum.make(this)))
+
+	var ravenmind: SpellDatum<*>
+		get() {
+			resolveRavenmind()
+			return ravenmindEither.left().get()
+		}
+		set(value) {
+			ravenmindEither = Either.left(value)
+		}
+	private var ravenmindEither: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL))
+
+	private fun resolveStack() {
+		stackEither.ifRight { listTag -> stackEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
+	}
+
+	private fun resolveRavenmind() {
+		ravenmindEither.ifRight { iotaTag -> ravenmindEither = Either.left(SpellDatum.Companion.fromNBT(iotaTag, level as ServerLevel)) }
+	}
 
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
 	constructor(
@@ -53,8 +80,8 @@ class TickingWisp : BaseWisp {
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
-		stack = Either.left(result.endStack)
-		ravenmind = Either.left(result.endRavenmind)
+		stack = result.endStack
+		ravenmind = result.endRavenmind
 
 		if (result.makesCastSound) {
 			level.playSound(
@@ -89,24 +116,24 @@ class TickingWisp : BaseWisp {
 		super.load(compound)
 		val stackNbt = compound.get(STACK_TAG) as ListTag
 		HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
-		stack = Either.right(stackNbt)
-		HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stack")
-		ravenmind = Either.right(compound.getCompound(RAVENMIND_TAG))
+		stackEither = Either.right(stackNbt)
+		HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stackEither")
+		ravenmindEither = Either.right(compound.getCompound(RAVENMIND_TAG))
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		stack.map(
+		stackEither.map(
 			{compound.put(STACK_TAG, it.toNbtList())},
 			{compound.put(STACK_TAG, it)}
 		)
-		HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}, was $stack")
-		ravenmind.map(
+		HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}, was $stackEither")
+		ravenmindEither.map(
 			{compound.put(RAVENMIND_TAG, it.serializeToNBT())},
 			{compound.put(RAVENMIND_TAG, it)}
 		)
-		HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}, was $ravenmind")
+		HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}, was $ravenmindEither")
 	}
 
 	companion object {

@@ -36,7 +36,7 @@ object OpConsumeWisp : SpellOperator {
 		return Triple(
 			Spell(consumed),
 			cost,
-			listOf(ParticleSpray.burst(consumed.position(), 1.0, (ln(10.0) * 140 * ln(consumed.media/10.0 + 1)).toInt()))
+			listOf(ParticleSpray.burst(consumed.position(), 1.0, (ln(10.0) * 14 * ln(consumed.media/10.0 + 1)).toInt()))
 		)
 	}
 

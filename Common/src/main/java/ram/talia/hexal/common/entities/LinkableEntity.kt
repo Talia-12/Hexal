@@ -62,7 +62,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	private fun resolveLinked() {
-		linkedEither = Either.left(linkedEither.map({ it }, { listTag -> listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList }))
+		linkedEither.ifRight { listTag -> linkedEither = Either.left(listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList) }
 	}
 
 	private fun addRenderLink(other: ILinkable<*>) {
@@ -92,7 +92,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 			return
 		}
 
-		if (other in linked)
+		if (other in linked || (other is LinkableEntity && this.uuid.equals(other.uuid)))
 			return
 
 		HexalAPI.LOGGER.info("adding $other to $uuid's links.")
@@ -104,7 +104,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		}
 
 		if (linkOther) {
-			link(this, false)
+			other.link(this, false)
 		}
 	}
 
@@ -114,11 +114,13 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 			return
 		}
 
+		HexalAPI.LOGGER.info("unlinking LinkableEntity $uuid from $other")
+
 		linked.remove(other)
 		removeRenderLink(other)
 
 		if (unlinkOther) {
-			unlink(this, false)
+			other.unlink(this, false)
 		}
 	}
 
@@ -144,10 +146,16 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun tick() {
-		super.tick()
+		HexalAPI.LOGGER.info("testing, $uuid - $removalReason")
+
+		if (isRemoved) {
+			HexalAPI.LOGGER.info("LE $uuid is removed with reason $removalReason, shouldDestroy=${removalReason?.shouldDestroy()}")
+		}
 
 		if (isRemoved && removalReason?.shouldDestroy() == true)
 			linked.forEach { unlink(it) }
+
+		super.tick()
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {

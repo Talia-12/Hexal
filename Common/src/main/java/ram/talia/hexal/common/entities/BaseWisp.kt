@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.google.common.base.MoreObjects
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.*
@@ -64,9 +66,25 @@ abstract class BaseWisp : LinkableEntity {
 	// Either used so that loading from NBT results in lazy loading where the ListTag
 	// is only converted into a List of SpellDatum's when needed, meaning that it's
 	// guaranteed to happen at the point where Level.getEntity works properly.
-	var hex: Either<List<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
+	var hex: List<SpellDatum<*>>
+		get() {
+			resolveHex()
+			return hexEither.left().get()
+		}
+		set(value) {
+			hexEither = Either.left(value)
+		}
+	private var hexEither: Either<List<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
 
-	var receivedIotas: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
+	var receivedIotas: MutableList<SpellDatum<*>>
+		get() {
+			resolveReceivedIotas()
+			return receivedIotasEither.left().get()
+		}
+		set(value) {
+			receivedIotasEither = Either.left(value)
+		}
+	private var receivedIotasEither: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -86,6 +104,14 @@ abstract class BaseWisp : LinkableEntity {
 		media += dMedia
 	}
 
+	private fun resolveHex() {
+		hexEither.ifRight { listTag -> hexEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
+	}
+
+	private fun resolveReceivedIotas() {
+		receivedIotasEither.ifRight { listTag -> receivedIotasEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
+	}
+
 	// error here isn't actually a problem
 	//TODO: if the owner is null on the server we need to do SOMETHING to handle it
 	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world) {
@@ -102,7 +128,7 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	open fun getEffectSource(): Entity {
-		return MoreObjects.firstNonNull(this.caster, this)
+		return this.caster ?: this
 	}
 
 
@@ -172,23 +198,19 @@ abstract class BaseWisp : LinkableEntity {
 	 */
 	fun scheduleCast(
 		priority: Int,
-		hex: Either<List<SpellDatum<*>>, ListTag>,
-		initialStack: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList<SpellDatum<*>>().toMutableList()),
-		initialRavenmind: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL)),
+		hex: List<SpellDatum<*>>,
+		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>(),
+		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	): Boolean {
 		if (level.isClientSide || caster == null)
 			return false // return dummy data, not expecting anything to be done with it
 
 		val sPlayer = caster as ServerPlayer
 
-		val rHex = hex.map({ it }, { it.toIotaList(level as ServerLevel) })
-		val rInitialStack = initialStack.map({ it }, { it.toIotaList(level as ServerLevel) })
-		val rInitialRavenmind = initialRavenmind.map({ it }, { SpellDatum.Companion.fromNBT(it, level as ServerLevel) })
-
 //		HexalAPI.LOGGER.info("wisp $uuid attempting to schedule cast")
 
 		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).ifPresent {
-			it.scheduleCast(this, priority, rHex, rInitialStack, rInitialRavenmind)
+			it.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
 //			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $rHex, stack was $rInitialStack, ravenmind was $rInitialRavenmind")
 
@@ -199,42 +221,34 @@ abstract class BaseWisp : LinkableEntity {
 	}
 
 	override fun receiveIota(iota: SpellDatum<*>) {
-//		HexalAPI.LOGGER.info("wisp $uuid received iota $iota")
+		HexalAPI.LOGGER.info("wisp $uuid received iota $iota")
 
-		receivedIotas = Either.left(receivedIotas.map({ it }, { it.toIotaList(level as ServerLevel) }))
+		receivedIotas.add(iota)
 
-		receivedIotas.ifLeft {
-			it.add(iota)
-		}
+		HexalAPI.LOGGER.info("now has ${receivedIotas.size} iotas, $receivedIotas")
 	}
 
 	override fun nextReceivedIota(): SpellDatum<*> {
-//		HexalAPI.LOGGER.info("wisp $uuid nextReceivedIota clled")
+		HexalAPI.LOGGER.info("wisp $uuid nextReceivedIota called")
 
-		receivedIotas = Either.left(receivedIotas.map({ it }, { it.toIotaList(level as ServerLevel) }))
-
-		val rReceivedIotas = receivedIotas.left().get()
-
-		if (rReceivedIotas.size == 0) {
+		if (receivedIotas.size == 0) {
 			return SpellDatum.make(Widget.NULL)
 		}
 
-		val iota = receivedIotas.left().get()[0]
-		receivedIotas.left().get().removeAt(0)
+		val iota = receivedIotas[0]
+		receivedIotas.removeAt(0)
 
-//		HexalAPI.LOGGER.info("returning $iota")
+		HexalAPI.LOGGER.info("returning $iota")
 
 		return iota
 	}
 
 	override fun numRemainingIota(): Int {
-//		HexalAPI.LOGGER.info("wisp $uuid numRemainingIota clled")
+		HexalAPI.LOGGER.info("wisp $uuid numRemainingIota called")
 
-		receivedIotas = Either.left(receivedIotas.map({ it }, { it.toIotaList(level as ServerLevel) }))
+		HexalAPI.LOGGER.info("returning ${receivedIotas.size}")
 
-//		HexalAPI.LOGGER.info("returning ${receivedIotas.left().get().size}")
-
-		return receivedIotas.left().get().size
+		return receivedIotas.size
 	}
 
 	open fun castCallback(result: WispCastingManager.WispCastResult) {
@@ -362,8 +376,8 @@ abstract class BaseWisp : LinkableEntity {
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
 		val hexTag = compound.get(TAG_HEX)
 //		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
-		hex = Either.right(hexTag as ListTag)
-		receivedIotas = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
+		hexEither = Either.right(hexTag as ListTag)
+		receivedIotasEither = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
 		media = compound.getInt(TAG_MEDIA)
 	}
 
@@ -376,10 +390,10 @@ abstract class BaseWisp : LinkableEntity {
 			compound.putUUID(TAG_CASTER, casterUUID!!)
 
 		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
-		val hexTag = hex.map({ it.toNbtList() }, { it })
+		val hexTag = hexEither.map({ it.toNbtList() }, { it })
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
 		compound.put(TAG_HEX, hexTag)
-		compound.put(TAG_RECEIVED_IOTAS, receivedIotas.map({ it.toNbtList() }, { it }))
+		compound.put(TAG_RECEIVED_IOTAS, receivedIotasEither.map({ it.toNbtList() }, { it }))
 		compound.putInt(TAG_MEDIA, media)
 	}
 

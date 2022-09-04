@@ -104,7 +104,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playWispParticles()
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, Either.left(mutableListOf(SpellDatum.make(this), SpellDatum.make(result.entity))))
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, mutableListOf(SpellDatum.make(this), SpellDatum.make(result.entity)))
 	}
 
 	fun onHitBlock(result: BlockHitResult) {
@@ -112,7 +112,7 @@ class ProjectileWisp : BaseWisp {
 		if (level.isClientSide)
 			playWispParticles()
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, Either.left(mutableListOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos)))))
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, mutableListOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))))
 	}
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
