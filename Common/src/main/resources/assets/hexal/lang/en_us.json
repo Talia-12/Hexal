@@ -9,12 +9,14 @@
   "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
 
   "hexcasting.spell.hexal:smelt": "Smelt",
+  "hexcasting.spell.hexal:freeze": "Freeze",
   "hexcasting.spell.hexal:falling_block": "Falling Block",
 
   "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
   "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Cyclic Wisp",
-  "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
   "hexcasting.spell.hexal:wisp/media": "Reservoir Reflection",
+  "hexcasting.spell.hexal:wisp/hex": "Manager's Purification",
+  "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
 
   "hexcasting.spell.hexal:link/link_entity": "Link Entity",
   "hexcasting.spell.hexal:link/link_two_entities": "Link Entities",
@@ -36,6 +38,7 @@
   "hexal.entry.hexal_spell": "Hexal Spells",
   "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",
   "hexal.page.hexal_spell.smelt.1": "Costs three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ per item smelted (i.e. three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ for smelting a block, 6 $(l:items/amethyst)$(item)Amethyst Dust/$ to smelt a stack of 8 items.)",
+  "hexal.page.hexal_spell.freeze": "Freezes the block at a block location. For example, turns water into ice, and ice into packed ice. Costs three $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.hexal_spell.falling_block": "Remove a location from the stack, and force the block there to fall as if it were sand or gravel. Costs one and a half $(l:items/amethyst)$(item)Amethyst Dust/$.",
 
   "hexal.entry.wisps": "Wisps",
@@ -46,6 +49,7 @@
   "hexal.page.wisps.wisp/summon/ticking.0": "Similar to Summon Projectile Wisp, but with only one vector input for the position to summon the wisp. Cyclic wisps are unmoving once summoned, instead executing their hex up to 20 times each second.",
   "hexal.page.wisps.wisp/summon/ticking.1": "The first time it casts the stack will start with a reference to itself, from which point it will always start with the stack and ravenmind in the state they finished on the last cast. This wisp has a less stable form making it lose significantly more media every second, losing one $(l:items/amethyst)$(item)Amethyst Dust/$ per second once summoned, as well as an amount proportional to the amount remaining. It has a range of influence of 8 blocks.",
   "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; trying to cast it through a staff will fail rather spectacularly.",
+  "hexal.page.wisps.wisp/hex": "Removes a reference to a wisp from the stack, and replaces it with the wisp's contained hex.",
 
   "hexal.entry.links": "Links",
   "hexal.page.links.0": "These patterns outline a system that I have found for communicating information from one $(l:patterns/spells/wisps)$(action)wisp/$ to another, among other things. There are a number of patterns related to creating these links that are able to transmit information, and a number of patterns related to sending and receiving iotas over a link once it is created. A wisp can have any number of links active, with each costing a negligible amount of media to maintain each tick.",

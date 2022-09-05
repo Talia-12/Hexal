@@ -45,6 +45,14 @@
       "input": "",
       "output": "number",
       "text": "hexal.page.wisps.wisp/media"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/hex",
+      "anchor": "hexal:wisp/hex",
+      "input": "entity",
+      "output": "[pattern]",
+      "text": "hexal.page.wisps.wisp/hex"
     }
   ]
 }

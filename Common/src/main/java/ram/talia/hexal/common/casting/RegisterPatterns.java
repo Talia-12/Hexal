@@ -57,6 +57,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST),
 																 modLoc("wisp/media"),
 																 OpWispMedia.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aweewaqaweewaawww", HexDir.SOUTH_EAST),
+																 modLoc("wisp/hex"),
+																 OpWispHex.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
 																 modLoc("wisp/consume"),
 																 OpConsumeWisp.INSTANCE, true);
