@@ -86,6 +86,8 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun getPos() = position()
 
+	override fun shouldRemove() = isRemoved && removalReason?.shouldDestroy() == true
+
 	override fun link(other: ILinkable<*>, linkOther: Boolean) {
 		if (level.isClientSide) {
 			HexalAPI.LOGGER.info("wisp $uuid had linkWisp called in a clientside context.")
@@ -146,16 +148,14 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun tick() {
-		HexalAPI.LOGGER.info("testing, $uuid - $removalReason")
-
-		if (isRemoved) {
-			HexalAPI.LOGGER.info("LE $uuid is removed with reason $removalReason, shouldDestroy=${removalReason?.shouldDestroy()}")
-		}
-
-		if (isRemoved && removalReason?.shouldDestroy() == true)
-			linked.forEach { unlink(it) }
-
 		super.tick()
+
+		if (!level.isClientSide) {
+			for (i in (linked.size - 1) downTo 0) {
+				if (linked[i].shouldRemove())
+					unlink(linked[i])
+			}
+		}
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {

@@ -13,6 +13,8 @@ interface ILinkable<T : ILinkable<T>> {
 
 	fun getPos(): Vec3
 
+	fun shouldRemove(): Boolean
+
 	fun link(other: ILinkable<*>, linkOther: Boolean = true)
 
 	fun unlink(other: ILinkable<*>, unlinkOther: Boolean = true)
