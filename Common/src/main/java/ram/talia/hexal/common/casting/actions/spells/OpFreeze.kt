@@ -51,8 +51,6 @@ object OpFreeze : SpellOperator {
 				return
 			}
 
-			//TODO: save cauldron fill as well when going water_cauldron to powder_snow_cauldron
-
 			val recman = ctx.world.recipeManager
 			val recipes = recman.getAllRecipesFor(HexalRecipeSerializers.FREEZE_TYPE!!)
 

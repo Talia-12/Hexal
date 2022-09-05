@@ -1,6 +1,5 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.PatternRegistry
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
@@ -13,14 +12,15 @@ object LinkableRegistry {
 
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*>> = mutableMapOf()
 
+	class RegisterLinkableException(msg: String) : Exception(msg)
+	class InvalidLinkableTypeException(msg: String) : Exception(msg)
+
 	init {
 		registerLinkableType(LinkableTypes.LinkableEntityType)
 	}
-
 	fun registerLinkableType(type: LinkableType<*>) {
 		if (linkableTypes.containsKey(type.id))
-			throw PatternRegistry.RegisterPatternException("LinkableRegistry already contains resource id ${type.id}")
-		//TODO: replace with better expection
+			throw RegisterLinkableException("LinkableRegistry already contains resource id ${type.id}")
 
 		linkableTypes[type.id] = type
 	}
@@ -66,12 +66,11 @@ object LinkableRegistry {
 	fun fromNbt(tag: CompoundTag, level: ServerLevel): ILinkable<*>? {
 		val typeId = tag.getString(TAG_TYPE)
 		if (!ResourceLocation.isValidResourceLocation(typeId))
-			throw PatternRegistry.RegisterPatternException("$typeId is not a valid resource location")
-		//TODO: replace with better expection
+			throw InvalidLinkableTypeException("$typeId is not a valid resource location")
 
-		val type = linkableTypes[ResourceLocation(typeId)]
+		val type = linkableTypes[ResourceLocation(typeId)] ?: throw InvalidLinkableTypeException("no LinkableType registered for $typeId")
 
-		return type!!.fromNbt(tag.get(TAG_LINKABLE)!!, level)
+		return type.fromNbt(tag.get(TAG_LINKABLE)!!, level)
 	}
 
 	fun wrapSync(linkable: ILinkable<*>) = linkable.getLinkableType().wrapSync(linkable.writeToSync())
@@ -79,11 +78,10 @@ object LinkableRegistry {
 	fun fromSync(tag: CompoundTag, level: Level): ILinkable<*>? {
 		val typeId = tag.getString(TAG_TYPE)
 		if (!ResourceLocation.isValidResourceLocation(typeId))
-			throw PatternRegistry.RegisterPatternException("$typeId is not a valid resource location")
-		//TODO: replace with better expection
+			throw InvalidLinkableTypeException("$typeId is not a valid resource location")
 
-		val type = linkableTypes[ResourceLocation(typeId)]
+		val type = linkableTypes[ResourceLocation(typeId)] ?: throw InvalidLinkableTypeException("no LinkableType registered for $typeId")
 
-		return type!!.fromSync(tag.get(TAG_LINKABLE)!!, level)
+		return type.fromSync(tag.get(TAG_LINKABLE)!!, level)
 	}
 }
