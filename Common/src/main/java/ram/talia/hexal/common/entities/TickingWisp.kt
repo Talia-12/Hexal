@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.spell.asSpellResult
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.mojang.datafixers.util.Either
@@ -112,13 +113,17 @@ class TickingWisp : BaseWisp {
 		}
 	}
 
-	override fun load(compound: CompoundTag) {
-		super.load(compound)
-		val stackNbt = compound.get(STACK_TAG) as ListTag
-		HexalAPI.LOGGER.info("loading wisp $uuid's stack from $stackNbt")
-		stackEither = Either.right(stackNbt)
-		HexalAPI.LOGGER.info("loaded wisp $uuid's stack as $stackEither")
-		ravenmindEither = Either.right(compound.getCompound(RAVENMIND_TAG))
+	override fun readAdditionalSaveData(compound: CompoundTag) {
+		super.readAdditionalSaveData(compound)
+
+		stackEither = when (val stackTag = compound.get(STACK_TAG)) {
+			null -> Either.left(mutableListOf())
+			else -> Either.right(stackTag as ListTag)
+		}
+		ravenmindEither = when (val ravenmindTag = compound.getCompound(RAVENMIND_TAG)) {
+			null -> Either.left(SpellDatum.make(Widget.NULL))
+			else -> Either.right(ravenmindTag)
+		}
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -128,12 +133,12 @@ class TickingWisp : BaseWisp {
 			{compound.put(STACK_TAG, it.toNbtList())},
 			{compound.put(STACK_TAG, it)}
 		)
-		HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}, was $stackEither")
+//		HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}, was $stackEither")
 		ravenmindEither.map(
 			{compound.put(RAVENMIND_TAG, it.serializeToNBT())},
 			{compound.put(RAVENMIND_TAG, it)}
 		)
-		HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}, was $ravenmindEither")
+//		HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}, was $ravenmindEither")
 	}
 
 	companion object {

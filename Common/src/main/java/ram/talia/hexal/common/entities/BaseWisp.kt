@@ -35,7 +35,7 @@ import java.util.*
 import kotlin.math.*
 
 
-abstract class BaseWisp : LinkableEntity {
+abstract class BaseWisp : LinkableEntity, IMediaEntity<BaseWisp> {
 	open val shouldComplainNotEnoughMedia = true
 
 	private var casterUUID: UUID? = null
@@ -99,10 +99,6 @@ abstract class BaseWisp : LinkableEntity {
 			setLookVector(value)
 			deltaMovement = value
 		}
-
-	fun addMedia(dMedia: Int) {
-		media += dMedia
-	}
 
 	private fun resolveHex() {
 		hexEither.ifRight { listTag -> hexEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
@@ -372,12 +368,19 @@ abstract class BaseWisp : LinkableEntity {
 //			HexalAPI.LOGGER.info("loading wisp $uuid's casterUUID as $casterUUID")
 		}
 
-
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
-		val hexTag = compound.get(TAG_HEX)
+
+		hexEither = when (val hexTag = compound.get(TAG_HEX)) {
+			null -> Either.left(mutableListOf())
+			else -> Either.right(hexTag as ListTag)
+		}
+
 //		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
-		hexEither = Either.right(hexTag as ListTag)
-		receivedIotasEither = Either.right(compound.get(TAG_RECEIVED_IOTAS) as ListTag)
+
+		receivedIotasEither = when (val receivedIotasTag = compound.get(TAG_RECEIVED_IOTAS)) {
+			null -> Either.left(mutableListOf())
+			else -> Either.right(receivedIotasTag as ListTag)
+		}
 		media = compound.getInt(TAG_MEDIA)
 	}
 

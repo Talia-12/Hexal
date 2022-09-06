@@ -40,7 +40,8 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	var renderLinks: MutableList<ILinkable<*>>
 		get() {
 			if (level.isClientSide)
-				return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)?.asList?.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level) } as MutableList? ?: mutableListOf()
+				return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)?.asList?.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level) } as MutableList?
+					?: mutableListOf()
 			return renderLinksList.map({ it }, { listTag -> listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList })
 		}
 		set(value) {
@@ -159,8 +160,11 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
-		linkedEither = Either.right(compound.get(TAG_LINKED) as ListTag)
-		entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as CompoundTag)
+		linkedEither = when (val linkedTag = compound.get(TAG_LINKED)) {
+			null -> Either.left(mutableListOf())
+			else -> Either.right(linkedTag as ListTag)
+		}
+		entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as? CompoundTag ?: CompoundTag())
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -175,7 +179,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 
-		companion object {
+	companion object {
 		val RENDER_LINKS: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
 		const val TAG_LINKED = "linked"
