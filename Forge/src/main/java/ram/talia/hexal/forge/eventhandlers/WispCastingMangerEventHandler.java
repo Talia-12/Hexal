@@ -1,5 +1,6 @@
 package ram.talia.hexal.forge.eventhandlers;
 
+import io.netty.util.internal.ObjectUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -8,6 +9,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.ObjectUtils;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
@@ -24,12 +26,15 @@ public class WispCastingMangerEventHandler {
 
 	private static final Map<UUID, WispCastingManager> castingManagers = new HashMap<>();
 	
-	public static WispCastingManager getCastingManager(UUID uuid) {
-		return castingManagers.get(uuid);
+	public static WispCastingManager getCastingManager(ServerPlayer serverPlayer) {
+		WispCastingManager manager = castingManagers.get(serverPlayer.getUUID());
+		return ObjectUtils.firstNonNull(manager, loadCastingManager(serverPlayer));
 	}
 	
-	public static WispCastingManager getCastingManager(ServerPlayer serverPlayer) {
-		return getCastingManager(serverPlayer.getUUID());
+	private static WispCastingManager loadCastingManager(ServerPlayer player) {
+		WispCastingManager manager = new WispCastingManager(player);
+		manager.readFromNbt(player.getPersistentData().getCompound(TAG_CASTING_MANAGER), player.getLevel());
+		return manager;
 	}
 	
 	@SubscribeEvent
@@ -39,9 +44,7 @@ public class WispCastingMangerEventHandler {
 		
 		ServerPlayer player = (ServerPlayer) event.getPlayer();
 
-		WispCastingManager manager = new WispCastingManager(player);
-		manager.readFromNbt(player.getPersistentData().getCompound(TAG_CASTING_MANAGER), player.getLevel());
-		castingManagers.put(player.getUUID(), manager);
+		castingManagers.put(player.getUUID(), loadCastingManager(player));
 	}
 	
 	@SubscribeEvent

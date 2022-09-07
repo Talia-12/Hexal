@@ -113,9 +113,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		return WispCastResult(wisp, info.resolutionType.success, info.makesCastSound, harness.stack, harness.localIota)
 	}
 
-	fun readFromNbt(tag: CompoundTag, level: ServerLevel) {
-
-		val list = tag.get(TAG_CAST_LIST) as ListTag
+	fun readFromNbt(tag: CompoundTag?, level: ServerLevel) {
+		val list = tag?.get(TAG_CAST_LIST) as? ListTag ?: return
 
 		for (castTag in list) {
 			queue.add(WispCast.makeFromNbt(castTag.asCompound, level))
@@ -192,8 +191,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 						wisp,
 						tag.getInt(TAG_PRIORITY),
 						tag.getLong(TAG_TIME_ADDED),
-						(tag.get(TAG_HEX) as ListTag).toIotaList(level),
-						(tag.get(TAG_INITIAL_STACK) as ListTag).toIotaList(level),
+						(tag.get(TAG_HEX) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
+						(tag.get(TAG_INITIAL_STACK) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
 						SpellDatum.fromNBT(tag.getCompound(TAG_INITIAL_RAVENMIND), level)
 					)
 				}
@@ -202,8 +201,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 					tag.getUUID(TAG_WISP),
 					tag.getInt(TAG_PRIORITY),
 					tag.getLong(TAG_TIME_ADDED),
-					(tag.get(TAG_HEX) as ListTag).toIotaList(level),
-					(tag.get(TAG_INITIAL_STACK) as ListTag).toIotaList(level),
+					(tag.get(TAG_HEX) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
+					(tag.get(TAG_INITIAL_STACK) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
 					SpellDatum.fromNBT(tag.getCompound(TAG_INITIAL_RAVENMIND), level)
 				)
 			}
