@@ -61,9 +61,13 @@ abstract class BaseWisp : LinkableEntity {
 			}
 		}
 
-	var media: Int
+	override var media: Int
 		get() = entityData.get(MEDIA)
 		set(value) = entityData.set(MEDIA, max(value, 0))
+
+	override val isConsumable = true
+
+	override fun fightConsume(caster: ServerPlayer) = this.caster?.equals(caster) ?: false
 
 	// Either used so that loading from NBT results in lazy loading where the ListTag
 	// is only converted into a List of SpellDatum's when needed, meaning that it's
@@ -113,6 +117,8 @@ abstract class BaseWisp : LinkableEntity {
 	private fun resolveReceivedIotas() {
 		receivedIotasEither.ifRight { listTag -> receivedIotasEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
 	}
+
+	override fun get() = this
 
 	// error here isn't actually a problem
 	//TODO: if the owner is null on the server we need to do SOMETHING to handle it

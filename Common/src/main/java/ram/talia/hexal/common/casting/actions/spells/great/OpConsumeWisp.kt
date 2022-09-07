@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln
 import kotlin.math.min
 
@@ -18,17 +19,17 @@ object OpConsumeWisp : SpellOperator {
 	override val isGreat = true
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-		val consumed = args.getChecked<BaseWisp>(0, argc)
+		val consumed = args.getChecked<IMediaEntity<*>>(0, argc)
 
 		HexalAPI.LOGGER.info("consuming $consumed")
 
-		ctx.assertEntityInRange(consumed)
+		ctx.assertEntityInRange(consumed.get())
 
 		HexalAPI.LOGGER.info("$consumed in range")
 
-		val cost = when (consumed.caster?.uuid) {
-			ctx.caster.uuid -> COST_FOR_OWN
-			else -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
+		val cost = when (consumed.fightConsume(ctx.caster)) {
+			true  -> COST_FOR_OWN
+			false -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
 		}
 
 		HexalAPI.LOGGER.info("cost to consume $consumed is $cost")
@@ -36,11 +37,11 @@ object OpConsumeWisp : SpellOperator {
 		return Triple(
 			Spell(consumed),
 			cost,
-			listOf(ParticleSpray.burst(consumed.position(), 1.0, (ln(10.0) * 14 * ln(consumed.media/10.0 + 1)).toInt()))
+			listOf(ParticleSpray.burst(consumed.get().position(), 1.0, (ln(10.0) * 14 * ln(consumed.media/10.0 + 1)).toInt()))
 		)
 	}
 
-	private data class Spell(val consumed: BaseWisp) : RenderedSpell {
+	private data class Spell(val consumed: IMediaEntity<*>) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			HexalAPI.LOGGER.info("cast method of Spell of OpConsumeWisp triggered targeting $consumed")
 
@@ -51,7 +52,7 @@ object OpConsumeWisp : SpellOperator {
 				mCast.wisp.media += 19 * consumed.media / 20
 
 			HexalAPI.LOGGER.info("discarding $consumed")
-			consumed.discard()
+			consumed.get().discard()
 		}
 	}
 }
