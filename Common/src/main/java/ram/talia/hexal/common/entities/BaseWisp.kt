@@ -35,7 +35,7 @@ import java.util.*
 import kotlin.math.*
 
 
-abstract class BaseWisp : LinkableEntity, IMediaEntity<BaseWisp> {
+abstract class BaseWisp : LinkableEntity {
 	open val shouldComplainNotEnoughMedia = true
 
 	private var casterUUID: UUID? = null
@@ -99,6 +99,10 @@ abstract class BaseWisp : LinkableEntity, IMediaEntity<BaseWisp> {
 			setLookVector(value)
 			deltaMovement = value
 		}
+
+	fun addMedia(dMedia: Int) {
+		media += dMedia
+	}
 
 	private fun resolveHex() {
 		hexEither.ifRight { listTag -> hexEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
