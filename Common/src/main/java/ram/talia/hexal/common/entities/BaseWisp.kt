@@ -4,10 +4,8 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
-import com.google.common.base.MoreObjects
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -26,7 +24,6 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.*
@@ -67,7 +64,7 @@ abstract class BaseWisp : LinkableEntity {
 
 	override val isConsumable = true
 
-	override fun fightConsume(consumer: BaseWisp) = this.caster?.equals(consumer.caster) ?: false
+	override fun fightConsume(consumer: Either<BaseWisp, ServerPlayer>) = this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false
 
 	// Either used so that loading from NBT results in lazy loading where the ListTag
 	// is only converted into a List of SpellDatum's when needed, meaning that it's
@@ -445,8 +442,10 @@ abstract class BaseWisp : LinkableEntity {
 	companion object {
 		@JvmStatic
 		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+
 		@JvmStatic
 		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
+
 		@JvmStatic
 		val SCHEDULED_CAST: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.BOOLEAN)
 

@@ -11,6 +11,7 @@ import java.util.function.BiConsumer
 
 class HexalRecipeSerializers {
 	companion object {
+		@JvmStatic
 		fun registerSerializers(r: BiConsumer<RecipeSerializer<*>, ResourceLocation>) {
 			for ((key, value) in SERIALIZERS) {
 				r.accept(value, key)
@@ -30,6 +31,7 @@ class HexalRecipeSerializers {
 		}
 
 		// Like in the statistics, gotta register it at some point
+		@JvmStatic
 		fun registerTypes() {
 			HexalRecipeSerializers.FREEZE_TYPE = RecipeType.register(HexalAPI.MOD_ID + ":freeze")
 		}

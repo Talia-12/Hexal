@@ -3,12 +3,13 @@ package ram.talia.hexal.common.casting.actions.spells.great
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import com.mojang.datafixers.util.Either
+import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln
-import kotlin.math.min
 
 object OpConsumeWisp : SpellOperator {
 	const val COST_FOR_OWN = ManaConstants.SHARD_UNIT
@@ -27,7 +28,12 @@ object OpConsumeWisp : SpellOperator {
 
 		HexalAPI.LOGGER.info("$consumed in range")
 
-		val cost = when (consumed.fightConsume(ctx.caster)) {
+		@Suppress("CAST_NEVER_SUCCEEDS")
+		val mCast = ctx as? MixinCastingContextInterface
+
+		val consumer: Either<BaseWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
+
+		val cost = when (consumed.fightConsume(consumer)) {
 			true  -> COST_FOR_OWN
 			false -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
 		}
