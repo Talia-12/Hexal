@@ -67,7 +67,7 @@ abstract class BaseWisp : LinkableEntity {
 
 	override val isConsumable = true
 
-	override fun fightConsume(caster: ServerPlayer) = this.caster?.equals(caster) ?: false
+	override fun fightConsume(consumer: BaseWisp) = this.caster?.equals(consumer.caster) ?: false
 
 	// Either used so that loading from NBT results in lazy loading where the ListTag
 	// is only converted into a List of SpellDatum's when needed, meaning that it's
