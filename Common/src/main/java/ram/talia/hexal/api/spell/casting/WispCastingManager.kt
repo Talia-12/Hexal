@@ -199,7 +199,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 				}
 
 				return WispCast(
-					level.getEntity(tag.getUUID(TAG_WISP)) as BaseWisp,
+					tag.getUUID(TAG_WISP),
 					tag.getInt(TAG_PRIORITY),
 					tag.getLong(TAG_TIME_ADDED),
 					(tag.get(TAG_HEX) as ListTag).toIotaList(level),

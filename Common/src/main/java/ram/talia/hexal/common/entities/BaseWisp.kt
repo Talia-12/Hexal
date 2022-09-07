@@ -19,7 +19,9 @@ import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.Pose
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
@@ -129,6 +131,10 @@ abstract class BaseWisp : LinkableEntity {
 
 	open fun getEffectSource(): Entity {
 		return this.caster ?: this
+	}
+
+	override fun getEyeHeight(pose: Pose, dim: EntityDimensions): Float {
+		return dim.height * 0.5f
 	}
 
 
@@ -305,10 +311,12 @@ abstract class BaseWisp : LinkableEntity {
 		playWispParticles(colouriser)
 	}
 
-	open protected fun playWispParticles(colouriser: FrozenColorizer) {
+	override fun renderCentre(): Vec3 = position() + Vec3(0.0, eyeHeight.toDouble(), 0.0)
+
+	protected open fun playWispParticles(colouriser: FrozenColorizer) {
 		val radius = ceil((media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
 
-		val delta = position() - oldPos
+		val delta = oldPos - position()
 		val dist = delta.length() * 12 * radius * radius * radius
 
 		for (i in 0..dist.toInt()) {
@@ -317,9 +325,9 @@ abstract class BaseWisp : LinkableEntity {
 			val coeff = i / dist
 			level.addParticle(
 				ConjureParticleOptions(colour, false),
-				(oldPos.x + delta.x * coeff),
-				(oldPos.y + delta.y * coeff),
-				(oldPos.z + delta.z * coeff),
+				(renderCentre().x + delta.x * coeff),
+				(renderCentre().y + delta.y * coeff),
+				(renderCentre().z + delta.z * coeff),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5)
@@ -329,7 +337,7 @@ abstract class BaseWisp : LinkableEntity {
 
 	fun playLinkParticles(colouriser: FrozenColorizer) {
 		for (renderLink in renderLinks) {
-			val delta = renderLink.getPos() - position()
+			val delta = renderLink.renderCentre() - renderCentre()
 			val dist = delta.length() * 12
 
 			for (i in 0..dist.toInt()) {
@@ -338,9 +346,9 @@ abstract class BaseWisp : LinkableEntity {
 				val coeff = i / dist
 				level.addParticle(
 					ConjureParticleOptions(colour, false),
-					(position().x + delta.x * coeff),
-					(position().y + delta.y * coeff),
-					(position().z + delta.z * coeff),
+					(renderCentre().x + delta.x * coeff),
+					(renderCentre().y + delta.y * coeff),
+					(renderCentre().z + delta.z * coeff),
 					0.0125 * (random.nextDouble() - 0.5),
 					0.0125 * (random.nextDouble() - 0.5),
 					0.0125 * (random.nextDouble() - 0.5)

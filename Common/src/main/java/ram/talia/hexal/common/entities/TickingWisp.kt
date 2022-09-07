@@ -103,9 +103,9 @@ class TickingWisp : BaseWisp {
 
 			level.addParticle(
 				ConjureParticleOptions(colour, true),
-				(position().x + radius*random.nextGaussian()),
-				(position().y + radius*random.nextGaussian()),
-				(position().z + radius*random.nextGaussian()),
+				(renderCentre().x + radius*random.nextGaussian()),
+				(renderCentre().y + radius*random.nextGaussian()),
+				(renderCentre().z + radius*random.nextGaussian()),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5),
 				0.0125 * (random.nextDouble() - 0.5)
