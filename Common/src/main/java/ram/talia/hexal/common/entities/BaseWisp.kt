@@ -34,7 +34,7 @@ import java.util.*
 import kotlin.math.*
 
 
-abstract class BaseWisp : LinkableEntity {
+abstract class BaseWisp : LinkableEntity, IMediaEntity<BaseWisp> {
 	open val shouldComplainNotEnoughMedia = true
 
 	private var casterUUID: UUID? = null
@@ -103,7 +103,7 @@ abstract class BaseWisp : LinkableEntity {
 			deltaMovement = value
 		}
 
-	fun addMedia(dMedia: Int) {
+	override fun addMedia(dMedia: Int) {
 		media += dMedia
 	}
 

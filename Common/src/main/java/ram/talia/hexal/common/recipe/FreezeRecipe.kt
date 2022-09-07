@@ -29,7 +29,7 @@ data class FreezeRecipe(val resId: ResourceLocation, val blockIn: StateIngredien
 
 	override fun getSerializer() = HexalRecipeSerializers.FREEZE
 
-	override fun getType() = HexalRecipeSerializers.FREEZE_TYPE
+	override fun getType() = HexalRecipeSerializers.FREEZE_TYPE!!
 
 	class Serializer : RecipeSerializerBase<FreezeRecipe>() {
 		override fun fromJson(recipeID: ResourceLocation, json: JsonObject): FreezeRecipe {

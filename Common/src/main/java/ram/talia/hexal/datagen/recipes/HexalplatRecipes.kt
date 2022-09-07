@@ -27,11 +27,11 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 			.unlockedBy("has_item", hasItem(HexItemTags.WANDS))
 			.save(recipes, modLoc("freeze/powder_snow_cauldron"))
 
-		val enlightenment = OvercastTrigger.Instance(
-			EntityPredicate.Composite.ANY,
-			MinMaxBounds.Ints.ANY,  // add a little bit of slop here
-			MinMaxBounds.Doubles.atLeast(0.8),
-			MinMaxBounds.Doubles.between(0.1, 2.05)
-		)
+//		val enlightenment = OvercastTrigger.Instance(
+//			EntityPredicate.Composite.ANY,
+//			MinMaxBounds.Ints.ANY,  // add a little bit of slop here
+//			MinMaxBounds.Doubles.atLeast(0.8),
+//			MinMaxBounds.Doubles.between(0.1, 2.05)
+//		)
 	}
 }

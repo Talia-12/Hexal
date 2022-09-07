@@ -19,7 +19,7 @@ class LazyLoad<L, U : Tag> {
 	private val either: Either<L, U>
 	private val loader: Optional<(unloaded: U) -> L>
 
-	fun get() {
-		return either.map({it}, {loader.get()(it)})
+	fun get(): L {
+		return either.map({ it }, { loader.get()(it) })
 	}
 }
