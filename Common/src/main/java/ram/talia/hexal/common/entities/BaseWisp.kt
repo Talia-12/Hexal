@@ -133,8 +133,10 @@ abstract class BaseWisp : LinkableEntity {
 		return this.caster ?: this
 	}
 
-	override fun getEyeHeight(pose: Pose, dim: EntityDimensions): Float {
-		return dim.height * 0.5f
+	override fun getEyeHeight(pose: Pose, dim: EntityDimensions) = 0f
+
+	override fun makeBoundingBox(): AABB {
+		return super.makeBoundingBox().move(0.0, -getDimensions(Pose.STANDING).height*0.5, 0.0)
 	}
 
 
@@ -311,7 +313,7 @@ abstract class BaseWisp : LinkableEntity {
 		playWispParticles(colouriser)
 	}
 
-	override fun renderCentre(): Vec3 = position() + Vec3(0.0, eyeHeight.toDouble(), 0.0)
+	override fun renderCentre(): Vec3 = position()
 
 	protected open fun playWispParticles(colouriser: FrozenColorizer) {
 		val radius = ceil((media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
