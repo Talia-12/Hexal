@@ -184,7 +184,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 
 	companion object {
-		val RENDER_LINKS: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+		val RENDER_LINKS: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(LinkableEntity::class.java, EntityDataSerializers.COMPOUND_TAG)
 
 		const val TAG_LINKED = "linked"
 		const val TAG_RENDER_LINKS = "render_link_list"

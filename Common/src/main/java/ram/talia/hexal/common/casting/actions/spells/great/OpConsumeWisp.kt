@@ -7,7 +7,7 @@ import com.mojang.datafixers.util.Either
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
-import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln
 
@@ -31,7 +31,7 @@ object OpConsumeWisp : SpellOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		val consumer: Either<BaseWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
+		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
 
 		val cost = when (consumed.fightConsume(consumer)) {
 			true  -> COST_FOR_OWN

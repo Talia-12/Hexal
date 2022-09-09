@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
-import ram.talia.hexal.common.entities.BaseWisp;
+import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public abstract class MixinCastingHarness {
 
 		MixinCastingContextInterface wispContext = (MixinCastingContextInterface)(Object)((CastingHarness)(Object)this).getCtx();
 		
-		BaseWisp wisp = wispContext.getWisp();
+		BaseCastingWisp wisp = wispContext.getWisp();
 		
 		if (wisp != null) {
 			int mediaAvailable = wisp.getMedia();

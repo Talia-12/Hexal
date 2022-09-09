@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.xplat.IXplatAbstractions
-import com.mojang.datafixers.util.Either
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp

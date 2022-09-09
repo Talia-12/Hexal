@@ -10,8 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.common.entities.BaseWisp;
+import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
 
 /**
@@ -19,14 +18,14 @@ import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements MixinCastingContextInterface {
+	private BaseCastingWisp wisp;
 	@Shadow private int depth;
-	private BaseWisp wisp;
 	
-	public BaseWisp getWisp () {
+	public BaseCastingWisp getWisp () {
 		return wisp;
 	}
 	
-	public BaseWisp setWisp (BaseWisp wisp) {
+	public BaseCastingWisp setWisp (BaseCastingWisp wisp) {
 		this.wisp = wisp;
 		return this.wisp;
 	}

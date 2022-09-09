@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.spell.asSpellResult
 import at.petrak.hexcasting.common.lib.HexSounds
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.mojang.datafixers.util.Either
@@ -16,13 +15,12 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import kotlin.math.pow
 
-class TickingWisp : BaseWisp {
+class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
 
@@ -55,7 +53,7 @@ class TickingWisp : BaseWisp {
 		ravenmindEither.ifRight { iotaTag -> ravenmindEither = Either.left(SpellDatum.Companion.fromNBT(iotaTag, level as ServerLevel)) }
 	}
 
-	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
+	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(
 		entityType: EntityType<out TickingWisp>,
 		world: Level,
@@ -93,24 +91,6 @@ class TickingWisp : BaseWisp {
 		}
 
 		super.castCallback(result)
-	}
-
-	override fun playWispParticles(colouriser: FrozenColorizer) {
-		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 100
-
-		for (i in 0..50) {
-			val colour: Int = colouriser.nextColour()
-
-			level.addParticle(
-				ConjureParticleOptions(colour, true),
-				(renderCentre().x + radius*random.nextGaussian()),
-				(renderCentre().y + radius*random.nextGaussian()),
-				(renderCentre().z + radius*random.nextGaussian()),
-				0.0125 * (random.nextDouble() - 0.5),
-				0.0125 * (random.nextDouble() - 0.5),
-				0.0125 * (random.nextDouble() - 0.5)
-			)
-		}
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {

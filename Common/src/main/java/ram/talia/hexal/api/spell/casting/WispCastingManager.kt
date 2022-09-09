@@ -14,7 +14,7 @@ import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
-import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,7 +28,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	 * preferred.
 	 */
 	fun scheduleCast(
-		wisp: BaseWisp,
+		wisp: BaseCastingWisp,
 		priority: Int,
 		hex: List<SpellDatum<*>>,
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>().toMutableList(),
@@ -69,7 +69,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 			// if the wisp isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
 			if (cast.wisp == null) {
-				cast.wisp = (caster.level as ServerLevel).getEntity(cast.wispUUID) as BaseWisp
+				cast.wisp = (caster.level as ServerLevel).getEntity(cast.wispUUID) as BaseCastingWisp
 
 				if (cast.wisp == null) continue
 			}
@@ -142,10 +142,10 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		/**
 		 * when loading from NBT, it calls ServerLevel.entity(UUID), which could return null.
 		 */
-		var wisp: BaseWisp? = null
+		var wisp: BaseCastingWisp? = null
 
 		constructor(
-			wisp: BaseWisp,
+			wisp: BaseCastingWisp,
 			priority: Int,
 			timeAdded: Long,
 			hex: List<SpellDatum<*>>,
@@ -184,7 +184,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 			fun makeFromNbt(tag: CompoundTag, level: ServerLevel): WispCast {
 				val wispUUID = tag.getUUID(TAG_WISP)
-				val wisp: BaseWisp? = level.getEntity(wispUUID) as? BaseWisp
+				val wisp: BaseCastingWisp? = level.getEntity(wispUUID) as? BaseCastingWisp
 
 				if (wisp != null) {
 					return WispCast(
@@ -212,7 +212,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseWisp, val succeeded: Boolean, val makesCastSound: Boolean, val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>) {
+	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val makesCastSound: Boolean, val endStack: MutableList<SpellDatum<*>>, val endRavenmind: SpellDatum<*>) {
 		fun callback() { wisp.castCallback(this) }
 	}
 

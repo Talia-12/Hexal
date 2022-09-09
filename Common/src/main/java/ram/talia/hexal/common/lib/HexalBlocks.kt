@@ -1,19 +1,15 @@
 package ram.talia.hexal.common.lib
 
-import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.common.lib.HexBlocks
 import at.petrak.hexcasting.common.lib.HexItems
 import com.mojang.datafixers.util.Pair
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.level.block.AbstractGlassBlock
-import net.minecraft.world.level.block.AmethystBlock
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.Material
 import net.minecraft.world.level.material.MaterialColor
+import net.minecraft.world.level.material.PushReaction
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.blocks.BlockSlipway
 import java.util.function.BiConsumer
@@ -23,8 +19,8 @@ class HexalBlocks {
 	companion object {
 		@JvmStatic
 		public fun registerBlocks(r: BiConsumer<Block, ResourceLocation>) {
-			for ((key, value) in HexalBlocks.BLOCKS) {
-				r.accept(value!!, key!!)
+			for ((key, value) in BLOCKS) {
+				r.accept(value, key)
 			}
 		}
 
@@ -39,7 +35,8 @@ class HexalBlocks {
 		private val BLOCK_ITEMS: MutableMap<ResourceLocation, Pair<Block, Item.Properties>> = java.util.LinkedHashMap()
 
 		val SLIPWAY = blockNoItem("slipway", BlockSlipway(
-			BlockBehaviour.Properties.of(Material.AIR, MaterialColor.NONE)
+			//Material.Builder.notSolidBlocking is for some unimaginable reason package-private, so we're doing this instead
+			BlockBehaviour.Properties.of(Material(MaterialColor.NONE, false, false, false, false, false, false, PushReaction.BLOCK))
 				.noDrops()
 				.strength(-1.0f, 3600000.0f)
 				.noCollission()

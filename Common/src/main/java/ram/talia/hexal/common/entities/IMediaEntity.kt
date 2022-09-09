@@ -6,13 +6,14 @@ import net.minecraft.world.entity.Entity
 
 interface IMediaEntity<T : Entity> {
 	var media: Int
+
 	val isConsumable: Boolean
 
 	/**
 	 * Returns whether the IMediaEntity should struggle against being consumed
 	 * (i.e. cost proportional to stored media if it struggles, or fixed cost otherwise.)
 	 */
-	fun fightConsume(consumer: Either<BaseWisp, ServerPlayer>): Boolean
+	fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>): Boolean
 
 	fun get(): T
 

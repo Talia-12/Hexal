@@ -5,14 +5,13 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.asSpellResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getChecked
-import ram.talia.hexal.api.spell.toIotaList
-import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.hexal.common.entities.BaseCastingWisp
 
 object OpWispHex : ConstManaOperator {
 	override val argc = 1
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		val wisp = args.getChecked<BaseWisp>(0, argc)
+		val wisp = args.getChecked<BaseCastingWisp>(0, argc)
 
 		return wisp.hex.asSpellResult
 	}

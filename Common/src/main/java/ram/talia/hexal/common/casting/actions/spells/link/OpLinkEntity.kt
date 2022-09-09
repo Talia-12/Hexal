@@ -8,7 +8,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
-import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.LinkableEntity
 
 object OpLinkEntity : SpellOperator {
@@ -40,7 +40,7 @@ object OpLinkEntity : SpellOperator {
 		)
 	}
 
-	private data class Spell(val thisWisp: BaseWisp, val other: LinkableEntity) : RenderedSpell {
+	private data class Spell(val thisWisp: BaseCastingWisp, val other: LinkableEntity) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			HexalAPI.LOGGER.info("calling link on $thisWisp to $other")
 			thisWisp.link(other)

@@ -8,8 +8,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import net.minecraft.network.chat.TranslatableComponent
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
-import ram.talia.hexal.common.entities.BaseWisp
-import ram.talia.hexal.common.entities.LinkableEntity
+import ram.talia.hexal.common.entities.BaseCastingWisp
 import kotlin.math.max
 
 object OpUnlink : SpellOperator {
@@ -43,7 +42,7 @@ object OpUnlink : SpellOperator {
 		)
 	}
 
-	private data class Spell(val thisWisp: BaseWisp, val other: ILinkable<*>) : RenderedSpell {
+	private data class Spell(val thisWisp: BaseCastingWisp, val other: ILinkable<*>) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			thisWisp.unlink(other)
 		}

@@ -16,6 +16,7 @@ public class RegisterClientStuff {
 		
 		x.registerEntityRenderer(HexalEntities.PROJECTILE_WISP, WispRenderer::new);
 		x.registerEntityRenderer(HexalEntities.TICKING_WISP, WispRenderer::new);
+		x.registerEntityRenderer(HexalEntities.WANDERING_WISP, WispRenderer::new);
 	}
 	
 	public static void registerBlockEntityRenderers(@NotNull BlockEntityRendererRegisterer registerer) {

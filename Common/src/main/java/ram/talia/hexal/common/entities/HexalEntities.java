@@ -25,11 +25,19 @@ public class HexalEntities {
 	
 	private static final Map<ResourceLocation, EntityType<?>> ENTITIES = new LinkedHashMap<>();
 	
+	public static final EntityType<WanderingWisp> WANDERING_WISP  = register(
+					"wisp/wandering",
+					EntityType.Builder.of((EntityType.EntityFactory<WanderingWisp>) WanderingWisp::new, MobCategory.MISC)
+														.sized(0.5f, 0.5f)
+														.clientTrackingRange(32)
+														.updateInterval(1)
+														.build(HexalAPI.MOD_ID + ":wisp/wandering"));
+	
 	public static final EntityType<ProjectileWisp> PROJECTILE_WISP = register(
 					"wisp/projectile",
 					EntityType.Builder.of((EntityType.EntityFactory<ProjectileWisp>) ProjectileWisp::new, MobCategory.MISC)
 														.sized(0.5f, 0.5f)
-														.clientTrackingRange(10)
+														.clientTrackingRange(32)
 														.updateInterval(1)
 														.build(HexalAPI.MOD_ID + ":wisp/projectile"));
 	
@@ -37,7 +45,7 @@ public class HexalEntities {
 					"wisp/ticking",
 					EntityType.Builder.of((EntityType.EntityFactory<TickingWisp>) TickingWisp::new, MobCategory.MISC)
 														.sized(0.5f, 0.5f)
-														.clientTrackingRange(10)
+														.clientTrackingRange(32)
 														.updateInterval(1)
 														.build(HexalAPI.MOD_ID + ":wisp/ticking"));
 	

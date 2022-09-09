@@ -1,7 +1,6 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.spell.SpellDatum
-import com.mojang.datafixers.util.Either
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
@@ -17,10 +16,10 @@ import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.times
 
-class ProjectileWisp : BaseWisp {
+class ProjectileWisp : BaseCastingWisp {
 	var isAffectedByGravity = true
 
-	constructor(entityType: EntityType<out BaseWisp>, world: Level) : super(entityType, world)
+	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
 		velocity = vel * START_VEL_MAGNITUDE
 	}
@@ -102,7 +101,7 @@ class ProjectileWisp : BaseWisp {
 	fun onHitEntity(result: EntityHitResult) {
 		setPos(result.location)
 		if (level.isClientSide)
-			playWispParticles()
+			playTrailParticles()
 
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, mutableListOf(SpellDatum.make(this), SpellDatum.make(result.entity)))
 	}
@@ -110,7 +109,7 @@ class ProjectileWisp : BaseWisp {
 	fun onHitBlock(result: BlockHitResult) {
 		setPos(result.location)
 		if (level.isClientSide)
-			playWispParticles()
+			playTrailParticles()
 
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, mutableListOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))))
 	}
