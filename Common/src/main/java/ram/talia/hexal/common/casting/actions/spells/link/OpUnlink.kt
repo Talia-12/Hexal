@@ -13,7 +13,7 @@ import ram.talia.hexal.common.entities.LinkableEntity
 import kotlin.math.max
 
 object OpUnlink : SpellOperator {
-	const val UNLINK_COST = ManaConstants.SHARD_UNIT
+	const val UNLINK_COST = 2 * ManaConstants.DUST_UNIT
 
 	override val argc = 1
 

@@ -12,7 +12,7 @@ import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import kotlin.math.max
 
 object OpSendIota : SpellOperator {
-	private const val COST_SEND_IOTA = ManaConstants.DUST_UNIT
+	private const val COST_SEND_IOTA = ManaConstants.DUST_UNIT / 100
 	override val argc = 2
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
