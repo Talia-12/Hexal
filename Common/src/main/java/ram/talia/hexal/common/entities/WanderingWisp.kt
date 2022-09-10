@@ -13,7 +13,10 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.plus
+import ram.talia.hexal.api.unaryMinus
+import kotlin.math.abs
 
 class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : BaseWisp(entityType, world) {
 
@@ -70,19 +73,44 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 	}
 
 	fun updateMedia() {
+		// TODO: Figure out how this should work
 		media -= ManaConstants.DUST_UNIT/4
 	}
 
 	fun move() {
+		val bBox = this.boundingBox
+		val voxelShapes = level.getEntityCollisions(this, bBox.expandTowards(deltaMovement))
+		val adjDelta = if (deltaMovement.lengthSqr() == 0.0) deltaMovement else collideBoundingBox(this, deltaMovement, bBox, level, voxelShapes)
 
-		val endPos = position() + deltaMovement
+		var dX = deltaMovement.x
+		var dY = deltaMovement.y
+		var dZ = deltaMovement.z
+		var aX = acceleration.x
+		var aY = acceleration.y
+		var aZ = acceleration.z
 
-		//TODO: reflect* of blocks on collision, set deltaMovement to 0 and reflect acceleration
-		setPos(endPos)
+		if (abs(adjDelta.x - dX) > 0.0001) {
+			dX = -dX
+			aX = -aX
+		}
+		if (abs(adjDelta.y - dY) > 0.0001) {
+			dY = -dY
+			aY = -aY
+		}
+		if (abs(adjDelta.z - dZ) > 0.0001) {
+			dZ = -dZ
+			aZ = -aZ
+		}
+
+		deltaMovement = Vec3(dX, dY, dZ)
+		acceleration = Vec3(aX, aY, aZ)
+
+		setPos(position() + adjDelta)
 
 		deltaMovement += acceleration
-		acceleration += Vec3(random.nextDouble(-0.05, 0.05), random.nextDouble(-0.05, 0.05), random.nextDouble(-0.05, 0.05))
-		acceleration = Vec3(acceleration.x.coerceIn(-0.5, 0.5), acceleration.y.coerceIn(-0.5, 0.5), acceleration.z.coerceIn(-0.5, 0.5))
+		acceleration += Vec3(random.nextDouble(-0.005, 0.005), random.nextDouble(-0.005, 0.005), random.nextDouble(-0.005, 0.005))
+		acceleration = Vec3(acceleration.x.coerceIn(-0.0125, 0.0125), acceleration.y.coerceIn(-0.0125, 0.0125), acceleration.z.coerceIn(-0.0125, 0.0125))
+		deltaMovement = Vec3(deltaMovement.x.coerceIn(-0.05, 0.05), deltaMovement.y.coerceIn(-0.05, 0.05), deltaMovement.z.coerceIn(-0.05, 0.05))
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
