@@ -7,6 +7,7 @@
   "hexcasting.spell.hexal:compare/types": "Classifier's Distillation",
 
   "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
+  "hexcasting.spell.hexal:remaining_evals": "Thanatos' Reflection",
 
   "hexcasting.spell.hexal:smelt": "Smelt",
   "hexcasting.spell.hexal:freeze": "Freeze",
@@ -33,7 +34,8 @@
 
 
   "hexal.entry.hexal_basics": "Hexal Basic Patterns",
-  "hexal.page.basics_pattern.current_tick": "Adds a number to the stack which seems to be related to how Nature represents time; If I cast the pattern, then cast the same pattern a second later, the number it adds has increased by 20.",
+  "hexal.page.hexal_basics.current_tick": "Adds a number to the stack which seems to be related to how Nature represents time; If I cast the pattern, then cast the same pattern a second later, the number it adds has increased by 20.",
+  "hexal.page.hexal_basics.remaining_evals": "Adds the number of evaluations a hex is still capable of to the stack. This is reduced by $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$ and $(l:patterns/meta#hexcasting:for_each)$(action)Thoth's Gambit/$.",
 
   "hexal.entry.hexal_spell": "Hexal Spells",
   "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",

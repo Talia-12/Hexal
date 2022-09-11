@@ -12,7 +12,15 @@
       "anchor": "hexal:current_tick",
       "input": "",
       "output": "number",
-      "text": "hexal.page.basics_pattern.current_tick"
+      "text": "hexal.page.hexal_basics.current_tick"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:remaining_evals",
+      "anchor": "hexal:remaining_evals",
+      "input": "",
+      "output": "number",
+      "text": "hexal.page.hexal_basics.remaining_evals"
     }
   ]
 }

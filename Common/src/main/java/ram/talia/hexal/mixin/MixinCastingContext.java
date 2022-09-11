@@ -1,8 +1,10 @@
 package ram.talia.hexal.mixin;
 
+import at.petrak.hexcasting.api.mod.HexConfig;
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
@@ -17,6 +19,7 @@ import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements MixinCastingContextInterface {
+	@Shadow private int depth;
 	private BaseWisp wisp;
 	
 	public BaseWisp getWisp () {
@@ -30,6 +33,10 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 	
 	public boolean hasWisp () {
 		return wisp != null;
+	}
+	
+	public int remainingDepth () {
+		return HexConfig.server().maxRecurseDepth() - this.depth;
 	}
 	
 	/**

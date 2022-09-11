@@ -33,6 +33,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("ddwaa", HexDir.NORTH_WEST),
 																 modLoc("current_tick"),
 																 OpCurrentTick.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eedqa", HexDir.WEST),
+																 modLoc("remaining_evals"),
+																 OpRemainingEvals.INSTANCE);
 			
 			// ============================== Misc Spells =====================================
 			

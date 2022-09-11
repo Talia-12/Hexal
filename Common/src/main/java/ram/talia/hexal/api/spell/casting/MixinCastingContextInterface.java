@@ -4,7 +4,10 @@ import ram.talia.hexal.common.entities.BaseWisp;
 
 public interface MixinCastingContextInterface {
 	BaseWisp getWisp();
+	
 	BaseWisp setWisp(BaseWisp wisp);
 	
 	boolean hasWisp();
+	
+	int remainingDepth();
 }
