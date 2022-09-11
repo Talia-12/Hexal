@@ -5,7 +5,7 @@ import net.fabricmc.api.ModInitializer
 import net.minecraft.core.Registry
 import ram.talia.hexal.common.casting.RegisterPatterns
 import net.minecraft.resources.ResourceLocation
-import ram.talia.hexal.common.entities.HexalEntities
+import ram.talia.hexal.common.lib.HexalEntities
 import ram.talia.hexal.common.lib.HexalBlocks
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import java.util.function.BiConsumer

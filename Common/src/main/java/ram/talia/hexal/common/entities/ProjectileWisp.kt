@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.times
+import ram.talia.hexal.common.lib.HexalEntities
 
 class ProjectileWisp : BaseCastingWisp {
 	var isAffectedByGravity = true

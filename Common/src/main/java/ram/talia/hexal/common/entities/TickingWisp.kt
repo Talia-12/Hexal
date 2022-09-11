@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
+import ram.talia.hexal.common.lib.HexalEntities
 import kotlin.math.pow
 
 class TickingWisp : BaseCastingWisp {
