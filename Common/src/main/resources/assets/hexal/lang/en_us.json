@@ -23,6 +23,7 @@
   "hexcasting.spell.hexal:link/link_two_entities": "Link Entities",
   "hexcasting.spell.hexal:link/unlink": "Unlink",
   "hexcasting.spell.hexal:link/get": "Linked Purification",
+  "hexcasting.spell.hexal:link/get_index": "Linked Index Purification",
   "hexcasting.spell.hexal:link/num": "Linked Count Reflection",
 
   "hexcasting.spell.hexal:link/comm/send": "Send Iota",
@@ -60,6 +61,7 @@
   "hexal.page.links.link/link_two_entities": "May be evaluated by any casting instrument. Links two entities, which must be linkable. This costs one $(l:items/amethyst)$(item)Amethyst Shard/$.",
   "hexal.page.links.link/unlink": "Removes the link at the given index from the casting wisp's links. This costs two $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.links.link/get": "Removes an index from the stack, and adds the entity connected to the link at that index to the stack.",
+  "hexal.page.links.link/get_index": "Removes an entity from the stack, and adds the index to the link to that entity to the stack (or -1 if the wisp isn't linked to that entity).",
   "hexal.page.links.link/num": "Adds the number of links to the wisp to the stack.",
   "hexal.page.links.link/comm/send": "Removes an iota from the stack, then removes an index from the stack and sends the iota along the link at the given index.  This costs one hundredth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.links.link/comm/read": "When a wisp receives an iota along a link it is added to a queue. This pattern adds the first iota in the queue to the stack, removing it from the queue.",

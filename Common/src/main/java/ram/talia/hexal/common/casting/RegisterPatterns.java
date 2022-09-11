@@ -78,6 +78,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eqqqqqaww", HexDir.EAST),
 																 modLoc("link/get"),
 																 OpGetLinked.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aeqqqqqawwd", HexDir.SOUTH_WEST),
+																 modLoc("link/get_index"),
+																 OpGetLinkedIndex.INSTANCE);
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qeeeeedww", HexDir.WEST),
 																 modLoc("link/num"),
 																 OpNumLinked.INSTANCE);

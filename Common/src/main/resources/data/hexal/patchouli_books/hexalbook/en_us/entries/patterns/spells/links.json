@@ -48,6 +48,14 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:link/get_index",
+      "anchor": "hexal:link/get_index",
+      "input": "entity",
+      "output": "number",
+      "text": "hexal.page.links.link/get_index"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:link/num",
       "anchor": "hexal:link/num",
       "input": "",

@@ -136,6 +136,10 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		return linked[index]
 	}
 
+	override fun getLinkedIndex(linked: ILinkable<*>): Int {
+		return this.linked.indexOf(linked)
+	}
+
 	override fun numLinked(): Int {
 		return linked.size
 	}

@@ -23,6 +23,8 @@ interface ILinkable<T : ILinkable<T>> {
 
 	fun getLinked(index: Int): ILinkable<*>
 
+	fun getLinkedIndex(linked: ILinkable<*>): Int
+
 	fun numLinked(): Int
 
 	fun receiveIota(iota: SpellDatum<*>)
