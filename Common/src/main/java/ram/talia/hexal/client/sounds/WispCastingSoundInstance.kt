@@ -1,7 +1,10 @@
 package ram.talia.hexal.client.sounds
 
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.lib.HexalSounds
 import kotlin.math.max
@@ -20,7 +23,7 @@ class WispCastingSoundInstance(val caster: BaseWisp) : AbstractTickableSoundInst
 	init {
 		looping = true
 		active = true
-		volume = 0.05f
+		volume = 0.05f // initialises to this, increases later
 		delay = 0
 		keepAlive()
 	}
@@ -30,7 +33,7 @@ class WispCastingSoundInstance(val caster: BaseWisp) : AbstractTickableSoundInst
 	}
 
 	fun keepAlive() {
-		keepAlive = 2
+		keepAlive = 3
 	}
 
 	override fun tick() {
@@ -40,7 +43,6 @@ class WispCastingSoundInstance(val caster: BaseWisp) : AbstractTickableSoundInst
 			if (keepAlive == 0)
 				fadeOut()
 			return
-
 		}
 		volume = max(0f, volume - .25f);
 		if (volume < 0.00001)

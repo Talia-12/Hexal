@@ -83,14 +83,6 @@ class TickingWisp : BaseCastingWisp {
 		stack = result.endStack
 		ravenmind = result.endRavenmind
 
-		if (result.makesCastSound) {
-			level.playSound(
-				null, position().x, position().y, position().z,
-				HexSounds.ACTUALLY_CAST, SoundSource.PLAYERS, 0.05f,
-				1f + (random.nextFloat() - 0.5f) * 0.2f
-			)
-		}
-
 		super.castCallback(result)
 	}
 

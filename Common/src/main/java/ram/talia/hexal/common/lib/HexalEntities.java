@@ -7,6 +7,7 @@ import net.minecraft.world.entity.MobCategory;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.common.entities.ProjectileWisp;
 import ram.talia.hexal.common.entities.TickingWisp;
+import ram.talia.hexal.common.entities.WanderingWisp;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

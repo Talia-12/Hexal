@@ -11,13 +11,13 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import ram.talia.hexal.api.HexalAPI;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import static at.petrak.hexcasting.api.HexAPI.modLoc;
+import static ram.talia.hexal.api.HexalAPI.modLoc;
 
 public class HexalSounds {
 	public static void registerSounds(BiConsumer<SoundEvent, ResourceLocation> r) {
@@ -42,13 +42,12 @@ public class HexalSounds {
 	public static final SoundEntry WISP_CASTING_START = create("wisp_casting_start").subtitle("Wisp starts casting")
 					.playExisting(HexSounds.ACTUALLY_CAST, 0.5f, 1)
 					.category(SoundSource.PLAYERS)
-					.attenuationDistance(64)
+					.attenuationDistance(8)
 					.build();
 	
 	public static final SoundEntry WISP_CASTING_CONTINUE = create("wisp_casting_continue").subtitle("Wisp continues casting")
-					.playExisting(SoundEvents.AMETHYST_BLOCK_STEP)
 					.category(SoundSource.PLAYERS)
-					.attenuationDistance(64)
+					.attenuationDistance(8)
 					.build();
 	
 	
@@ -332,12 +331,14 @@ public class HexalSounds {
 		public CustomSoundEntry (ResourceLocation id, List<ResourceLocation> variants, String subtitle,
 														 SoundSource category, int attenuationDistance) {
 			super(id, subtitle, category, attenuationDistance);
+//			HexalAPI.LOGGER.info("custom sound entry created for id " + id);
+			this.event = new SoundEvent(id);
 			this.variants = variants;
 		}
 		
 		@Override
 		public void register (BiConsumer<SoundEvent, ResourceLocation> registry) {
-			registry.accept(new SoundEvent(id), id);
+			registry.accept(event, id);
 		}
 		
 		@Override

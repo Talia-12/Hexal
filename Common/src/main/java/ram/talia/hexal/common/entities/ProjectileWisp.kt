@@ -116,6 +116,7 @@ class ProjectileWisp : BaseCastingWisp {
 	}
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
+		super.castCallback(result)
 		discard()
 	}
 

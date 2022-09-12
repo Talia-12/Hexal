@@ -4,26 +4,29 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
-import com.mojang.datafixers.util.Either
+import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.Pose
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.plus
+import ram.talia.hexal.client.sounds.WispCastingSoundInstance
+import ram.talia.hexal.common.lib.HexalSounds
 import kotlin.math.*
 
 abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : LinkableEntity(entityType, world), IMediaEntity<BaseWisp> {
 	var oldPos: Vec3 = position()
+
+	var soundInstance: WispCastingSoundInstance? = null
 
 	override var media: Int
 		get() = entityData.get(MEDIA)
@@ -53,12 +56,22 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		yRotO = yRot
 	}
 
+	fun playCastSound() {
+		if (soundInstance == null || soundInstance!!.isStopped) {
+			soundInstance = WispCastingSoundInstance(this)
+			Minecraft.getInstance().soundManager.play(soundInstance!!)
+			HexalSounds.WISP_CASTING_START.playAt(level, position(), .05f, 1f + (random.nextFloat() - 0.5f) * 0.2f, false)
+		}
+
+		soundInstance!!.keepAlive()
+	}
+
+	override fun renderCentre(): Vec3 = position()
+
 	fun playTrailParticles() {
 		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 		playTrailParticles(colouriser)
 	}
-
-	override fun renderCentre(): Vec3 = position()
 
 	protected open fun playWispParticles(colouriser: FrozenColorizer) {
 		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 100

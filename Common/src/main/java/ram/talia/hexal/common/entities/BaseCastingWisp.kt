@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.common.lib.HexSounds
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -14,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
@@ -109,11 +111,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	override fun get() = this
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : this(entityType, world) {
-//		HexalAPI.LOGGER.info("constructor for $uuid called!")
 		setPos(pos)
 		this.caster = caster
 		this.media = media
-//		lastTick = world.gameTime - 1
 	}
 
 	open fun getEffectSource(): Entity {
@@ -128,12 +128,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	override fun tick() {
 		super.tick()
 
-		// make sure tick isn't called twice, since tick() is also called by castCallback to ensure wisps that need ticking don't actually get skipped on the tick that their
-		// cast is successful. Not actually doing anything right now since tick() isn't currently being called twice.
-//		if (lastTick == level.gameTime)
-//			return
-//		lastTick = level.gameTime
-
 		// check if media is <= 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
 		if (media <= 0) {
 			discard()
@@ -147,7 +141,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 			oldPos = position()
 
-//			HexalAPI.LOGGER.info("ticking child")
 			childTick()
 			move()
 		}
@@ -201,8 +194,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		val sPlayer = caster as ServerPlayer
 
-//		HexalAPI.LOGGER.info("wisp $uuid attempting to schedule cast")
-
 		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).ifPresent {
 			it.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
@@ -215,16 +206,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	override fun receiveIota(iota: SpellDatum<*>) {
-		HexalAPI.LOGGER.info("wisp $uuid received iota $iota")
-
 		receivedIotas.add(iota)
-
-		HexalAPI.LOGGER.info("now has ${receivedIotas.size} iotas, $receivedIotas")
 	}
 
 	override fun nextReceivedIota(): SpellDatum<*> {
-		HexalAPI.LOGGER.info("wisp $uuid nextReceivedIota called")
-
 		if (receivedIotas.size == 0) {
 			return SpellDatum.make(Widget.NULL)
 		}
@@ -232,16 +217,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		val iota = receivedIotas[0]
 		receivedIotas.removeAt(0)
 
-		HexalAPI.LOGGER.info("returning $iota")
-
 		return iota
 	}
 
 	override fun numRemainingIota(): Int {
-		HexalAPI.LOGGER.info("wisp $uuid numRemainingIota called")
-
-		HexalAPI.LOGGER.info("returning ${receivedIotas.size}")
-
 		return receivedIotas.size
 	}
 
@@ -249,6 +228,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		// the cast errored, delete the wisp
 		if (!result.succeeded)
 			discard()
+
+		if (result.makesCastSound)
+			playCastSound()
 
 		scheduledCast = false
 	}
