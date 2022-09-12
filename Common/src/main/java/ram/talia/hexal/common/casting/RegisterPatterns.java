@@ -3,6 +3,8 @@ package ram.talia.hexal.common.casting;
 import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry;
+import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes;
 import ram.talia.hexal.common.casting.actions.*;
 import ram.talia.hexal.common.casting.actions.spells.OpFallingBlock;
 import ram.talia.hexal.common.casting.actions.spells.OpFreeze;
@@ -63,9 +65,19 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aweewaqaweewaawww", HexDir.SOUTH_EAST),
 																 modLoc("wisp/hex"),
 																 OpWispHex.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aqawded", HexDir.NORTH_WEST),
+																 modLoc("wisp/trigger/tick"),
+																 new OpWispSetTrigger(WispTriggerTypes.TickTiggerType));
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aqqqqqwdeddw", HexDir.EAST),
+																 modLoc("wisp/trigger/comm"),
+																 new OpWispSetTrigger(WispTriggerTypes.CommTiggerType));
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
 																 modLoc("wisp/consume"),
 																 OpConsumeWisp.INSTANCE, true);
+			
+			
+			// =============================== Link Stuff =====================================
+			
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST),
 																 modLoc("link/link_entity"),
 																 OpLinkEntity.INSTANCE);

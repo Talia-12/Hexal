@@ -53,6 +53,22 @@
       "input": "entity",
       "output": "[pattern]",
       "text": "hexal.page.wisps.wisp/hex"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/trigger/tick",
+      "anchor": "hexal:wisp/trigger/tick",
+      "input": "number",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/trigger/tick"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/trigger/comm",
+      "anchor": "hexal:wisp/trigger/comm",
+      "input": "",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/trigger/comm"
     }
   ]
 }

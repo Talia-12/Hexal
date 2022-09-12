@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.common.lib.HexSounds
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
@@ -27,6 +28,8 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.*
 import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.spell.casting.triggers.IWispTrigger
+import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
 import ram.talia.hexal.api.times
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.util.*
@@ -36,15 +39,17 @@ import kotlin.math.*
 abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, world: Level) : BaseWisp(entityType, world) {
 	open val shouldComplainNotEnoughMedia = true
 
-	private var casterUUID: UUID? = null
-	private var cachedCaster: Entity? = null
+	private var activeTrigger: IWispTrigger? = null
 
-	var caster: Entity?
+	private var casterUUID: UUID? = null
+	private var cachedCaster: Player? = null
+
+	var caster: Player?
 		get() {
 			return if (cachedCaster != null && !cachedCaster!!.isRemoved) {
 				cachedCaster
 			} else if (casterUUID != null && level is ServerLevel) {
-				cachedCaster = (level as ServerLevel).getEntity(casterUUID!!)
+				cachedCaster = (level as ServerLevel).getEntity(casterUUID!!) as? Player
 				cachedCaster
 			} else {
 				null
@@ -179,6 +184,20 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	 */
 	abstract fun maxSqrCastingDistance(): Double
 
+	fun setTrigger(trigger: IWispTrigger) {
+		activeTrigger = trigger
+	}
+
+	/**
+	 * Returns true if there are no triggers limiting when the wisp can cast, false otherwise
+	 */
+	fun canScheduleCast(): Boolean {
+		HexalAPI.LOGGER.info("active trigger is $activeTrigger, shouldRemove: ${activeTrigger?.shouldRemoveTrigger(this)}, shouldTrigger: ${activeTrigger?.shouldTrigger(this)}")
+		if (activeTrigger?.shouldRemoveTrigger(this) == true)
+			activeTrigger = null
+		return activeTrigger?.shouldTrigger(this) ?: true
+	}
+
 	/**
 	 * Schedules casting the hex passed as [hex], with the initial stack [initialStack] and initial ravenmind [initialRavenmind]. If a callback is needed (e.g. to save
 	 * the results of the cast somewhere) a callback can be provided as [castCallback]. Returns whether the hex was successfully scheduled.
@@ -189,7 +208,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>(),
 		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	): Boolean {
-		if (level.isClientSide || caster == null)
+		val asdf = !canScheduleCast()
+		HexalAPI.LOGGER.info("will skip schedule if any of ${level.isClientSide}, ${caster == null}, $asdf are true.")
+		if (level.isClientSide || caster == null || asdf)
 			return false // return dummy data, not expecting anything to be done with it
 
 		val sPlayer = caster as ServerPlayer
@@ -282,6 +303,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			null -> Either.left(mutableListOf())
 			else -> Either.right(receivedIotasTag as ListTag)
 		}
+
+		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
+			null -> null
+			else -> WispTriggerRegistry.fromNbt(activeTriggerTag.asCompound, level as ServerLevel)
+		}
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -296,6 +322,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
 		compound.put(TAG_HEX, hexTag)
 		compound.put(TAG_RECEIVED_IOTAS, receivedIotasEither.map({ it.toNbtList() }, { it }))
+		if (activeTrigger != null)
+			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 	}
 
 	override fun defineSynchedData() {
@@ -312,7 +340,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	override fun recreateFromPacket(packet: ClientboundAddEntityPacket) {
 		super.recreateFromPacket(packet)
-		val caster = level.getEntity(packet.data)
+		val caster = level.getEntity(packet.data) as? Player
 		if (caster != null) {
 			this.caster = caster
 		}
@@ -325,6 +353,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		const val TAG_CASTER = "caster"
 		const val TAG_HEX = "hex"
 		const val TAG_RECEIVED_IOTAS = "received_iotas"
+		const val TAG_ACTIVE_TRIGGER = "active_trigger"
 
 		const val WISP_COST_PER_TICK = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()
 	}

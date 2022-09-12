@@ -12,15 +12,16 @@ object LinkableRegistry {
 
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*>> = mutableMapOf()
 
-	class RegisterLinkableException(msg: String) : Exception(msg)
+	class RegisterLinkableTypeException(msg: String) : Exception(msg)
 	class InvalidLinkableTypeException(msg: String) : Exception(msg)
 
 	init {
 		registerLinkableType(LinkableTypes.LinkableEntityType)
 	}
+
 	fun registerLinkableType(type: LinkableType<*>) {
 		if (linkableTypes.containsKey(type.id))
-			throw RegisterLinkableException("LinkableRegistry already contains resource id ${type.id}")
+			throw RegisterLinkableTypeException("LinkableRegistry already contains resource id ${type.id}")
 
 		linkableTypes[type.id] = type
 	}
