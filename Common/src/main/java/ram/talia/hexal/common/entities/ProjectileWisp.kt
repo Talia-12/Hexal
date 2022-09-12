@@ -22,10 +22,10 @@ class ProjectileWisp : BaseCastingWisp {
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
-		velocity = vel * START_VEL_MAGNITUDE
+		velocity = vel
 	}
 	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
-		velocity = vel * START_VEL_MAGNITUDE
+		velocity = vel
 	}
 
 	override fun move() {
@@ -122,7 +122,6 @@ class ProjectileWisp : BaseCastingWisp {
 
 	companion object {
 		const val CASTING_SCHEDULE_PRIORITY = 0
-		const val START_VEL_MAGNITUDE = 1.75
 		const val CASTING_RADIUS = 4.0
 	}
 }

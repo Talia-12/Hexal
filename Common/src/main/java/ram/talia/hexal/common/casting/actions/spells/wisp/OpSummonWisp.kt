@@ -20,13 +20,13 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
         val spell = when (ticking) {
             true -> {
                 media = args.getChecked(2, argc)
-                cost = COST_SUMMON_WISP + (media * ManaConstants.DUST_UNIT).toInt()
+                cost = COST_SUMMON_WISP_TICKING + (media * ManaConstants.DUST_UNIT).toInt()
                 Spell(true, pos, hex.toList(), (media * ManaConstants.DUST_UNIT).toInt())
             }
             false -> {
                 val vel = args.getChecked<Vec3>(2, argc)
                 media = args.getChecked(3, argc)
-                cost = (COST_SUMMON_WISP * vel.lengthSqr()).toInt() + (media * ManaConstants.DUST_UNIT).toInt()
+                cost = (COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt() + (media * ManaConstants.DUST_UNIT).toInt()
                 Spell(false, pos, hex.toList(), (media * ManaConstants.DUST_UNIT).toInt(), vel)
             }
         }
@@ -54,6 +54,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     }
 
     companion object {
-        private const val COST_SUMMON_WISP = 3 * ManaConstants.DUST_UNIT
+        private const val COST_SUMMON_WISP_TICKING = 3 * ManaConstants.DUST_UNIT
+        private const val COST_SUMMON_WISP_PROJECTILE = 3/1.75 * ManaConstants.DUST_UNIT
     }
 }
