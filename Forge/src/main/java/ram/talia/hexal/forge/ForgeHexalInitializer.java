@@ -15,6 +15,7 @@ import ram.talia.hexal.common.casting.RegisterPatterns;
 import ram.talia.hexal.common.lib.HexalBlockEntities;
 import ram.talia.hexal.common.lib.HexalBlocks;
 import ram.talia.hexal.common.lib.HexalEntities;
+import ram.talia.hexal.common.lib.HexalSounds;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
@@ -39,6 +40,7 @@ public class ForgeHexalInitializer {
 	
 	private static void initRegistry () {
 		// it seems like this is more mixin problems? Block/Item/RecipeSerializer being mixined to extend IForgeRegistryEntry but the IDE not knowing that
+		bind(ForgeRegistries.SOUND_EVENTS, HexalSounds::registerSounds);
 		bind(ForgeRegistries.BLOCKS, HexalBlocks::registerBlocks);
 		bind(ForgeRegistries.ITEMS, HexalBlocks::registerBlockItems);
 		bind(ForgeRegistries.BLOCK_ENTITIES, HexalBlockEntities::registerBlockEntities);

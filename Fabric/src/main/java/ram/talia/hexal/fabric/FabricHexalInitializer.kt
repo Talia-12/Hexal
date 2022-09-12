@@ -6,6 +6,7 @@ import net.minecraft.core.Registry
 import ram.talia.hexal.common.casting.RegisterPatterns
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.common.lib.HexalEntities
+import ram.talia.hexal.common.lib.HexalSounds
 import ram.talia.hexal.common.lib.HexalBlocks
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import java.util.function.BiConsumer
@@ -26,6 +27,7 @@ object FabricHexalInitializer : ModInitializer {
     }
 
     private fun initRegistries() {
+        HexalSounds.registerSounds(bind(Registry.SOUND_EVENT))
         HexalBlocks.registerBlocks(bind(Registry.BLOCK))
         HexalBlocks.registerBlockItems(bind(Registry.ITEM))
         HexalEntities.registerEntities(bind(Registry.ENTITY_TYPE))

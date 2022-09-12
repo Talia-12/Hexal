@@ -1,5 +1,6 @@
 package ram.talia.hexal.common.lib;
 
+import at.petrak.hexcasting.common.lib.HexSounds;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -10,6 +11,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -37,49 +39,75 @@ public class HexalSounds {
 	
 	private static final Map<ResourceLocation, SoundEntry> SOUNDS = new LinkedHashMap<>();
 	
+	public static final SoundEntry WISP_CASTING_START = create("wisp_casting_start").subtitle("Wisp starts casting")
+					.playExisting(HexSounds.ACTUALLY_CAST, 0.5f, 1)
+					.category(SoundSource.PLAYERS)
+					.attenuationDistance(64)
+					.build();
+	
+	public static final SoundEntry WISP_CASTING_CONTINUE = create("wisp_casting_continue").subtitle("Wisp continues casting")
+					.playExisting(SoundEvents.AMETHYST_BLOCK_STEP)
+					.category(SoundSource.PLAYERS)
+					.attenuationDistance(64)
+					.build();
+	
 	
 	// Everything below here is from
 	// https://github.com/Creators-of-Create/Create/blob/aeee9f8793c660e0a8f619f5bd2f8c52be55e4ce/src/main/java/com/simibubi/create/AllSoundEvents.java#L393
 	
-	private static class SoundEntryProvider implements DataProvider {
-		
-		private final DataGenerator generator;
-		
-		public SoundEntryProvider (DataGenerator generator) {
-			this.generator = generator;
-		}
-		
-		@Override
-		public void run (@NotNull HashCache cache) throws IOException {
-			generate(generator.getOutputFolder(), cache);
-		}
-		
-		@Override
-		public @NotNull String getName () {
-			return "Create's Custom Sounds";
-		}
-		
-		public void generate (Path path, HashCache cache) {
-			Gson GSON = (new GsonBuilder()).setPrettyPrinting()
-																		 .disableHtmlEscaping()
-																		 .create();
-			path = path.resolve("assets/create");
-			
-			try {
-				JsonObject json = new JsonObject();
-				SOUNDS.entrySet()
-							.stream()
-							.sorted(Map.Entry.comparingByKey())
-							.forEach(entry -> entry.getValue().write(json));
-				DataProvider.save(GSON, cache, json, path.resolve("sounds.json"));
-				
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
+	public static SoundEntryBuilder create(String id) {
+		return create(modLoc(id));
 	}
+	
+	public static SoundEntryBuilder create(ResourceLocation id) {
+		return new SoundEntryBuilder(id);
+	}
+	
+	public static JsonObject provideLangEntries() {
+		JsonObject object = new JsonObject();
+		for (SoundEntry entry : SOUNDS.values())
+			if (entry.hasSubtitle())
+				object.addProperty(entry.getSubtitleKey(), entry.getSubtitle());
+		return object;
+	}
+	
+	public static SoundEntryProvider provider(DataGenerator generator) {
+		return new SoundEntryProvider(generator);
+	}
+	
+	private record SoundEntryProvider(DataGenerator generator) implements DataProvider {
+		
+		@Override
+			public void run (@NotNull HashCache cache) throws IOException {
+				generate(generator.getOutputFolder(), cache);
+			}
+			
+			@Override
+			public @NotNull String getName () {
+				return "Hexal's Custom Sounds";
+			}
+			
+			public void generate (Path path, HashCache cache) {
+				Gson GSON = (new GsonBuilder()).setPrettyPrinting()
+																			 .disableHtmlEscaping()
+																			 .create();
+				path = path.resolve("assets/hexal");
+				
+				try {
+					JsonObject json = new JsonObject();
+					SOUNDS.entrySet()
+								.stream()
+								.sorted(Map.Entry.comparingByKey())
+								.forEach(entry -> entry.getValue().write(json));
+					DataProvider.save(GSON, cache, json, path.resolve("sounds.json"));
+					
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
 	
 	public record ConfiguredSoundEvent(Supplier<SoundEvent> event, float volume, float pitch) {}
 	
@@ -186,6 +214,10 @@ public class HexalSounds {
 			return subtitle;
 		}
 		
+		public SoundSource getCategory () {
+			return category;
+		}
+		
 		public void playOnServer (Level world, Vec3i pos) {
 			playOnServer(world, pos, 1, 1);
 		}
@@ -230,7 +262,7 @@ public class HexalSounds {
 	
 	private static class WrappedSoundEntry extends SoundEntry {
 		
-		private List<ConfiguredSoundEvent> wrappedEvents;
+		private final List<ConfiguredSoundEvent> wrappedEvents;
 
 		public WrappedSoundEntry (ResourceLocation id, String subtitle,
 															List<ConfiguredSoundEvent> wrappedEvents, SoundSource category, int attenuationDistance) {
