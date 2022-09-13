@@ -49,20 +49,18 @@ class BlockEntitySlipwayRenderer(ctx: BlockEntityRendererProvider.Context) : Blo
 		val pos = Vec3.atCenterOf(slipway.pos)
 
 		for (colouriser in HexItems.DYE_COLORIZERS.values) {
-			for (i in 0..2) {
-				val frozenColouriser = FrozenColorizer(ItemStack(colouriser), Util.NIL_UUID)
-				val colour: Int = frozenColouriser.nextColour(random)
+			val frozenColouriser = FrozenColorizer(ItemStack(colouriser), Util.NIL_UUID)
+			val colour: Int = frozenColouriser.nextColour(random)
 
-				level.addParticle(
-					ConjureParticleOptions(colour, true),
-					(pos.x + RADIUS*random.nextGaussian()),
-					(pos.y + RADIUS*random.nextGaussian()),
-					(pos.z + RADIUS*random.nextGaussian()),
-					0.0125 * (random.nextDouble() - 0.5),
-					0.0125 * (random.nextDouble() - 0.5),
-					0.0125 * (random.nextDouble() - 0.5)
-				)
-			}
+			level.addParticle(
+				ConjureParticleOptions(colour, true),
+				(pos.x + RADIUS*random.nextGaussian()),
+				(pos.y + RADIUS*random.nextGaussian()),
+				(pos.z + RADIUS*random.nextGaussian()),
+				0.0125 * (random.nextDouble() - 0.5),
+				0.0125 * (random.nextDouble() - 0.5),
+				0.0125 * (random.nextDouble() - 0.5)
+			)
 		}
 //		drawLineSeq(ps.last().pose(), listOf(Vec2(0f, 0f), Vec2(1f, 1f)), 0.4f, 0f, -0x9b3701, -0x9b3701)
 

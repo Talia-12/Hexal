@@ -19,6 +19,7 @@ import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements MixinCastingContextInterface {
 	private BaseCastingWisp wisp;
+	
 	@Shadow private int depth;
 	
 	public BaseCastingWisp getWisp () {
