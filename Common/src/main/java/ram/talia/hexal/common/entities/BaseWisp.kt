@@ -19,6 +19,7 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
+import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
 import kotlin.math.*
@@ -77,7 +78,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 100
 
 		for (i in 0..50) {
-			val colour: Int = colouriser.nextColour()
+			val colour: Int = colouriser.nextColour(random)
 
 			level.addParticle(
 				ConjureParticleOptions(colour, true),
@@ -98,7 +99,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		val dist = delta.length() * 12 * radius * radius * radius
 
 		for (i in 0..dist.toInt()) {
-			val colour: Int = colouriser.nextColour()
+			val colour: Int = colouriser.nextColour(random)
 
 			val coeff = i / dist
 			level.addParticle(
@@ -119,7 +120,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 			val dist = delta.length() * 12
 
 			for (i in 0..dist.toInt()) {
-				val colour: Int = colouriser.nextColour()
+				val colour: Int = colouriser.nextColour(random)
 
 				val coeff = i / dist
 				level.addParticle(
@@ -133,17 +134,6 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 				)
 			}
 		}
-	}
-
-	fun FrozenColorizer.nextColour(): Int {
-		return getColor(
-			random.nextFloat() * 16384,
-			Vec3(
-				random.nextFloat().toDouble(),
-				random.nextFloat().toDouble(),
-				random.nextFloat().toDouble()
-			).scale((random.nextFloat() * 3).toDouble())
-		)
 	}
 
 	fun setColouriser(colouriser: FrozenColorizer) {
