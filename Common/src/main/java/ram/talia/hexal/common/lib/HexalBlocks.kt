@@ -34,6 +34,7 @@ class HexalBlocks {
 		private val BLOCKS: MutableMap<ResourceLocation, Block> = LinkedHashMap()
 		private val BLOCK_ITEMS: MutableMap<ResourceLocation, Pair<Block, Item.Properties>> = java.util.LinkedHashMap()
 
+		@JvmField
 		val SLIPWAY = blockNoItem("slipway", BlockSlipway(
 			//Material.Builder.notSolidBlocking is for some unimaginable reason package-private, so we're doing this instead
 			BlockBehaviour.Properties.of(Material(MaterialColor.NONE, false, false, false, false, false, false, PushReaction.BLOCK))
