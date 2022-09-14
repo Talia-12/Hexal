@@ -21,14 +21,12 @@ import static ram.talia.hexal.api.HexalAPI.modLoc;
 public class HexalPlacedFeatures {
 	
 	public static void registerPlacedFeatures(BiConsumer<PlacedFeature, ResourceLocation> r) {
-		HexalAPI.LOGGER.info("registering hexal placed features");
 		for (var e : PLACED_FEATURES.entrySet()) {
 			r.accept(e.getValue(), e.getKey());
 		}
 	}
 	
 	public static void placeGeodesInBiome (BiConsumer<PlacedFeature, GenerationStep.Decoration> p) {
-		HexalAPI.LOGGER.info("placing geodes in biome");
 		p.accept(AMETHYST_SLIPWAY_GEODE, GenerationStep.Decoration.UNDERGROUND_DECORATION);
 	}
 	

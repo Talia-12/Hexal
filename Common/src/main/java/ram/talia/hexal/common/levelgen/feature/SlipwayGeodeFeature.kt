@@ -19,7 +19,10 @@ import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
 import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration
 import net.minecraft.world.level.levelgen.synth.NormalNoise
+import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.div
+import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalBlocks
 
 @Suppress("MoveLambdaOutsideParentheses")
@@ -93,6 +96,10 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 		val `$$31`: MutableList<BlockPos> = Lists.newArrayList()
 		val cannotReplace = isReplaceable(config.geodeBlockSettings.cannotReplace)
 
+		//added to track the centre of the positions that are air so the slipway can generate there.
+		var centre: Vec3 = Vec3.ZERO
+		var innerCount = 0
+
 		val var48: Iterator<*> = BlockPos.betweenClosed(origin.offset(minOffset, minOffset, minOffset), origin.offset(maxOffset, maxOffset, maxOffset)).iterator()
 		while (true) {
 			while (true) {
@@ -127,9 +134,10 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 							}
 
 							// put a slipway in the middle of the geode, this is the only change I've made to the generation
+							centre /= innerCount.toDouble()
 
-							HexalAPI.LOGGER.info("making a slipway at $origin")
-							safeSetBlock(level, origin, HexalBlocks.SLIPWAY.defaultBlockState(), { true })
+							HexalAPI.LOGGER.info("making a slipway at ${BlockPos(centre)}, origin is $origin")
+							safeSetBlock(level, BlockPos(centre), HexalBlocks.SLIPWAY.defaultBlockState(), { true })
 
 							return true
 						}
@@ -166,6 +174,11 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 					}
 				} else if (`$$35` >= `$$16`) {
 					safeSetBlock(level, `$$33`, blockSettings.fillingProvider.getState(random, `$$33`), cannotReplace)
+
+					// added to track which positions are air so the slipway can generate at the centre of them. `$$33` is apparently a *mutable* block pos so the immutable is
+					// necessary to make it do what you'd expect.
+					innerCount++
+					centre += Vec3.atCenterOf(`$$33`)
 				} else if (`$$35` >= `$$17`) {
 					val `$$42` = random.nextFloat().toDouble() < config.useAlternateLayer0Chance
 					if (`$$42`) {
