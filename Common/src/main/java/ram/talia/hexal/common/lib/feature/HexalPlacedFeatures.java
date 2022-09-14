@@ -27,7 +27,7 @@ public class HexalPlacedFeatures {
 	}
 	
 	public static void placeGeodesInBiome (BiConsumer<PlacedFeature, GenerationStep.Decoration> p) {
-		p.accept(AMETHYST_SLIPWAY_GEODE, GenerationStep.Decoration.UNDERGROUND_DECORATION);
+		p.accept(AMETHYST_SLIPWAY_GEODE, GenerationStep.Decoration.LOCAL_MODIFICATIONS);
 	}
 	
 	private static final Map<ResourceLocation, PlacedFeature> PLACED_FEATURES = new LinkedHashMap<>();
@@ -36,9 +36,9 @@ public class HexalPlacedFeatures {
 					"amethyst_slipway_geode",
 					new PlacedFeature(Holder.direct(HexalConfiguredFeatures.AMETHYST_SLIPWAY_GEODE),
 														List.of(
-																		RarityFilter.onAverageOnceEvery(12),
+																		RarityFilter.onAverageOnceEvery(36),
 																		InSquarePlacement.spread(),
-																		HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(6), VerticalAnchor.absolute(64)),
+																		HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(6), VerticalAnchor.absolute(30)),
 																		BiomeFilter.biome()
 														)
 					));
