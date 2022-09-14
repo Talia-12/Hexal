@@ -1,5 +1,7 @@
 package ram.talia.hexal.mixin;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.GeodeBlockSettings;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
@@ -24,20 +27,26 @@ import java.util.Random;
 @Mixin(GeodeFeature.class)
 abstract public class MixinGeodeFeature {
 	
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void isReplaceableSlipway (Codec codec, CallbackInfo ci) {
+		HexalAPI.LOGGER.info("Creating MixinGeodeFeature");
+	}
+	
 	/**
 	 * Modifies {@link GeodeFeature#place(FeaturePlaceContext)} to make it occasionally place a Slipway in the centre of the geode.
 	 */
 	@Inject(method = "place", at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/world/level/levelgen/feature/GeodeFeature;isReplaceable(Lnet/minecraft/tags/TagKey;)Ljava/util/function/Predicate;",
-					shift = At.Shift.AFTER),
-					locals = LocalCapture.CAPTURE_FAILEXCEPTION
+						value = "RETURN",
+						ordinal = 1),
+					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
+					remap = false
 	)
-	private void placeSlipway (FeaturePlaceContext<GeodeConfiguration> $$0, CallbackInfoReturnable<Boolean> cir, GeodeConfiguration $$1, Random $$2, BlockPos origin,
-														 WorldGenLevel worldGenLevel, int $$5, int $$6, List $$7, int $$8, WorldgenRandom worldgenRandom, NormalNoise $$10, List $$11, double $$12,
-														 GeodeLayerSettings $$13, GeodeBlockSettings $$14, GeodeCrackSettings $$15, double $$16, double $$17, double $$18, double $$19, double $$20,
-														 boolean $$21, int $$22, List $$31) {
-		HexalAPI.LOGGER.info("haha");
+	private void placeSlipway (FeaturePlaceContext<GeodeConfiguration> context, CallbackInfoReturnable<Boolean> cir) {
+		
+		HexalAPI.LOGGER.info("placing slipway at " + origin);
+		HexalAPI.LOGGER.info("numbers are $$16: " + $$16 + ", $$17: " + $$17 + ", $$18: " + $$18 + ", $$19: " + $$19);
+		HexalAPI.LOGGER.info("minGenOffset: " + $$5 + ", maxGenOffset: " + $$6);
+		HexalAPI.LOGGER.info("this might be important: " + $$7);
 		worldGenLevel.setBlock(origin, HexalBlocks.SLIPWAY.defaultBlockState(), 2);
 	}
 }
