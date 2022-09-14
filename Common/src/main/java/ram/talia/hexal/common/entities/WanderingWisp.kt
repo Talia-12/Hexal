@@ -21,7 +21,7 @@ import kotlin.math.abs
 class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : BaseWisp(entityType, world) {
 
 	override var media: Int
-		get() = tickCount * MAX_MEDIA / MAX_TICKS_ALIVE
+		get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
 		set(value) {}
 
 	var acceleration: Vec3
@@ -143,6 +143,7 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 		const val TAG_START_TICK = "start_tick"
 
 		const val MAX_TICKS_ALIVE = 300
-		const val MAX_MEDIA = 30 * ManaConstants.DUST_UNIT
+		const val MIN_MEDIA = 2 * ManaConstants.SHARD_UNIT
+		const val MAX_MEDIA = 5 * ManaConstants.SHARD_UNIT
 	}
 }

@@ -22,11 +22,7 @@ object OpConsumeWisp : SpellOperator {
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
 		val consumed = args.getChecked<IMediaEntity<*>>(0, argc)
 
-		HexalAPI.LOGGER.info("consuming $consumed")
-
 		ctx.assertEntityInRange(consumed.get())
-
-		HexalAPI.LOGGER.info("$consumed in range")
 
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
@@ -34,8 +30,8 @@ object OpConsumeWisp : SpellOperator {
 		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
 
 		val cost = when (consumed.fightConsume(consumer)) {
-			true  -> COST_FOR_OWN
-			false -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
+			false  -> COST_FOR_OWN
+			true   -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
 		}
 
 		HexalAPI.LOGGER.info("cost to consume $consumed is $cost")

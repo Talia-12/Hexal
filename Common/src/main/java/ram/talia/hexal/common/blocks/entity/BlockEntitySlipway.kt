@@ -1,12 +1,9 @@
 package ram.talia.hexal.common.blocks.entity
 
-import at.petrak.hexcasting.api.addldata.Colorizer
 import at.petrak.hexcasting.api.block.HexBlockEntity
-import at.petrak.hexcasting.api.item.ColorizerItem
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.common.lib.HexItems
-import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.Util
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
@@ -14,13 +11,13 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.common.entities.ProjectileWisp
-import ram.talia.hexal.common.entities.TickingWisp
 import ram.talia.hexal.common.entities.WanderingWisp
 import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
 
 class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.SLIPWAY, pos, state) {
+
+	private var random = Random()
 
 	private var isActive = false
 
@@ -50,9 +47,8 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 		val tick = level!!.gameTime
 
 		if (tick >= nextSpawnTick) {
-			nextSpawnTick = tick + SPAWN_INTERVAL
+			nextSpawnTick = tick + random.nextGaussian(SPAWN_INTERVAL_MU.toDouble(), SPAWN_INTERVAL_SIG.toDouble()).toLong()
 
-			HexalAPI.LOGGER.info("spawned at pos $pos, tick $tick")
 			val colouriser = getRandomColouriser()
 
 			val wisp = WanderingWisp(level!!, Vec3.atCenterOf(pos), 30 * ManaConstants.DUST_UNIT)
@@ -78,7 +74,8 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 		const val TAG_NEXT_SPAWN_TICK = "last_spawned_tick"
 
 		const val ACTIVE_RANGE = 5.0
-		const val SPAWN_INTERVAL = 80 //TODO: make this a bit random.
+		const val SPAWN_INTERVAL_MU = 80
+		const val SPAWN_INTERVAL_SIG = 10
 
 		val RANDOM = Random()
 
