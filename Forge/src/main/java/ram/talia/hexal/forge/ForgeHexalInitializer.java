@@ -1,5 +1,7 @@
 package ram.talia.hexal.forge;
 
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,12 +14,13 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.common.casting.RegisterPatterns;
-import ram.talia.hexal.common.lib.HexalBlockEntities;
-import ram.talia.hexal.common.lib.HexalBlocks;
-import ram.talia.hexal.common.lib.HexalEntities;
-import ram.talia.hexal.common.lib.HexalSounds;
+import ram.talia.hexal.common.lib.*;
+import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
+import ram.talia.hexal.common.lib.feature.HexalFeatures;
+import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
+import ram.talia.hexal.forge.eventhandlers.BiomeGenerationEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
 import thedarkcolour.kotlinforforge.KotlinModLoadingContext;
 
@@ -39,7 +42,10 @@ public class ForgeHexalInitializer {
 	}
 	
 	private static void initRegistry () {
-		// it seems like this is more mixin problems? Block/Item/RecipeSerializer being mixined to extend IForgeRegistryEntry but the IDE not knowing that
+		bind(ForgeRegistries.FEATURES, HexalFeatures::registerFeatures);
+		bind(BuiltinRegistries.CONFIGURED_FEATURE, HexalConfiguredFeatures::registerConfiguredFeatures);
+		bind(BuiltinRegistries.PLACED_FEATURE, HexalPlacedFeatures::registerPlacedFeatures);
+		
 		bind(ForgeRegistries.SOUND_EVENTS, HexalSounds::registerSounds);
 		bind(ForgeRegistries.BLOCKS, HexalBlocks::registerBlocks);
 		bind(ForgeRegistries.ITEMS, HexalBlocks::registerBlockItems);
@@ -63,6 +69,7 @@ public class ForgeHexalInitializer {
 		modBus.register(HexalForgeDataGenerators.class);
 		
 		evBus.register(WispCastingMangerEventHandler.class);
+		evBus.register(BiomeGenerationEventHandler.class);
 	}
 	
 	// https://github.com/VazkiiMods/Botania/blob/1.18.x/Forge/src/main/java/vazkii/botania/forge/ForgeCommonInitializer.java
@@ -74,6 +81,11 @@ public class ForgeHexalInitializer {
 				forgeRegistry.register(t);
 			});
 		});
+	}
+	
+	// This version of bind is used for BuiltinRegistries.
+	private static <T> void bind(Registry<T> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+		source.accept((t, id) -> Registry.register(registry, id, t));
 	}
 	
 	private static IEventBus getModEventBus () {

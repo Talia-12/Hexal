@@ -18,7 +18,7 @@ class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerT
 		if (mCast == null || mCast.wisp == null)
 			throw MishapNoSpellCircle()
 
-		HexalAPI.LOGGER.info("Setting ${mCast.wisp} trigger to $triggerType")
+//		HexalAPI.LOGGER.info("Setting ${mCast.wisp} trigger to $triggerType")
 
 		mCast.wisp.setTrigger(triggerType.makeFromArgs(mCast.wisp, args, ctx))
 

@@ -192,7 +192,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	 * Returns true if there are no triggers limiting when the wisp can cast, false otherwise
 	 */
 	fun canScheduleCast(): Boolean {
-		HexalAPI.LOGGER.info("active trigger is $activeTrigger, shouldRemove: ${activeTrigger?.shouldRemoveTrigger(this)}, shouldTrigger: ${activeTrigger?.shouldTrigger(this)}")
+//		HexalAPI.LOGGER.info("active trigger is $activeTrigger, shouldRemove: ${activeTrigger?.shouldRemoveTrigger(this)}, shouldTrigger: ${activeTrigger?.shouldTrigger(this)}")
 		if (activeTrigger?.shouldRemoveTrigger(this) == true)
 			activeTrigger = null
 		return activeTrigger?.shouldTrigger(this) ?: true
@@ -209,7 +209,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	): Boolean {
 		val asdf = !canScheduleCast()
-		HexalAPI.LOGGER.info("will skip schedule if any of ${level.isClientSide}, ${caster == null}, $asdf are true.")
+//		HexalAPI.LOGGER.info("will skip schedule if any of ${level.isClientSide}, ${caster == null}, $asdf are true.")
 		if (level.isClientSide || caster == null || asdf)
 			return false // return dummy data, not expecting anything to be done with it
 

@@ -54,7 +54,7 @@ data class TickTrigger(val tick: Long) : IWispTrigger {
 	var hasTriggered = false
 
 	override fun shouldTrigger(wisp: BaseCastingWisp): Boolean {
-		HexalAPI.LOGGER.info("checking should trigger $wisp at tick ${wisp.level.gameTime}, only if >= $tick")
+//		HexalAPI.LOGGER.info("checking should trigger $wisp at tick ${wisp.level.gameTime}, only if >= $tick")
 
 		if (wisp.level.gameTime < tick)
 			return false
