@@ -14,7 +14,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
 
 /**
- * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow wisps to affect things within their range.
+ * Modifies {@link at.petrak.hexcasting.api.spell.casting.CastingContext} to make it properly allow wisps to affect things within their range.
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements MixinCastingContextInterface {
@@ -35,12 +35,16 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 		return wisp != null;
 	}
 	
+	/**
+	 * Returns the remaining evals the context can perform (mixin used since {@link at.petrak.hexcasting.api.spell.casting.CastingContext}.depth is private)
+	 */
 	public int remainingDepth () {
 		return HexConfig.server().maxRecurseDepth() - this.depth;
 	}
 	
 	/**
-	 * Modifies [at.petrak.hexcasting.api.spell.casting.CastingContext] to make it properly allow wisps to affect things within their range.
+	 * Modifies {@link at.petrak.hexcasting.api.spell.casting.CastingContext} to make it properly allow wisps to affect things within their range. The INVOKE location and
+	 * use of cancellable mean the wisp can affect things in range of the player's greater sentinel, but can't affect things in range of the player.
 	 */
 	@Inject(method = "isVecInRange", at = @At("RETURN"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					slice = @Slice(

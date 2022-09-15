@@ -41,6 +41,11 @@
 
 
 
+
+  "hexal.entry.slipways": "Slipways",
+  "hexal.page.slipways": "I have heard tales of some geodes in which glowing portals called slipways lie. These slipways are regularly depicted with glowing sparks surrounding them that bear an incredible resemblance to the $(l:hexal:patterns/spells/wisps)$(thing)wisps/$ that I have heard tell of, which may be a connection to look into.",
+
+
   "hexal.entry.hexal_basics": "Hexal Basic Patterns",
   "hexal.page.hexal_basics.current_tick": "Adds a number to the stack which seems to be related to how Nature represents time; If I cast the pattern, then cast the same pattern a second later, the number it adds has increased by 20.",
   "hexal.page.hexal_basics.remaining_evals": "Adds the number of evaluations a hex is still capable of to the stack. This is reduced by $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$ and $(l:patterns/meta#hexcasting:for_each)$(action)Thoth's Gambit/$.",

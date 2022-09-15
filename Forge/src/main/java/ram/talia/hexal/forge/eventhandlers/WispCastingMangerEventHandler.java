@@ -37,6 +37,9 @@ public class WispCastingMangerEventHandler {
 		return manager;
 	}
 	
+	/**
+	 * Creates a {@link WispCastingManager} for each player, and loads saved data for said casting manager if saved data exists.
+	 */
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
 		if (event.getPlayer().getLevel().isClientSide())
@@ -47,6 +50,10 @@ public class WispCastingMangerEventHandler {
 		castingManagers.put(player.getUUID(), loadCastingManager(player));
 	}
 	
+	/**
+	 * Save each player's {@link WispCastingManager} so that casts which haven't resolved yet will
+	 * resolve when the player logs back in.
+	 */
 	@SubscribeEvent
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
 		if (event.getPlayer().getLevel().isClientSide())
@@ -62,6 +69,9 @@ public class WispCastingMangerEventHandler {
 		castingManagers.remove(player.getUUID());
 	}
 	
+	/**
+	 * Ticks each player's {@link WispCastingManager}, meaning that their wisps casts execute properly.
+	 */
 	@SubscribeEvent
 	public static void playerTick(TickEvent.PlayerTickEvent event) {
 		if (event.side == LogicalSide.CLIENT)

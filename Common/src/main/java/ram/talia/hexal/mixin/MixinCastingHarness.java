@@ -17,6 +17,9 @@ import java.util.List;
 @Mixin(CastingHarness.class)
 public abstract class MixinCastingHarness {
 	
+	/**
+	 * Makes it so that the wisp casting doesn't play side effects around the player.
+	 */
 	@Redirect(method = "updateWithPattern",
 						at = @At(
 									value="INVOKE",
@@ -37,6 +40,9 @@ public abstract class MixinCastingHarness {
 		return false;
 	}
 	
+	/**
+	 * Makes it so that the wisp casting draws its mana from the wisp rather than the player's inventory.
+	 */
 	@Inject(method = "withdrawMana",
 					at = @At("HEAD"),
 					cancellable = true,

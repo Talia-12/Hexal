@@ -62,6 +62,9 @@ object LinkableRegistry {
 		abstract fun fromSync(tag: Tag, level: Level): T?
 	}
 
+	/**
+	 * Accepts an [ILinkable] and returns a [CompoundTag] storing both the [ILinkable]'s type and a tag representing it, which can be loaded with [fromNbt]
+	 */
 	fun wrapNbt(linkable: ILinkable<*>) = linkable.getLinkableType().wrapNbt(linkable.writeToNbt())
 
 	fun fromNbt(tag: CompoundTag, level: ServerLevel): ILinkable<*>? {
@@ -74,6 +77,10 @@ object LinkableRegistry {
 		return type.fromNbt(tag.get(TAG_LINKABLE)!!, level)
 	}
 
+	/**
+	 * Accepts an [ILinkable] and returns a [CompoundTag] storing both the [ILinkable]'s type and a tag representing it, which can be loaded with [fromSync]
+	 * [wrapSync] and [fromSync] are used to sync the link from Server to Client.
+	 */
 	fun wrapSync(linkable: ILinkable<*>) = linkable.getLinkableType().wrapSync(linkable.writeToSync())
 
 	fun fromSync(tag: CompoundTag, level: Level): ILinkable<*>? {

@@ -6,7 +6,6 @@ import at.petrak.hexcasting.api.spell.getChecked
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.utils.asLong
 import at.petrak.hexcasting.api.utils.asTranslatedComponent
-import at.petrak.hexcasting.common.casting.operators.stack.OpDuplicateN
 import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.LongTag
 import net.minecraft.nbt.Tag

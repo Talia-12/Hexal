@@ -8,6 +8,10 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
 
+/**
+ * Accepts a [WispTriggerRegistry.WispTriggerType] for an [ram.talia.hexal.api.spell.casting.triggers.IWispTrigger], a wisp executing the spell will create a trigger of
+ * the given type (assuming the correct args for that type of trigger are passed by the player), and attach it to the casting wisp.
+ */
 class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerType<*>) : ConstManaOperator {
 	override val argc = triggerType.argc
 
