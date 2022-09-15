@@ -5,7 +5,6 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.utils.asCompound
-import at.petrak.hexcasting.common.lib.HexSounds
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -16,7 +15,6 @@ import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
@@ -24,7 +22,6 @@ import net.minecraft.world.entity.Pose
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.*
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -163,7 +160,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	 * Called in [tick], expected to reduce the amount of [media] remaining in the wisp.
 	 */
 	open fun deductMedia() {
-		media -= WISP_COST_PER_TICK
+		media -= when(canScheduleCast()) {
+			true  -> WISP_COST_PER_TICK_NORMAL
+			false -> WISP_COST_PER_TICK_UNTRIGGERED
+		}
+		media -= COST_PER_LINK_PER_TICK * linked.size
 	}
 
 
@@ -283,7 +284,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 
-
 	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)
 
@@ -355,7 +355,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		const val TAG_RECEIVED_IOTAS = "received_iotas"
 		const val TAG_ACTIVE_TRIGGER = "active_trigger"
 
-		const val WISP_COST_PER_TICK = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK_NORMAL      = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK_UNTRIGGERED = (0.25  * ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val COST_PER_LINK_PER_TICK = (0.01 * ManaConstants.DUST_UNIT / 20.0).toInt()
 	}
 }
 

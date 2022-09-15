@@ -1,16 +1,11 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.common.lib.HexSounds
-import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.sounds.SoundSource
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
@@ -19,7 +14,6 @@ import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.common.lib.HexalEntities
-import kotlin.math.pow
 
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
@@ -66,7 +60,7 @@ class TickingWisp : BaseCastingWisp {
 	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.TICKING_WISP, world, pos, caster, media)
 
 	override fun deductMedia() {
-		media -= 2 * WISP_COST_PER_TICK
+		media -= 2 * WISP_COST_PER_TICK_NORMAL
 	}
 
 	override fun childTick() {

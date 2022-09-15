@@ -3,6 +3,7 @@ package ram.talia.hexal.common.casting;
 import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy;
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry;
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes;
 import ram.talia.hexal.common.casting.actions.*;
