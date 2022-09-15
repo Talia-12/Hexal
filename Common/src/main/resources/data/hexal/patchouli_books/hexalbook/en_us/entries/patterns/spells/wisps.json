@@ -56,6 +56,30 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:get_entity/wisp",
+      "anchor": "hexal:get_entity/wisp",
+      "input": "vec",
+      "output": "entity | null",
+      "text": "hexal.page.wisps.get_entity/wisp"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:zone_entity/wisp",
+      "anchor": "hexal:zone_entity/wisp",
+      "input": "vec, num",
+      "output": "[entity]",
+      "text": "hexal.page.wisps.zone_entity/wisp"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:zone_entity/not_wisp",
+      "anchor": "hexal:zone_entity/not_wisp",
+      "input": "vec, num",
+      "output": "[entity]",
+      "text": "hexal.page.wisps.zone_entity/not_wisp"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:wisp/trigger/tick",
       "anchor": "hexal:wisp/trigger/tick",
       "input": "number",

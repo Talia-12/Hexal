@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.PatternRegistry;
 import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy;
+import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntityAt;
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry;
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes;
 import ram.talia.hexal.common.casting.actions.*;
@@ -13,6 +14,7 @@ import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
 import ram.talia.hexal.common.casting.actions.spells.link.*;
 import ram.talia.hexal.common.casting.actions.spells.wisp.*;
 import ram.talia.hexal.common.casting.actions.spells.great.OpConsumeWisp;
+import ram.talia.hexal.common.entities.BaseWisp;
 
 import static ram.talia.hexal.api.HexalAPI.modLoc;
 
@@ -66,12 +68,27 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aweewaqaweewaawww", HexDir.SOUTH_EAST),
 																 modLoc("wisp/hex"),
 																 OpWispHex.INSTANCE);
+			
+			// Entity purification and Zone distillations
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qqwdedwqqdaqaaww", HexDir.SOUTH_EAST),
+																 modLoc("get_entity/wisp"),
+																 new OpGetEntityAt(entity -> entity instanceof BaseWisp));
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qqwdedwqqwdeddww", HexDir.SOUTH_EAST),
+																 modLoc("zone_entity/wisp"),
+																 new OpGetEntitiesBy(entity -> entity instanceof BaseWisp, false));
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eewaqaweewaqaaww", HexDir.NORTH_EAST),
+																 modLoc("zone_entity/not_wisp"),
+																 new OpGetEntitiesBy(entity -> entity instanceof BaseWisp, true));
+			
+			// Triggers
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqawded", HexDir.NORTH_WEST),
 																 modLoc("wisp/trigger/tick"),
 																 new OpWispSetTrigger(WispTriggerTypes.TickTiggerType));
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aqqqqqwdeddw", HexDir.EAST),
 																 modLoc("wisp/trigger/comm"),
 																 new OpWispSetTrigger(WispTriggerTypes.CommTiggerType));
+			
+			// Great
 			PatternRegistry.mapPattern(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
 																 modLoc("wisp/consume"),
 																 OpConsumeWisp.INSTANCE, true);

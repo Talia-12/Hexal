@@ -1,6 +1,7 @@
 {
   "entity.hexal.wisp.projectile": "Projectile Wisp",
   "entity.hexal.wisp.ticking": "Cyclic Wisp",
+  "entity.hexal.wisp.wandering": "Wandering Wisp",
 
   "hexcasting.spell.hexal:compare/blocks": "Surveyor's Distillation",
   "hexcasting.spell.hexal:compare/entities": "Physician's Distillation",
@@ -20,6 +21,10 @@
   "hexcasting.spell.hexal:wisp/trigger/tick": "Delay Wisp",
   "hexcasting.spell.hexal:wisp/trigger/comm": "Listen",
   "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
+
+  "hexcasting.spell.hexal:get_entity/wisp": "Entity Purification: Wisp",
+  "hexcasting.spell.hexal:zone_entity/wisp": "Zone Distillation: Wisp",
+  "hexcasting.spell.hexal:zone_entity/not_wisp": "Zone Distillation: Non-Wisp",
 
   "hexcasting.spell.hexal:link/link_entity": "Link Entity",
   "hexcasting.spell.hexal:link/link_two_entities": "Link Entities",
@@ -55,6 +60,9 @@
   "hexal.page.wisps.wisp/summon/ticking.1": "The first time it casts the stack will start with a reference to itself, from which point it will always start with the stack and ravenmind in the state they finished on the last cast. This wisp has a less stable form making it lose significantly more media every second, losing one $(l:items/amethyst)$(item)Amethyst Dust/$ per second once summoned, as well as an amount proportional to the amount remaining. It has a range of influence of 8 blocks.",
   "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; trying to cast it through a staff will fail rather spectacularly.",
   "hexal.page.wisps.wisp/hex": "Removes a reference to a wisp from the stack, and replaces it with the wisp's contained hex. Must be a wisp you summoned.",
+  "hexal.page.wisps.get_entity/wisp": "Transform the position on the stack into the wisp at that location (or $(l:casting/influences)$(thing)Null/$ if there isn't one).",
+  "hexal.page.wisps.zone_entity/wisp": "Take a position and maximum distance on the stack, and combine them into a list of wisps near the position.",
+  "hexal.page.wisps.zone_entity/not_wisp": "Take a position and maximum distance on the stack, and combine them into a list of non-wisp entities near the position.",
   "hexal.page.wisps.wisp/trigger/tick": "Removes an integer from the stack, then delays the wisp's next cast until at least that many twentieth's of a second have passed.",
   "hexal.page.wisps.wisp/trigger/comm": "The wisp's next cast will not occur until it has received at least one $(l:hexal:patterns/spells/links#hexal:link/comm/send)$(action)communication/$.",
 
