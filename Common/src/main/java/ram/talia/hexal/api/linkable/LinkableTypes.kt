@@ -6,10 +6,11 @@ import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.entities.LinkableEntity
 
 object LinkableTypes {
-	val LinkableEntityType = object : LinkableRegistry.LinkableType<LinkableEntity>(HexalAPI.modLoc("linkable/entity")) {
+	val LINKABLE_ENTITY_TYPE = object : LinkableRegistry.LinkableType<LinkableEntity>(modLoc("linkable/entity")) {
 		override fun fromNbt(tag: Tag, level: ServerLevel): LinkableEntity? {
 			return level.getEntity(tag.asUUID) as? LinkableEntity
 		}
@@ -17,5 +18,16 @@ object LinkableTypes {
 		override fun fromSync(tag: Tag, level: Level): LinkableEntity? {
 			return level.getEntity(tag.asInt) as? LinkableEntity
 		}
+	}
+
+	val PLAYER_LINKSTORE_TYPE = object : LinkableRegistry.LinkableType<PlayerLinkstore>(modLoc("linkable/player")) {
+		override fun fromNbt(tag: Tag, level: ServerLevel): PlayerLinkstore? {
+			TODO("Not yet implemented")
+		}
+
+		override fun fromSync(tag: Tag, level: Level): PlayerLinkstore? {
+			TODO("Not yet implemented")
+		}
+
 	}
 }

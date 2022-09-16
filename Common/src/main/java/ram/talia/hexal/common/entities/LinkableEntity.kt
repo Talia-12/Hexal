@@ -83,7 +83,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun get() = this
 
-	override fun getLinkableType() = LinkableTypes.LinkableEntityType
+	override fun getLinkableType() = LinkableTypes.LINKABLE_ENTITY_TYPE
 
 	override fun getPos() = position()
 

@@ -16,7 +16,8 @@ object LinkableRegistry {
 	class InvalidLinkableTypeException(msg: String) : Exception(msg)
 
 	init {
-		registerLinkableType(LinkableTypes.LinkableEntityType)
+		registerLinkableType(LinkableTypes.LINKABLE_ENTITY_TYPE)
+		registerLinkableType(LinkableTypes.PLAYER_LINKSTORE_TYPE)
 	}
 
 	fun registerLinkableType(type: LinkableType<*>) {
