@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Pose
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.*
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -65,7 +66,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	override val isConsumable = true
 
-	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false
+	// true at the end will be not-ed to false by the ! out the front
+	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
 
 	// Either used so that loading from NBT results in lazy loading where the ListTag
 	// is only converted into a List of SpellDatum's when needed, meaning that it's

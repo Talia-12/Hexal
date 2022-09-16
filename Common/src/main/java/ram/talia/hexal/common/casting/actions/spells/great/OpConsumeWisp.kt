@@ -29,6 +29,8 @@ object OpConsumeWisp : SpellOperator {
 
 		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
 
+		HexalAPI.LOGGER.info("consumer: $consumer, ${consumed.fightConsume(consumer)}")
+
 		val cost = when (consumed.fightConsume(consumer)) {
 			false  -> COST_FOR_OWN
 			true   -> (COST_FOR_OTHERS_PER_MEDIA * consumed.media).toInt()
