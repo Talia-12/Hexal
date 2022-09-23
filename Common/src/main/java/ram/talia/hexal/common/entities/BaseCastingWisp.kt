@@ -22,7 +22,7 @@ import net.minecraft.world.entity.Pose
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
-import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.nbt.LazyIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.*
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -72,25 +72,27 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	// Either used so that loading from NBT results in lazy loading where the ListTag
 	// is only converted into a List of SpellDatum's when needed, meaning that it's
 	// guaranteed to happen at the point where Level.getEntity works properly.
-	var hex: List<SpellDatum<*>>
+	var hex: MutableList<SpellDatum<*>>
 		get() {
-			resolveHex()
-			return hexEither.left().get()
+			if (level.isClientSide)
+				throw Exception("BaseCastingWisp.hex should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+			return lazyHex!!.get()
 		}
 		set(value) {
-			hexEither = Either.left(value)
+			lazyHex?.set(value)
 		}
-	private var hexEither: Either<List<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
+	private val lazyHex: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 
 	var receivedIotas: MutableList<SpellDatum<*>>
 		get() {
-			resolveReceivedIotas()
-			return receivedIotasEither.left().get()
+			if (level.isClientSide)
+				throw Exception("BaseCastingWisp.receivedIotas should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+			return lazyReceivedIotas!!.get()
 		}
 		set(value) {
-			receivedIotasEither = Either.left(value)
+			lazyReceivedIotas?.set(value)
 		}
-	private var receivedIotasEither: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(ArrayList())
+	private val lazyReceivedIotas: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -103,14 +105,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			setLookVector(value)
 			deltaMovement = value
 		}
-
-	private fun resolveHex() {
-		hexEither.ifRight { listTag -> hexEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
-	}
-
-	private fun resolveReceivedIotas() {
-		receivedIotasEither.ifRight { listTag -> receivedIotasEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
-	}
 
 	override fun get() = this
 
@@ -294,16 +288,16 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 //			HexalAPI.LOGGER.info("loading wisp $uuid's casterUUID as $casterUUID")
 		}
 
-		hexEither = when (val hexTag = compound.get(TAG_HEX)) {
-			null -> Either.left(mutableListOf())
-			else -> Either.right(hexTag as ListTag)
+		when (val hexTag = compound.get(TAG_HEX)) {
+			null -> lazyHex!!.set(mutableListOf())
+			else -> lazyHex!!.set(hexTag as ListTag)
 		}
 
 //		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
 
-		receivedIotasEither = when (val receivedIotasTag = compound.get(TAG_RECEIVED_IOTAS)) {
-			null -> Either.left(mutableListOf())
-			else -> Either.right(receivedIotasTag as ListTag)
+		when (val receivedIotasTag = compound.get(TAG_RECEIVED_IOTAS)) {
+			null -> lazyReceivedIotas!!.set(mutableListOf())
+			else -> lazyReceivedIotas!!.set(receivedIotasTag as ListTag)
 		}
 
 		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
@@ -320,10 +314,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		if (casterUUID != null)
 			compound.putUUID(TAG_CASTER, casterUUID!!)
 
-		val hexTag = hexEither.map({ it.toNbtList() }, { it })
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
-		compound.put(TAG_HEX, hexTag)
-		compound.put(TAG_RECEIVED_IOTAS, receivedIotasEither.map({ it.toNbtList() }, { it }))
+		compound.put(TAG_HEX, lazyHex!!.getUnloaded())
+		compound.put(TAG_RECEIVED_IOTAS, lazyReceivedIotas!!.getUnloaded())
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 	}

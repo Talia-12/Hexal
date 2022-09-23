@@ -29,41 +29,40 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	var linked: MutableList<ILinkable<*>>
 		get() {
-			resolveLinked()
-			return linkedEither.left().get()
+			if (level.isClientSide)
+				throw Exception("LinkableEntity.linked should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+			return lazyLinked!!.get()
 		}
 		set(value) {
-			linkedEither = Either.left(value)
+			lazyLinked?.set(value)
 		}
 
-	private var linkedEither: Either<MutableList<ILinkable<*>>, ListTag> = Either.left(ArrayList())
+	private val lazyLinked: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
 	var renderLinks: MutableList<ILinkable<*>>
 		get() {
 			if (level.isClientSide)
 				return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)?.asList?.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level) } as MutableList?
 					?: mutableListOf()
-			return renderLinksList.map({ it }, { listTag -> listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList })
+			return renderLinksList!!.get()
 		}
 		set(value) {
 			if (level.isClientSide)
 				return
 
-			renderLinksList = Either.left(value)
+			renderLinksList!!.set(value)
 
 			syncRenderLinks()
 		}
 
-	private var renderLinksList: Either<MutableList<ILinkable<*>>, ListTag> = Either.left(ArrayList())
+	private val renderLinksList: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
 
 	private fun syncRenderLinks() {
-		val compound = CompoundTag()
-		val rRenderLinksList = renderLinksList.map({ it }, { listTag -> listTag.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level as ServerLevel) } })
-		compound.put(TAG_RENDER_LINKS, rRenderLinksList.map { LinkableRegistry.wrapSync(it) }.toNbtList())
-		entityData.set(RENDER_LINKS, compound)
-	}
+		if (level.isClientSide)
+			throw Exception("LinkableEntity.syncRenderLinks should only be accessed on server.") // TODO: create and replace with ServerOnlyException
 
-	private fun resolveLinked() {
-		linkedEither.ifRight { listTag -> linkedEither = Either.left(listTag.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level as ServerLevel) } as MutableList) }
+		val compound = CompoundTag()
+		compound.put(TAG_RENDER_LINKS, renderLinksList!!.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
+		entityData.set(RENDER_LINKS, compound)
 	}
 
 	private fun addRenderLink(other: ILinkable<*>) {
@@ -164,15 +163,16 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
-		linkedEither = when (val linkedTag = compound.get(TAG_LINKED)) {
-			null -> Either.left(mutableListOf())
-			else -> Either.right(linkedTag as ListTag)
+		when (val linkedTag = compound.get(TAG_LINKED)) {
+			null -> lazyLinked!!.set(mutableListOf())
+			else -> lazyLinked!!.set(linkedTag as ListTag)
 		}
+
 		entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as? CompoundTag ?: CompoundTag())
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
-		compound.put(TAG_LINKED, linkedEither.map({ linkables -> linkables.map { LinkableRegistry.wrapNbt(it) }.toNbtList() }, { it }))
+		compound.put(TAG_LINKED, lazyLinked!!.getUnloaded())
 		compound.put(TAG_RENDER_LINKS, entityData.get(RENDER_LINKS))
 	}
 

@@ -2,24 +2,24 @@ package ram.talia.hexal.api.nbt
 
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.Tag
-import java.util.*
 
-class LazyLoad<L, U : Tag> {
+abstract class LazyLoad<L, U : Tag> {
+	protected lateinit var either: Either<L, U>
 
-	constructor(loaded: L) {
-		either = Either.left(loaded)
-		loader = Optional.empty()
+	var loaded = false
+
+	abstract fun load(unloaded: U): L?
+	abstract fun unload(loaded: L): U
+
+	fun set(it: L) {
+		either = Either.left(it)
 	}
 
-	constructor(unloaded: U, loader: (unloaded: U) -> L) {
-		either = Either.right(unloaded)
-		this.loader = Optional.of(loader)
+	fun set(it: U) {
+		either = Either.right(it)
 	}
 
-	private val either: Either<L, U>
-	private val loader: Optional<(unloaded: U) -> L>
+	open fun get(): L? = either.map({ it }, { load(it) })
 
-	fun get(): L {
-		return either.map({ it }, { loader.get()(it) })
-	}
+	open fun getUnloaded(): U = either.map({ unload(it) }, { it })
 }

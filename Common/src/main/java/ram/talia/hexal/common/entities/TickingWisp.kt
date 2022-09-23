@@ -10,43 +10,36 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.nbt.LazyIota
+import ram.talia.hexal.api.nbt.LazyIotaList
 import ram.talia.hexal.api.spell.casting.WispCastingManager
-import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.common.lib.HexalEntities
 
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
-
-
 	var stack: MutableList<SpellDatum<*>>
 		get() {
-			resolveStack()
-			return stackEither.left().get()
+			if (level.isClientSide)
+				throw Exception("TickingWisp.stack should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+			return lazyStack!!.get()
 		}
 		set(value) {
-			stackEither = Either.left(value)
+			lazyStack?.set(value)
 		}
-	private var stackEither: Either<MutableList<SpellDatum<*>>, ListTag> = Either.left(mutableListOf(SpellDatum.make(this)))
+	private var lazyStack: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 
 	var ravenmind: SpellDatum<*>
 		get() {
-			resolveRavenmind()
-			return ravenmindEither.left().get()
+			if (level.isClientSide)
+				throw Exception("TickingWisp.stack should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+			return lazyRavenmind!!.get()
 		}
 		set(value) {
-			ravenmindEither = Either.left(value)
+			lazyRavenmind?.set(value)
 		}
-	private var ravenmindEither: Either<SpellDatum<*>, CompoundTag> = Either.left(SpellDatum.make(Widget.NULL))
-
-	private fun resolveStack() {
-		stackEither.ifRight { listTag -> stackEither = Either.left(listTag.toIotaList(level as ServerLevel)) }
-	}
-
-	private fun resolveRavenmind() {
-		ravenmindEither.ifRight { iotaTag -> ravenmindEither = Either.left(SpellDatum.Companion.fromNBT(iotaTag, level as ServerLevel)) }
-	}
+	private var lazyRavenmind: LazyIota? = if (level.isClientSide) null else LazyIota(level as ServerLevel)
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(
@@ -58,6 +51,11 @@ class TickingWisp : BaseCastingWisp {
 	) : super(entityType, world, pos, caster, media)
 
 	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.TICKING_WISP, world, pos, caster, media)
+
+	init {
+		lazyStack?.set(mutableListOf(SpellDatum.make(this)))
+		lazyRavenmind?.set(SpellDatum.make(Widget.NULL))
+	}
 
 	override fun deductMedia() {
 		media -= 2 * WISP_COST_PER_TICK_NORMAL
@@ -83,28 +81,22 @@ class TickingWisp : BaseCastingWisp {
 	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)
 
-		stackEither = when (val stackTag = compound.get(STACK_TAG)) {
-			null -> Either.left(mutableListOf())
-			else -> Either.right(stackTag as ListTag)
+		when (val stackTag = compound.get(STACK_TAG)) {
+			null -> lazyStack!!.set(mutableListOf())
+			else -> lazyStack!!.set(stackTag as ListTag)
 		}
-		ravenmindEither = when (val ravenmindTag = compound.getCompound(RAVENMIND_TAG)) {
-			null -> Either.left(SpellDatum.make(Widget.NULL))
-			else -> Either.right(ravenmindTag)
+		when (val ravenmindTag = compound.getCompound(RAVENMIND_TAG)) {
+			null -> lazyRavenmind!!.set(SpellDatum.make(Widget.NULL))
+			else -> lazyRavenmind!!.set(ravenmindTag)
 		}
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		stackEither.map(
-			{compound.put(STACK_TAG, it.toNbtList())},
-			{compound.put(STACK_TAG, it)}
-		)
+		compound.put(STACK_TAG, lazyStack!!.getUnloaded())
 //		HexalAPI.LOGGER.info("saved wisp $uuid's stack as ${compound.get(STACK_TAG)}, was $stackEither")
-		ravenmindEither.map(
-			{compound.put(RAVENMIND_TAG, it.serializeToNBT())},
-			{compound.put(RAVENMIND_TAG, it)}
-		)
+		compound.put(RAVENMIND_TAG, lazyRavenmind!!.getUnloaded())
 //		HexalAPI.LOGGER.info("saved wisp $uuid's ravenmind as ${compound.get(RAVENMIND_TAG)}, was $ravenmindEither")
 	}
 

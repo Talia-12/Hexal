@@ -1,8 +1,13 @@
 package ram.talia.hexal.api.linkable
 
 import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.utils.asCompound
+import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.nbt.LazyLoad
+import ram.talia.hexal.api.spell.toNbtList
 
 interface ILinkable<T : ILinkable<T>> {
 	val asSpellResult: List<SpellDatum<*>>
@@ -48,4 +53,16 @@ interface ILinkable<T : ILinkable<T>> {
 	fun writeToNbt(): Tag
 
 	fun writeToSync(): Tag
+
+	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>, Tag>() {
+		override fun load(unloaded: Tag): ILinkable<*>? = LinkableRegistry.fromNbt(unloaded.asCompound, level)
+		override fun unload(loaded: ILinkable<*>) = LinkableRegistry.wrapNbt(loaded)
+	}
+
+	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable<*>>, ListTag>() {
+		override fun load(unloaded: ListTag): MutableList<ILinkable<*>> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level) } as MutableList
+		override fun unload(loaded: MutableList<ILinkable<*>>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
+
+		override fun get(): MutableList<ILinkable<*>> = either.map({ it }, { load(it) })
+	}
 }
