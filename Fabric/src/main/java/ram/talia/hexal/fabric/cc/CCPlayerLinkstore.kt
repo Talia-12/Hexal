@@ -1,9 +1,11 @@
 package ram.talia.hexal.fabric.cc
 
+import at.petrak.hexcasting.xplat.IXplatAbstractions
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
 import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.network.FriendlyByteBuf
@@ -13,17 +15,16 @@ import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.PlayerLinkstore
 import ram.talia.hexal.api.spell.toIRenderCentreList
 import ram.talia.hexal.api.spell.toSyncTag
+import ram.talia.hexal.client.playLinkParticles
 
 public class CCPlayerLinkstore(private val owner: Player) : ServerTickingComponent, ClientTickingComponent, AutoSyncedComponent {
 	val linkstore = (owner as? ServerPlayer)?.let { PlayerLinkstore(it) }
+	val ownerRenderCentre = (owner as? AbstractClientPlayer)?.let{ PlayerLinkstore.RenderCentre(it) }
 	var renderLinks: List<ILinkable.IRenderCentre> = listOf()
 
-	override fun serverTick() = linkstore?.pruneLinks() ?: Unit
+	override fun serverTick() = linkstore!!.pruneLinks()
 
-	override fun clientTick() {
-		TODO("Not yet implemented - render links") // probably need to split the renderLinks() function out into a more accessible place.
-		// also need to sync the render links out of linkstore somehow??
-	}
+	override fun clientTick() = renderLinks.forEach { playLinkParticles(ownerRenderCentre!!, it, IXplatAbstractions.INSTANCE.getColorizer(owner), owner.random, owner.level) }
 
 	override fun readFromNbt(tag: CompoundTag) {
 		linkstore?.loadAdditionalData(tag)

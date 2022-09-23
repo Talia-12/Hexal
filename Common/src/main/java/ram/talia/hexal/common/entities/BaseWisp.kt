@@ -17,9 +17,9 @@ import net.minecraft.world.entity.Pose
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nextColour
+import ram.talia.hexal.client.playLinkParticles
 import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
 import kotlin.math.*
@@ -114,26 +114,8 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	fun playLinkParticles(colouriser: FrozenColorizer) {
-		for (renderLink in renderLinks) {
-			val delta = renderLink.renderCentre() - renderCentre()
-			val dist = delta.length() * 12
-
-			for (i in 0..dist.toInt()) {
-				val colour: Int = colouriser.nextColour(random)
-
-				val coeff = i / dist
-				level.addParticle(
-					ConjureParticleOptions(colour, false),
-					(renderCentre().x + delta.x * coeff),
-					(renderCentre().y + delta.y * coeff),
-					(renderCentre().z + delta.z * coeff),
-					0.0125 * (random.nextDouble() - 0.5),
-					0.0125 * (random.nextDouble() - 0.5),
-					0.0125 * (random.nextDouble() - 0.5)
-				)
-			}
-		}
+	fun playAllLinkParticles(colouriser: FrozenColorizer) {
+		renderLinks.forEach { playLinkParticles(this, it, colouriser, random, level) }
 	}
 
 	fun setColouriser(colouriser: FrozenColorizer) {

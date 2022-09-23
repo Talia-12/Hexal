@@ -63,6 +63,7 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")
+		if (level.isClientSide) return
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, stack, ravenmind)
 	}
 

@@ -24,7 +24,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.nbt.LazyIotaList
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.*
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.casting.triggers.IWispTrigger
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
@@ -147,7 +146,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 			playWispParticles(colouriser)
 			playTrailParticles(colouriser)
-			playLinkParticles(colouriser)
+			playAllLinkParticles(colouriser)
 		}
 	}
 

@@ -46,7 +46,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 		compound.put(TAG_RENDER_LINKS, lazyRenderLinks.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
 
 		// need to actually send this compound somewhere (ugh networking)
-		TODO("not implemented yet")
+		// TODO("not implemented yet")
 	}
 
 	private fun addRenderLink(other: ILinkable<*>) {
