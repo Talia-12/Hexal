@@ -11,6 +11,7 @@ import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.toNbtList
@@ -155,7 +156,11 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	}
 
 	class RenderCentre(val player: AbstractClientPlayer) : ILinkable.IRenderCentre {
-		override fun renderCentre(): Vec3 = player.position() + Vec3(0.0, 1.0, 0.0)
+		override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 {
+			if (!recursioning)
+				return player.eyePosition
+			return player.eyePosition + (other.renderCentre(this, false) - player.eyePosition).normalize()
+		}
 	}
 
 	companion object {

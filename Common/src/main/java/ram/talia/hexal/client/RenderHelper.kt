@@ -10,8 +10,8 @@ import java.util.*
 
 @JvmName("playLinkParticles")
 fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, colouriser: FrozenColorizer, random: Random, level: Level) {
-	val sourceCentre = source.renderCentre()
-	val delta = sink.renderCentre() - sourceCentre
+	val sourceCentre = source.renderCentre(sink)
+	val delta = sink.renderCentre(source) - sourceCentre
 	val dist = delta.length() * 12
 
 	for (i in 0..dist.toInt()) {

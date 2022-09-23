@@ -3,13 +3,11 @@ package ram.talia.hexal.api.linkable
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.utils.asCompound
 import com.mojang.datafixers.util.Either
-import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.nbt.LazyLoad
 import ram.talia.hexal.api.spell.toNbtList
 
@@ -57,7 +55,7 @@ interface ILinkable<T : ILinkable<T>> {
 	 * returned by [LinkableRegistry.fromSync] to let client renderers render a link to the render centre of a given [ILinkable].
 	 */
 	interface IRenderCentre {
-		fun renderCentre(): Vec3
+		fun renderCentre(other: IRenderCentre, recursioning: Boolean = true): Vec3 // recursioning to stop a player linked to a player causing an infinite loop
 	}
 
 	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>, Tag>(Either.right(CompoundTag())) { // default to empty compound tag

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Pose
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.client.playLinkParticles
@@ -67,7 +68,8 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		soundInstance!!.keepAlive()
 	}
 
-	override fun renderCentre(): Vec3 = position()
+	fun renderCentre(): Vec3 = position()
+	override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 = renderCentre()
 
 	fun playTrailParticles() {
 		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
