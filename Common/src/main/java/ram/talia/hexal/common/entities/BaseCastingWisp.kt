@@ -69,17 +69,17 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	// true at the end will be not-ed to false by the ! out the front
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
 
-	// Either used so that loading from NBT results in lazy loading where the ListTag
-	// is only converted into a List of SpellDatum's when needed, meaning that it's
-	// guaranteed to happen at the point where Level.getEntity works properly.
-	var hex: MutableList<SpellDatum<*>>
+	// LazyIotaList used so that the ListTag loaded from NBT is only converted
+	// into a List of SpellDatum's when needed, meaning that it's guaranteed
+	// to happen at the point where Level.getEntity works properly.
+	var hex: List<SpellDatum<*>>
 		get() {
 			if (level.isClientSide)
 				throw Exception("BaseCastingWisp.hex should only be accessed on server.") // TODO: create and replace with ServerOnlyException
 			return lazyHex!!.get()
 		}
 		set(value) {
-			lazyHex?.set(value)
+			lazyHex?.set(value as MutableList<SpellDatum<*>>)
 		}
 	private val lazyHex: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 

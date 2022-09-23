@@ -2,7 +2,9 @@ package ram.talia.hexal.api.linkable
 
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.utils.asCompound
+import com.mojang.datafixers.util.Either
 import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
@@ -57,12 +59,12 @@ interface ILinkable<T : ILinkable<T>> {
 		fun renderCentre(): Vec3
 	}
 
-	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>, Tag>() {
+	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>, Tag>(Either.right(CompoundTag())) { // default to empty compound tag
 		override fun load(unloaded: Tag): ILinkable<*>? = LinkableRegistry.fromNbt(unloaded.asCompound, level)
 		override fun unload(loaded: ILinkable<*>) = LinkableRegistry.wrapNbt(loaded)
 	}
 
-	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable<*>>, ListTag>() {
+	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable<*>>, ListTag>(Either.left(mutableListOf())) {
 		override fun load(unloaded: ListTag): MutableList<ILinkable<*>> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level) } as MutableList
 		override fun unload(loaded: MutableList<ILinkable<*>>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
 

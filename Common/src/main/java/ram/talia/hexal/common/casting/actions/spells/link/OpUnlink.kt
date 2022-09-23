@@ -29,9 +29,9 @@ object OpUnlink : SpellOperator {
 
 		if (otherIndex >= linkThis.numLinked())
 			throw MishapInvalidIota(
-				otherIndex.asSpellResult[0],
+				SpellDatum.make(otherIndex),
 				0,
-				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, mCast.wisp.numLinked())
+				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, linkThis.numLinked())
 			)
 
 		val other = linkThis.getLinked(otherIndex)

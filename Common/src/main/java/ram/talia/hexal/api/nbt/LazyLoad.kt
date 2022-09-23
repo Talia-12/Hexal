@@ -3,8 +3,8 @@ package ram.talia.hexal.api.nbt
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.Tag
 
-abstract class LazyLoad<L, U : Tag> {
-	protected lateinit var either: Either<L, U>
+abstract class LazyLoad<L, U : Tag>(default: Either<L, U>) {
+	protected var either: Either<L, U> = default
 
 	var loaded = false
 
