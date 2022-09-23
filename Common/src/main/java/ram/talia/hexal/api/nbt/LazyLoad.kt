@@ -19,7 +19,7 @@ abstract class LazyLoad<L, U : Tag>(default: Either<L, U>) {
 		either = Either.right(it)
 	}
 
-	open fun get(): L? = either.map({ it }, { load(it) })
+	open fun get(): L? = either.map({ it }, { either = Either.left(load(it)); return@map either.left().get() })
 
 	open fun getUnloaded(): U = either.map({ unload(it) }, { it })
 }

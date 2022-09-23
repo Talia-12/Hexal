@@ -163,4 +163,6 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 		const val TAG_RENDER_LINKS = "render_links"
 		const val TAG_RECEIVED_IOTAS = "received_iotas"
 	}
+
+	override fun toString() = "PlayerLinkstore(player=$player)"
 }

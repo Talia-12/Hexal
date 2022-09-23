@@ -78,7 +78,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			return lazyHex!!.get()
 		}
 		set(value) {
-			lazyHex?.set(value as MutableList<SpellDatum<*>>)
+			(value as? MutableList<SpellDatum<*>>)?.let { lazyHex?.set(it) }
 		}
 	private val lazyHex: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 

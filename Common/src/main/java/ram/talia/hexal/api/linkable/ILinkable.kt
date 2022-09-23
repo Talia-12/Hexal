@@ -9,6 +9,7 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.nbt.LazyLoad
 import ram.talia.hexal.api.spell.toNbtList
 
@@ -68,6 +69,6 @@ interface ILinkable<T : ILinkable<T>> {
 		override fun load(unloaded: ListTag): MutableList<ILinkable<*>> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level) } as MutableList
 		override fun unload(loaded: MutableList<ILinkable<*>>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
 
-		override fun get(): MutableList<ILinkable<*>> = either.map({ it }, { load(it) })
+		override fun get(): MutableList<ILinkable<*>> = super.get()!!
 	}
 }
