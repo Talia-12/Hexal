@@ -5,10 +5,11 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.asSpellResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getChecked
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpGetLinkedIndex : ConstManaOperator {
@@ -23,11 +24,14 @@ object OpGetLinkedIndex : ConstManaOperator {
 			else -> wisp
 		}
 
-		val linked = args.getChecked<Entity>(0, argc)
+		val entityOther = args.getChecked<Entity>(0, argc)
 
-		if (linked !is ILinkable<*>)
-			return (-1).asSpellResult
+		val linkOther = when (entityOther) {
+			is LinkableEntity -> entityOther
+			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(entityOther)
+			else -> return (-1).asSpellResult
+		}
 
-		return linkThis.getLinkedIndex(linked).asSpellResult
+		return linkThis.getLinkedIndex(linkOther).asSpellResult
 	}
 }

@@ -3,10 +3,11 @@ package ram.talia.hexal.common.casting.actions.spells.link
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import ram.talia.hexal.api.HexalAPI
+import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
-import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
 
@@ -24,21 +25,28 @@ object OpLinkEntity : SpellOperator {
 			else -> wisp
 		}
 
-		//TODO: make possible to link to players
-		val other = args.getChecked<LinkableEntity>(0, argc)
+		val other = args.getChecked<Entity>(0, argc)
+		if (other !is LinkableEntity && other !is ServerPlayer)
+			throw MishapInvalidIota.ofClass(SpellDatum.make(other), 0, LinkableEntity::class.java)
+
+		val linkOther = when (other) {
+			is LinkableEntity -> other
+			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(other)
+			else -> throw Exception("How did I get here")
+		}
 
 		//TODO: add ILinkable.maxSqrLinkRange
 //		if ((linkThis.getPos() - other.position()).lengthSqr() > linkThis.maxSqrCastingDistance())
 //			throw MishapEntityTooFarAway(other)
 
 		return Triple(
-			Spell(linkThis, other),
+			Spell(linkThis, linkOther),
 			LINK_COST,
 			listOf(ParticleSpray.burst(other.position(), 1.5))
 		)
 	}
 
-	private data class Spell(val linkThis: ILinkable<*>, val other: LinkableEntity) : RenderedSpell {
-		override fun cast(ctx: CastingContext) = linkThis.link(other)
+	private data class Spell(val linkThis: ILinkable<*>, val linkOther: ILinkable<*>) : RenderedSpell {
+		override fun cast(ctx: CastingContext) = linkThis.link(linkOther)
 	}
 }
