@@ -1,6 +1,7 @@
 package ram.talia.hexal.fabric.xplat;
 
 import net.minecraft.server.level.ServerPlayer;
+import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
@@ -60,7 +61,15 @@ public class FabricXplatImpl implements IXplatAbstractions {
     @Override
     public Optional<WispCastingManager> getWispCastingManager (ServerPlayer caster) {
         var cc = HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster);
+        // TODO - plausibly can replace with just cc.getManager() since ServerPlayer caster should always have a manager.
         return Optional.ofNullable(cc.getManager());
+    }
+    
+    @Override
+    public PlayerLinkstore getLinkstore (ServerPlayer player) {
+        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
+        // TODO - not sure if this will ever *actually* return null since getLinkstore requires a ServerPlayer
+        return cc.getLinkstore();
     }
 
 //    @Override

@@ -2,8 +2,9 @@ package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.max
 
 object OpGetLinked : ConstManaOperator {
@@ -13,15 +14,17 @@ object OpGetLinked : ConstManaOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
-			throw MishapNoSpellCircle()
+		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
+			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+			else -> wisp
+		}
 
 		val linkedIndex = max(args.getChecked<Double>(0, OpSendIota.argc).toInt(), 0)
 
-		if (linkedIndex >= mCast.wisp.numLinked())
+		if (linkedIndex >= linkThis.numLinked())
 			return Widget.NULL.asSpellResult
 
-		val other = mCast.wisp.getLinked(linkedIndex)
+		val other = linkThis.getLinked(linkedIndex)
 
 		return if (ctx.isVecInRange(other.getPos())) other.asSpellResult else Widget.NULL.asSpellResult
 	}

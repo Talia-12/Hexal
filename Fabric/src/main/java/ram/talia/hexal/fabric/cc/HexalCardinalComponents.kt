@@ -12,6 +12,7 @@ import ram.talia.hexal.api.HexalAPI
 class HexalCardinalComponents : EntityComponentInitializer, ItemComponentInitializer {
 	override fun registerEntityComponentFactories(registry: EntityComponentFactoryRegistry) {
 		registry.registerForPlayers(WISP_CASTING_MANAGER, ::CCWispCastingManager, RespawnCopyStrategy.ALWAYS_COPY)
+		registry.registerForPlayers(PLAYER_LINKSTORE, ::CCPlayerLinkstore, RespawnCopyStrategy.NEVER_COPY)
 	}
 
 	override fun registerItemComponentFactories(registry: ItemComponentFactoryRegistry) {
@@ -23,6 +24,11 @@ class HexalCardinalComponents : EntityComponentInitializer, ItemComponentInitial
 		val WISP_CASTING_MANAGER: ComponentKey<CCWispCastingManager> = ComponentRegistry.getOrCreate(
 			HexalAPI.modLoc("wisp_casting_manager"),
 			CCWispCastingManager::class.java
+		)
+		@JvmField
+		val PLAYER_LINKSTORE: ComponentKey<CCPlayerLinkstore> = ComponentRegistry.getOrCreate(
+			HexalAPI.modLoc("player_linkstore"),
+			CCPlayerLinkstore::class.java
 		)
 	}
 }

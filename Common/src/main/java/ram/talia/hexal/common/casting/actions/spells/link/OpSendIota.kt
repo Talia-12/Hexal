@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.max
 
 object OpSendIota : SpellOperator {
@@ -19,43 +20,25 @@ object OpSendIota : SpellOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
-//			throw MishapNoSpellCircle()
-				return debugExecute(args, ctx)
+		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
+			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+			else -> wisp
+		}
 
 		val linkedIndex = max(args.getChecked<Double>(0, argc).toInt(), 0)
 		val iota = args[1]
 
-		if (linkedIndex >= mCast.wisp.numLinked())
+		if (linkedIndex >= linkThis.numLinked())
 			throw MishapInvalidIota(
 				linkedIndex.asSpellResult[0],
 				0,
-				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, mCast.wisp.numLinked())
+				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, linkThis.numLinked())
 			)
 
-		val other = mCast.wisp.getLinked(linkedIndex)
+		val other = linkThis.getLinked(linkedIndex)
 
-		ctx.assertVecInRange(other.getPos())
-
-		return Triple(
-			Spell(other, iota),
-			COST_SEND_IOTA,
-			listOf(ParticleSpray.burst(other.getPos(), 1.5))
-		)
-	}
-
-	fun debugExecute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		val other = args.getChecked<Entity>(0, argc)
-		val iota = args[1]
-
-		if (other !is ILinkable<*>)
-			throw MishapInvalidIota(
-				other.asSpellResult[0],
-				0,
-				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, 5)
-			)
-
-		ctx.assertEntityInRange(other)
+		// TODO: Links have their own range that is enforced
+//		ctx.assertVecInRange(other.getPos())
 
 		return Triple(
 			Spell(other, iota),

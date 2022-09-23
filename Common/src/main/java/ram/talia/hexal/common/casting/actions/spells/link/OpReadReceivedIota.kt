@@ -5,7 +5,9 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpReadReceivedIota : ConstManaOperator {
 	override val argc = 0
@@ -15,11 +17,11 @@ object OpReadReceivedIota : ConstManaOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
-			throw MishapNoSpellCircle()
+		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
+			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+			else -> wisp
+		}
 
-		HexalAPI.LOGGER.info("executed by wisp ${mCast.wisp.uuid}")
-
-		return listOf(mCast.wisp.nextReceivedIota())
+		return listOf(linkThis.nextReceivedIota())
 	}
 }

@@ -2,6 +2,7 @@ package ram.talia.hexal.api.linkable
 
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.utils.asCompound
+import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
@@ -20,14 +21,9 @@ interface ILinkable<T : ILinkable<T>> {
 	/**
 	 * Return the registered LinkableType<T> for this [ILinkable], used to save/load the [ILinkable].
 	 */
-	fun getLinkableType(): LinkableRegistry.LinkableType<T>
+	fun getLinkableType(): LinkableRegistry.LinkableType<T, *>
 
 	fun getPos(): Vec3
-
-	/**
-	 * If the [ILinkable]'s position is different to the place the link should be rendered to, override this to change where the link is rendered to.
-	 */
-	fun renderCentre() = getPos()
 
 	/**
 	 * Set to true if the link should be removed, e.g. the [ILinkable] has been discarded.
@@ -53,6 +49,13 @@ interface ILinkable<T : ILinkable<T>> {
 	fun writeToNbt(): Tag
 
 	fun writeToSync(): Tag
+
+	/**
+	 * returned by [LinkableRegistry.fromSync] to let client renderers render a link to the render centre of a given [ILinkable].
+	 */
+	interface IRenderCentre {
+		fun renderCentre(): Vec3
+	}
 
 	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>, Tag>() {
 		override fun load(unloaded: Tag): ILinkable<*>? = LinkableRegistry.fromNbt(unloaded.asCompound, level)

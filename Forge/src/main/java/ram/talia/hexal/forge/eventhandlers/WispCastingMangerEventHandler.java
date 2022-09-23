@@ -28,7 +28,11 @@ public class WispCastingMangerEventHandler {
 	
 	public static WispCastingManager getCastingManager(ServerPlayer serverPlayer) {
 		WispCastingManager manager = castingManagers.get(serverPlayer.getUUID());
-		return ObjectUtils.firstNonNull(manager, loadCastingManager(serverPlayer));
+		if (manager == null) {
+			manager = loadCastingManager(serverPlayer);
+			castingManagers.put(serverPlayer.getUUID(), manager);
+		}
+		return manager;
 	}
 	
 	private static WispCastingManager loadCastingManager(ServerPlayer player) {

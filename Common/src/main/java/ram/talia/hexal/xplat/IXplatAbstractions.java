@@ -1,7 +1,10 @@
 package ram.talia.hexal.xplat;
 
 import at.petrak.hexcasting.api.HexAPI;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
 import java.util.Optional;
@@ -29,6 +32,8 @@ public interface IXplatAbstractions {
     // Things that used to be caps
 
     Optional<WispCastingManager> getWispCastingManager(ServerPlayer caster);
+    
+    PlayerLinkstore getLinkstore(ServerPlayer player);
     
     // Blocks
 

@@ -9,6 +9,7 @@ object OpLinkEntities : SpellOperator {
 	override val argc = 2
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+		//TODO: make possible to accept players
 		val thisLinkable = args.getChecked<LinkableEntity>(0, argc)
 		val other = args.getChecked<LinkableEntity>(1, argc)
 

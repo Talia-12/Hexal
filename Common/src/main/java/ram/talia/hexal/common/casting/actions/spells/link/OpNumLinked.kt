@@ -5,7 +5,9 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.asSpellResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpNumLinked : ConstManaOperator {
 	override val argc = 0
@@ -14,9 +16,11 @@ object OpNumLinked : ConstManaOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
-			throw MishapNoSpellCircle()
+		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
+			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+			else -> wisp
+		}
 
-		return mCast.wisp.numLinked().asSpellResult
+		return linkThis.numLinked().asSpellResult
 	}
 }

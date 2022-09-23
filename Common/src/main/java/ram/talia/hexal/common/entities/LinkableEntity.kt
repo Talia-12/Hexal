@@ -3,7 +3,6 @@ package ram.talia.hexal.common.entities
 import at.petrak.hexcasting.api.spell.spellListOf
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asList
-import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.ListTag
@@ -21,9 +20,8 @@ import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.LinkableTypes
 import ram.talia.hexal.api.spell.toNbtList
-import java.util.ArrayList
 
-abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable<LinkableEntity> {
+abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable<LinkableEntity>, ILinkable.IRenderCentre {
 	override val asSpellResult
 		get() = spellListOf(this)
 
@@ -38,51 +36,50 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		}
 
 	private val lazyLinked: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
-	var renderLinks: MutableList<ILinkable<*>>
+	var renderLinks: MutableList<ILinkable.IRenderCentre>
 		get() {
-			if (level.isClientSide)
-				return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)?.asList?.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level) } as MutableList?
-					?: mutableListOf()
-			return renderLinksList!!.get()
+			if (!level.isClientSide)
+			throw Exception("LinkableEntity.renderLinks should only be accessed on client.") // TODO: create and replace with ClientOnlyException
+			return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)?.asList?.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level) } as MutableList? ?: mutableListOf()
 		}
-		set(value) {
-			if (level.isClientSide)
-				return
+		set(value) { }
 
-			renderLinksList!!.set(value)
-
-			syncRenderLinks()
-		}
-
-	private val renderLinksList: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
+	private val lazyRenderLinks: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
 
 	private fun syncRenderLinks() {
 		if (level.isClientSide)
 			throw Exception("LinkableEntity.syncRenderLinks should only be accessed on server.") // TODO: create and replace with ServerOnlyException
 
 		val compound = CompoundTag()
-		compound.put(TAG_RENDER_LINKS, renderLinksList!!.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
+		compound.put(TAG_RENDER_LINKS, lazyRenderLinks!!.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
 		entityData.set(RENDER_LINKS, compound)
 	}
 
 	private fun addRenderLink(other: ILinkable<*>) {
-		renderLinks.add(other)
+		if (level.isClientSide)
+			throw Exception("LinkableEntity.addRenderLink should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+
+		lazyRenderLinks!!.get().add(other)
 		syncRenderLinks()
 	}
 
 	private fun removeRenderLink(other: ILinkable<*>) {
-		renderLinks.remove(other)
+		if (level.isClientSide)
+			throw Exception("LinkableEntity.removeRenderLink should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+		lazyRenderLinks!!.get().remove(other)
 		syncRenderLinks()
 	}
 
 	fun removeRenderLink(index: Int) {
-		renderLinks.removeAt(index)
+		if (level.isClientSide)
+			throw Exception("LinkableEntity.removeRenderLink should only be accessed on server.") // TODO: create and replace with ServerOnlyException
+		lazyRenderLinks!!.get().removeAt(index)
 		syncRenderLinks()
 	}
 
 	override fun get() = this
 
-	override fun getLinkableType() = LinkableTypes.LINKABLE_ENTITY_TYPE
+	override fun getLinkableType(): LinkableRegistry.LinkableType<LinkableEntity, *> = LinkableTypes.LINKABLE_ENTITY_TYPE
 
 	override fun getPos() = position()
 
@@ -139,17 +136,11 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		return this.linked.indexOf(linked)
 	}
 
-	override fun numLinked(): Int {
-		return linked.size
-	}
+	override fun numLinked() = linked.size
 
-	override fun writeToNbt(): Tag {
-		return NbtUtils.createUUID(uuid)
-	}
+	override fun writeToNbt(): Tag = NbtUtils.createUUID(uuid)
 
-	override fun writeToSync(): Tag {
-		return IntTag.valueOf(id)
-	}
+	override fun writeToSync(): Tag = IntTag.valueOf(id)
 
 	override fun tick() {
 		super.tick()
@@ -163,17 +154,24 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
-		when (val linkedTag = compound.get(TAG_LINKED)) {
+		when (val linkedTag = compound.get(TAG_LINKED) as? ListTag) {
 			null -> lazyLinked!!.set(mutableListOf())
-			else -> lazyLinked!!.set(linkedTag as ListTag)
+			else -> lazyLinked!!.set(linkedTag)
 		}
 
-		entityData.set(RENDER_LINKS, compound.get(TAG_RENDER_LINKS) as? CompoundTag ?: CompoundTag())
+		when (val renderLinkedTag = compound.get(TAG_RENDER_LINKS) as? ListTag) {
+			null -> lazyRenderLinks!!.set(mutableListOf())
+			else -> lazyRenderLinks!!.set(renderLinkedTag)
+		}
+
+		val renderLinkedCompound = CompoundTag()
+		renderLinkedCompound.put(TAG_RENDER_LINKS, lazyRenderLinks.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
+		entityData.set(RENDER_LINKS, renderLinkedCompound)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		compound.put(TAG_LINKED, lazyLinked!!.getUnloaded())
-		compound.put(TAG_RENDER_LINKS, entityData.get(RENDER_LINKS))
+		compound.put(TAG_RENDER_LINKS, lazyRenderLinks!!.getUnloaded())
 	}
 
 	override fun defineSynchedData() {

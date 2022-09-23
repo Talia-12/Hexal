@@ -4,12 +4,16 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asInt
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
+import ram.talia.hexal.api.linkable.ILinkable
+import ram.talia.hexal.api.linkable.LinkableRegistry
 import java.util.*
 
 fun ListTag.toIotaList(level: ServerLevel): MutableList<SpellDatum<*>> {
@@ -86,4 +90,22 @@ fun List<Tag>.toNbtList(): ListTag {
 	this.forEach { listTag.add(it) }
 
 	return listTag
+}
+
+@JvmName("toSyncTagILinkable")
+fun List<ILinkable<*>>.toSyncTag(): ListTag {
+	val listTag = ListTag()
+	this.forEach { listTag.add(LinkableRegistry.wrapSync(it)) }
+	return listTag
+}
+
+fun ListTag.toIRenderCentreList(level: ClientLevel): List<ILinkable.IRenderCentre> {
+	val out = mutableListOf<ILinkable.IRenderCentre>()
+
+	this.forEach { centreTag ->
+		val centre = LinkableRegistry.fromSync(centreTag as CompoundTag, level)
+		if (centre != null) out.add(centre)
+	}
+
+	return out
 }

@@ -4,11 +4,11 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import net.minecraft.network.chat.TranslatableComponent
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.BaseCastingWisp
+import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.max
 
 object OpUnlink : SpellOperator {
@@ -20,32 +20,30 @@ object OpUnlink : SpellOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
-			throw MishapNoSpellCircle()
+		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
+			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+			else -> wisp
+		}
 
-		val thisWisp = mCast.wisp
 		val otherIndex = max(args.getChecked<Double>(0, OpSendIota.argc).toInt(), 0)
 
-		if (otherIndex >= mCast.wisp.numLinked())
+		if (otherIndex >= linkThis.numLinked())
 			throw MishapInvalidIota(
 				otherIndex.asSpellResult[0],
 				0,
 				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, mCast.wisp.numLinked())
 			)
 
-		val other = thisWisp.getLinked(otherIndex)
+		val other = linkThis.getLinked(otherIndex)
 
 		return Triple(
-			Spell(thisWisp, other),
+			Spell(linkThis, other),
 			UNLINK_COST,
 			listOf(ParticleSpray.burst(other.getPos(), 1.5))
 		)
 	}
 
-	private data class Spell(val thisWisp: BaseCastingWisp, val other: ILinkable<*>) : RenderedSpell {
-		override fun cast(ctx: CastingContext) {
-			thisWisp.unlink(other)
-		}
-
+	private data class Spell(val linkThis: ILinkable<*>, val other: ILinkable<*>) : RenderedSpell {
+		override fun cast(ctx: CastingContext) = linkThis.unlink(other)
 	}
 }

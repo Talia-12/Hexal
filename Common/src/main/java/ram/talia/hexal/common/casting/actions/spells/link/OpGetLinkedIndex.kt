@@ -9,6 +9,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpGetLinkedIndex : ConstManaOperator {
 	override val argc = 1
@@ -17,14 +18,16 @@ object OpGetLinkedIndex : ConstManaOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
-			throw MishapNoSpellCircle()
+		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
+			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+			else -> wisp
+		}
 
 		val linked = args.getChecked<Entity>(0, argc)
 
 		if (linked !is ILinkable<*>)
 			return (-1).asSpellResult
 
-		return mCast.wisp.getLinkedIndex(linked).asSpellResult
+		return linkThis.getLinkedIndex(linked).asSpellResult
 	}
 }
