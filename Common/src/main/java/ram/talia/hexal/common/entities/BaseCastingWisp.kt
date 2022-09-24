@@ -211,13 +211,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		val sPlayer = caster as ServerPlayer
 
-		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).ifPresent {
-			it.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
+		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
 //			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $rHex, stack was $rInitialStack, ravenmind was $rInitialRavenmind")
 
-			scheduledCast = true
-		}
+		scheduledCast = true
 
 		return scheduledCast
 	}

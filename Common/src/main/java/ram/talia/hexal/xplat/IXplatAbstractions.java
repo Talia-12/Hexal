@@ -1,9 +1,13 @@
 package ram.talia.hexal.xplat;
 
 import at.petrak.hexcasting.api.HexAPI;
+import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
@@ -20,18 +24,18 @@ public interface IXplatAbstractions {
 //
 //    void initPlatformSpecific();
 
-//    void sendPacketToPlayer(ServerPlayer target, IMessage packet);
+    void sendPacketToPlayer(ServerPlayer target, IMessage packet);
 
-//    void sendPacketNear(Vec3 pos, double radius, ServerLevel dimension, IMessage packet);
+    void sendPacketNear(Vec3 pos, double radius, ServerLevel dimension, IMessage packet);
 
     // https://github.com/VazkiiMods/Botania/blob/13b7bcd9cbb6b1a418b0afe455662d29b46f1a7f/Xplat/src/main/java/vazkii/botania/xplat/IXplatAbstractions.java#L157
-//    Packet<?> toVanillaClientboundPacket(IMessage message);
+    Packet<?> toVanillaClientboundPacket(IMessage message);
 
 //    double getReachDistance(Player player);
 
     // Things that used to be caps
 
-    Optional<WispCastingManager> getWispCastingManager(ServerPlayer caster);
+    WispCastingManager getWispCastingManager(ServerPlayer caster);
     
     PlayerLinkstore getLinkstore(ServerPlayer player);
     

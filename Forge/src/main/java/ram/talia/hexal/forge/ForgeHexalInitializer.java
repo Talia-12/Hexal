@@ -1,5 +1,9 @@
 package ram.talia.hexal.forge;
 
+import at.petrak.hexcasting.common.blocks.behavior.HexComposting;
+import at.petrak.hexcasting.common.blocks.behavior.HexStrippables;
+import at.petrak.hexcasting.common.misc.AkashicTreeGrower;
+import at.petrak.hexcasting.interop.HexInterop;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +27,7 @@ import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
 import ram.talia.hexal.forge.eventhandlers.BiomeGenerationEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
+import ram.talia.hexal.forge.network.ForgePacketHandler;
 import thedarkcolour.kotlinforforge.KotlinModLoadingContext;
 
 import java.util.function.BiConsumer;
@@ -61,6 +66,12 @@ public class ForgeHexalInitializer {
 		IEventBus evBus = MinecraftForge.EVENT_BUS;
 		
 		modBus.register(ForgeHexalClientInitializer.class);
+		
+		modBus.addListener((FMLCommonSetupEvent evt) ->
+			 evt.enqueueWork(() -> {
+				 //noinspection Convert2MethodRef
+				 ForgePacketHandler.init();
+			 }));
 		
 		modBus.addListener((FMLCommonSetupEvent evt) -> evt.enqueueWork(RegisterPatterns::registerPatterns));
 		

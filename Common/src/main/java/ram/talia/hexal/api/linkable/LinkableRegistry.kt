@@ -68,8 +68,10 @@ object LinkableRegistry {
 	/**
 	 * Accepts an [ILinkable] and returns a [CompoundTag] storing both the [ILinkable]'s type and a tag representing it, which can be loaded with [fromNbt]
 	 */
+	@JvmStatic
 	fun wrapNbt(linkable: ILinkable<*>) = linkable.getLinkableType().wrapNbt(linkable.writeToNbt())
 
+	@JvmStatic
 	fun fromNbt(tag: CompoundTag, level: ServerLevel): ILinkable<*>? {
 		val typeId = tag.getString(TAG_TYPE)
 		if (!ResourceLocation.isValidResourceLocation(typeId))
@@ -84,8 +86,10 @@ object LinkableRegistry {
 	 * Accepts an [ILinkable] and returns a [CompoundTag] storing both the [ILinkable]'s type and a tag representing it, which can be
 	 * loaded with [fromSync]. [wrapSync] and [fromSync] are used to sync the link from Server to Client.
 	 */
+	@JvmStatic
 	fun wrapSync(linkable: ILinkable<*>) = linkable.getLinkableType().wrapSync(linkable.writeToSync())
 
+	@JvmStatic
 	fun fromSync(tag: CompoundTag, level: Level): ILinkable.IRenderCentre? {
 		val typeId = tag.getString(TAG_TYPE)
 		if (!ResourceLocation.isValidResourceLocation(typeId))

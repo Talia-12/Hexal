@@ -3,17 +3,17 @@ package ram.talia.hexal.forge.eventhandlers;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import org.apache.commons.lang3.ObjectUtils;
+import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
-import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Manages a Map of player UUIDs to {@link PlayerLinkstore}s,
@@ -22,6 +22,23 @@ public class PlayerLinkstoreEventHandler {
 	private static final String TAG_PLAYER_LINKSTORE = "player_linkstore";
 	
 	private static final Map<UUID, PlayerLinkstore> linkstores = new HashMap<>();
+	private static final Map<UUID, List<ILinkable.IRenderCentre>> renderLinks = new HashMap<>();
+	
+	public static List<ILinkable.IRenderCentre> getRenderLinks(Player player) {
+		return getRenderLinks(player.getUUID());
+	}
+	
+	public static List<ILinkable.IRenderCentre> getRenderLinks(UUID player) {
+		return renderLinks.get(player);
+	}
+	
+	public static List<ILinkable.IRenderCentre> setRenderLinks(Player player, List<ILinkable.IRenderCentre> newRenderLinks) {
+		return setRenderLinks(player.getUUID(), newRenderLinks);
+	}
+	
+	public static List<ILinkable.IRenderCentre> setRenderLinks(UUID player, List<ILinkable.IRenderCentre> newRenderLinks) {
+		return renderLinks.put(player, newRenderLinks);
+	}
 	
 	public static PlayerLinkstore getLinkstore(ServerPlayer player) {
 		PlayerLinkstore linkstore = linkstores.get(player.getUUID());
@@ -45,8 +62,10 @@ public class PlayerLinkstoreEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getPlayer().getLevel().isClientSide())
+		if (event.getPlayer().getLevel().isClientSide()) {
+			renderLinks.put(event.getPlayer().getUUID(), new ArrayList<>());
 			return;
+		}
 		
 		ServerPlayer player = (ServerPlayer) event.getPlayer();
 		
@@ -58,8 +77,10 @@ public class PlayerLinkstoreEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (event.getPlayer().getLevel().isClientSide())
+		if (event.getPlayer().getLevel().isClientSide()) {
+			renderLinks.remove(event.getPlayer().getUUID());
 			return;
+		}
 		
 		ServerPlayer player = (ServerPlayer) event.getPlayer();
 		
