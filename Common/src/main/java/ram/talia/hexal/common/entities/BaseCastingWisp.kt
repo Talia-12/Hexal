@@ -117,10 +117,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		return this.caster ?: this
 	}
 
-	override fun getEyeHeight(pose: Pose, dim: EntityDimensions): Float {
-		return dim.height * 0.5f
-	}
-
 
 	override fun tick() {
 		super.tick()
@@ -179,6 +175,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	 * maximum range the wisp should be able to affect and make them able to affect things inside that range.
 	 */
 	abstract fun maxSqrCastingDistance(): Double
+
+	override fun maxSqrLinkRange() = maxSqrCastingDistance()
 
 	fun setTrigger(trigger: IWispTrigger) {
 		activeTrigger = trigger

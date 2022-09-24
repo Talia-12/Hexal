@@ -8,8 +8,10 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyLoad
 import ram.talia.hexal.api.spell.toNbtList
+import kotlin.math.max
 
 interface ILinkable<T : ILinkable<T>> {
 	val asSpellResult: List<SpellDatum<*>>
@@ -25,6 +27,10 @@ interface ILinkable<T : ILinkable<T>> {
 	fun getLinkableType(): LinkableRegistry.LinkableType<T, *>
 
 	fun getPos(): Vec3
+
+	fun maxSqrLinkRange(): Double
+
+	fun isInRange(other: ILinkable<*>) = (this.getPos() - other.getPos()).lengthSqr() <= max(this.maxSqrLinkRange(), other.maxSqrLinkRange())
 
 	/**
 	 * Set to true if the link should be removed, e.g. the [ILinkable] has been discarded.

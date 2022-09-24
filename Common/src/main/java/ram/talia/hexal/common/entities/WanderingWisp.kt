@@ -33,6 +33,8 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 
 	var startTick: Long = 0
 
+	override fun maxSqrLinkRange() = 16.0
+
 	override fun receiveIota(iota: SpellDatum<*>) { }
 
 	override fun nextReceivedIota() = SpellDatum.make(Widget.NULL)

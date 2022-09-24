@@ -1,5 +1,6 @@
 package ram.talia.hexal.api.linkable
 
+import at.petrak.hexcasting.api.spell.Operator
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import net.minecraft.client.player.AbstractClientPlayer
@@ -70,12 +71,14 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	 */
 	fun pruneLinks() {
 		for (i in (linked.size - 1) downTo 0) {
-			if (linked[i].shouldRemove())
+			if (linked[i].shouldRemove() || !isInRange(linked[i]))
 				unlink(linked[i])
 		}
 	}
 
 	override fun get() = this
+
+	override fun maxSqrLinkRange() = Operator.MAX_DISTANCE * Operator.MAX_DISTANCE
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<PlayerLinkstore, *> = LinkableTypes.PLAYER_LINKSTORE_TYPE
 

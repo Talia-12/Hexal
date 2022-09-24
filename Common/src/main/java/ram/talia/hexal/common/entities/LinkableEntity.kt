@@ -147,7 +147,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 		if (!level.isClientSide) {
 			for (i in (linked.size - 1) downTo 0) {
-				if (linked[i].shouldRemove())
+				if (linked[i].shouldRemove() || !isInRange(linked[i]))
 					unlink(linked[i])
 			}
 		}
