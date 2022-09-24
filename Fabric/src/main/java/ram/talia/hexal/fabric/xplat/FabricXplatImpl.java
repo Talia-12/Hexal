@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
@@ -75,8 +76,20 @@ public class FabricXplatImpl implements IXplatAbstractions {
         var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
         return cc.getLinkstore();
     }
-
-//    @Override
+    
+    @Override
+    public void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable<?> link) {
+        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
+        cc.addRenderLink(link);
+    }
+    
+    @Override
+    public void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link) {
+        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
+        cc.removeRenderLink(link);
+    }
+    
+    //    @Override
 //    public <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> func,
 //        Block... blocks) {
 //        return FabricBlockEntityTypeBuilder.create(func::apply, blocks).build();

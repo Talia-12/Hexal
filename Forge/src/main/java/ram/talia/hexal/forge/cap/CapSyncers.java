@@ -24,7 +24,8 @@ public class CapSyncers {
 		
 		for (var player : allPlayers) {
 			syncAllRenderLinks(loggedInPlayer, (ServerPlayer) player);
-			syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
+			if (player.getUUID() != loggedInPlayer.getUUID())
+				syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
 		}
 	}
 	
@@ -38,7 +39,8 @@ public class CapSyncers {
 		
 		for (var player : allPlayers) {
 			syncAllRenderLinks(loggedInPlayer, (ServerPlayer) player);
-			syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
+			if (player.getUUID() != loggedInPlayer.getUUID())
+				syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
 		}
 	}
 	

@@ -17,6 +17,7 @@ object LinkableTypes {
 	val LINKABLE_ENTITY_TYPE = object : LinkableRegistry.LinkableType<LinkableEntity, LinkableEntity>(modLoc("linkable/entity")) {
 		override fun fromNbt(tag: Tag, level: ServerLevel) = level.getEntity(tag.asUUID) as? LinkableEntity
 		override fun fromSync(tag: Tag, level: Level) = level.getEntity(tag.asInt) as? LinkableEntity
+		override fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag) = (centre as LinkableEntity).id == tag.asInt
 	}
 
 	val PLAYER_LINKSTORE_TYPE = object : LinkableRegistry.LinkableType<PlayerLinkstore, PlayerLinkstore.RenderCentre>(modLoc("linkable/player")) {
@@ -30,5 +31,6 @@ object LinkableTypes {
 			return PlayerLinkstore.RenderCentre(player)
 		}
 
+		override fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag) = (centre as PlayerLinkstore.RenderCentre).player.id == tag.asInt
 	}
 }

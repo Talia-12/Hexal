@@ -92,6 +92,13 @@ fun List<Tag>.toNbtList(): ListTag {
 	return listTag
 }
 
+fun ListTag.toCompoundTagList(): MutableList<CompoundTag> {
+	val tags = mutableListOf<Tag>()
+	tags.addAll(this)
+	return tags.map { it as CompoundTag } as MutableList<CompoundTag>
+}
+
+
 @JvmName("toSyncTagILinkable")
 fun List<ILinkable<*>>.toSyncTag(): ListTag {
 	val listTag = ListTag()

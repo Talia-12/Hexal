@@ -16,6 +16,7 @@ import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.toNbtList
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	override val asSpellResult = listOf(SpellDatum.make(player))
@@ -35,11 +36,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 		get() {
 			return lazyRenderLinks.get()
 		}
-		set(value) {
-			lazyRenderLinks.set(value)
-
-			syncRenderLinks()
-		}
+		private set(value) { }
 
 	private val lazyRenderLinks: ILinkable.LazyILinkableList = ILinkable.LazyILinkableList(player.level as ServerLevel)
 
@@ -53,17 +50,17 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	private fun addRenderLink(other: ILinkable<*>) {
 		renderLinks.add(other)
-		syncRenderLinks()
+		IXplatAbstractions.INSTANCE.syncAddRenderLinkPlayer(player, other)
 	}
 
 	private fun removeRenderLink(other: ILinkable<*>) {
 		renderLinks.remove(other)
-		syncRenderLinks()
+		IXplatAbstractions.INSTANCE.syncRemoveRenderLinkPlayer(player, other)
 	}
 
 	fun removeRenderLink(index: Int) {
-		renderLinks.removeAt(index)
-		syncRenderLinks()
+		val removed = renderLinks.removeAt(index)
+		IXplatAbstractions.INSTANCE.syncRemoveRenderLinkPlayer(player, removed)
 	}
 
 	/**
@@ -164,6 +161,8 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 				return player.eyePosition
 			return player.eyePosition + (other.renderCentre(this, false) - player.eyePosition).normalize()
 		}
+
+		override fun getLinkableType() = LinkableTypes.PLAYER_LINKSTORE_TYPE
 	}
 
 	companion object {

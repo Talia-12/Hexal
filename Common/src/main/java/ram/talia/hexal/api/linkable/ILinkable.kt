@@ -62,6 +62,8 @@ interface ILinkable<T : ILinkable<T>> {
 	 */
 	interface IRenderCentre {
 		fun renderCentre(other: IRenderCentre, recursioning: Boolean = true): Vec3 // recursioning to stop a player linked to a player causing an infinite loop
+
+		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 	}
 
 	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>, Tag>(Either.right(CompoundTag())) { // default to empty compound tag

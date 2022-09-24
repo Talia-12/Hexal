@@ -63,6 +63,12 @@ object LinkableRegistry {
 		 * restores the reference. This is used to render to the centre of an [ILinkable] on the client.
 		 */
 		abstract fun fromSync(tag: Tag, level: Level): U?
+
+		/**
+		 * Takes in an [ILinkable.IRenderCentre] and a [Tag] and returns whether that [Tag] is a reference to that [ILinkable.IRenderCentre]. Used to determine which
+		 * [ILinkable.IRenderCentre]s to remove on the client, since e.g. getEntity won't work if the entity's been removed.
+		 */
+		internal abstract fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag): Boolean
 	}
 
 	/**
@@ -98,5 +104,16 @@ object LinkableRegistry {
 		val type = linkableTypes[ResourceLocation(typeId)] ?: throw InvalidLinkableTypeException("no LinkableType registered for $typeId")
 
 		return type.fromSync(tag.get(TAG_LINKABLE)!!, level)
+	}
+
+	@JvmStatic
+	fun matchSync(centre: ILinkable.IRenderCentre, tag: CompoundTag): Boolean {
+		val typeId = tag.getString(TAG_TYPE)
+		if (!ResourceLocation.isValidResourceLocation(typeId))
+			throw InvalidLinkableTypeException("$typeId is not a valid resource location")
+
+		val type = linkableTypes[ResourceLocation(typeId)] ?: throw InvalidLinkableTypeException("no LinkableType registered for $typeId")
+
+		return type == centre.getLinkableType() && type.matchSync(centre, tag.get(TAG_LINKABLE)!!)
 	}
 }

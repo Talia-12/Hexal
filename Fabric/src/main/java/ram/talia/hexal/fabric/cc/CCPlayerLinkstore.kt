@@ -13,7 +13,9 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
+import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.PlayerLinkstore
+import ram.talia.hexal.api.spell.toCompoundTagList
 import ram.talia.hexal.api.spell.toIRenderCentreList
 import ram.talia.hexal.api.spell.toSyncTag
 import ram.talia.hexal.client.playLinkParticles
@@ -21,11 +23,22 @@ import ram.talia.hexal.client.playLinkParticles
 public class CCPlayerLinkstore(private val player: Player) : ServerTickingComponent, ClientTickingComponent, AutoSyncedComponent {
 	val linkstore = (player as? ServerPlayer)?.let { PlayerLinkstore(it) }
 	val ownerRenderCentre = (player as? AbstractClientPlayer)?.let{ PlayerLinkstore.RenderCentre(it) }
-	var renderLinks: List<ILinkable.IRenderCentre> = listOf()
+	var renderLinks: MutableList<ILinkable.IRenderCentre> = mutableListOf()
+
+	private val renderLinksToAdd: MutableList<ILinkable<*>> = mutableListOf()
+	private val renderLinksToRemove: MutableList<ILinkable<*>> = mutableListOf()
+
+	fun addRenderLink(link: ILinkable<*>) {
+		renderLinksToAdd.add(link)
+		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
+	}
+	fun removeRenderLink(link: ILinkable<*>) {
+		renderLinksToRemove.add(link)
+		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
+	}
 
 	override fun serverTick() {
 		linkstore!!.pruneLinks()
-		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
 	}
 
 	override fun clientTick()
@@ -41,19 +54,36 @@ public class CCPlayerLinkstore(private val player: Player) : ServerTickingCompon
 
 	override fun writeSyncPacket(buf: FriendlyByteBuf, recipient: ServerPlayer) {
 		HexalAPI.LOGGER.info("attempting to sync CCPlayerLinkstore for $player")
+
+		// ensures that first sync when player joins properly syncs all the links.
+		val linksToAdd = when (renderLinksToAdd.size == 0 && renderLinksToRemove.size == 0) {
+			false -> renderLinksToAdd
+			true -> linkstore!!.renderLinks
+		}
+
 		val tag = CompoundTag()
-		tag.put(TAG_RENDER_LINKS, linkstore!!.renderLinks.toSyncTag())
+		tag.put(TAG_RENDER_LINKS_ADD, linksToAdd.toSyncTag())
+		tag.put(TAG_RENDER_LINKS_REMOVE, renderLinksToRemove.toSyncTag())
 		buf.writeNbt(tag)
+
+		renderLinksToAdd.clear()
+		renderLinksToRemove.clear()
 	}
 
 	override fun applySyncPacket(buf: FriendlyByteBuf) {
 		HexalAPI.LOGGER.info("attempting to apply synced packet to CCPlayerLinkstore for $player")
 		val tag = buf.readNbt() ?: return
 
-		renderLinks = (tag.get(TAG_RENDER_LINKS) as? ListTag)?.toIRenderCentreList(player.level as ClientLevel) ?: listOf()
+		val linksToAdd = (tag.get(TAG_RENDER_LINKS_ADD) as? ListTag)?.toIRenderCentreList(player.level as ClientLevel) ?: listOf()
+		val linksToRemove = (tag.get(TAG_RENDER_LINKS_REMOVE) as? ListTag)?.toCompoundTagList()
+
+		renderLinks.addAll(linksToAdd)
+		if (linksToRemove != null)
+			renderLinks.removeIf { currLink -> linksToRemove.any { LinkableRegistry.matchSync(currLink, it) } }
 	}
 
 	companion object {
-		const val TAG_RENDER_LINKS = "render_links"
+		const val TAG_RENDER_LINKS_ADD = "render_links_add"
+		const val TAG_RENDER_LINKS_REMOVE = "render_links_remove"
 	}
 }

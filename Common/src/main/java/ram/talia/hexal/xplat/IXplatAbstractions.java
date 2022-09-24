@@ -2,16 +2,14 @@ package ram.talia.hexal.xplat;
 
 import at.petrak.hexcasting.api.HexAPI;
 import at.petrak.hexcasting.common.network.IMessage;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
@@ -38,6 +36,11 @@ public interface IXplatAbstractions {
     WispCastingManager getWispCastingManager(ServerPlayer caster);
     
     PlayerLinkstore getLinkstore(ServerPlayer player);
+    
+    void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable<?> link);
+    
+    void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link);
+    
     
     // Blocks
 
