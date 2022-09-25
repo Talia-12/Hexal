@@ -21,6 +21,30 @@
       "input": "",
       "output": "number",
       "text": "hexal.page.hexal_basics.remaining_evals"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:breath",
+      "anchor": "hexal:breath",
+      "input": "entity",
+      "output": "num",
+      "text": "hexal.page.hexal_basics.breath"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:health",
+      "anchor": "hexal:health",
+      "input": "entity",
+      "output": "num",
+      "text": "hexal.page.hexal_basics.health"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:light_level",
+      "anchor": "hexal:light_level",
+      "input": "vec",
+      "output": "num",
+      "text": "hexal.page.hexal_basics.light_level"
     }
   ]
 }

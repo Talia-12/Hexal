@@ -40,6 +40,15 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eedqa", HexDir.WEST),
 																 modLoc("remaining_evals"),
 																 OpRemainingEvals.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aqawdwaqawd", HexDir.NORTH_WEST),
+																 modLoc("breath"),
+																 OpGetBreath.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("aqwawqa", HexDir.NORTH_WEST),
+																 modLoc("health"),
+																 OpGetHealth.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qedqde", HexDir.NORTH_EAST),
+																 modLoc("light_level"),
+																 OpGetLightLevel.INSTANCE);
 			
 			// ============================== Misc Spells =====================================
 			
