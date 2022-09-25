@@ -6,7 +6,7 @@ import re # parsing
 import os # listdir
 
 # TO USE:
-# python collate_data.py YOURDIRECTORY/Hexal/Common/src/main/resources YOURDIRECTORY/HexMod/Common/src/main/resources hexal hexalbook template.html out.html
+# python doc/collate_data.py /Hexal/Common/src/main/resources /Hexal/doc/HexCastingResources hexal hexalbook doc/template.html doc/out.html
 
 # extra info :(
 lang = "en_us"
