@@ -1,5 +1,6 @@
 package ram.talia.hexal.api.linkable
 
+import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.utils.asCompound
 import com.mojang.datafixers.util.Either
@@ -62,6 +63,8 @@ interface ILinkable<T : ILinkable<T>> {
 	 */
 	interface IRenderCentre {
 		fun renderCentre(other: IRenderCentre, recursioning: Boolean = true): Vec3 // recursioning to stop a player linked to a player causing an infinite loop
+
+		fun colouriser(): FrozenColorizer
 
 		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 	}

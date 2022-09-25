@@ -64,7 +64,7 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 			playWispParticles(colouriser)
 			playTrailParticles(colouriser)
-			playAllLinkParticles(colouriser)
+			playAllLinkParticles()
 		}
 	}
 

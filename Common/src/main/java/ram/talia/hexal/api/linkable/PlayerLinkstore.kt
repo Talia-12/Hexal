@@ -1,5 +1,6 @@
 package ram.talia.hexal.api.linkable
 
+import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.Operator
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
@@ -161,6 +162,8 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 				return player.eyePosition
 			return player.eyePosition + (other.renderCentre(this, false) - player.eyePosition).normalize()
 		}
+
+		override fun colouriser() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(player)
 
 		override fun getLinkableType() = LinkableTypes.PLAYER_LINKSTORE_TYPE
 	}

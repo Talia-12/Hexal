@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Pose
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nextColour
@@ -37,6 +38,8 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override val isConsumable = true
 
 	override fun get() = this
+
+	override fun colouriser() = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 
 	override fun getEyeHeight(pose: Pose, dim: EntityDimensions) = 0f
 
@@ -72,8 +75,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 = renderCentre()
 
 	fun playTrailParticles() {
-		val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
-		playTrailParticles(colouriser)
+		playTrailParticles(colouriser())
 	}
 
 	protected open fun playWispParticles(colouriser: FrozenColorizer) {
@@ -116,8 +118,8 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	fun playAllLinkParticles(colouriser: FrozenColorizer) {
-		renderLinks.forEach { playLinkParticles(this, it, colouriser, random, level) }
+	fun playAllLinkParticles() {
+		renderLinks.forEach { playLinkParticles(this, it, random, level) }
 	}
 
 	fun setColouriser(colouriser: FrozenColorizer) {

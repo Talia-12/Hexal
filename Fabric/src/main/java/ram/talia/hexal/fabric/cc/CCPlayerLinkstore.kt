@@ -42,7 +42,7 @@ public class CCPlayerLinkstore(private val player: Player) : ServerTickingCompon
 	}
 
 	override fun clientTick()
-		= renderLinks.forEach { playLinkParticles(ownerRenderCentre!!, it, IXplatAbstractions.INSTANCE.getColorizer(player), player.random, player.level) }
+		= renderLinks.forEach { playLinkParticles(ownerRenderCentre!!, it, player.random, player.level) }
 
 	override fun readFromNbt(tag: CompoundTag) {
 		linkstore?.loadAdditionalData(tag)

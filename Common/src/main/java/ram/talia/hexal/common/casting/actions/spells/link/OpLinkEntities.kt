@@ -2,10 +2,13 @@ package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.mishaps.MishapEntityTooFarAway
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
+import ram.talia.hexal.api.minus
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
 
@@ -37,14 +40,13 @@ object OpLinkEntities : SpellOperator {
 		ctx.assertEntityInRange(entityThis)
 		ctx.assertEntityInRange(entityOther)
 
-		//TODO: add ILinkable.maxSqrLinkRange
-//		if ((linkThis.getPos() - linkOther.getPos()).lengthSqr() > linkThis.maxSqrCastingDistance())
-//			throw MishapEntityTooFarAway(other)
+		if (!linkThis.isInRange(linkOther))
+			throw MishapLocationTooFarAway(linkOther.getPos())
 
 		return Triple(
 			Spell(linkThis, linkOther),
 			OpLinkEntity.LINK_COST,
-			listOf(ParticleSpray.burst(entityOther.position(), 1.5))
+			listOf(ParticleSpray.burst(linkThis.getPos(), 1.5), ParticleSpray.burst(linkOther.getPos(), 1.5))
 		)
 	}
 

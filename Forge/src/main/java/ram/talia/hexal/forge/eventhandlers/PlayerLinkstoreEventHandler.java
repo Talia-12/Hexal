@@ -124,7 +124,7 @@ public class PlayerLinkstoreEventHandler {
 		if (theseLinks == null)
 			return;
 		for (var link : theseLinks) {
-			RenderHelperKt.playLinkParticles(ownerRenderCentre, link, IXplatAbstractions.INSTANCE.getColorizer(player), player.getRandom(), player.level);
+			RenderHelperKt.playLinkParticles(ownerRenderCentre, link, player.getRandom(), player.level);
 		}
 	}
 }

@@ -142,14 +142,21 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun writeToSync(): Tag = IntTag.valueOf(id)
 
+
+	var isFirstTick = true
 	override fun tick() {
 		super.tick()
 
-		if (!level.isClientSide) {
-			for (i in (linked.size - 1) downTo 0) {
-				if (linked[i].shouldRemove() || !isInRange(linked[i]))
-					unlink(linked[i])
-			}
+		if (level.isClientSide)
+			return
+
+		if (isFirstTick)
+			syncRenderLinks()
+		isFirstTick = false
+
+		for (i in (linked.size - 1) downTo 0) {
+			if (linked[i].shouldRemove() || !isInRange(linked[i]))
+				unlink(linked[i])
 		}
 	}
 
@@ -163,10 +170,6 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 			null -> lazyRenderLinks!!.set(mutableListOf())
 			else -> lazyRenderLinks!!.set(renderLinkedTag)
 		}
-
-		val renderLinkedCompound = CompoundTag()
-		renderLinkedCompound.put(TAG_RENDER_LINKS, lazyRenderLinks.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
-		entityData.set(RENDER_LINKS, renderLinkedCompound)
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {

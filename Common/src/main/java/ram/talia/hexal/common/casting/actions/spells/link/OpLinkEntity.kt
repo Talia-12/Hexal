@@ -4,11 +4,13 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.LinkableEntity
+import ram.talia.hexal.common.entities.TickingWisp
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpLinkEntity : SpellOperator {
@@ -35,9 +37,8 @@ object OpLinkEntity : SpellOperator {
 			else -> throw Exception("How did I get here")
 		}
 
-		//TODO: add ILinkable.maxSqrLinkRange
-//		if ((linkThis.getPos() - other.position()).lengthSqr() > linkThis.maxSqrCastingDistance())
-//			throw MishapEntityTooFarAway(other)
+		if (!linkThis.isInRange(linkOther))
+			throw MishapLocationTooFarAway(linkOther.getPos())
 
 		return Triple(
 			Spell(linkThis, linkOther),
