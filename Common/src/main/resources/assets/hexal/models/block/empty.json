@@ -1,6 +1,0 @@
-{
-  "parent": "block/air",
-  "textures": {
-    "all": "hexal:block/empty"
-  }
-}
