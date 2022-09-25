@@ -16,8 +16,6 @@ import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
-import java.util.Optional;
-
 public class ForgeXplatImpl implements IXplatAbstractions {
 	
 	@Override

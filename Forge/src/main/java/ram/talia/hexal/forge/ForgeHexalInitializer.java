@@ -23,6 +23,7 @@ import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
 import ram.talia.hexal.common.lib.feature.HexalFeatures;
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
+import ram.talia.hexal.forge.cap.CapSyncers;
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
 import ram.talia.hexal.forge.eventhandlers.BiomeGenerationEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
@@ -81,6 +82,7 @@ public class ForgeHexalInitializer {
 		modBus.register(HexalForgeDataGenerators.class);
 		
 		evBus.register(WispCastingMangerEventHandler.class);
+		evBus.register(CapSyncers.class);
 		evBus.register(PlayerLinkstoreEventHandler.class);
 		evBus.register(BiomeGenerationEventHandler.class);
 	}

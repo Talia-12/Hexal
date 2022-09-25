@@ -2,7 +2,9 @@ package ram.talia.hexal.forge.cap;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.LinkableRegistry;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
@@ -23,9 +25,9 @@ public class CapSyncers {
 		var allPlayers = loggedInPlayer.level.players();
 		
 		for (var player : allPlayers) {
-			syncAllRenderLinks(loggedInPlayer, (ServerPlayer) player);
+			syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
 			if (player.getUUID() != loggedInPlayer.getUUID())
-				syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
+				syncAllRenderLinks(loggedInPlayer, (ServerPlayer) player);
 		}
 	}
 	
@@ -46,6 +48,7 @@ public class CapSyncers {
 	
 	public static void syncAllRenderLinks (ServerPlayer packetTarget, ServerPlayer syncedPlayer) {
 		PlayerLinkstore linkstore = IXplatAbstractions.INSTANCE.getLinkstore(syncedPlayer);
+		
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(
 						packetTarget,
 						new MsgPlayerRenderLinksAck(syncedPlayer.getUUID(), HexalNBTHelperKt.toSyncTagILinkable(linkstore.getRenderLinks()))

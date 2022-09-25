@@ -1,19 +1,19 @@
 package ram.talia.hexal.forge.network;
 
-import at.petrak.hexcasting.common.network.MsgNewSpellPatternAck;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.util.TriConsumer;
+import ram.talia.hexal.api.HexalAPI;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static at.petrak.hexcasting.api.HexAPI.modLoc;
+import static ram.talia.hexal.api.HexalAPI.modLoc;
 
 public class ForgePacketHandler {
 	private static final String PROTOCOL_VERSION = "1";

@@ -1,17 +1,22 @@
 package ram.talia.hexal.forge.eventhandlers;
 
+import at.petrak.hexcasting.xplat.IXplatAbstractions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
+import ram.talia.hexal.client.RenderHelperKt;
+import ram.talia.hexal.forge.cap.CapSyncers;
 
 import java.util.*;
 
@@ -62,14 +67,17 @@ public class PlayerLinkstoreEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getPlayer().getLevel().isClientSide()) {
-			renderLinks.put(event.getPlayer().getUUID(), new ArrayList<>());
-			return;
-		}
-		
 		ServerPlayer player = (ServerPlayer) event.getPlayer();
 		
 		linkstores.put(player.getUUID(), loadLinkstore(player));
+	}
+	
+	@SubscribeEvent
+	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
+		if (event.getPlayer() == null)
+			return;
+		
+		renderLinks.computeIfAbsent(event.getPlayer().getUUID(), k -> new ArrayList<>());
 	}
 	
 	/**
@@ -77,11 +85,6 @@ public class PlayerLinkstoreEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (event.getPlayer().getLevel().isClientSide()) {
-			renderLinks.remove(event.getPlayer().getUUID());
-			return;
-		}
-		
 		ServerPlayer player = (ServerPlayer) event.getPlayer();
 		
 		CompoundTag tag = new CompoundTag();
@@ -90,6 +93,14 @@ public class PlayerLinkstoreEventHandler {
 		player.getPersistentData().put(TAG_PLAYER_LINKSTORE, tag);
 		
 		linkstores.remove(player.getUUID());
+	}
+	
+	@SubscribeEvent
+	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+		if (event.getPlayer() == null)
+			return;
+		
+		renderLinks.remove(event.getPlayer().getUUID());
 	}
 	
 	/**
@@ -108,6 +119,12 @@ public class PlayerLinkstoreEventHandler {
 	}
 	
 	private static void clientTick(AbstractClientPlayer player) {
-		//TODO: Render links
+		var ownerRenderCentre = new PlayerLinkstore.RenderCentre(player);
+		var theseLinks = getRenderLinks(player);
+		if (theseLinks == null)
+			return;
+		for (var link : theseLinks) {
+			RenderHelperKt.playLinkParticles(ownerRenderCentre, link, IXplatAbstractions.INSTANCE.getColorizer(player), player.getRandom(), player.level);
+		}
 	}
 }
