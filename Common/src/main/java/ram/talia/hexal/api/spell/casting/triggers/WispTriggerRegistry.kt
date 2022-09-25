@@ -18,8 +18,9 @@ object WispTriggerRegistry {
 	class InvalidWispTriggerTypeException(msg: String) : Exception(msg)
 
 	init {
-		registerWispTriggerType(WispTriggerTypes.TickTiggerType)
-		registerWispTriggerType(WispTriggerTypes.CommTiggerType)
+		registerWispTriggerType(WispTriggerTypes.TICK_TRIGGER_TYPE)
+		registerWispTriggerType(WispTriggerTypes.COMM_TRIGGER_TYPE)
+		registerWispTriggerType(WispTriggerTypes.MOVE_TRIGGER_TYPE)
 	}
 
 	fun registerWispTriggerType(type: WispTriggerType<*>) {

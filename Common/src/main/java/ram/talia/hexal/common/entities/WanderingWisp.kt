@@ -69,9 +69,7 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 	}
 
 	fun move() {
-		val bBox = this.boundingBox
-		val voxelShapes = level.getEntityCollisions(this, bBox.expandTowards(deltaMovement))
-		val adjDelta = if (deltaMovement.lengthSqr() == 0.0) deltaMovement else collideBoundingBox(this, deltaMovement, bBox, level, voxelShapes)
+		val adjDelta = maxMove(deltaMovement)
 
 		var dX = deltaMovement.x
 		var dY = deltaMovement.y
@@ -102,6 +100,8 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 		acceleration += Vec3(random.nextDouble(-0.005, 0.005), random.nextDouble(-0.005, 0.005), random.nextDouble(-0.005, 0.005))
 		acceleration = Vec3(acceleration.x.coerceIn(-0.0125, 0.0125), acceleration.y.coerceIn(-0.0125, 0.0125), acceleration.z.coerceIn(-0.0125, 0.0125))
 		deltaMovement = Vec3(deltaMovement.x.coerceIn(-0.05, 0.05), deltaMovement.y.coerceIn(-0.05, 0.05), deltaMovement.z.coerceIn(-0.05, 0.05))
+
+		setLookVector(deltaMovement)
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {

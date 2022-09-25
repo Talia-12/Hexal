@@ -61,6 +61,15 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		yRotO = yRot
 	}
 
+	/**
+	 * Returns the maximum length vector that the wisp can move (up to the length of [step], and along the line of [step]) before it collides with something.
+	 */
+	fun maxMove(step: Vec3): Vec3 {
+		val bBox = this.boundingBox
+		val voxelShapes = level.getEntityCollisions(this, bBox.expandTowards(deltaMovement))
+		return if (step.lengthSqr() == 0.0) step else collideBoundingBox(this, step, bBox, level, voxelShapes)
+	}
+
 	fun playCastSound() {
 		if (soundInstance == null || soundInstance!!.isStopped) {
 			soundInstance = WispCastingSoundInstance(this)

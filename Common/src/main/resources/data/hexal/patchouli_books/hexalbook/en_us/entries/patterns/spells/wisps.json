@@ -56,6 +56,22 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/move_target/set",
+      "anchor": "hexal:wisp/move_target/set",
+      "input": "vec",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/move_target/set"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/move_target/get",
+      "anchor": "hexal:wisp/move_target/get",
+      "input": "",
+      "output": "vec",
+      "text": "hexal.page.wisps.wisp/move_target/get"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:get_entity/wisp",
       "anchor": "hexal:get_entity/wisp",
       "input": "vec",
@@ -93,6 +109,14 @@
       "input": "",
       "output": "",
       "text": "hexal.page.wisps.wisp/trigger/comm"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/trigger/move",
+      "anchor": "hexal:wisp/trigger/move",
+      "input": "",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/trigger/move"
     }
   ]
 }
