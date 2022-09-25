@@ -5,7 +5,8 @@ import json # codec
 import re # parsing
 import os # listdir
 
-# TO USE: put in Hexcasting root dir, collate_data.py src/main/resources hexcasting thehexbook out.html
+# TO USE:
+# python collate_data.py YOURDIRECTORY/Hexal/Common/src/main/resources YOURDIRECTORY/HexMod/Common/src/main/resources hexal hexalbook template.html out.html
 
 # extra info :(
 lang = "en_us"
@@ -19,6 +20,13 @@ extra_i18n = {
 }
 
 default_macros = {
+	"_Media": "$(#74b3f2)Media/$",
+	"_media": "$(#74b3f2)media/$",
+	"_Hexcasters": "$(#b38ef3)Hexcasters/$",
+	"_Hexcaster": "$(#b38ef3)Hexcaster/$",
+	"_Hexcasting": "$(#b38ef3)Hexcasting/$",
+	"_Hexes": "$(#b38ef3)Hexes/$",
+	"_Hex": "$(#b38ef3)Hex/$",
 	"$(obf)": "$(k)",
 	"$(bold)": "$(l)",
 	"$(strike)": "$(m)",
@@ -33,7 +41,8 @@ default_macros = {
 	"<br>": "$(br)",
 	"$(nocolor)": "$(0)",
 	"$(item)": "$(#b0b)",
-	"$(thing)": "$(#490)",
+	"$(thing)": "$(#8d6acc)",
+	"$(action)": "$(#fc77be)",
 }
 
 colors = {
@@ -186,7 +195,7 @@ def do_format(root_data, obj, *names):
 def identity(x): return x
 
 pattern_pat = re.compile(r'HexPattern\.fromAngles\("([qweasd]+)", HexDir\.(\w+)\),\s*modLoc\("([^"]+)"\)([^;]*true\);)?')
-pattern_stubs = [(None, "at/petrak/hexcasting/interop/pehkui/PehkuiInterop.java"), (None, "at/petrak/hexcasting/common/casting/RegisterPatterns.java"), ("Fabric", "at/petrak/hexcasting/fabric/interop/gravity/GravityApiInterop.java")]
+pattern_stubs = [(None, "ram/talia/hexal/common/casting/RegisterPatterns.java")]
 def fetch_patterns(root_data):
 	registry = {}
 	for loader, stub in pattern_stubs:
@@ -269,22 +278,23 @@ def parse_entry(root_data, entry_path, ent_name):
 
 	return data
 
-def parse_category(root_data, base_dir, cat_name):
-	data = slurp(f"{base_dir}/categories/{cat_name}.json")
+def parse_category(root_data, base_dir, cat_dir, cat_name):
+	data = slurp(f"{cat_dir}/categories/{cat_name}.json")
 	do_localize(root_data, data, "name")
 	do_format(root_data, data, "description")
 
 	entry_dir = f"{base_dir}/entries/{cat_name}"
 	entries = []
-	for filename in os.listdir(entry_dir):
-		if filename.endswith(".json"):
-			basename = filename[:-5]
-			entries.append(parse_entry(root_data, f"{entry_dir}/{filename}", cat_name + "/" + basename))
-	entries.sort(key=lambda ent: (not ent.get("priority", False), ent.get("sortnum", 0), ent["name"]))
-	data["entries"] = entries
-	data["id"] = cat_name
-
-	return data
+	if (os.path.isdir(entry_dir)):
+		for filename in os.listdir(entry_dir):
+			if filename.endswith(".json"):
+				basename = filename[:-5]
+				entries.append(parse_entry(root_data, f"{entry_dir}/{filename}", cat_name + "/" + basename))
+		entries.sort(key=lambda ent: (not ent.get("priority", False), ent.get("sortnum", 0), ent["name"]))
+		data["entries"] = entries
+		data["id"] = cat_name
+		return data
+	return -1
 
 def parse_sortnum(cats, name):
 	if '/' in name:
@@ -292,23 +302,27 @@ def parse_sortnum(cats, name):
 		return parse_sortnum(cats, name[:ix]) + (cats[name].get("sortnum", 0),)
 	return cats[name].get("sortnum", 0),
 
-def parse_book(root, mod_name, book_name):
+def parse_book(root, hex_root, mod_name, book_name):
 	base_dir = f"{root}/data/{mod_name}/patchouli_books/{book_name}"
+	hex_base_dir = f"{hex_root}/data/hexcasting/patchouli_books/thehexbook"
 	root_info = slurp(f"{base_dir}/book.json")
 
 	root_info["resource_dir"] = root
 	root_info["modid"] = mod_name
 	root_info.setdefault("macros", {}).update(default_macros)
-	if root_info.setdefault("i18n", {}):
-		root_info["i18n"] = slurp(f"{root}/assets/{mod_name}/lang/{lang}.json")
-		root_info["i18n"].update(extra_i18n)
+	# if root_info.setdefault("i18n", {}):
+	root_info["i18n"] = slurp(f"{hex_root}/assets/hexcasting/lang/{lang}.json")
+	root_info["i18n"].update(slurp(f"{root}/assets/{mod_name}/lang/{lang}.json"))
+	root_info["i18n"].update(extra_i18n)
 
 	book_dir = f"{base_dir}/{lang}"
 
+	cat_dir = f"{hex_base_dir}/{lang}"
 	categories = []
-	for filename in walk_dir(f"{book_dir}/categories", ""):
+	for filename in walk_dir(f"{cat_dir}/categories", ""):
 		basename = filename[:-5]
-		categories.append(parse_category(root_info, book_dir, basename))
+		parse_ret = parse_category(root_info, book_dir, cat_dir, basename)
+		if parse_ret != -1: categories.append(parse_ret)
 	cats = {cat["id"]: cat for cat in categories}
 	categories.sort(key=lambda cat: (parse_sortnum(cats, cat["id"]), cat["name"]))
 
@@ -547,12 +561,13 @@ def main(argv):
 		print(f"Usage: {argv[0]} <resources dir> <mod name> <book name> <template file> [<output>]")
 		return
 	root = argv[1]
-	mod_name = argv[2]
-	book_name = argv[3]
-	book = parse_book(root, mod_name, book_name)
-	template_file = argv[4]
+	hex_root = argv[2]
+	mod_name = argv[3]
+	book_name = argv[4]
+	book = parse_book(root, hex_root, mod_name, book_name)
+	template_file = argv[5]
 	with open(template_file, "r") as fh:
-		with stdout if len(argv) < 6 else open(argv[5], "w") as out:
+		with stdout if len(argv) < 7 else open(argv[6], "w", encoding="utf-8") as out:
 			for line in fh:
 				if line.startswith("#DO_NOT_RENDER"):
 					_, *blacklist = line.split()
