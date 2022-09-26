@@ -14,6 +14,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 @Mixin(CastingHarness.class)
 public abstract class MixinCastingHarness {
 	
@@ -37,7 +38,7 @@ public abstract class MixinCastingHarness {
 				return sideEffects.add(particles);
 		}
 		
-		return false;
+		return sideEffects.add((OperatorSideEffect) o);
 	}
 	
 	/**
