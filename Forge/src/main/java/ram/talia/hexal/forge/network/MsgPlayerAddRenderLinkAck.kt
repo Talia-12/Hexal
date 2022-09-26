@@ -28,7 +28,7 @@ data class MsgPlayerAddRenderLinkAck(val playerUUID: UUID, val renderLinkTag: Co
 		const val TAG_RENDER_LINK = "render_link"
 
 		@JvmStatic
-		fun deserialize(buffer: ByteBuf): MsgPlayerAddRenderLinkAck {
+		fun deserialise(buffer: ByteBuf): MsgPlayerAddRenderLinkAck {
 			val buf = FriendlyByteBuf(buffer)
 			val uuid = buf.readUUID()
 			val tag = buf.readNbt() ?: throw NullPointerException("no Nbt tag on received MsgPlayerAddRenderLinkAck")

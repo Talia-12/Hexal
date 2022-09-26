@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.Pose
@@ -24,6 +25,8 @@ import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.client.playLinkParticles
 import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
+import ram.talia.hexal.common.network.MsgWispCastSoundAck
+import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.*
 
 abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : LinkableEntity(entityType, world), IMediaEntity<BaseWisp> {
@@ -46,6 +49,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override fun makeBoundingBox(): AABB {
 		return super.makeBoundingBox().move(0.0, -getDimensions(Pose.STANDING).height*0.5, 0.0)
 	}
+
 	/**
 	 * Set the look vector of the wisp equal a given vector
 	 */
@@ -70,11 +74,22 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		return if (step.lengthSqr() == 0.0) step else collideBoundingBox(this, step, bBox, level, voxelShapes)
 	}
 
-	fun playCastSound() {
+	fun scheduleCastSound() {
+		if (level.isClientSide)
+			throw Exception("BaseWisp.scheduleCastSound should only be called on server.") // TODO: create and replace with ServerOnlyException
+		HexalAPI.LOGGER.info("scheduling casting sound, level is $level")
+		IXplatAbstractions.INSTANCE.sendPacketNear(position(), 32.0, level as ServerLevel, MsgWispCastSoundAck(this))
+	}
+
+	fun playCastSoundClient() {
+		if (!level.isClientSide)
+			throw Exception("BaseWisp.playCastSoundClient should only be called on client.") // TODO: create and replace with ClientOnlyException
+
+		HexalAPI.LOGGER.info("playing casting sound, level is $level")
 		if (soundInstance == null || soundInstance!!.isStopped) {
 			soundInstance = WispCastingSoundInstance(this)
 			Minecraft.getInstance().soundManager.play(soundInstance!!)
-			HexalSounds.WISP_CASTING_START.playAt(level, position(), .05f, 1f + (random.nextFloat() - 0.5f) * 0.2f, false)
+			HexalSounds.WISP_CASTING_START.playAt(level, position(), .3f, 1f + (random.nextFloat() - 0.5f) * 0.2f, false)
 		}
 
 		soundInstance!!.keepAlive()

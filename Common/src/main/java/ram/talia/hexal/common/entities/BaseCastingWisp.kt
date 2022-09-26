@@ -241,7 +241,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			discard()
 
 		if (result.makesCastSound)
-			playCastSound()
+			scheduleCastSound()
 
 		scheduledCast = false
 	}

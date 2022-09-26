@@ -1,9 +1,6 @@
 package ram.talia.hexal.client.sounds
 
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance
-import net.minecraft.sounds.SoundEvents
-import net.minecraft.sounds.SoundSource
-import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.lib.HexalSounds
@@ -11,11 +8,11 @@ import kotlin.math.max
 import kotlin.math.min
 
 // https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/src/main/java/com/simibubi/create/content/contraptions/components/steam/whistle/WhistleSoundInstance.java
-class WispCastingSoundInstance(val caster: BaseWisp) : AbstractTickableSoundInstance(HexalSounds.WISP_CASTING_CONTINUE.mainEvent, HexalSounds.WISP_CASTING_CONTINUE.category) {
+class WispCastingSoundInstance(val wisp: BaseWisp) : AbstractTickableSoundInstance(HexalSounds.WISP_CASTING_CONTINUE.mainEvent, HexalSounds.WISP_CASTING_CONTINUE.category) {
 
-	override fun getX() = caster.x
-	override fun getY() = caster.y
-	override fun getZ() = caster.z
+	override fun getX() = wisp.x
+	override fun getY() = wisp.y
+	override fun getZ() = wisp.z
 
 	private var active: Boolean
 	private var keepAlive = 0
@@ -37,6 +34,8 @@ class WispCastingSoundInstance(val caster: BaseWisp) : AbstractTickableSoundInst
 	}
 
 	override fun tick() {
+		HexalAPI.LOGGER.info("attenuation type: $attenuation, is relative: $relative, position: (${getX()}, ${getY()}, ${getZ()})")
+
 		if (active) {
 			volume = min(1f, volume + .25f)
 			keepAlive--

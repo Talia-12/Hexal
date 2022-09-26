@@ -6,9 +6,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import ram.talia.hexal.client.RegisterClientStuff
+import ram.talia.hexal.fabric.network.FabricPacketHandler
 
 object FabricHexalClientInitializer : ClientModInitializer {
     override fun onInitializeClient() {
+        FabricPacketHandler.initClientBound()
+
         RegisterClientStuff.init()
 
         RegisterClientStuff.registerBlockEntityRenderers(object : RegisterClientStuff.BlockEntityRendererRegisterer {

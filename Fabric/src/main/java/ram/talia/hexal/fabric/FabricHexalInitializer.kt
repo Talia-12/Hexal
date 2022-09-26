@@ -16,11 +16,14 @@ import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
+import ram.talia.hexal.fabric.network.FabricPacketHandler
 import java.util.function.BiConsumer
 
 object FabricHexalInitializer : ModInitializer {
     override fun onInitialize() {
         HexalAPI.LOGGER.info("Hello Fabric World!")
+
+        FabricPacketHandler.initServerBound()
 
         initListeners()
 

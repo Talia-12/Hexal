@@ -47,6 +47,7 @@ public class HexalSounds {
 	
 	public static final SoundEntry WISP_CASTING_CONTINUE = create("wisp_casting_continue").subtitle("Wisp continues casting")
 					.category(SoundSource.PLAYERS)
+					.volume(0.5f)
 					.attenuationDistance(8)
 					.build();
 	
@@ -74,10 +75,10 @@ public class HexalSounds {
 		return new SoundEntryProvider(generator);
 	}
 	
-	private record SoundEntryProvider(DataGenerator generator) implements DataProvider {
+	record SoundEntryProvider(DataGenerator generator) implements DataProvider {
 		
 		@Override
-			public void run (@NotNull HashCache cache) throws IOException {
+			public void run (@NotNull HashCache cache) {
 				generate(generator.getOutputFolder(), cache);
 			}
 			
@@ -117,6 +118,8 @@ public class HexalSounds {
 		protected SoundSource category = SoundSource.BLOCKS;
 		protected List<ConfiguredSoundEvent> wrappedEvents;
 		protected List<ResourceLocation> variants;
+		protected float volume;
+		protected float pitch;
 		protected int attenuationDistance;
 		
 		public SoundEntryBuilder (ResourceLocation id) {
@@ -127,6 +130,16 @@ public class HexalSounds {
 		
 		public SoundEntryBuilder subtitle (String subtitle) {
 			this.subtitle = subtitle;
+			return this;
+		}
+		
+		public SoundEntryBuilder volume (float volume) {
+			this.volume = volume;
+			return this;
+		}
+		
+		public SoundEntryBuilder pitch (float pitch) {
+			this.pitch = pitch;
 			return this;
 		}
 		
@@ -169,7 +182,7 @@ public class HexalSounds {
 		
 		public SoundEntry build () {
 			SoundEntry entry =
-							wrappedEvents.isEmpty() ? new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance)
+							wrappedEvents.isEmpty() ? new CustomSoundEntry(id, variants, subtitle, category, volume, pitch, attenuationDistance)
 											: new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
 			SOUNDS.put(entry.getId(), entry);
 			return entry;
@@ -328,12 +341,17 @@ public class HexalSounds {
 		protected List<ResourceLocation> variants;
 		protected SoundEvent event;
 		
+		final protected float volume;
+		final protected float pitch;
+		
 		public CustomSoundEntry (ResourceLocation id, List<ResourceLocation> variants, String subtitle,
-														 SoundSource category, int attenuationDistance) {
+														 SoundSource category, float volume, float pitch, int attenuationDistance) {
 			super(id, subtitle, category, attenuationDistance);
 //			HexalAPI.LOGGER.info("custom sound entry created for id " + id);
 			this.event = new SoundEvent(id);
 			this.variants = variants;
+			this.volume = volume;
+			this.pitch = pitch;
 		}
 		
 		@Override
@@ -354,14 +372,18 @@ public class HexalSounds {
 			JsonObject s = new JsonObject();
 			s.addProperty("name", id.toString());
 			s.addProperty("type", "file");
-			if (attenuationDistance != 0) {s.addProperty("attenuation_distance", attenuationDistance);}
+			if (volume != 0) s.addProperty("volume", volume);
+			if (pitch != 0) s.addProperty("pitch", pitch);
+			if (attenuationDistance != 0) s.addProperty("attenuation_distance", attenuationDistance);
 			list.add(s);
 			
 			for (ResourceLocation variant : variants) {
 				s = new JsonObject();
 				s.addProperty("name", variant.toString());
 				s.addProperty("type", "file");
-				if (attenuationDistance != 0) {s.addProperty("attenuation_distance", attenuationDistance);}
+				if (volume != 0) s.addProperty("volume", volume);
+				if (pitch != 0) s.addProperty("pitch", pitch);
+				if (attenuationDistance != 0) s.addProperty("attenuation_distance", attenuationDistance);
 				list.add(s);
 			}
 			

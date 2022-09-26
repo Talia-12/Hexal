@@ -1,0 +1,23 @@
+{
+  "wisp_casting_continue": {
+    "sounds": [
+      {
+        "name": "hexal:wisp_casting_continue",
+        "type": "file",
+        "volume": 0.5,
+        "attenuation_distance": 8
+      }
+    ],
+    "subtitle": "hexal.subtitle.wisp_casting_continue"
+  },
+  "wisp_casting_start": {
+    "sounds": [
+      {
+        "name": "hexcasting:casting.cast",
+        "type": "event",
+        "attenuation_distance": 8
+      }
+    ],
+    "subtitle": "hexal.subtitle.wisp_casting_start"
+  }
+}

@@ -6,7 +6,7 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.util.TriConsumer;
-import ram.talia.hexal.api.HexalAPI;
+import ram.talia.hexal.common.network.MsgWispCastSoundAck;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -33,14 +33,20 @@ public class ForgePacketHandler {
 		int messageIdx = 0;
 		
 		// Server -> client
+		//general
+		NETWORK.registerMessage(messageIdx++, MsgWispCastSoundAck.class, MsgWispCastSoundAck::serialize,
+														MsgWispCastSoundAck::deserialise, makeClientBoundHandler(MsgWispCastSoundAck::handle));
+		
+		
+		// forge specific
 		NETWORK.registerMessage(messageIdx++, MsgPlayerRenderLinksAck.class, MsgPlayerRenderLinksAck::serialize,
-														MsgPlayerRenderLinksAck::deserialize, makeClientBoundHandler(MsgPlayerRenderLinksAck::handle));
+														MsgPlayerRenderLinksAck::deserialise, makeClientBoundHandler(MsgPlayerRenderLinksAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgPlayerAddRenderLinkAck.class, MsgPlayerAddRenderLinkAck::serialize,
-														MsgPlayerAddRenderLinkAck::deserialize, makeClientBoundHandler(MsgPlayerAddRenderLinkAck::handle));
+														MsgPlayerAddRenderLinkAck::deserialise, makeClientBoundHandler(MsgPlayerAddRenderLinkAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgPlayerRemoveRenderLinkAck.class, MsgPlayerRemoveRenderLinkAck::serialize,
-														MsgPlayerRemoveRenderLinkAck::deserialize, makeClientBoundHandler(MsgPlayerRemoveRenderLinkAck::handle));
+														MsgPlayerRemoveRenderLinkAck::deserialise, makeClientBoundHandler(MsgPlayerRemoveRenderLinkAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgPlayerClearRenderLinksAck.class, MsgPlayerClearRenderLinksAck::serialize,
-														MsgPlayerClearRenderLinksAck::deserialize, makeClientBoundHandler(MsgPlayerClearRenderLinksAck::handle));
+														MsgPlayerClearRenderLinksAck::deserialise, makeClientBoundHandler(MsgPlayerClearRenderLinksAck::handle));
 
 
 		// Client -> server

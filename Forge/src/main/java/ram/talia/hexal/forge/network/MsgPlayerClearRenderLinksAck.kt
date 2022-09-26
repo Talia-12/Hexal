@@ -22,7 +22,7 @@ data class MsgPlayerClearRenderLinksAck(val playerUUID: UUID) : IMessage {
 
 	companion object {
 		@JvmStatic
-		fun deserialize(buffer: ByteBuf): MsgPlayerClearRenderLinksAck {
+		fun deserialise(buffer: ByteBuf): MsgPlayerClearRenderLinksAck {
 			val buf = FriendlyByteBuf(buffer)
 			return MsgPlayerClearRenderLinksAck(buf.readUUID())
 		}
