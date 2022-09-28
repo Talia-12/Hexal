@@ -6,10 +6,11 @@ import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI.modLoc
+import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.BaseWisp
 
 data class MsgWispCastSoundAck private constructor(val wispId: Int) : IMessage {
-	constructor(wisp: BaseWisp) : this(wisp.id)
+	constructor(wisp: BaseCastingWisp) : this(wisp.id)
 
 	override fun serialize(buf: FriendlyByteBuf) {
 		buf.writeInt(wispId)
@@ -30,7 +31,7 @@ data class MsgWispCastSoundAck private constructor(val wispId: Int) : IMessage {
 				val mc = Minecraft.getInstance()
 				val level = mc.level ?: return@execute
 
-				(level.getEntity(self.wispId) as BaseWisp).playCastSoundClient()
+				(level.getEntity(self.wispId) as BaseCastingWisp).playCastSoundClient()
 			}
 		}
 	}

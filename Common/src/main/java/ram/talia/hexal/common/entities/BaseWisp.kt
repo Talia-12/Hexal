@@ -32,8 +32,6 @@ import kotlin.math.*
 abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : LinkableEntity(entityType, world), IMediaEntity<BaseWisp> {
 	var oldPos: Vec3 = position()
 
-	var soundInstance: WispCastingSoundInstance? = null
-
 	override var media: Int
 		get() = entityData.get(MEDIA)
 		set(value) = entityData.set(MEDIA, max(value, 0))
@@ -72,27 +70,6 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		val bBox = this.boundingBox
 		val voxelShapes = level.getEntityCollisions(this, bBox.expandTowards(deltaMovement))
 		return if (step.lengthSqr() == 0.0) step else collideBoundingBox(this, step, bBox, level, voxelShapes)
-	}
-
-	fun scheduleCastSound() {
-		if (level.isClientSide)
-			throw Exception("BaseWisp.scheduleCastSound should only be called on server.") // TODO: create and replace with ServerOnlyException
-		HexalAPI.LOGGER.info("scheduling casting sound, level is $level")
-		IXplatAbstractions.INSTANCE.sendPacketNear(position(), 32.0, level as ServerLevel, MsgWispCastSoundAck(this))
-	}
-
-	fun playCastSoundClient() {
-		if (!level.isClientSide)
-			throw Exception("BaseWisp.playCastSoundClient should only be called on client.") // TODO: create and replace with ClientOnlyException
-
-		HexalAPI.LOGGER.info("playing casting sound, level is $level")
-		if (soundInstance == null || soundInstance!!.isStopped) {
-			soundInstance = WispCastingSoundInstance(this)
-			Minecraft.getInstance().soundManager.play(soundInstance!!)
-			HexalSounds.WISP_CASTING_START.playAt(level, position(), .3f, 1f + (random.nextFloat() - 0.5f) * 0.2f, false)
-		}
-
-		soundInstance!!.keepAlive()
 	}
 
 	fun renderCentre(): Vec3 = position()
