@@ -1,6 +1,5 @@
 package ram.talia.hexal.forge.eventhandlers;
 
-import at.petrak.hexcasting.xplat.IXplatAbstractions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,11 +11,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.client.RenderHelperKt;
-import ram.talia.hexal.forge.cap.CapSyncers;
 
 import java.util.*;
 
@@ -72,6 +69,7 @@ public class PlayerLinkstoreEventHandler {
 		linkstores.put(player.getUUID(), loadLinkstore(player));
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
 		if (event.getPlayer() == null)
@@ -95,6 +93,7 @@ public class PlayerLinkstoreEventHandler {
 		linkstores.remove(player.getUUID());
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
 		if (event.getPlayer() == null)
@@ -107,9 +106,9 @@ public class PlayerLinkstoreEventHandler {
 	 * Ticks each player's {@link PlayerLinkstore}, server to clean up removed links, client to render.
 	 */
 	@SubscribeEvent
-	public static void playerTick(TickEvent.PlayerTickEvent event) {
+	public static void playerTick(TickEvent.PlayerTickEvent event) throws Exception {
 		if (event.side == LogicalSide.CLIENT)
-			clientTick((AbstractClientPlayer) event.player);
+			clientTick(event.player);
 		else
 			serverTick((ServerPlayer) event.player);
 	}
@@ -118,7 +117,11 @@ public class PlayerLinkstoreEventHandler {
 		linkstores.get(player.getUUID()).pruneLinks();
 	}
 	
-	private static void clientTick(AbstractClientPlayer player) {
+	@OnlyIn(Dist.CLIENT)
+	private static void clientTick(Player player) throws Exception {
+		if (!player.level.isClientSide)
+			throw new Exception("PlayerLinkstoreEventHander.clientTick can only be called on the client"); // TODO
+		
 		var ownerRenderCentre = new PlayerLinkstore.RenderCentre(player);
 		var theseLinks = getRenderLinks(player);
 		if (theseLinks == null)

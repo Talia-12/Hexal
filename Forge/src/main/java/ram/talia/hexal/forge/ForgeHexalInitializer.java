@@ -1,9 +1,5 @@
 package ram.talia.hexal.forge;
 
-import at.petrak.hexcasting.common.blocks.behavior.HexComposting;
-import at.petrak.hexcasting.common.blocks.behavior.HexStrippables;
-import at.petrak.hexcasting.common.misc.AkashicTreeGrower;
-import at.petrak.hexcasting.interop.HexInterop;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;

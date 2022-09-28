@@ -22,7 +22,7 @@ import ram.talia.hexal.client.playLinkParticles
 
 public class CCPlayerLinkstore(private val player: Player) : ServerTickingComponent, ClientTickingComponent, AutoSyncedComponent {
 	val linkstore = (player as? ServerPlayer)?.let { PlayerLinkstore(it) }
-	val ownerRenderCentre = (player as? AbstractClientPlayer)?.let{ PlayerLinkstore.RenderCentre(it) }
+	private val ownerRenderCentre = if (player.level.isClientSide) PlayerLinkstore.RenderCentre(player) else null
 	var renderLinks: MutableList<ILinkable.IRenderCentre> = mutableListOf()
 
 	private val renderLinksToAdd: MutableList<ILinkable<*>> = mutableListOf()
