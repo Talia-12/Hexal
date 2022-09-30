@@ -7,6 +7,9 @@ import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy;
 import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntityAt;
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes;
 import ram.talia.hexal.common.casting.actions.*;
+import ram.talia.hexal.common.casting.actions.everbook.OpEverbookDelete;
+import ram.talia.hexal.common.casting.actions.everbook.OpEverbookRead;
+import ram.talia.hexal.common.casting.actions.everbook.OpEverbookWrite;
 import ram.talia.hexal.common.casting.actions.spells.OpFallingBlock;
 import ram.talia.hexal.common.casting.actions.spells.OpFreeze;
 import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
@@ -49,6 +52,18 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qedqde", HexDir.NORTH_EAST),
 																 modLoc("light_level"),
 																 OpGetLightLevel.INSTANCE);
+			
+			// ================================ Everbook ======================================
+			
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eweeewedqdeddw", HexDir.NORTH_EAST),
+																 modLoc("everbook/read"),
+																 OpEverbookRead.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qwqqqwqaeaqaaw", HexDir.SOUTH_EAST),
+																 modLoc("everbook/write"),
+																 OpEverbookWrite.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qwqqqwqaww", HexDir.SOUTH_EAST),
+																 modLoc("everbook/delete"),
+																 OpEverbookDelete.INSTANCE);
 			
 			// ============================== Misc Spells =====================================
 			

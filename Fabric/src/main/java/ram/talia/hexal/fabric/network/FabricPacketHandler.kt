@@ -10,6 +10,9 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 import org.apache.logging.log4j.util.TriConsumer
+import ram.talia.hexal.common.network.MsgRemoveEverbookAck
+import ram.talia.hexal.common.network.MsgSendEverbookSyn
+import ram.talia.hexal.common.network.MsgSetEverbookAck
 import ram.talia.hexal.common.network.MsgWispCastSoundAck
 import java.util.function.Consumer
 import java.util.function.Function
@@ -18,14 +21,19 @@ object FabricPacketHandler {
 	/**
 	 * For registering packets that are client -> server (called on the server)
 	 */
+	@Suppress("MoveLambdaOutsideParentheses")
 	fun initServerBound() {
-
+		ServerPlayNetworking.registerGlobalReceiver(MsgSendEverbookSyn.ID, makeServerBoundHandler(
+			(MsgSendEverbookSyn)::deserialise, { msg: MsgSendEverbookSyn, server: MinecraftServer, sender: ServerPlayer -> msg.handle(server, sender) })
+		)
 	}
 
 	/**
 	 * For registering packets that are server -> client (called on the client)
 	 */
 	fun initClientBound() {
+		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler((MsgSetEverbookAck)::deserialise, (MsgSetEverbookAck)::handle));
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler((MsgRemoveEverbookAck)::deserialise, (MsgRemoveEverbookAck)::handle));
 		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler((MsgWispCastSoundAck)::deserialise, (MsgWispCastSoundAck)::handle));
 	}
 

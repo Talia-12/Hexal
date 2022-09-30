@@ -30,6 +30,12 @@ class Everbook(val uuid: UUID) {
 		entries[getKey(key)] = iota.serializeToNBT()
 	}
 
+	fun setIota(key: HexPattern, iota: CompoundTag) {
+		entries[getKey(key)] = iota
+	}
+
+	fun removeIota(key: HexPattern) = entries.remove(getKey(key))
+
 	private fun getKey(key: HexPattern): String {
 		val angles = key.anglesSignature()
 		// Bookkeepers: - contains no angle characters, so can't occur any way other than this
@@ -59,6 +65,7 @@ class Everbook(val uuid: UUID) {
 		 */
 		private val EVERBOOK_PATH = Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
 
+		@JvmStatic
 		fun fromNbt(tag: CompoundTag): Everbook {
 			val entries: MutableMap<String, CompoundTag> = mutableMapOf()
 
@@ -67,6 +74,7 @@ class Everbook(val uuid: UUID) {
 			return Everbook(tag.getUUID(TAG_UUID), entries)
 		}
 
+		@JvmStatic
 		fun fromDisk(uuid: UUID): Everbook {
 			val everbookEncrypterDecrypter = FileEncrypterDecrypter(FileEncrypterDecrypter.getKey(uuid, "AES"), "AES/CBC/PKCS5Padding")
 			val tag = everbookEncrypterDecrypter.decryptCompound(EVERBOOK_PATH.toFile())

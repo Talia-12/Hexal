@@ -7,8 +7,8 @@ import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
@@ -44,8 +44,11 @@ public interface IXplatAbstractions {
     
     void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link);
     
-    SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key, ServerLevel level);
+    SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key);
     void setEverbookIota(ServerPlayer player, HexPattern key, SpellDatum<?> iota);
+    void setFullEverbook(ServerPlayer player, Everbook everbook);
+    
+    void removeEverbookIota(ServerPlayer player, HexPattern key);
     
     
     // Blocks

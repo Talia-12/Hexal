@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.MinecraftForgeClient;
 import ram.talia.hexal.api.HexalAPI;
+import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
 
 import java.util.function.Function;
@@ -66,13 +68,13 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	}
 	
 	@Override
-	public void setClientEverbookIota (HexPattern key, SpellDatum<?> iota) {
-	
+	public void setClientEverbookIota (HexPattern key, CompoundTag iota) {
+		EverbookEventHandler.localEverbook.setIota(key, iota);
 	}
 	
 	@Override
-	public void removeClientEverbook (HexPattern key) {
-	
+	public void removeClientEverbookIota (HexPattern key) {
+		EverbookEventHandler.localEverbook.removeIota(key);
 	}
 	
 	@Override

@@ -9,10 +9,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
+import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.forge.cap.CapSyncers;
+import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
@@ -65,12 +67,22 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key, ServerLevel level) {
-		return null;
+	public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key) {
+		return EverbookEventHandler.getIota(player, key);
 	}
 	
 	@Override
 	public void setEverbookIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+		EverbookEventHandler.setIota(player, key, iota);
+	}
 	
+	@Override
+	public void removeEverbookIota (ServerPlayer player, HexPattern key) {
+		EverbookEventHandler.removeIota(player, key);
+	}
+	
+	@Override
+	public void setFullEverbook (ServerPlayer player, Everbook everbook) {
+		EverbookEventHandler.setEverbook(player, everbook);
 	}
 }

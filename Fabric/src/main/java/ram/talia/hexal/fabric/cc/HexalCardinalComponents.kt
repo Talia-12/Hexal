@@ -13,6 +13,7 @@ class HexalCardinalComponents : EntityComponentInitializer, ItemComponentInitial
 	override fun registerEntityComponentFactories(registry: EntityComponentFactoryRegistry) {
 		registry.registerForPlayers(WISP_CASTING_MANAGER, ::CCWispCastingManager, RespawnCopyStrategy.ALWAYS_COPY)
 		registry.registerForPlayers(PLAYER_LINKSTORE, ::CCPlayerLinkstore, RespawnCopyStrategy.NEVER_COPY)
+		registry.registerForPlayers(EVERBOOK, ::CCEverbook, RespawnCopyStrategy.ALWAYS_COPY)
 	}
 
 	override fun registerItemComponentFactories(registry: ItemComponentFactoryRegistry) {
@@ -29,6 +30,11 @@ class HexalCardinalComponents : EntityComponentInitializer, ItemComponentInitial
 		val PLAYER_LINKSTORE: ComponentKey<CCPlayerLinkstore> = ComponentRegistry.getOrCreate(
 			HexalAPI.modLoc("player_linkstore"),
 			CCPlayerLinkstore::class.java
+		)
+		@JvmField
+		val EVERBOOK: ComponentKey<CCEverbook> = ComponentRegistry.getOrCreate(
+			HexalAPI.modLoc("everbook"),
+			CCEverbook::class.java
 		)
 	}
 }

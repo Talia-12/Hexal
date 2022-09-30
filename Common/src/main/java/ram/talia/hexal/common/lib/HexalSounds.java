@@ -75,7 +75,7 @@ public class HexalSounds {
 		return new SoundEntryProvider(generator);
 	}
 	
-	record SoundEntryProvider(DataGenerator generator) implements DataProvider {
+	public record SoundEntryProvider(DataGenerator generator) implements DataProvider {
 		
 		@Override
 			public void run (@NotNull HashCache cache) {

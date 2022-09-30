@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -43,12 +44,12 @@ public interface IClientXplatAbstractions {
 	/**
 	 * Should only be called on the clientside; sets the client's everbook to contain the passed iota at the passed key.
 	 */
-	void setClientEverbookIota(HexPattern key, SpellDatum<?> iota);
+	void setClientEverbookIota(HexPattern key, CompoundTag iota);
 	
 	/**
 	 * Should only be called on the clientside; removes the passed key from the client's everbook.
 	 */
-	void removeClientEverbook(HexPattern key);
+	void removeClientEverbookIota(HexPattern key);
 	
 	// On Forge, these are already exposed; on Fabric we do a mixin
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);

@@ -9,13 +9,12 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
-
-import java.util.Optional;
 
 public class FabricXplatImpl implements IXplatAbstractions {
 //    @Override
@@ -69,20 +68,17 @@ public class FabricXplatImpl implements IXplatAbstractions {
     
     @Override
     public WispCastingManager getWispCastingManager (ServerPlayer caster) {
-        var cc = HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster);
-        return cc.getManager();
+        return HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster).getManager();
     }
     
     @Override
     public PlayerLinkstore getLinkstore (ServerPlayer player) {
-        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
-        return cc.getLinkstore();
+        return HexalCardinalComponents.PLAYER_LINKSTORE.get(player).getLinkstore();
     }
     
     @Override
     public void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable<?> link) {
-        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
-        cc.addRenderLink(link);
+        HexalCardinalComponents.PLAYER_LINKSTORE.get(player).addRenderLink(link);
     }
     
     @Override
@@ -92,13 +88,23 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
     
     @Override
-    public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key, ServerLevel level) {
-        return null;
+    public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key) {
+        return HexalCardinalComponents.EVERBOOK.get(player).getIota(key, player.getLevel());
     }
     
     @Override
     public void setEverbookIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+        HexalCardinalComponents.EVERBOOK.get(player).setIota(key, iota);
+    }
     
+    @Override
+    public void setFullEverbook (ServerPlayer player, Everbook everbook) {
+        HexalCardinalComponents.EVERBOOK.get(player).setFullEverbook(everbook);
+    }
+    
+    @Override
+    public void removeEverbookIota (ServerPlayer player, HexPattern key) {
+        HexalCardinalComponents.EVERBOOK.get(player).removeIota(key);
     }
     
     //    @Override

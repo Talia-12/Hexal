@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -30,7 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
-import ram.talia.hexal.api.HexalAPI;
+import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
 
 import java.util.function.Function;
@@ -90,13 +92,15 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 	}
 	
 	@Override
-	public void setClientEverbookIota (HexPattern key, SpellDatum<?> iota) {
-	
+	public void setClientEverbookIota (HexPattern key, CompoundTag iota) {
+		assert Minecraft.getInstance().player != null;
+		HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).setClientIota(key, iota);
 	}
 	
 	@Override
-	public void removeClientEverbook (HexPattern key) {
-	
+	public void removeClientEverbookIota (HexPattern key) {
+		assert Minecraft.getInstance().player != null;
+		HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).removeIota(key);
 	}
 	
 	@Override
