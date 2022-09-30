@@ -1,5 +1,7 @@
 package ram.talia.hexal.forge.xplat;
 
+import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import at.petrak.hexcasting.forge.network.ForgePacketHandler;
 import net.minecraft.client.Minecraft;
@@ -61,6 +63,16 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public void registerItemProperty (Item item, ResourceLocation id, ItemPropertyFunction func) {
 		ItemProperties.register(item, id, func);
+	}
+	
+	@Override
+	public void setClientEverbookIota (HexPattern key, SpellDatum<?> iota) {
+	
+	}
+	
+	@Override
+	public void removeClientEverbook (HexPattern key) {
+	
 	}
 	
 	@Override

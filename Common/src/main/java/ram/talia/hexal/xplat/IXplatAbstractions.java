@@ -1,10 +1,13 @@
 package ram.talia.hexal.xplat;
 
 import at.petrak.hexcasting.api.HexAPI;
+import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
@@ -40,6 +43,9 @@ public interface IXplatAbstractions {
     void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable<?> link);
     
     void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link);
+    
+    SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key, ServerLevel level);
+    void setEverbookIota(ServerPlayer player, HexPattern key, SpellDatum<?> iota);
     
     
     // Blocks

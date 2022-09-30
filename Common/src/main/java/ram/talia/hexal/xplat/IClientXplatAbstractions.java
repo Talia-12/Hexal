@@ -1,5 +1,7 @@
 package ram.talia.hexal.xplat;
 
+import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.particle.ParticleProvider;
@@ -37,6 +39,16 @@ public interface IClientXplatAbstractions {
 	<T extends ClientTooltipComponent & TooltipComponent> void registerIdentityTooltipMapping(Class<T> clazz);
 	
 	void registerItemProperty(Item item, ResourceLocation id, ItemPropertyFunction func);
+	
+	/**
+	 * Should only be called on the clientside; sets the client's everbook to contain the passed iota at the passed key.
+	 */
+	void setClientEverbookIota(HexPattern key, SpellDatum<?> iota);
+	
+	/**
+	 * Should only be called on the clientside; removes the passed key from the client's everbook.
+	 */
+	void removeClientEverbook(HexPattern key);
 	
 	// On Forge, these are already exposed; on Fabric we do a mixin
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);

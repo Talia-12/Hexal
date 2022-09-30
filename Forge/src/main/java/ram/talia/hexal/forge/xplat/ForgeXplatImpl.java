@@ -1,5 +1,7 @@
 package ram.talia.hexal.forge.xplat;
 
+import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -60,5 +62,15 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 		for (var other : allPlayers) {
 			CapSyncers.syncRemoveRenderLink((ServerPlayer) other, player, link);
 		}
+	}
+	
+	@Override
+	public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key, ServerLevel level) {
+		return null;
+	}
+	
+	@Override
+	public void setEverbookIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+	
 	}
 }

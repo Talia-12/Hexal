@@ -1,5 +1,7 @@
 package ram.talia.hexal.fabric.xplat;
 
+import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -87,6 +89,16 @@ public class FabricXplatImpl implements IXplatAbstractions {
     public void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link) {
         var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
         cc.removeRenderLink(link);
+    }
+    
+    @Override
+    public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key, ServerLevel level) {
+        return null;
+    }
+    
+    @Override
+    public void setEverbookIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+    
     }
     
     //    @Override

@@ -19,7 +19,7 @@ data class MsgWispCastSoundAck private constructor(val wispId: Int) : IMessage {
 
 	companion object {
 		@JvmField
-		public val ID: ResourceLocation = modLoc("wcstsnd")
+		val ID: ResourceLocation = modLoc("wcstsnd")
 
 		@JvmStatic
 		fun deserialise(buffer: ByteBuf) = MsgWispCastSoundAck(buffer.readInt())
