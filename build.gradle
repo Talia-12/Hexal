@@ -92,7 +92,7 @@ subprojects {
     apply plugin: 'kotlin'
     apply plugin: 'maven-publish'
 
-    group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+    group = "ram.talia.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     version = "${modVersion}"
     if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
         version += "-pre-" + System.getenv('BUILD_NUMBER')
