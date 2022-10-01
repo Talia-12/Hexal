@@ -86,7 +86,8 @@ public class EverbookEventHandler {
 		syncedLocalToServer = true;
 		
 		localEverbook = Everbook.fromDisk(event.player.getUUID());
-		IClientXplatAbstractions.INSTANCE.sendPacketToServer(new MsgSendEverbookSyn(localEverbook));
+		// Doesn't work for SOME REASON with IClientXplatAbstractions.INSTANCE.sendPacketToServer
+		ForgePacketHandler.getNetwork().sendToServer(new MsgSendEverbookSyn(localEverbook));
 	}
 	
 	@OnlyIn(Dist.CLIENT)
