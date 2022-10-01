@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getChecked
 import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpEverbookRead : ConstManaOperator {
@@ -14,6 +15,10 @@ object OpEverbookRead : ConstManaOperator {
 		val key = args.getChecked<HexPattern>(0, OpEverbookDelete.argc)
 
 		val iota = IXplatAbstractions.INSTANCE.getEverbookIota(ctx.caster, key)
+
+		val trueName = MishapOthersName.getTrueNameFromDatum(iota, ctx.caster)
+		if (trueName != null)
+			throw MishapOthersName(trueName)
 
 		return listOf(iota)
 	}
