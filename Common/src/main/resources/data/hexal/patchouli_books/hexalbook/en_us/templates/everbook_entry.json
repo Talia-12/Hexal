@@ -1,0 +1,11 @@
+{
+  "processor": "ram.talia.hexal.interop.patchouli.EverbookPatternProcessor",
+  "components": [
+    {
+      "type": "patchouli:custom",
+      "class": "ram.talia.hexal.interop.patchouli.EverbookPatternComponent",
+      "x": 58,
+      "y": 50
+    }
+  ]
+}

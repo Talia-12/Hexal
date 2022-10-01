@@ -26,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.MinecraftForgeClient;
 import ram.talia.hexal.api.HexalAPI;
+import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
 
@@ -75,6 +76,14 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public void removeClientEverbookIota (HexPattern key) {
 		EverbookEventHandler.localEverbook.removeIota(key);
+	}
+	
+	@Override
+	public HexPattern getClientEverbookPattern (int index) {
+		if (EverbookEventHandler.localEverbook == null)
+			return null;
+		
+		return EverbookEventHandler.localEverbook.getKey(index);
 	}
 	
 	@Override

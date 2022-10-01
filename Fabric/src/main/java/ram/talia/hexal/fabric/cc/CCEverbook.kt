@@ -70,6 +70,8 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 	fun setClientIota(key: HexPattern, iota: CompoundTag) = everbook!!.setIota(key, iota)
 	fun removeClientIota(key: HexPattern) = everbook!!.removeIota(key)
 
+	fun getClientPattern(index: Int) = everbook!!.getKey(index)
+
 	//region read/write Nbt (unused)
 	/**
 	 * Data stored on the client rather than the server

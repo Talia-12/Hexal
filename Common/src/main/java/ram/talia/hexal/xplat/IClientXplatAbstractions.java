@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import ram.talia.hexal.api.HexalAPI;
+import ram.talia.hexal.api.everbook.Everbook;
 
 import java.util.ServiceLoader;
 import java.util.function.Function;
@@ -50,6 +51,11 @@ public interface IClientXplatAbstractions {
 	 * Should only be called on the clientside; removes the passed key from the client's everbook.
 	 */
 	void removeClientEverbookIota(HexPattern key);
+	
+	/**
+	 * Returns the pattern at index in the client's Everbook (sorting the pattern keys alphabetically by their string representation).
+	 */
+	HexPattern getClientEverbookPattern(int index);
 	
 	// On Forge, these are already exposed; on Fabric we do a mixin
 	void setFilterSave(AbstractTexture texture, boolean filter, boolean mipmap);

@@ -104,6 +104,12 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 	}
 	
 	@Override
+	public HexPattern getClientEverbookPattern (int index) {
+		assert Minecraft.getInstance().player != null;
+		return HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).getClientPattern(index);
+	}
+	
+	@Override
 	public void setFilterSave (AbstractTexture texture, boolean filter, boolean mipmap) {
 		((ExtendedTexture) texture).setFilterSave(filter, mipmap);
 	}

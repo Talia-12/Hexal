@@ -3,6 +3,8 @@ package ram.talia.hexal.api.everbook
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.utils.asCompound
+import at.petrak.hexcasting.api.utils.hasCompound
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
@@ -17,26 +19,33 @@ import java.util.UUID
 class Everbook(val uuid: UUID) {
 	private val everbookEncrypterDecrypter = FileEncrypterDecrypter(FileEncrypterDecrypter.getKey(uuid, "AES"), "AES/CBC/PKCS5Padding")
 
-	private val entries: MutableMap<String, CompoundTag> = mutableMapOf()
+	private val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf()
 
-	constructor(uuid: UUID, entries: MutableMap<String, CompoundTag>) : this(uuid) {
+	constructor(uuid: UUID, entries: MutableMap<String, Pair<HexPattern, CompoundTag>>) : this(uuid) {
 		this.entries.putAll(entries)
 	}
 
-	fun getIota(key: HexPattern, level: ServerLevel): SpellDatum<*>? {
+	fun getIota(key: HexPattern, level: ServerLevel): SpellDatum<*> {
 		val entry = entries[getKey(key)]
-		return if (entry == null) SpellDatum.make(Widget.NULL) else SpellDatum.fromNBT(entry, level)
+		return if (entry == null) SpellDatum.make(Widget.NULL) else SpellDatum.fromNBT(entry.second, level)
 	}
 
 	fun setIota(key: HexPattern, iota: SpellDatum<*>) {
-		entries[getKey(key)] = iota.serializeToNBT()
+		entries[getKey(key)] = Pair(key, iota.serializeToNBT())
 	}
 
 	fun setIota(key: HexPattern, iota: CompoundTag) {
-		entries[getKey(key)] = iota
+		entries[getKey(key)] = Pair(key, iota)
 	}
 
 	fun removeIota(key: HexPattern) = entries.remove(getKey(key))
+
+	fun getKey(index: Int): HexPattern? {
+		if (index >= entries.size || index < 0)
+			return null
+
+		return entries.values.map { it.first }.sortedBy { it.anglesSignature() }[index]
+	}
 
 	private fun getKey(key: HexPattern): String {
 		val angles = key.anglesSignature()
@@ -47,7 +56,12 @@ class Everbook(val uuid: UUID) {
 	fun serialiseToNBT(): CompoundTag {
 		val tag = CompoundTag()
 		tag.putUUID(TAG_UUID, uuid)
-		entries.forEach { (pattern, iota) ->  tag.put(pattern, iota) }
+		entries.forEach { (key, pair) ->
+			val pairCompound = CompoundTag()
+			pairCompound.put(TAG_PATTERN, pair.first.serializeToNBT())
+			pairCompound.put(TAG_IOTA, pair.second)
+			tag.put(key, pairCompound)
+		}
 		return tag
 	}
 
@@ -65,12 +79,20 @@ class Everbook(val uuid: UUID) {
 
 	companion object {
 		const val TAG_UUID = "uuid"
+		const val TAG_PATTERN = "pattern"
+		const val TAG_IOTA = "iota"
 
 		@JvmStatic
 		fun fromNbt(tag: CompoundTag): Everbook {
-			val entries: MutableMap<String, CompoundTag> = mutableMapOf()
+			val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf()
 
-			tag.allKeys.forEach { if (!it.equals(TAG_UUID)) entries[it] = tag.getCompound(it) }
+			tag.allKeys.forEach {
+				if (it.equals(TAG_UUID))
+					return@forEach
+				val pairCompound = tag.getCompound(it)
+				if (pairCompound.hasCompound(TAG_PATTERN) && pairCompound.hasCompound(TAG_IOTA))
+					entries[it] = Pair(HexPattern.fromNBT(pairCompound.getCompound(TAG_PATTERN)), pairCompound.getCompound(TAG_IOTA))
+			}
 
 			return Everbook(tag.getUUID(TAG_UUID), entries)
 		}
