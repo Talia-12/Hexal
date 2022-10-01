@@ -4,10 +4,16 @@ import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
+import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.everbook.Everbook
 import ram.talia.hexal.common.network.MsgRemoveEverbookAck
 import ram.talia.hexal.common.network.MsgSendEverbookSyn
@@ -16,19 +22,27 @@ import ram.talia.hexal.fabric.events.Events
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-class CCEverbook(private val player: Player) : AutoSyncedComponent {
+class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickingComponent {
 	private var everbook: Everbook? = null
 		set(value) {
 			if (field == null)
 				field = value
 		}
 
-	init {
-		if (player.level.isClientSide) {
-			everbook = Everbook.fromDisk(player.uuid)
+	var syncedLocalToServer = false
 
-			IClientXplatAbstractions.INSTANCE.sendPacketToServer(MsgSendEverbookSyn(everbook!!))
-		}
+	@Environment(EnvType.CLIENT)
+	override fun clientTick() {
+		if (syncedLocalToServer)
+			return
+		syncedLocalToServer = true
+
+		everbook = Everbook.fromDisk(player.uuid)
+
+		IClientXplatAbstractions.INSTANCE.sendPacketToServer(MsgSendEverbookSyn(everbook!!))
+
+		HexalAPI.LOGGER.info("registering listener to DISCONNECT event.")
+		ClientPlayConnectionEvents.DISCONNECT.register { _, client -> HexalAPI.LOGGER.info("CCEverbook saveToDisk"); saveToDisk(client.player) }
 	}
 
 	fun getIota(key: HexPattern, level: ServerLevel) = everbook?.getIota(key, level) ?: SpellDatum.make(Widget.NULL)
@@ -68,9 +82,6 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent {
 	override fun writeToNbt(tag: CompoundTag) { }
 	//endregion
 	companion object {
-		init {
-			Events.CLIENT_LOGGOUT.register(Companion::saveToDisk as Events.OnClientLogout)
-		}
 
 		private fun saveToDisk(player: Player?) {
 			if (player != null)

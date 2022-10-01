@@ -7,6 +7,7 @@ import java.nio.ByteBuffer
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
 import java.util.*
+import java.util.zip.ZipException
 import javax.crypto.*
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -69,7 +70,7 @@ internal class FileEncrypterDecrypter(private val secretKey: SecretKey, cipher: 
 
 	@Throws(InvalidAlgorithmParameterException::class, InvalidKeyException::class, IOException::class)
 	fun decryptCompound(file: File): CompoundTag? {
-		var content: CompoundTag
+		var content: CompoundTag?
 
 		if (!file.exists())
 			return null
@@ -80,7 +81,11 @@ internal class FileEncrypterDecrypter(private val secretKey: SecretKey, cipher: 
 
 			cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(fileIv))
 
-			content = NbtIo.readCompressed(CipherInputStream(fileIn, cipher))
+			try {
+				content = NbtIo.readCompressed(CipherInputStream(fileIn, cipher))
+			} catch (e: ZipException) {
+				content = null // HACKS - this makes it so that if the player ends up with a compound file encrypted with the wrong key it doesn't crash
+			}
 		}
 
 		return content
