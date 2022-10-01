@@ -21,7 +21,7 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 
 	override var media: Int
 		get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
-		set(value) {}
+		set(_) {}
 
 	var acceleration: Vec3
 		get() = Vec3(entityData.get(ACCELERATION_X).toDouble(), entityData.get(ACCELERATION_Y).toDouble(), entityData.get(ACCELERATION_Z).toDouble())

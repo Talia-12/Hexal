@@ -31,7 +31,7 @@ class HexalForgeDataGenerators {
 			HexalAPI.LOGGER.info("Starting cross-platform datagen")
 
 			val gen = ev.generator
-			val efh = ev.existingFileHelper
+//			val efh = ev.existingFileHelper
 			if (ev.includeClient()) {
 					gen.addProvider(HexalSounds.provider(gen))
 //				gen.addProvider(HexItemModels(gen, efh))

@@ -34,11 +34,8 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	private val lazyLinked = ILinkable.LazyILinkableList(player.level as ServerLevel)
 
-	var renderLinks: MutableList<ILinkable<*>>
-		get() {
-			return lazyRenderLinks.get()
-		}
-		private set(value) { }
+	val renderLinks: MutableList<ILinkable<*>>
+		get() = lazyRenderLinks.get()
 
 	private val lazyRenderLinks: ILinkable.LazyILinkableList = ILinkable.LazyILinkableList(player.level as ServerLevel)
 

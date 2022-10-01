@@ -46,9 +46,10 @@ class SlipwayGeodeConfiguration(
 				Codec.INT.fieldOf("invalid_blocks_threshold").forGetter { `$$0x`: SlipwayGeodeConfiguration -> `$$0x`.invalidBlocksThreshold }
 			).apply(
 				`$$0`
-			) { `$$0`: GeodeBlockSettings, `$$1`: GeodeLayerSettings, `$$2`: GeodeCrackSettings, `$$3`: Double, `$$4`: Double, `$$5`: Boolean, `$$6`: IntProvider, `$$7`: IntProvider, `$$8`: IntProvider, `$$9`: Int, `$$10`: Int, `$$11`: Double, `$$12`: Int ->
+			) { geodeBlockSettings: GeodeBlockSettings, geodeLayerSettings: GeodeLayerSettings, geodeCrackSettings: GeodeCrackSettings, `$$3`: Double, `$$4`: Double,
+					`$$5`: Boolean, `$$6`: IntProvider, `$$7`: IntProvider, `$$8`: IntProvider, `$$9`: Int, `$$10`: Int, `$$11`: Double, `$$12`: Int ->
 				SlipwayGeodeConfiguration(
-					`$$0`, `$$1`, `$$2`,
+					geodeBlockSettings, geodeLayerSettings, geodeCrackSettings,
 					`$$3`,
 					`$$4`,
 					`$$5`, `$$6`, `$$7`, `$$8`,

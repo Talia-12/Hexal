@@ -36,13 +36,12 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		}
 
 	private val lazyLinked: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
-	var renderLinks: MutableList<ILinkable.IRenderCentre>
+	val renderLinks: MutableList<ILinkable.IRenderCentre>
 		get() {
 			if (!level.isClientSide)
 			throw Exception("LinkableEntity.renderLinks should only be accessed on client.") // TODO: create and replace with ClientOnlyException
 			return entityData.get(RENDER_LINKS).get(TAG_RENDER_LINKS)?.asList?.mapNotNull { LinkableRegistry.fromSync(it.asCompound, level) } as MutableList? ?: mutableListOf()
 		}
-		set(value) { }
 
 	private val lazyRenderLinks: ILinkable.LazyILinkableList? = if (level.isClientSide) null else ILinkable.LazyILinkableList(level as ServerLevel)
 

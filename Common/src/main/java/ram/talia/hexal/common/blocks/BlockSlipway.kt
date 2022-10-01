@@ -22,13 +22,7 @@ class BlockSlipway(properties: Properties) : Block(properties), EntityBlock, IFo
 	override fun newBlockEntity(pPos: BlockPos, pState: BlockState) = BlockEntitySlipway(pPos, pState)
 
 	override fun <T : BlockEntity> getTicker(pLevel: Level, pState: BlockState, pBlockEntityType: BlockEntityType<T>): BlockEntityTicker<T> {
-		return BlockEntityTicker { level: Level, blockPos: BlockPos, blockState: BlockState, t: T ->
-			tick(level, blockPos, blockState, t)
-		}
-	}
-
-	override fun canBeReplaced(state: BlockState, placeContext: BlockPlaceContext): Boolean {
-		return super.canBeReplaced(state, placeContext)
+		return BlockEntityTicker(Companion::tick)
 	}
 
 	override fun getRenderShape(state: BlockState): RenderShape {

@@ -197,6 +197,6 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 			}
 		}
 
-		return true
+//		return true
 	}
 }
