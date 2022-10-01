@@ -6,6 +6,9 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.util.TriConsumer;
+import ram.talia.hexal.common.network.MsgRemoveEverbookAck;
+import ram.talia.hexal.common.network.MsgSendEverbookSyn;
+import ram.talia.hexal.common.network.MsgSetEverbookAck;
 import ram.talia.hexal.common.network.MsgWispCastSoundAck;
 
 import java.util.Objects;
@@ -32,8 +35,16 @@ public class ForgePacketHandler {
 	public static void init() {
 		int messageIdx = 0;
 		
+		// Client -> server
+		NETWORK.registerMessage(messageIdx++, MsgSendEverbookSyn.class, MsgSendEverbookSyn::serialize,
+														MsgSendEverbookSyn::deserialise, makeServerBoundHandler(MsgSendEverbookSyn::handle));
+		
 		// Server -> client
 		//general
+		NETWORK.registerMessage(messageIdx++, MsgSetEverbookAck.class, MsgSetEverbookAck::serialize,
+														MsgSetEverbookAck::deserialise, makeClientBoundHandler(MsgSetEverbookAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgRemoveEverbookAck.class, MsgRemoveEverbookAck::serialize,
+														MsgRemoveEverbookAck::deserialise, makeClientBoundHandler(MsgRemoveEverbookAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgWispCastSoundAck.class, MsgWispCastSoundAck::serialize,
 														MsgWispCastSoundAck::deserialise, makeClientBoundHandler(MsgWispCastSoundAck::handle));
 		
@@ -47,10 +58,6 @@ public class ForgePacketHandler {
 														MsgPlayerRemoveRenderLinkAck::deserialise, makeClientBoundHandler(MsgPlayerRemoveRenderLinkAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgPlayerClearRenderLinksAck.class, MsgPlayerClearRenderLinksAck::serialize,
 														MsgPlayerClearRenderLinksAck::deserialise, makeClientBoundHandler(MsgPlayerClearRenderLinksAck::handle));
-
-
-		// Client -> server
-		
 	}
 	
 	private static <T> BiConsumer<T, Supplier<NetworkEvent.Context>> makeServerBoundHandler(

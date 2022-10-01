@@ -1,18 +1,23 @@
 package ram.talia.hexal.forge.eventhandlers;
 
 import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.Widget;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.common.network.MsgRemoveEverbookAck;
 import ram.talia.hexal.common.network.MsgSendEverbookSyn;
 import ram.talia.hexal.common.network.MsgSetEverbookAck;
+import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -28,6 +33,8 @@ public class EverbookEventHandler {
 	 */
 	public static Everbook localEverbook;
 	
+	private static boolean syncedLocalToServer = false;
+	
 	public static Everbook getEverbook(Player player) {
 		return everbooks.get(player.getUUID());
 	}
@@ -37,15 +44,21 @@ public class EverbookEventHandler {
 	}
 	
 	public static SpellDatum<?> getIota(ServerPlayer player, HexPattern key) {
+		if (everbooks.get(player.getUUID()) == null)
+			return SpellDatum.make(Widget.NULL);
 		return everbooks.get(player.getUUID()).getIota(key, player.getLevel());
 	}
 	
 	public static void setIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+		if (everbooks.get(player.getUUID()) == null)
+			return;
 		everbooks.get(player.getUUID()).setIota(key, iota);
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookAck(key, iota.serializeToNBT()));
 	}
 	
 	public static void removeIota (ServerPlayer player, HexPattern key) {
+		if (everbooks.get(player.getUUID()) == null)
+			return;
 		everbooks.get(player.getUUID()).removeIota(key);
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgRemoveEverbookAck(key));
 	}
@@ -58,15 +71,32 @@ public class EverbookEventHandler {
 			everbooks.put(player.getUUID(), new Everbook(player.getUUID()));
 	}
 	
+	/**
+	 * This is a PlayerTickEvent rather than a LoggedInEvent since *apparently* forge's network structure isn't set up at that point.
+	 */
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
-		Player player = event.getPlayer();
+	public static void clientPlayerTick(TickEvent.PlayerTickEvent event) {
+		if (!syncedLocalToServer)
+			HexalAPI.LOGGER.info("clientPlayerTick event " + event);
 		
-		if (player == null)
+		if (event.player == null || event.side == LogicalSide.SERVER || syncedLocalToServer)
 			return;
 		
-		localEverbook = Everbook.fromDisk(player.getUUID());
+		syncedLocalToServer = true;
+		
+		localEverbook = Everbook.fromDisk(event.player.getUUID());
 		IClientXplatAbstractions.INSTANCE.sendPacketToServer(new MsgSendEverbookSyn(localEverbook));
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+		if (localEverbook != null)
+			localEverbook.saveToDisk();
+		
+		// without this the localEverbook and sycnedLocalToServer keep their state when you leave the world and then rejoin which really screws things up.
+		localEverbook = null;
+		syncedLocalToServer = false;
 	}
 }

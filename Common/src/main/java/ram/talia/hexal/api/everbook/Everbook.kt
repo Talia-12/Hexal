@@ -1,10 +1,12 @@
 package ram.talia.hexal.api.everbook
 
 import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
+import ram.talia.hexal.api.HexalAPI
 import java.util.UUID
 
 /**
@@ -23,7 +25,7 @@ class Everbook(val uuid: UUID) {
 
 	fun getIota(key: HexPattern, level: ServerLevel): SpellDatum<*>? {
 		val entry = entries[getKey(key)]
-		return if (entry == null) null else SpellDatum.fromNBT(entry, level)
+		return if (entry == null) SpellDatum.make(Widget.NULL) else SpellDatum.fromNBT(entry, level)
 	}
 
 	fun setIota(key: HexPattern, iota: SpellDatum<*>) {
@@ -53,17 +55,16 @@ class Everbook(val uuid: UUID) {
 	 * This function saves the Everbook to the client's disk so that it is accessible between worlds (ONLY CALL ON THE CLIENT).
 	 */
 	fun saveToDisk() {
+		// has to be here rather than an instance variable so that it doesn't try to access Minecraft on the server thread.
+		val EVERBOOK_PATH = Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
+
 		val tag = this.serialiseToNBT()
+		HexalAPI.LOGGER.info("saving everbook $tag for $uuid at $EVERBOOK_PATH")
 		everbookEncrypterDecrypter.encrypt(tag, EVERBOOK_PATH.toFile())
 	}
 
 	companion object {
 		const val TAG_UUID = "uuid"
-
-		/**
-		 * A reference to the path where the everbook file is stored. SHOULD ONLY BE ACCESSED ON THE CLIENT.
-		 */
-		private val EVERBOOK_PATH = Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
 
 		@JvmStatic
 		fun fromNbt(tag: CompoundTag): Everbook {
@@ -76,8 +77,14 @@ class Everbook(val uuid: UUID) {
 
 		@JvmStatic
 		fun fromDisk(uuid: UUID): Everbook {
+			// has to be here rather than an instance variable so that it doesn't try to access Minecraft on the server thread.
+			val EVERBOOK_PATH = Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
+
 			val everbookEncrypterDecrypter = FileEncrypterDecrypter(FileEncrypterDecrypter.getKey(uuid, "AES"), "AES/CBC/PKCS5Padding")
-			val tag = everbookEncrypterDecrypter.decryptCompound(EVERBOOK_PATH.toFile())
+			val tag = everbookEncrypterDecrypter.decryptCompound(EVERBOOK_PATH.toFile()) ?: return Everbook(uuid)
+
+			HexalAPI.LOGGER.info("loading everbook $tag for $uuid from $EVERBOOK_PATH")
+
 			return fromNbt(tag)
 		}
 	}

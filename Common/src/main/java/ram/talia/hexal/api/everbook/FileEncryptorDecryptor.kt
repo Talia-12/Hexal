@@ -68,8 +68,11 @@ internal class FileEncrypterDecrypter(private val secretKey: SecretKey, cipher: 
 	}
 
 	@Throws(InvalidAlgorithmParameterException::class, InvalidKeyException::class, IOException::class)
-	fun decryptCompound(file: File): CompoundTag {
+	fun decryptCompound(file: File): CompoundTag? {
 		var content: CompoundTag
+
+		if (!file.exists())
+			return null
 
 		FileInputStream(file).use { fileIn ->
 			val fileIv = ByteArray(16)
