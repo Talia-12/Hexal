@@ -19,7 +19,7 @@ object OpConsumeWisp : SpellOperator {
 
 	override val isGreat = true
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val consumed = args.getChecked<IMediaEntity<*>>(0, argc)
 
 		ctx.assertEntityInRange(consumed.get())

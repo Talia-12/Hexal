@@ -2,10 +2,16 @@
   "processor": "ram.talia.hexal.interop.patchouli.EverbookPatternProcessor",
   "components": [
     {
+      "type": "patchouli:header",
+      "text": "#page_num",
+      "x": -1,
+      "y": -1
+    },
+    {
       "type": "patchouli:custom",
       "class": "ram.talia.hexal.interop.patchouli.EverbookPatternComponent",
       "x": 58,
-      "y": 50
+      "y": 70
     }
   ]
 }

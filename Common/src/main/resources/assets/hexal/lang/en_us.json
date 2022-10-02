@@ -13,6 +13,10 @@
   "hexcasting.spell.hexal:health": "Nurse's Purification",
   "hexcasting.spell.hexal:light_level": "Lamplighter's Purification",
 
+  "hexcasting.spell.hexal:everbook/read": "Restoration Gambit",
+  "hexcasting.spell.hexal:everbook/write": "Preservation Gambit",
+  "hexcasting.spell.hexal:everbook/delete": "Obsoletion Gambit",
+
   "hexcasting.spell.hexal:smelt": "Smelt",
   "hexcasting.spell.hexal:freeze": "Freeze",
   "hexcasting.spell.hexal:falling_block": "Falling Block",
@@ -112,5 +116,19 @@
   "hexal.entry.type_comparison": "Type Comparisons",
   "hexal.page.type_comparison.compare/blocks": "Remove two locations from the stack; if the block at the first is equal to the block at the second, return 1. Otherwise, return 0.",
   "hexal.page.type_comparison.compare/entities": "Remove two entities from the stack; if the entities are the same type (with items comparing the type of item) return 1. Otherwise, return 0.",
-  "hexal.page.type_comparison.compare/types": "Remove two iota from the stack; if iota are the same type, return 1. Otherwise, return 0. For example, removing 0 and 5 would return 1, as would removing [] and [12], while removing 1 and (1,2,3) would return 0."
+  "hexal.page.type_comparison.compare/types": "Remove two iota from the stack; if iota are the same type, return 1. Otherwise, return 0. For example, removing 0 and 5 would return 1, as would removing [] and [12], while removing 1 and (1,2,3) would return 0.",
+
+
+
+
+  "hexal.entry.everbook": "Everbook",
+  "hexal.page.everbook.0": "Your Everbook is a strange space that your broken mind can now reach. There are many yous that seem to share this record, worlds and worlds of progress, beginning again and again. Your Everbook can store patterns paired with iotas like an $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$, though the fragile nature of your mind these days makes it best to route all access to your Everbook through an $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$. Any world that you reach enlightenment in, you will have access to the entries you add to it now.",
+  "hexal.page.everbook.everbook/read": "Takes the position of an $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$, as well as a Pattern as a key, and retrieves the iota at that key from your Everbook, storing it in the given $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$ if able.",
+  "hexal.page.everbook.everbook/write": "Takes the position of an $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$, as well as a Pattern as a key, and stores the iota in that record at that key to your Everbook at the same key.",
+  "hexal.page.everbook.everbook/delete": "Takes a pattern and removes the entry with that pattern key from your Everbook.",
+
+  "hexal.entry.everbook_entries": "Everbook Entries",
+  "hexal.page.everbook_entries.0": "Every page in this entry displays the pattern key for one of the entries of your $(l:hexal:patterns/everbook)$(action)Everbook/$.",
+
+  "hexal.everbook_pattern_entry.header": "Stored Key: %d"
 }

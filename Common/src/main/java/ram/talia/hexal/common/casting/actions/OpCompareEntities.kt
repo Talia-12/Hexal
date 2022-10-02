@@ -1,10 +1,8 @@
 package ram.talia.hexal.common.casting.actions
 
-import at.petrak.hexcasting.api.spell.ConstManaOperator
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.asSpellResult
+import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getChecked
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.ItemEntity
 import ram.talia.hexal.api.HexalAPI

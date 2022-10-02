@@ -77,9 +77,6 @@ public class EverbookEventHandler {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void clientPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (!syncedLocalToServer)
-			HexalAPI.LOGGER.info("clientPlayerTick event " + event);
-		
 		if (event.player == null || event.side == LogicalSide.SERVER || syncedLocalToServer)
 			return;
 		
