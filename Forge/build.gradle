@@ -60,6 +60,39 @@ minecraft {
             }
         }
 
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            property 'forge.logging.console.level', 'debug'
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', 'hexal'
+
+            mods {
+                create(modID) {
+                    source sourceSets.main
+                    source sourceSets.test
+                    source project(":Common").sourceSets.test
+                }
+            }
+        }
+
         // We have to have a dummy data run to be parented from
         data {}
 
@@ -138,13 +171,25 @@ dependencies {
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
 
+    // Testing dependencies:
+    testCompileOnly project(":Common")
+
+    testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
     testCompileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    testRuntimeOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
     testCompileOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    testRuntimeOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     testCompileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
+    testRuntimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
+
+    testCompileOnly 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
 mixin {
     add sourceSets.main, "hexal.mixins.refmap.json"
+    add sourceSets.test, "hexal.test.mixins.refmap.json"
     config "hexalplat.mixins.json"
     config "hexal_forge.mixins.json"
 }
@@ -156,15 +201,33 @@ compileKotlin {
     source(project(":Common").sourceSets.main.kotlin)
 }
 compileTestKotlin {
-    source(project(":Common").sourceSets.main.kotlin)
+    source(project(":Common").sourceSets.test.kotlin)
+}
+
+// This task is here for debugging purposes, running it tells you what directories each sourceSet is setup to look at.
+task printSourceSetInformation(){
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Java Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Kotlin Source directories: "+srcSet.kotlin.srcDirs+"\n"
+            print "-->Resource directories: "+srcSet.resources.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+//            print "-->Compile classpath:\n"
+//            srcSet.compileClasspath.files.each {
+//                print "  "+it.path+"\n"
+//            }
+            println ""
+        }
+    }
 }
 
 
 // https://discord.com/channels/313125603924639766/733055378371117127/980968358658838540
-// > It wint generate a refmap if there are jo changes source files
+// > It won't generate a refmap if there are no changes source files
 // > Since the last build
 // > Gradle task execution avoidance breaks it that way
-// > At one point i got it to work reliably bu forcing some specific task to always run i just don't remember the syntax and which task it was
+// > At one point i got it to work reliably but forcing some specific task to always run i just don't remember the syntax and which task it was
 // > It might have been compileJava
 build {
     println "Forcing re-compile of Java to include refmap"
@@ -178,12 +241,24 @@ build {
 
 sourceSets {
     main.resources.srcDirs += ['src/generated/resources', '../Common/src/generated/resources']
+    test.resources.srcDirs += ['src/generated/resources', '../Common/src/generated/resources', 'src/main/resources', '../Common/src/main/resources']
     main.kotlin.srcDirs += 'src/main/java'
     test.kotlin.srcDirs += 'src/main/java'
+//    main.allJava.srcDirs += 'src/test/java'
+//    main.kotlin.srcDirs += 'src/test/java'
 }
 
 processResources {
     from project(":Common").sourceSets.main.resources
+    inputs.property "version", project.version
+
+    filesMatching("mods.toml") {
+        expand "version": project.version
+    }
+}
+
+processTestResources {
+    from project(":Common").sourceSets.test.resources
     inputs.property "version", project.version
 
     filesMatching("mods.toml") {
