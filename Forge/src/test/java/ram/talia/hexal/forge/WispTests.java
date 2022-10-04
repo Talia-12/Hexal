@@ -5,7 +5,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import ram.talia.hexal.api.HexalAPI;
 
-public class ExampleTests {
+public class WispTests {
 	@GameTest(templateNamespace = HexalAPI.MOD_ID, setupTicks = 40L)
 	public static void basicTickingWispTest (GameTestHelper helper) {
 		HexalAPI.LOGGER.debug("running basic ticking wisp test");
