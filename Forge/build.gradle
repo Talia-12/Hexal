@@ -244,8 +244,6 @@ sourceSets {
     test.resources.srcDirs += ['src/generated/resources', '../Common/src/generated/resources', 'src/main/resources', '../Common/src/main/resources']
     main.kotlin.srcDirs += 'src/main/java'
     test.kotlin.srcDirs += 'src/main/java'
-//    main.allJava.srcDirs += 'src/test/java'
-//    main.kotlin.srcDirs += 'src/test/java'
 }
 
 processResources {

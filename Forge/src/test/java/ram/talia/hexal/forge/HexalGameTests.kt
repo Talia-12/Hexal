@@ -6,16 +6,14 @@ import net.minecraftforge.event.RegisterGameTestsEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import ram.talia.hexal.api.HexalAPI
+import kotlin.io.path.Path
+import kotlin.io.path.absolute
 
 @EventBusSubscriber(modid = HexalAPI.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-object HexalHameTests {
+public object HexalGameTests {
 	@SubscribeEvent
-	fun registerTests(event: RegisterGameTestsEvent) {
-		event.register(HexalGameTests::class.java)
-	}
-
-	@GameTest
-	fun exampleTest(helper: GameTestHelper) {
-		HexalAPI.LOGGER.debug("asdfasdf")
+	public fun registerTests(event: RegisterGameTestsEvent) {
+		HexalAPI.LOGGER.debug("registering tests")
+		event.register(ExampleTests::class.java)
 	}
 }
