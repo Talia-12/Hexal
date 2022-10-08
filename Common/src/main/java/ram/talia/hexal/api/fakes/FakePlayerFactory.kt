@@ -13,7 +13,7 @@ object FakePlayerFactory {
 	private val fakePlayers: MutableMap<GameProfile, FakePlayer> = Maps.newHashMap()
 	private var MINECRAFT_PLAYER: WeakReference<FakePlayer>? = null
 
-	fun getMinecraft(level: ServerLevel): FakePlayer? {
+	fun getMinecraft(level: ServerLevel): FakePlayer {
 		var ret: FakePlayer? = if (MINECRAFT_PLAYER != null) MINECRAFT_PLAYER!!.get() else null
 		if (ret == null) {
 			ret = get(level, MINECRAFT)
@@ -33,6 +33,14 @@ object FakePlayerFactory {
 			fakePlayers[username] = fakePlayer
 		}
 		return fakePlayers[username]!!
+	}
+
+	fun getRandom(level: ServerLevel): FakePlayer {
+		val uuid = UUID.randomUUID()
+		val username = GameProfile(uuid, uuid.toString())
+		val fakePlayer = FakePlayer(level, username)
+		fakePlayers[username] = fakePlayer
+		return fakePlayer
 	}
 
 	// TODO: make sure this gets called when a dimension is unloaded

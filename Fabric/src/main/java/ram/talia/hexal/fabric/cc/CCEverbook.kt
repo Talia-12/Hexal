@@ -7,7 +7,6 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
@@ -18,7 +17,6 @@ import ram.talia.hexal.api.everbook.Everbook
 import ram.talia.hexal.common.network.MsgRemoveEverbookAck
 import ram.talia.hexal.common.network.MsgSendEverbookSyn
 import ram.talia.hexal.common.network.MsgSetEverbookAck
-import ram.talia.hexal.fabric.events.Events
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 import ram.talia.hexal.xplat.IXplatAbstractions
 
