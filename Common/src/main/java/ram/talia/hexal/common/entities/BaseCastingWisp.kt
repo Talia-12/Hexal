@@ -16,7 +16,6 @@ import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
@@ -41,6 +40,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	private var activeTrigger: IWispTrigger? = null
 	private var soundInstance: WispCastingSoundInstance? = null
+
+	var summonedChildThisCast = false
 
 	private var casterUUID: UUID? = null
 	private var cachedCaster: Player? = null
@@ -115,10 +116,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		setPos(pos)
 		this.caster = caster
 		this.media = media
-	}
-
-	open fun getEffectSource(): Entity {
-		return this.caster ?: this
 	}
 
 
@@ -206,9 +203,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>(),
 		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
 	): Boolean {
-		val asdf = !canScheduleCast()
-//		HexalAPI.LOGGER.info("will skip schedule if any of ${level.isClientSide}, ${caster == null}, $asdf are true.")
-		if (level.isClientSide || caster == null || asdf)
+		if (level.isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
 
 		val sPlayer = caster as ServerPlayer

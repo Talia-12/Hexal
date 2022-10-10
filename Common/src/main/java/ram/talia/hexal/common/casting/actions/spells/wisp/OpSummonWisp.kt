@@ -1,10 +1,14 @@
+@file:Suppress("CAST_NEVER_SUCCEEDS", "KotlinConstantConditions")
+
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.mishaps.MishapEvalTooDeep
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
@@ -16,6 +20,11 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
         val pos = args.getChecked<Vec3>(1, argc)
         val media: Double
         val cost: Int
+
+        val mCast = ctx as? MixinCastingContextInterface
+        if (mCast != null && mCast.hasWisp() && mCast.wisp.summonedChildThisCast) // wisps can only summon one child per cast.
+            throw MishapEvalTooDeep()
+
 
         val spell = when (ticking) {
             true -> {
@@ -42,6 +51,11 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
 
     private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<SpellDatum<*>>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
+            // wisps can only summon one child per cast
+            val mCast = ctx as? MixinCastingContextInterface
+            if (mCast != null && mCast.hasWisp())
+                mCast.wisp.summonedChildThisCast = true
+
             val colouriser = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
             val wisp = when (ticking) {
                 true -> TickingWisp(ctx.world, pos, ctx.caster, media)

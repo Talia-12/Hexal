@@ -15,7 +15,7 @@ object OpWispMedia : ConstManaOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null)
+		if (mCast == null || !mCast.hasWisp())
 			throw MishapNoSpellCircle()
 
 		return (mCast.wisp.media.toFloat() / ManaConstants.DUST_UNIT).asSpellResult

@@ -85,7 +85,7 @@ public abstract class MixinCastingHarness {
 	}
 	
 	/**
-	 * Makes it so that when a player executes a pattern, if that pattern is a macro it executes the macro instead.
+	 * Makes it so that when a player executes a pattern, if that pattern is marked as a macro in their Everbook it executes the macro instead.
 	 */
 	@Inject(method = "executeIota",
 					at = @At("HEAD"),

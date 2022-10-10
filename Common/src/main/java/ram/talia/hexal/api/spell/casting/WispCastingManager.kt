@@ -88,13 +88,14 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * Actually executes the cast described in [cast]. Will throw a NullPointerException if it somehow got here with [cast] == null.
 	 */
-	public fun cast(cast: WispCast): WispCastResult {
+	fun cast(cast: WispCast): WispCastResult {
 		val ctx = CastingContext(
 			caster,
 			InteractionHand.MAIN_HAND
 		)
 
 		val wisp = cast.wisp!!
+		wisp.summonedChildThisCast = false // restricts the wisp to only summoning one other wisp per cast.
 
 		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
 		@Suppress("CAST_NEVER_SUCCEEDS")

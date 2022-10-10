@@ -15,7 +15,7 @@ object OpGetMoveTarget : ConstManaOperator {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? MixinCastingContextInterface
 
-		if (mCast == null || mCast.wisp == null || mCast.wisp !is TickingWisp)
+		if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
 			throw MishapNoSpellCircle()
 
 		return (mCast.wisp as TickingWisp).getTargetMovePos().asSpellResult
