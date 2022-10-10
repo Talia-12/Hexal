@@ -20,6 +20,7 @@ import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,6 +60,18 @@ public class EverbookEventHandler {
 			return;
 		everbooks.get(player.getUUID()).removeIota(key);
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgRemoveEverbookAck(key));
+	}
+	
+	public static List<SpellDatum<?>> getMacro (ServerPlayer player, HexPattern key) {
+		if (everbooks.get(player.getUUID()) == null)
+			return List.of();
+		return everbooks.get(player.getUUID()).getMacro(key, player.getLevel());
+	}
+	
+	public static void toggleMacro (ServerPlayer player, HexPattern key) {
+		if (everbooks.get(player.getUUID()) == null)
+			return;
+		everbooks.get(player.getUUID()).toggleMacro(key);
 	}
 	
 	@SubscribeEvent

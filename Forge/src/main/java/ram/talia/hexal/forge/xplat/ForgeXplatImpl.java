@@ -20,6 +20,8 @@ import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+import java.util.List;
+
 public class ForgeXplatImpl implements IXplatAbstractions {
 	
 	@Override
@@ -84,5 +86,15 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	@Override
 	public void setFullEverbook (ServerPlayer player, Everbook everbook) {
 		EverbookEventHandler.setEverbook(player, everbook);
+	}
+	
+	@Override
+	public List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key) {
+		return EverbookEventHandler.getMacro(player, key);
+	}
+	
+	@Override
+	public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
+		EverbookEventHandler.toggleMacro(player, key);
 	}
 }

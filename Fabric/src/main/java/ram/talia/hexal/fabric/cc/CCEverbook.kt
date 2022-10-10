@@ -65,6 +65,10 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgRemoveEverbookAck(key))
 	}
 
+	fun getMacro(key: HexPattern, level: ServerLevel) = everbook?.getMacro(key, level)
+
+	fun toggleMacro(key: HexPattern) = everbook?.toggleMacro(key)
+
 	fun setClientIota(key: HexPattern, iota: CompoundTag) = everbook!!.setIota(key, iota)
 	fun removeClientIota(key: HexPattern) = everbook!!.removeIota(key)
 

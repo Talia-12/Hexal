@@ -13,6 +13,7 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
@@ -46,10 +47,14 @@ public interface IXplatAbstractions {
     
     SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key);
     void setEverbookIota(ServerPlayer player, HexPattern key, SpellDatum<?> iota);
-    void setFullEverbook(ServerPlayer player, Everbook everbook);
     
     void removeEverbookIota(ServerPlayer player, HexPattern key);
     
+    void setFullEverbook(ServerPlayer player, Everbook everbook);
+    
+    List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key);
+    
+    void toggleEverbookMacro (ServerPlayer player, HexPattern key);
     
     // Blocks
 

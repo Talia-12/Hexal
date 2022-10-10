@@ -3,7 +3,10 @@ package ram.talia.hexal.api.everbook
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
+import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.toCompoundTagList
 
@@ -13,12 +16,13 @@ import ram.talia.hexal.api.spell.toCompoundTagList
 class MacroHolder(val everbook: Everbook) {
 	private val macros: MutableMap<String, List<CompoundTag>?> = mutableMapOf()
 
-	constructor(everbook: Everbook, macros: MutableMap<String, List<CompoundTag>?>) : this(everbook) {
-		this.macros.putAll(macros)
+	constructor(everbook: Everbook, macros: List<String>) : this(everbook) {
+		macros.forEach { this.macros[it] = listOf() }
+		recalcMacros()
 	}
 
-	fun getMacro(key: HexPattern): List<CompoundTag>? {
-		return macros[getKey(key)]
+	fun getMacro(key: HexPattern, level: ServerLevel): List<SpellDatum<*>>? {
+		return macros[getKey(key)]?.map { SpellDatum.fromNBT(it, level) }
 	}
 
 	fun isMacro(key: HexPattern): Boolean {
@@ -133,5 +137,13 @@ class MacroHolder(val everbook: Everbook) {
 		val angles = key.anglesSignature()
 		// Bookkeepers: - contains no angle characters, so can't occur any way other than this
 		return angles.ifEmpty { "empty" }
+	}
+
+	fun serialiseToNBT(): ListTag {
+		val tag = ListTag()
+
+		macros.forEach { (key, _) -> tag.add(StringTag.valueOf(key)) }
+
+		return tag
 	}
 }

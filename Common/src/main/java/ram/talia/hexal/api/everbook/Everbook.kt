@@ -3,10 +3,12 @@ package ram.talia.hexal.api.everbook
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.api.utils.asCompound
-import at.petrak.hexcasting.api.utils.hasCompound
+import at.petrak.hexcasting.api.utils.*
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.StringTag
+import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
 import java.util.UUID
@@ -16,14 +18,18 @@ import java.util.UUID
  * a packet will be sent to their client which will save the file representation of their Everbook. When a player joins the world their Everbook will be loaded by their
  * client and sent to the server. Takes in a player's [UUID] to randomise the file content with.
  */
-class Everbook(val uuid: UUID) {
+class Everbook(val uuid: UUID,
+							 private val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf(),
+							 macros: List<String> = listOf()) {
+
+	// Java apparently can't figure out the default values thing.
+	constructor(uuid: UUID) : this(uuid, mutableMapOf(), listOf()) {}
+
 	private val everbookEncrypterDecrypter = FileEncrypterDecrypter(FileEncrypterDecrypter.getKey(uuid, "AES"), "AES/CBC/PKCS5Padding")
 
-	private val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf()
+	// private val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf()
 
-	constructor(uuid: UUID, entries: MutableMap<String, Pair<HexPattern, CompoundTag>>) : this(uuid) {
-		this.entries.putAll(entries)
-	}
+	private val macroHolder: MacroHolder = MacroHolder(this, macros)
 
 	fun getIota(key: HexPattern, level: ServerLevel): SpellDatum<*> {
 		val entry = entries[getKey(key)]
@@ -37,13 +43,33 @@ class Everbook(val uuid: UUID) {
 
 	fun setIota(key: HexPattern, iota: SpellDatum<*>) {
 		entries[getKey(key)] = Pair(key, iota.serializeToNBT())
+
+		if (macroHolder.isMacro(key))
+			macroHolder.recalcMacros()
 	}
 
 	fun setIota(key: HexPattern, iota: CompoundTag) {
 		entries[getKey(key)] = Pair(key, iota)
+
+		if (macroHolder.isMacro(key))
+			macroHolder.recalcMacros()
 	}
 
-	fun removeIota(key: HexPattern) = entries.remove(getKey(key))
+	fun removeIota(key: HexPattern) {
+		entries.remove(getKey(key))
+
+		if (macroHolder.isMacro(key))
+			macroHolder.recalcMacros()
+	}
+
+	fun getMacro(key: HexPattern, level: ServerLevel) = macroHolder.getMacro(key, level)
+
+	fun toggleMacro(key: HexPattern) {
+		if (macroHolder.isMacro(key))
+			macroHolder.deleteMacro(key)
+		else
+			macroHolder.setMacro(key)
+	}
 
 	fun getKey(index: Int): HexPattern? {
 		if (index >= entries.size || index < 0)
@@ -61,6 +87,7 @@ class Everbook(val uuid: UUID) {
 	fun serialiseToNBT(): CompoundTag {
 		val tag = CompoundTag()
 		tag.putUUID(TAG_UUID, uuid)
+		tag.putList(TAG_MACROS, macroHolder.serialiseToNBT())
 		entries.forEach { (key, pair) ->
 			val pairCompound = CompoundTag()
 			pairCompound.put(TAG_PATTERN, pair.first.serializeToNBT())
@@ -84,6 +111,7 @@ class Everbook(val uuid: UUID) {
 
 	companion object {
 		const val TAG_UUID = "uuid"
+		const val TAG_MACROS = "macros"
 		const val TAG_PATTERN = "pattern"
 		const val TAG_IOTA = "iota"
 
@@ -92,14 +120,16 @@ class Everbook(val uuid: UUID) {
 			val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf()
 
 			tag.allKeys.forEach {
-				if (it.equals(TAG_UUID))
+				if (it.equals(TAG_UUID) || it.equals(TAG_MACROS))
 					return@forEach
 				val pairCompound = tag.getCompound(it)
 				if (pairCompound.hasCompound(TAG_PATTERN) && pairCompound.hasCompound(TAG_IOTA))
 					entries[it] = Pair(HexPattern.fromNBT(pairCompound.getCompound(TAG_PATTERN)), pairCompound.getCompound(TAG_IOTA))
 			}
 
-			return Everbook(tag.getUUID(TAG_UUID), entries)
+			val macros = if (tag.hasList(TAG_MACROS)) tag.getList(TAG_MACROS, Tag.TAG_STRING).map { (it as StringTag).asString } else listOf()
+
+			return Everbook(tag.getUUID(TAG_UUID), entries, macros)
 		}
 
 		@JvmStatic

@@ -16,6 +16,8 @@ import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+import java.util.List;
+
 public class FabricXplatImpl implements IXplatAbstractions {
 //    @Override
 //    public Platform platform() {
@@ -98,13 +100,23 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
     
     @Override
+    public void removeEverbookIota (ServerPlayer player, HexPattern key) {
+        HexalCardinalComponents.EVERBOOK.get(player).removeIota(key);
+    }
+    
+    @Override
     public void setFullEverbook (ServerPlayer player, Everbook everbook) {
         HexalCardinalComponents.EVERBOOK.get(player).setFullEverbook(everbook);
     }
     
     @Override
-    public void removeEverbookIota (ServerPlayer player, HexPattern key) {
-        HexalCardinalComponents.EVERBOOK.get(player).removeIota(key);
+    public List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key) {
+        return HexalCardinalComponents.EVERBOOK.get(player).getMacro(key, player.getLevel());
+    }
+    
+    @Override
+    public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
+        HexalCardinalComponents.EVERBOOK.get(player).toggleMacro(key);
     }
     
     //    @Override
