@@ -45,6 +45,8 @@ public abstract class MixinCastingHarness {
 			
 			if (!ctxi.hasWisp())
 				return sideEffects.add(particles);
+			else
+				return false;
 		}
 		
 		return sideEffects.add((OperatorSideEffect) o);
