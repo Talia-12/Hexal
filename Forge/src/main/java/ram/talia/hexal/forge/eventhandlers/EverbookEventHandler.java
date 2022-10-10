@@ -12,13 +12,11 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.common.network.MsgRemoveEverbookAck;
 import ram.talia.hexal.common.network.MsgSendEverbookSyn;
 import ram.talia.hexal.common.network.MsgSetEverbookAck;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
-import ram.talia.hexal.xplat.IClientXplatAbstractions;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.HashMap;

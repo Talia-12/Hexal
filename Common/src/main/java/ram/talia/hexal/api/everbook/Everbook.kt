@@ -12,7 +12,7 @@ import ram.talia.hexal.api.HexalAPI
 import java.util.UUID
 
 /**
- * In a similar vein to [ram.talia.hexal.api.spell.casting.WispCastingManager], once instance of this class will be created per player; when that player leaves the world
+ * In a similar vein to [ram.talia.hexal.api.spell.casting.WispCastingManager], one instance of this class will be created per player; when that player leaves the world
  * a packet will be sent to their client which will save the file representation of their Everbook. When a player joins the world their Everbook will be loaded by their
  * client and sent to the server. Takes in a player's [UUID] to randomise the file content with.
  */
@@ -28,6 +28,11 @@ class Everbook(val uuid: UUID) {
 	fun getIota(key: HexPattern, level: ServerLevel): SpellDatum<*> {
 		val entry = entries[getKey(key)]
 		return if (entry == null) SpellDatum.make(Widget.NULL) else SpellDatum.fromNBT(entry.second, level)
+	}
+
+	internal fun getIota(key: String) : CompoundTag {
+		val entry = entries[key]
+		return entry?.second ?: CompoundTag()
 	}
 
 	fun setIota(key: HexPattern, iota: SpellDatum<*>) {
@@ -50,7 +55,7 @@ class Everbook(val uuid: UUID) {
 	private fun getKey(key: HexPattern): String {
 		val angles = key.anglesSignature()
 		// Bookkeepers: - contains no angle characters, so can't occur any way other than this
-		return if (angles.isEmpty()) "empty"  else angles
+		return angles.ifEmpty { "empty" }
 	}
 
 	fun serialiseToNBT(): CompoundTag {
