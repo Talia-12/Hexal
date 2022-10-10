@@ -14,8 +14,6 @@ import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler
 import java.util.*
 
 data class MsgPlayerRemoveRenderLinkAck(val playerUUID: UUID, val renderLinkTag: CompoundTag) : IMessage {
-	public val ID: ResourceLocation = modLoc("rrelink")
-
 	override fun getFabricId() = ID
 
 	override fun serialize(buf: FriendlyByteBuf) {
@@ -27,6 +25,8 @@ data class MsgPlayerRemoveRenderLinkAck(val playerUUID: UUID, val renderLinkTag:
 	}
 
 	companion object {
+		val ID: ResourceLocation = modLoc("rrelink")
+
 		const val TAG_RENDER_LINK = "render_link"
 
 		@JvmStatic
