@@ -16,6 +16,7 @@ import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.common.network.MsgRemoveEverbookAck;
 import ram.talia.hexal.common.network.MsgSendEverbookSyn;
 import ram.talia.hexal.common.network.MsgSetEverbookAck;
+import ram.talia.hexal.common.network.MsgToggleMacroAck;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -72,6 +73,7 @@ public class EverbookEventHandler {
 		if (everbooks.get(player.getUUID()) == null)
 			return;
 		everbooks.get(player.getUUID()).toggleMacro(key);
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroAck(key));
 	}
 	
 	@SubscribeEvent

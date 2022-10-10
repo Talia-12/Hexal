@@ -18,6 +18,8 @@ import java.util.function.UnaryOperator
 class EverbookPatternComponent : AbstractPatternComponent() {
 	@Transient
 	var indexNum: Int = -1
+	@Transient
+	var isMacro = false
 
 	override fun build(x: Int, y: Int, pagenum: Int) {
 		super.build(x, y, pagenum)
@@ -25,9 +27,11 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 	}
 
 	override fun getPatterns(lookup: UnaryOperator<IVariable>): List<Pair<HexPattern, HexCoord>> {
-		val pattern: HexPattern? = IClientXplatAbstractions.INSTANCE.getClientEverbookPattern(indexNum)
+		val pattern: HexPattern = IClientXplatAbstractions.INSTANCE.getClientEverbookPattern(indexNum) ?: return listOf()
 
-		return if (pattern != null) listOf(Pair(pattern, HexCoord.Origin)) else listOf()
+		isMacro = IClientXplatAbstractions.INSTANCE.isClientEverbookMacro(pattern)
+
+		return listOf(Pair(pattern, HexCoord.Origin))
 	}
 
 	override fun onDisplayed(context: IComponentRenderContext) {
@@ -38,7 +42,9 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		poseStack.pushPose()
 		poseStack.translate(HEADER_X.toDouble(), HEADER_Y.toDouble(), 0.0)
 
-		drawCenteredStringNoShadow(poseStack, "hexal.everbook_pattern_entry.header".asTranslatedComponent(indexNum), 0, 0, 0)
+		val component = (if (isMacro) "hexal.everbook_pattern_entry.macro_header" else "hexal.everbook_pattern_entry.header").asTranslatedComponent(indexNum)
+
+		drawCenteredStringNoShadow(poseStack, component, 0, 0, 0)
 
 		poseStack.popPose()
 

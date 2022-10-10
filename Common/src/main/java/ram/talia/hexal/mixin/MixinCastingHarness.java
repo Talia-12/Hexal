@@ -91,20 +91,22 @@ public abstract class MixinCastingHarness {
 					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					remap = false)
 	private void executeIotaMacro (SpellDatum<?> iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
-		if (this.getCtx().getSpellCircle() != null || ((MixinCastingContextInterface) ((Object) this.getCtx())).hasWisp() || this.escapeNext)
+		CastingHarness harness = (CastingHarness) (Object) this;
+		CastingContext ctx = harness.getCtx();
+		
+		// only work if the caster's enlightened, the caster is staff-casting, and they haven't escaped this pattern
+		// (meaning you can get a copy of the pattern to mark it as not a macro again)
+		if (!ctx.isCasterEnlightened() || ctx.getSpellCircle() != null || ((MixinCastingContextInterface) (Object) ctx).hasWisp() || this.escapeNext)
 			return;
 		
 		if (iota.getType() != DatumType.PATTERN)
 			return;
 		
 		HexPattern pattern = (HexPattern) iota.getPayload();
+		List<SpellDatum<?>> iotas = IXplatAbstractions.INSTANCE.getEverbookMacro(ctx.getCaster(), pattern);
 			
-			var ret = this.executeIotas(IXplatAbstractions.INSTANCE.getEverbookMacro(this.getCtx().getCaster(), pattern), world);
-			
-			cir.setReturnValue(ret);
+		var ret = harness.executeIotas(iotas == null ? List.of(iota) : iotas, world);
+
+		cir.setReturnValue(ret);
 	}
-	
-	abstract ControllerInfo executeIotas (List<SpellDatum<?>> iotas, ServerLevel world);
-	
-	abstract CastingContext getCtx ();
 }

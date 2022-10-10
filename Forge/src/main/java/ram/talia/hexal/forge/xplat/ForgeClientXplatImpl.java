@@ -70,11 +70,17 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	
 	@Override
 	public void setClientEverbookIota (HexPattern key, CompoundTag iota) {
+		if (EverbookEventHandler.localEverbook == null)
+			return;
+		
 		EverbookEventHandler.localEverbook.setIota(key, iota);
 	}
 	
 	@Override
 	public void removeClientEverbookIota (HexPattern key) {
+		if (EverbookEventHandler.localEverbook == null)
+			return;
+			
 		EverbookEventHandler.localEverbook.removeIota(key);
 	}
 	
@@ -84,6 +90,19 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 			return null;
 		
 		return EverbookEventHandler.localEverbook.getKey(index);
+	}
+	
+	@Override
+	public void toggleClientEverbookMacro (HexPattern key) {
+		if (EverbookEventHandler.localEverbook == null)
+			return;
+		
+		EverbookEventHandler.localEverbook.toggleMacro(key);
+	}
+	
+	@Override
+	public boolean isClientEverbookMacro (HexPattern key) {
+		return EverbookEventHandler.localEverbook.isMacro(key);
 	}
 	
 	@Override

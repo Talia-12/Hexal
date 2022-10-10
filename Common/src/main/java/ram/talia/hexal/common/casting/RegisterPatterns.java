@@ -10,6 +10,7 @@ import ram.talia.hexal.common.casting.actions.*;
 import ram.talia.hexal.common.casting.actions.everbook.OpEverbookDelete;
 import ram.talia.hexal.common.casting.actions.everbook.OpEverbookRead;
 import ram.talia.hexal.common.casting.actions.everbook.OpEverbookWrite;
+import ram.talia.hexal.common.casting.actions.everbook.OpToggleMacro;
 import ram.talia.hexal.common.casting.actions.spells.OpFallingBlock;
 import ram.talia.hexal.common.casting.actions.spells.OpFreeze;
 import ram.talia.hexal.common.casting.actions.spells.OpSmelt;
@@ -64,6 +65,9 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("qwqqqwqaww", HexDir.SOUTH_EAST),
 																 modLoc("everbook/delete"),
 																 OpEverbookDelete.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("eweeewedww", HexDir.SOUTH_WEST),
+																 modLoc("everbook/toggle_macro"),
+																 OpToggleMacro.INSTANCE);
 			
 			// ============================== Misc Spells =====================================
 			

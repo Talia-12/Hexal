@@ -10,10 +10,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.network.ServerGamePacketListenerImpl
 import org.apache.logging.log4j.util.TriConsumer
-import ram.talia.hexal.common.network.MsgRemoveEverbookAck
-import ram.talia.hexal.common.network.MsgSendEverbookSyn
-import ram.talia.hexal.common.network.MsgSetEverbookAck
-import ram.talia.hexal.common.network.MsgWispCastSoundAck
+import ram.talia.hexal.common.network.*
 import java.util.function.Consumer
 import java.util.function.Function
 
@@ -34,6 +31,7 @@ object FabricPacketHandler {
 	fun initClientBound() {
 		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler((MsgSetEverbookAck)::deserialise, (MsgSetEverbookAck)::handle));
 		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler((MsgRemoveEverbookAck)::deserialise, (MsgRemoveEverbookAck)::handle));
+		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler((MsgToggleMacroAck)::deserialise, (MsgToggleMacroAck)::handle));
 		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler((MsgWispCastSoundAck)::deserialise, (MsgWispCastSoundAck)::handle));
 	}
 

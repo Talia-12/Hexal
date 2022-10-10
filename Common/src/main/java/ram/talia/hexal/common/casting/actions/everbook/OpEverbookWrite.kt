@@ -16,6 +16,10 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpEverbookWrite : ConstManaOperator {
 	override val argc = 2
 
+	override val isGreat = true
+	override val alwaysProcessGreatSpell = false
+	override val causesBlindDiversion = false
+
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
 		val pos = BlockPos(args.getChecked<Vec3>(0, argc))
 		val key = args.getChecked<HexPattern>(1, argc)

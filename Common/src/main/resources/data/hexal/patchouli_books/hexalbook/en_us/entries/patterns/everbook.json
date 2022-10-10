@@ -33,6 +33,18 @@
       "input": "pattern",
       "output": "",
       "text": "hexal.page.everbook.everbook/delete"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:everbook/toggle_macro",
+      "anchor": "hexal:everbook/toggle_macro",
+      "input": "pattern",
+      "output": "",
+      "text": "hexal.page.everbook.everbook/toggle_macro.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.everbook.everbook/toggle_macro.1"
     }
   ]
 }

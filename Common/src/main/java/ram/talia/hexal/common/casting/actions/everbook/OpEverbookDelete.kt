@@ -10,6 +10,9 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpEverbookDelete : ConstManaOperator {
 	override val argc = 1
 
+	override val isGreat = true
+	override val alwaysProcessGreatSpell = false
+	override val causesBlindDiversion = false
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
 		val key = args.getChecked<HexPattern>(0, argc)
 

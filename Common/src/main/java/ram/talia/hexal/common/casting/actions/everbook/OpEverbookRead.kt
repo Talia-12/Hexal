@@ -20,8 +20,8 @@ object OpEverbookRead : SpellOperator {
 	override val causesBlindDiversion = false
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		val pos = BlockPos(args.getChecked<Vec3>(0, OpEverbookDelete.argc))
-		val key = args.getChecked<HexPattern>(1, OpEverbookDelete.argc)
+		val pos = BlockPos(args.getChecked<Vec3>(0, argc))
+		val key = args.getChecked<HexPattern>(1, argc)
 
 		ctx.assertVecInRange(Vec3.atCenterOf(pos))
 

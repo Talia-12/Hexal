@@ -64,6 +64,8 @@ class Everbook(val uuid: UUID,
 
 	fun getMacro(key: HexPattern, level: ServerLevel) = macroHolder.getMacro(key, level)
 
+	fun isMacro(key: HexPattern) = macroHolder.isMacro(key)
+
 	fun toggleMacro(key: HexPattern) {
 		if (macroHolder.isMacro(key))
 			macroHolder.deleteMacro(key)

@@ -13,9 +13,10 @@
   "hexcasting.spell.hexal:health": "Nurse's Purification",
   "hexcasting.spell.hexal:light_level": "Lamplighter's Purification",
 
-  "hexcasting.spell.hexal:everbook/read": "Restoration Gambit",
-  "hexcasting.spell.hexal:everbook/write": "Preservation Gambit",
-  "hexcasting.spell.hexal:everbook/delete": "Obsoletion Gambit",
+  "hexcasting.spell.hexal:everbook/read": "Mnemosyne's Gambit",
+  "hexcasting.spell.hexal:everbook/write": "Elysium's Gambit",
+  "hexcasting.spell.hexal:everbook/delete": "Lethe's Gambit",
+  "hexcasting.spell.hexal:everbook/toggle_macro": "Brigh's Gambit",
 
   "hexcasting.spell.hexal:smelt": "Smelt",
   "hexcasting.spell.hexal:freeze": "Freeze",
@@ -126,9 +127,12 @@
   "hexal.page.everbook.everbook/read": "Takes the position of an $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$, as well as a Pattern as a key, and retrieves the iota at that key from your Everbook, storing it in the given $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$ if able.",
   "hexal.page.everbook.everbook/write": "Takes the position of an $(l:hexcasting:greatwork/akashiclib)$(item)Akashic Record/$, as well as a Pattern as a key, and stores the iota in that record at that key to your Everbook at the same key.",
   "hexal.page.everbook.everbook/delete": "Takes a pattern and removes the entry with that pattern key from your Everbook.",
+  "hexal.page.everbook.everbook/toggle_macro.0": "Takes a pattern and marks that entry of your Everbook as a Pattern that when drawn by your hand will be treated as any other of Nature's patterns.",
+  "hexal.page.everbook.everbook/toggle_macro.1": "When you draw the key of an Everbook entry that has been marked as a Pattern, if that entry is a list Nature will execute each element of the list as it would with $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$, though it does not use up an evaluation. Attempting to mark an entry as a Pattern if it is non-existent or infinitely recursive will fail.",
 
   "hexal.entry.everbook_entries": "Everbook Entries",
   "hexal.page.everbook_entries.0": "Every page in this entry displays the pattern key for one of the entries of your $(l:hexal:patterns/everbook)$(action)Everbook/$.",
 
-  "hexal.everbook_pattern_entry.header": "Stored Key: %d"
+  "hexal.everbook_pattern_entry.header": "Stored Key: %d",
+  "hexal.everbook_pattern_entry.macro_header": "Macro Key: %d"
 }

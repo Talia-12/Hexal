@@ -69,6 +69,8 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 
 	fun toggleMacro(key: HexPattern) = everbook?.toggleMacro(key)
 
+	fun isMacro(key: HexPattern) = everbook?.isMacro(key)
+
 	fun setClientIota(key: HexPattern, iota: CompoundTag) = everbook!!.setIota(key, iota)
 	fun removeClientIota(key: HexPattern) = everbook!!.removeIota(key)
 

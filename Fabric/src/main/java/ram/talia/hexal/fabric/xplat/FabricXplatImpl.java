@@ -13,6 +13,7 @@ import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.common.network.MsgToggleMacroAck;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -117,6 +118,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     @Override
     public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
         HexalCardinalComponents.EVERBOOK.get(player).toggleMacro(key);
+        IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroAck(key));
     }
     
     //    @Override

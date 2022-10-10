@@ -110,6 +110,18 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 	}
 	
 	@Override
+	public void toggleClientEverbookMacro (HexPattern key) {
+		assert Minecraft.getInstance().player != null;
+		HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).toggleMacro(key);
+	}
+	
+	@Override
+	public boolean isClientEverbookMacro (HexPattern key) {
+		assert Minecraft.getInstance().player != null;
+		return Boolean.TRUE.equals(HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).isMacro(key));
+	}
+	
+	@Override
 	public void setFilterSave (AbstractTexture texture, boolean filter, boolean mipmap) {
 		((ExtendedTexture) texture).setFilterSave(filter, mipmap);
 	}
