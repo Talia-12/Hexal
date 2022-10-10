@@ -64,6 +64,11 @@ interface ILinkable<T : ILinkable<T>> {
 	interface IRenderCentre {
 		fun renderCentre(other: IRenderCentre, recursioning: Boolean = true): Vec3 // recursioning to stop a player linked to a player causing an infinite loop
 
+		/**
+		 * Set to true if the link should be removed, e.g. the [IRenderCentre] has been discarded.
+		 */
+		fun shouldRemove(): Boolean
+
 		fun colouriser(): FrozenColorizer
 
 		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>

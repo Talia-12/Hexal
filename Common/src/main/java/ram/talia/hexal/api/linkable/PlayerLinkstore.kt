@@ -39,13 +39,6 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	private val lazyRenderLinks: ILinkable.LazyILinkableList = ILinkable.LazyILinkableList(player.level as ServerLevel)
 
-	private fun syncRenderLinks() {
-		val compound = CompoundTag()
-		compound.put(TAG_RENDER_LINKS, lazyRenderLinks.get().map { LinkableRegistry.wrapSync(it) }.toNbtList())
-
-		// need to actually send this compound somewhere (ugh networking)
-		// TODO("not implemented yet")
-	}
 
 	private fun addRenderLink(other: ILinkable<*>) {
 		renderLinks.add(other)
@@ -160,6 +153,8 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 				return player.eyePosition
 			return player.eyePosition + (other.renderCentre(this, false) - player.eyePosition).normalize()
 		}
+
+		override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
 		override fun colouriser() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(player)
 

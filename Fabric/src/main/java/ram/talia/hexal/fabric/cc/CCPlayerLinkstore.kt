@@ -1,11 +1,9 @@
 package ram.talia.hexal.fabric.cc
 
-import at.petrak.hexcasting.xplat.IXplatAbstractions
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
 import net.minecraft.client.multiplayer.ClientLevel
-import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.network.FriendlyByteBuf
@@ -41,8 +39,17 @@ public class CCPlayerLinkstore(private val player: Player) : ServerTickingCompon
 		linkstore!!.pruneLinks()
 	}
 
-	override fun clientTick()
-		= renderLinks.forEach { playLinkParticles(ownerRenderCentre!!, it, player.random, player.level) }
+	override fun clientTick() {
+		val iter = renderLinks.iterator()
+
+		while (iter.hasNext()) {
+			val other = iter.next()
+			if (other.shouldRemove())
+				iter.remove()
+			else
+				playLinkParticles(ownerRenderCentre!!, other, player.random, player.level)
+		}
+	}
 
 	override fun readFromNbt(tag: CompoundTag) {
 		linkstore?.loadAdditionalData(tag)

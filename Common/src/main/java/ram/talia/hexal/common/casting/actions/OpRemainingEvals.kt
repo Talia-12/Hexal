@@ -10,6 +10,7 @@ object OpRemainingEvals : ConstManaOperator {
 	override val argc = 0
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
+		@Suppress("KotlinConstantConditions")
 		return (ctx as? MixinCastingContextInterface)?.remainingDepth()?.asSpellResult ?: (-1).asSpellResult
 	}
 }

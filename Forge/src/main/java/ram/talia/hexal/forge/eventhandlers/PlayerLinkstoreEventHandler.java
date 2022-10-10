@@ -122,12 +122,21 @@ public class PlayerLinkstoreEventHandler {
 		if (!player.level.isClientSide)
 			throw new Exception("PlayerLinkstoreEventHander.clientTick can only be called on the client"); // TODO
 		
-		var ownerRenderCentre = new PlayerLinkstore.RenderCentre(player);
-		var theseLinks = getRenderLinks(player);
+		// TODO: check if other players links on a server actually render, not sure if there is only a client player tick for your player.
+		
+		final var ownerRenderCentre = new PlayerLinkstore.RenderCentre(player);
+		final var theseLinks = getRenderLinks(player);
 		if (theseLinks == null)
 			return;
-		for (var link : theseLinks) {
-			RenderHelperKt.playLinkParticles(ownerRenderCentre, link, player.getRandom(), player.level);
+		
+		final var iter = theseLinks.iterator();
+		
+		while (iter.hasNext()) {
+			var link = iter.next();
+			if (link.shouldRemove())
+				iter.remove();
+			else
+				RenderHelperKt.playLinkParticles(ownerRenderCentre, link, player.getRandom(), player.level);
 		}
 	}
 }
