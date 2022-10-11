@@ -9,13 +9,13 @@ import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.spell.toIotaList
 import ram.talia.hexal.api.spell.toNbtList
 
-class LazyIota(val level: ServerLevel): LazyLoad<SpellDatum<*>, CompoundTag>(Either.left(SpellDatum.make(Widget.NULL))) {
+class LazyIota(val level: ServerLevel): LazyLoad<SpellDatum<*>, CompoundTag>(SpellDatum.make(Widget.NULL)) {
 	override fun load(unloaded: CompoundTag) = SpellDatum.Companion.fromNBT(unloaded, level)
 	override fun unload(loaded: SpellDatum<*>) = loaded.serializeToNBT()
 	override fun get(): SpellDatum<*> = super.get()!!
 }
 
-class LazyIotaList(val level: ServerLevel): LazyLoad<MutableList<SpellDatum<*>>, ListTag>(Either.left(mutableListOf())) {
+class LazyIotaList(val level: ServerLevel): LazyLoad<MutableList<SpellDatum<*>>, ListTag>(mutableListOf()) {
 	override fun load(unloaded: ListTag) = unloaded.toIotaList(level)
 	override fun unload(loaded: MutableList<SpellDatum<*>>) = loaded.toNbtList()
 	override fun get(): MutableList<SpellDatum<*>> = super.get()!!

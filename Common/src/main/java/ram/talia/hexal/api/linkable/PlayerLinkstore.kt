@@ -65,6 +65,32 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 		}
 	}
 
+	//region Transmitting
+	var transmittingTo: ILinkable<*>?
+		get() {
+			val it = lazyTransmittingTo.get() ?: return null
+
+			if (isInRange(it)) return it
+			resetTransmittingTo() // if it isn't in range stop transmitting to it
+			return null
+		}
+		private set(value) = lazyTransmittingTo.set(value)
+	private val lazyTransmittingTo: ILinkable.LazyILinkable = ILinkable.LazyILinkable(player.level as ServerLevel)
+
+	fun setTransmittingTo(to: Int) {
+		if (to >= numLinked()) {
+			resetTransmittingTo()
+			return
+		}
+
+		transmittingTo = getLinked(to)
+	}
+
+	fun resetTransmittingTo() {
+		transmittingTo = null;
+	}
+	//endregion
+
 	override fun get() = this
 
 	override fun maxSqrLinkRange() = Operator.MAX_DISTANCE * Operator.MAX_DISTANCE
@@ -139,12 +165,17 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 			null -> lazyReceivedIotas.set(mutableListOf())
 			else -> lazyReceivedIotas.set(receivedIotaTag)
 		}
+		when (val transmittingToTag = tag.get(TAG_TRANSMITTING_TO) as? CompoundTag) {
+			null -> lazyTransmittingTo.set(null)
+			else -> lazyTransmittingTo.set(transmittingToTag)
+		}
 	}
 
 	fun saveAdditionalData(tag: CompoundTag) {
 		tag.put(TAG_LINKS, lazyLinked.getUnloaded())
 		tag.put(TAG_RENDER_LINKS, lazyRenderLinks.getUnloaded())
 		tag.put(TAG_RECEIVED_IOTAS, lazyReceivedIotas.getUnloaded())
+		tag.put(TAG_TRANSMITTING_TO, lazyTransmittingTo.getUnloaded())
 	}
 
 	class RenderCentre(val player: Player) : ILinkable.IRenderCentre {
@@ -165,6 +196,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 		const val TAG_LINKS = "links"
 		const val TAG_RENDER_LINKS = "render_links"
 		const val TAG_RECEIVED_IOTAS = "received_iotas"
+		const val TAG_TRANSMITTING_TO = "transmitting_to"
 	}
 
 	override fun toString() = "PlayerLinkstore(player=$player)"

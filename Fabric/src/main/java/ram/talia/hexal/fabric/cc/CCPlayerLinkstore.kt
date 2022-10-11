@@ -26,8 +26,6 @@ public class CCPlayerLinkstore(private val player: Player) : ServerTickingCompon
 	private val renderLinksToAdd: MutableList<ILinkable<*>> = mutableListOf()
 	private val renderLinksToRemove: MutableList<ILinkable<*>> = mutableListOf()
 
-	private var transmittingTo: ILinkable<*>? = null
-
 	fun addRenderLink(link: ILinkable<*>) {
 		renderLinksToAdd.add(link)
 		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
@@ -37,30 +35,13 @@ public class CCPlayerLinkstore(private val player: Player) : ServerTickingCompon
 		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
 	}
 
-	fun getTransmittingTo(): ILinkable<*>? {
-		if (transmittingTo == null) return null
+	fun getTransmittingTo() = linkstore!!.transmittingTo
 
-		if (linkstore!!.isInRange(transmittingTo!!)) return transmittingTo
-		resetTransmittingTo()
-		return null
-	}
+	fun setTransmittingTo(to: Int) = linkstore!!.setTransmittingTo(to)
 
-	fun setTransmittingTo(to: Int) {
-		if (to >= linkstore!!.numLinked()) {
-			resetTransmittingTo()
-			return
-		}
+	fun resetTransmittingTo() = linkstore!!.resetTransmittingTo()
 
-		transmittingTo = linkstore.getLinked(to)
-	}
-
-	fun resetTransmittingTo() {
-		transmittingTo = null;
-	}
-
-	override fun serverTick() {
-		linkstore!!.pruneLinks()
-	}
+	override fun serverTick() = linkstore!!.pruneLinks()
 
 	override fun clientTick() {
 		val iter = renderLinks.iterator()

@@ -2,11 +2,9 @@ package ram.talia.hexal.mixin;
 
 import at.petrak.hexcasting.api.spell.DatumType;
 import at.petrak.hexcasting.api.spell.SpellDatum;
-import at.petrak.hexcasting.api.spell.casting.CastingContext;
-import at.petrak.hexcasting.api.spell.casting.CastingHarness;
-import at.petrak.hexcasting.api.spell.casting.ControllerInfo;
-import at.petrak.hexcasting.api.spell.casting.OperatorSideEffect;
+import at.petrak.hexcasting.api.spell.casting.*;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.casting.actions.spells.link.OpCloseTransmit;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
@@ -119,15 +116,18 @@ public abstract class MixinCastingHarness {
 		
 		// sends the iotas straight to the Linkable that the player is forwarding iotas to, if it exists
 		var transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());
-		if (transmittingTo != null) {
+		boolean transmitting = transmittingTo != null;
+		if (transmitting) {
 			var iter = toExecute.iterator();
 			
 			while (iter.hasNext()) {
 				var it = iter.next();
 				
 				// if the current iota is an OpCloseTransmit, break so that Action can be processed by the player's handler.
-				if (it.getType() == DatumType.PATTERN && it.getPayload().equals(OpCloseTransmit.PATTERN))
+				if (it.getType() == DatumType.PATTERN && it.getPayload().equals(OpCloseTransmit.PATTERN)) {
+					transmitting = false;
 					break;
+				}
 				
 				iter.remove();
 				transmittingTo.receiveIota(it);
@@ -136,6 +136,12 @@ public abstract class MixinCastingHarness {
 		
 		// send all remaining iotas to the harness.
 		var ret = harness.executeIotas(toExecute, world);
+		boolean makesCastSound = ret.getMakesCastSound();
+		boolean isStackClear = ret.isStackClear() && !transmitting;
+		ResolvedPatternType type = transmitting ? ResolvedPatternType.ESCAPED : ret.getResolutionType();
+		List<Component> stackDesc = transmitting ? transmittingTo.transmittingTargetReturnDisplay() : ret.getStackDesc();
+		
+		ret = ret.copy(makesCastSound, isStackClear, type, stackDesc);
 
 		cir.setReturnValue(ret);
 	}

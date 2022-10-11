@@ -3,23 +3,36 @@ package ram.talia.hexal.api.nbt
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.Tag
 
-abstract class LazyLoad<L, U : Tag>(default: Either<L, U>) {
-	protected var either: Either<L, U> = default
+@Suppress("UNCHECKED_CAST")
+abstract class LazyLoad<L, U : Tag> private constructor(private var isLoaded: Boolean) {
+	private var loaded: L? = null
+	private var unloaded: U? = null
 
-	var loaded = false
+	constructor(default: L) : this(true) {
+		loaded = default
+	}
+
+	constructor(default: U) : this(false) {
+		unloaded = default
+	}
 
 	abstract fun load(unloaded: U): L?
 	abstract fun unload(loaded: L): U
 
 	fun set(it: L) {
-		either = Either.left(it)
+		loaded = it
+		unloaded = null
+		isLoaded = true
 	}
 
 	fun set(it: U) {
-		either = Either.right(it)
+		loaded = null
+		unloaded = it
+		isLoaded = false
 	}
 
-	open fun get(): L? = either.map({ it }, { either = Either.left(load(it)); return@map either.left().get() })
-
-	open fun getUnloaded(): U = either.map({ unload(it) }, { it })
+	// casts used here to get rid of problems with loaded/unloaded being null. The way I've got set written, one of them is guaranteed to be non-null (*unless U or L is
+	// a nullable type*), meaning the conversion to U/L will work fine.
+	open fun get(): L? = if (isLoaded) loaded else load(unloaded as U)
+	open fun getUnloaded(): U = if (isLoaded) unload(loaded as L) else unloaded as U
 }

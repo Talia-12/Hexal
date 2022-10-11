@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.network.chat.Component
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -68,6 +69,8 @@ class TickingWisp : BaseCastingWisp {
 		lazyRavenmind?.set(SpellDatum.make(Widget.NULL))
 	}
 
+	override fun transmittingTargetReturnDisplay() = stack.map(SpellDatum<*>::display)
+
 	override fun deductMedia() {
 		media -= 2 * WISP_COST_PER_TICK_NORMAL
 	}
@@ -115,7 +118,7 @@ class TickingWisp : BaseCastingWisp {
 
 	fun reachedTargetPos() = (getTargetMovePos() - position()).lengthSqr() < 0.0001*0.0001
 
-					override fun readAdditionalSaveData(compound: CompoundTag) {
+	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)
 
 		when (val stackTag = compound.get(TAG_STACK)) {
