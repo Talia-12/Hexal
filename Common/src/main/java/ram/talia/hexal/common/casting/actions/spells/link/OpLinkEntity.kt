@@ -8,9 +8,8 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.LinkableEntity
-import ram.talia.hexal.common.entities.TickingWisp
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpLinkEntity : SpellOperator {
@@ -20,7 +19,7 @@ object OpLinkEntity : SpellOperator {
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? MixinCastingContextInterface
+		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
 			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)

@@ -97,9 +97,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		val wisp = cast.wisp!!
 		wisp.summonedChildThisCast = false // restricts the wisp to only summoning one other wisp per cast.
 
-		// IntelliJ is complaining that ctx will never be an instance of MixinCastingContextInterface cause it doesn't know about mixin, but we know better
+		// IntelliJ is complaining that ctx will never be an instance of IMixinCastingContext cause it doesn't know about mixin, but we know better
 		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? MixinCastingContextInterface
+		val mCast = ctx as? IMixinCastingContext
 		mCast?.wisp = wisp
 
 		val harness = CastingHarness(ctx)

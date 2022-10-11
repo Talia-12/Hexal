@@ -8,7 +8,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.mishaps.MishapEvalTooDeep
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
@@ -21,7 +21,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
         val media: Double
         val cost: Int
 
-        val mCast = ctx as? MixinCastingContextInterface
+        val mCast = ctx as? IMixinCastingContext
         if (mCast != null && mCast.hasWisp() && mCast.wisp.summonedChildThisCast) // wisps can only summon one child per cast.
             throw MishapEvalTooDeep()
 
@@ -52,7 +52,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<SpellDatum<*>>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             // wisps can only summon one child per cast
-            val mCast = ctx as? MixinCastingContextInterface
+            val mCast = ctx as? IMixinCastingContext
             if (mCast != null && mCast.hasWisp())
                 mCast.wisp.summonedChildThisCast = true
 

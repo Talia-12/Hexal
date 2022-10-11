@@ -10,14 +10,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import ram.talia.hexal.api.linkable.ILinkable;
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
+import ram.talia.hexal.xplat.IXplatAbstractions;
 
 /**
  * Modifies {@link at.petrak.hexcasting.api.spell.casting.CastingContext} to make it properly allow wisps to affect things within their range.
  */
 @Mixin(CastingContext.class)
-public abstract class MixinCastingContext implements MixinCastingContextInterface {
+public abstract class MixinCastingContext implements IMixinCastingContext {
 	private BaseCastingWisp wisp;
 	
 	@Shadow(remap = false) private int depth;
@@ -56,4 +58,46 @@ public abstract class MixinCastingContext implements MixinCastingContextInterfac
 			cir.setReturnValue(vec.distanceToSqr(this.wisp.position()) < this.wisp.maxSqrCastingDistance());
 		}
 	}
+	
+	//region Transmitting
+	
+	private ILinkable<?> casterLinkable () {
+		CastingContext ctx = (CastingContext) (Object) this;
+		IMixinCastingContext mCtx = (IMixinCastingContext) (Object) ctx;
+		
+		if (ctx.getSpellCircle() == null)
+			return null;
+		if (mCtx.hasWisp())
+			return mCtx.getWisp();
+		else
+			return IXplatAbstractions.INSTANCE.getLinkstore(ctx.getCaster());
+	}
+	
+	private ILinkable<?> forwardingTo = null;
+	
+	@Override
+	public ILinkable<?> getForwardingTo () {
+		var caster = casterLinkable();
+		if (caster != null && caster.isInRange(forwardingTo))
+			return forwardingTo;
+		forwardingTo = null;
+		return null;
+	}
+	
+	@Override
+	public void setForwardingTo (int to) {
+		var caster = casterLinkable();
+		
+		if (caster == null || to >= caster.numLinked())
+			return;
+		
+		forwardingTo = caster.getLinked(to);
+	}
+	
+	@Override
+	public void resetForwardingTo () {
+		forwardingTo = null;
+	}
+	
+	//endregion
 }

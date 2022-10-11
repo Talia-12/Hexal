@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getChecked
 import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.TickingWisp
 
 object OpSetMoveTarget : ConstManaOperator {
@@ -16,7 +16,7 @@ object OpSetMoveTarget : ConstManaOperator {
 		val target = args.getChecked<Vec3>(0, argc)
 
 		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? MixinCastingContextInterface
+		val mCast = ctx as? IMixinCastingContext
 
 		if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
 			throw MishapNoSpellCircle()

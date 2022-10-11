@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import com.mojang.datafixers.util.Either
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln
@@ -25,7 +25,7 @@ object OpConsumeWisp : SpellOperator {
 		ctx.assertEntityInRange(consumed.get())
 
 		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? MixinCastingContextInterface
+		val mCast = ctx as? IMixinCastingContext
 
 		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
 
@@ -50,7 +50,7 @@ object OpConsumeWisp : SpellOperator {
 			HexalAPI.LOGGER.info("cast method of Spell of OpConsumeWisp triggered targeting $consumed")
 
 			@Suppress("CAST_NEVER_SUCCEEDS")
-			val mCast = ctx as? MixinCastingContextInterface
+			val mCast = ctx as? IMixinCastingContext
 
 			if (mCast != null && mCast.wisp != null)
 				mCast.wisp.media += 19 * consumed.media / 20

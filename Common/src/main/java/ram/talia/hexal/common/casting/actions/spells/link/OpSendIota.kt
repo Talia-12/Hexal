@@ -5,10 +5,9 @@ import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import net.minecraft.network.chat.TranslatableComponent
-import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.max
 
@@ -18,7 +17,7 @@ object OpSendIota : SpellOperator {
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? MixinCastingContextInterface
+		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
 			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)

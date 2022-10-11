@@ -161,6 +161,12 @@ public class RegisterPatterns {
 			PatternRegistry.mapPattern(HexPattern.fromAngles("aweeeeewaa", HexDir.SOUTH_EAST),
 																 modLoc("link/comm/num"),
 																 OpNumReceivedIota.INSTANCE);
+			PatternRegistry.mapPattern(HexPattern.fromAngles("qwdedwq", HexDir.WEST),
+																 modLoc("link/comm/open_transmit"),
+																 OpOpenTransmit.INSTANCE);
+			PatternRegistry.mapPattern(OpCloseTransmit.PATTERN,
+																 modLoc("link/comm/close_transmit"),
+																 OpCloseTransmit.INSTANCE);
 		}
 		catch (PatternRegistry.RegisterPatternException e) {
 			e.printStackTrace();

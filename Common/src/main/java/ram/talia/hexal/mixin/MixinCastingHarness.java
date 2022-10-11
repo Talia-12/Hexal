@@ -15,7 +15,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import ram.talia.hexal.api.spell.casting.MixinCastingContextInterface;
+import ram.talia.hexal.api.linkable.ILinkable;
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
+import ram.talia.hexal.common.casting.actions.spells.link.OpCloseTransmit;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -24,6 +26,7 @@ import java.util.List;
 @SuppressWarnings("ConstantConditions")
 @Mixin(CastingHarness.class)
 public abstract class MixinCastingHarness {
+	private final CastingHarness harness = (CastingHarness) (Object) this;
 	
 	@Shadow private boolean escapeNext;
 	
@@ -41,7 +44,7 @@ public abstract class MixinCastingHarness {
 		if (o instanceof OperatorSideEffect.Particles particles) {
 			
 			CastingContext ctx = ((CastingHarness)(Object)this).getCtx();
-			MixinCastingContextInterface ctxi = (MixinCastingContextInterface)(Object) ctx;
+			IMixinCastingContext ctxi = (IMixinCastingContext)(Object) ctx;
 			
 			if (!ctxi.hasWisp())
 				return sideEffects.add(particles);
@@ -68,7 +71,7 @@ public abstract class MixinCastingHarness {
 		
 //		HexalAPI.LOGGER.info("manaCost: %d".formatted(manaCost));
 
-		MixinCastingContextInterface wispContext = (MixinCastingContextInterface)(Object)((CastingHarness)(Object)this).getCtx();
+		IMixinCastingContext wispContext = (IMixinCastingContext)(Object)((CastingHarness)(Object)this).getCtx();
 		
 		BaseCastingWisp wisp = wispContext.getWisp();
 		
@@ -85,7 +88,7 @@ public abstract class MixinCastingHarness {
 	}
 	
 	/**
-	 * Makes it so that when a player executes a pattern, if that pattern is marked as a macro in their Everbook it executes the macro instead.
+	 * Has two functions. Firstly, makes it so that when a player executes a pattern, if that pattern is marked as a macro in their Everbook it executes the macro instead. Secondly, if the caster is
 	 */
 	@Inject(method = "executeIota",
 					at = @At("HEAD"),
@@ -93,21 +96,47 @@ public abstract class MixinCastingHarness {
 					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					remap = false)
 	private void executeIotaMacro (SpellDatum<?> iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
-		CastingHarness harness = (CastingHarness) (Object) this;
 		CastingContext ctx = harness.getCtx();
+		IMixinCastingContext mCtx = (IMixinCastingContext) (Object) ctx;
+		
+		List<SpellDatum<?>> toExecute;
 		
 		// only work if the caster's enlightened, the caster is staff-casting, and they haven't escaped this pattern
 		// (meaning you can get a copy of the pattern to mark it as not a macro again)
-		if (!ctx.isCasterEnlightened() || ctx.getSpellCircle() != null || ((MixinCastingContextInterface) (Object) ctx).hasWisp() || this.escapeNext)
+		if (ctx.getSpellCircle() != null || mCtx.hasWisp())
 			return;
+		if (!ctx.isCasterEnlightened() || this.escapeNext)
+			toExecute = List.of(iota);
+		else if (iota.getType() != DatumType.PATTERN)
+			toExecute = List.of(iota);
+		else {
+			HexPattern pattern = (HexPattern) iota.getPayload();
+			toExecute = IXplatAbstractions.INSTANCE.getEverbookMacro(ctx.getCaster(), pattern);
+			if (toExecute == null)
+				toExecute = List.of(iota);
+		}
 		
-		if (iota.getType() != DatumType.PATTERN)
-			return;
-		
-		HexPattern pattern = (HexPattern) iota.getPayload();
-		List<SpellDatum<?>> iotas = IXplatAbstractions.INSTANCE.getEverbookMacro(ctx.getCaster(), pattern);
+		// sends the iotas straight to the Linkable that the player is forwarding iotas to, if it exists
+		if (mCtx.getForwardingTo() != null) {
+			var iter = toExecute.iterator();
 			
-		var ret = harness.executeIotas(iotas == null ? List.of(iota) : iotas, world);
+			while (iter.hasNext()) {
+				var it = iter.next();
+				
+				// if the current iota is an OpCloseTransmit, break so that Action can be processed by the player's handler.
+				if (it.getType() == DatumType.PATTERN && it.getPayload().equals(OpCloseTransmit.PATTERN))
+					break;
+				
+				iter.remove();
+				mCtx.getForwardingTo().receiveIota(it);
+			}
+			
+			if (toExecute.isEmpty())
+				return;
+		}
+		
+		// send all remaining iotas to the harness.
+		var ret = harness.executeIotas(toExecute, world);
 
 		cir.setReturnValue(ret);
 	}
