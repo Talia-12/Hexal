@@ -22,7 +22,7 @@ object OpOpenTransmit : ConstManaOperator {
 
 		val index = args.getChecked<Double>(0, argc).toInt().coerceIn(0, playerLinkable.numLinked() - 1)
 
-		mCtx?.setForwardingTo(index)
+		IXplatAbstractions.INSTANCE.setPlayerTransmittingTo(ctx.caster, index)
 
 		return listOf()
 	}

@@ -45,6 +45,12 @@ public interface IXplatAbstractions {
     
     void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link);
     
+    //region Transmission
+    ILinkable<?> getPlayerTransmittingTo (ServerPlayer player);
+    void setPlayerTransmittingTo (ServerPlayer player, int to);
+    void resetPlayerTransmittingTo (ServerPlayer player);
+    //endregion
+    
     SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key);
     void setEverbookIota(ServerPlayer player, HexPattern key, SpellDatum<?> iota);
     

@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpCloseTransmit : ConstManaOperator {
 	@JvmField
@@ -13,10 +14,8 @@ object OpCloseTransmit : ConstManaOperator {
 
 	override val argc = 0
 
-	@Suppress("CAST_NEVER_SUCCEEDS", "KotlinConstantConditions")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		val mCtx = ctx as? IMixinCastingContext
-		mCtx?.resetForwardingTo()
+		IXplatAbstractions.INSTANCE.resetPlayerTransmittingTo(ctx.caster)
 		return listOf()
 	}
 }

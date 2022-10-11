@@ -10,10 +10,4 @@ public interface IMixinCastingContext {
 	boolean hasWisp();
 	
 	int remainingDepth();
-	
-	//region Transmission
-	ILinkable<?> getForwardingTo ();
-	void setForwardingTo (int to);
-	void resetForwardingTo ();
-	//endregion
 }

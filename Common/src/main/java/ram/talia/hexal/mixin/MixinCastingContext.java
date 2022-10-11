@@ -58,46 +58,4 @@ public abstract class MixinCastingContext implements IMixinCastingContext {
 			cir.setReturnValue(vec.distanceToSqr(this.wisp.position()) < this.wisp.maxSqrCastingDistance());
 		}
 	}
-	
-	//region Transmitting
-	
-	private ILinkable<?> casterLinkable () {
-		CastingContext ctx = (CastingContext) (Object) this;
-		IMixinCastingContext mCtx = (IMixinCastingContext) (Object) ctx;
-		
-		if (ctx.getSpellCircle() == null)
-			return null;
-		if (mCtx.hasWisp())
-			return mCtx.getWisp();
-		else
-			return IXplatAbstractions.INSTANCE.getLinkstore(ctx.getCaster());
-	}
-	
-	private ILinkable<?> forwardingTo = null;
-	
-	@Override
-	public ILinkable<?> getForwardingTo () {
-		var caster = casterLinkable();
-		if (caster != null && caster.isInRange(forwardingTo))
-			return forwardingTo;
-		forwardingTo = null;
-		return null;
-	}
-	
-	@Override
-	public void setForwardingTo (int to) {
-		var caster = casterLinkable();
-		
-		if (caster == null || to >= caster.numLinked())
-			return;
-		
-		forwardingTo = caster.getLinked(to);
-	}
-	
-	@Override
-	public void resetForwardingTo () {
-		forwardingTo = null;
-	}
-	
-	//endregion
 }

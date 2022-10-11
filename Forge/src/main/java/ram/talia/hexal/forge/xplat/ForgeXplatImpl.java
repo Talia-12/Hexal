@@ -69,6 +69,21 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
+	public ILinkable<?> getPlayerTransmittingTo (ServerPlayer player) {
+		return PlayerLinkstoreEventHandler.getTransmittingTo(player);
+	}
+	
+	@Override
+	public void setPlayerTransmittingTo (ServerPlayer player, int to) {
+		PlayerLinkstoreEventHandler.setTransmittingTo(player, to);
+	}
+	
+	@Override
+	public void resetPlayerTransmittingTo (ServerPlayer player) {
+		PlayerLinkstoreEventHandler.resetTransmittingTo(player);
+	}
+	
+	@Override
 	public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key) {
 		return EverbookEventHandler.getIota(player, key);
 	}

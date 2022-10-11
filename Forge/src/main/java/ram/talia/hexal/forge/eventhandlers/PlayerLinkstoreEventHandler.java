@@ -26,6 +26,8 @@ public class PlayerLinkstoreEventHandler {
 	private static final Map<UUID, PlayerLinkstore> linkstores = new HashMap<>();
 	private static final Map<UUID, List<ILinkable.IRenderCentre>> renderLinks = new HashMap<>();
 	
+	private static final Map<UUID, ILinkable<?>> transmittingTargets = new HashMap<>();
+	
 	public static List<ILinkable.IRenderCentre> getRenderLinks(Player player) {
 		return getRenderLinks(player.getUUID());
 	}
@@ -57,6 +59,32 @@ public class PlayerLinkstoreEventHandler {
 		PlayerLinkstore linkstore = new PlayerLinkstore(player);
 		linkstore.loadAdditionalData(player.getPersistentData().getCompound(TAG_PLAYER_LINKSTORE));
 		return linkstore;
+	}
+	
+	public static ILinkable<?> getTransmittingTo(ServerPlayer player) {
+		final var to = transmittingTargets.get(player.getUUID());
+		if (to == null)
+			return null;
+		
+		if (getLinkstore(player).isInRange(to))
+			return to;
+		
+		resetTransmittingTo(player);
+		return null;
+	}
+	
+	public static void setTransmittingTo(ServerPlayer player, int to) {
+		PlayerLinkstore linkstore = getLinkstore(player);
+		if (to >= linkstore.numLinked()) {
+			resetTransmittingTo(player);
+			return;
+		}
+		
+		transmittingTargets.put(player.getUUID(), linkstore.getLinked(to));
+	}
+	
+	public static void resetTransmittingTo(ServerPlayer player) {
+		transmittingTargets.remove(player.getUUID());
 	}
 	
 	/**

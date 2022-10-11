@@ -90,6 +90,23 @@ public class FabricXplatImpl implements IXplatAbstractions {
         cc.removeRenderLink(link);
     }
     
+    //region Transmitting
+    @Override
+    public ILinkable<?> getPlayerTransmittingTo (ServerPlayer player) {
+        return HexalCardinalComponents.PLAYER_LINKSTORE.get(player).getTransmittingTo();
+    }
+    
+    @Override
+    public void setPlayerTransmittingTo (ServerPlayer player, int to) {
+        HexalCardinalComponents.PLAYER_LINKSTORE.get(player).setTransmittingTo(to);
+    }
+    
+    @Override
+    public void resetPlayerTransmittingTo (ServerPlayer player) {
+        HexalCardinalComponents.PLAYER_LINKSTORE.get(player).resetTransmittingTo();
+    }
+    //endregion
+    
     @Override
     public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key) {
         return HexalCardinalComponents.EVERBOOK.get(player).getIota(key, player.getLevel());

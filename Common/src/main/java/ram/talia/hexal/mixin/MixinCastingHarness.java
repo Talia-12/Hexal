@@ -21,6 +21,8 @@ import ram.talia.hexal.common.casting.actions.spells.link.OpCloseTransmit;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
@@ -97,27 +99,27 @@ public abstract class MixinCastingHarness {
 					remap = false)
 	private void executeIotaMacro (SpellDatum<?> iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
 		CastingContext ctx = harness.getCtx();
-		IMixinCastingContext mCtx = (IMixinCastingContext) (Object) ctx;
 		
 		List<SpellDatum<?>> toExecute;
 		
 		// only work if the caster's enlightened, the caster is staff-casting, and they haven't escaped this pattern
 		// (meaning you can get a copy of the pattern to mark it as not a macro again)
-		if (ctx.getSpellCircle() != null || mCtx.hasWisp())
+		if (ctx.getSpellCircle() != null || ((IMixinCastingContext) (Object) ctx).hasWisp())
 			return;
 		if (!ctx.isCasterEnlightened() || this.escapeNext)
-			toExecute = List.of(iota);
+			toExecute = new ArrayList<>(Collections.singleton(iota));
 		else if (iota.getType() != DatumType.PATTERN)
-			toExecute = List.of(iota);
+			toExecute = new ArrayList<>(Collections.singleton(iota));
 		else {
 			HexPattern pattern = (HexPattern) iota.getPayload();
 			toExecute = IXplatAbstractions.INSTANCE.getEverbookMacro(ctx.getCaster(), pattern);
 			if (toExecute == null)
-				toExecute = List.of(iota);
+				toExecute = new ArrayList<>(Collections.singleton(iota));
 		}
 		
 		// sends the iotas straight to the Linkable that the player is forwarding iotas to, if it exists
-		if (mCtx.getForwardingTo() != null) {
+		var transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());
+		if (transmittingTo != null) {
 			var iter = toExecute.iterator();
 			
 			while (iter.hasNext()) {
@@ -128,11 +130,8 @@ public abstract class MixinCastingHarness {
 					break;
 				
 				iter.remove();
-				mCtx.getForwardingTo().receiveIota(it);
+				transmittingTo.receiveIota(it);
 			}
-			
-			if (toExecute.isEmpty())
-				return;
 		}
 		
 		// send all remaining iotas to the harness.
