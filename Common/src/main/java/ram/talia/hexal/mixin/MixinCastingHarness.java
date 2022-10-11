@@ -2,6 +2,7 @@ package ram.talia.hexal.mixin;
 
 import at.petrak.hexcasting.api.spell.DatumType;
 import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.Widget;
 import at.petrak.hexcasting.api.spell.casting.*;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import net.minecraft.network.chat.Component;
@@ -27,7 +28,7 @@ import java.util.List;
 public abstract class MixinCastingHarness {
 	private final CastingHarness harness = (CastingHarness) (Object) this;
 	
-	@Shadow private boolean escapeNext;
+	@Shadow(remap = false) private boolean escapeNext;
 	
 	/**
 	 * Makes it so that the wisp casting doesn't play side effects around the player.
@@ -87,7 +88,8 @@ public abstract class MixinCastingHarness {
 	}
 	
 	/**
-	 * Has two functions. Firstly, makes it so that when a player executes a pattern, if that pattern is marked as a macro in their Everbook it executes the macro instead. Secondly, if the caster is
+	 * Has two functions. Firstly, makes it so that when a player executes a pattern, if that pattern is marked as a macro in their Everbook it executes the macro instead.
+	 * Secondly, if the caster is transmitting to a Linkable it will send all iotas that would have been executed to the Linkable instead.
 	 */
 	@Inject(method = "executeIota",
 					at = @At("HEAD"),
@@ -105,7 +107,7 @@ public abstract class MixinCastingHarness {
 			return;
 		if (!ctx.isCasterEnlightened() || this.escapeNext)
 			toExecute = new ArrayList<>(Collections.singleton(iota));
-		else if (iota.getType() != DatumType.PATTERN)
+		else if (iota.getType() != DatumType.PATTERN || ((HexPattern) iota.getPayload()).anglesSignature().equals("qqqaw")) // hacky, make it so people can't lock themselves
 			toExecute = new ArrayList<>(Collections.singleton(iota));
 		else {
 			HexPattern pattern = (HexPattern) iota.getPayload();
@@ -114,34 +116,41 @@ public abstract class MixinCastingHarness {
 				toExecute = new ArrayList<>(Collections.singleton(iota));
 		}
 		
+		// don't send unescaped escapes to the Linkable (lets you escape macros)
+		// TODO: HACKYY
+		boolean isUnescapedEscape = !this.escapeNext && iota.getType() == DatumType.PATTERN && ((HexPattern) iota.getPayload()).anglesSignature().equals("qqqaw");
+
 		// sends the iotas straight to the Linkable that the player is forwarding iotas to, if it exists
 		var transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());
 		boolean transmitting = transmittingTo != null;
-		if (transmitting) {
+		if (transmitting && !isUnescapedEscape) {
 			var iter = toExecute.iterator();
 			
 			while (iter.hasNext()) {
 				var it = iter.next();
 				
-				// if the current iota is an OpCloseTransmit, break so that Action can be processed by the player's handler.
-				if (it.getType() == DatumType.PATTERN && it.getPayload().equals(OpCloseTransmit.PATTERN)) {
-					transmitting = false;
+				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
+				if (!this.escapeNext && it.getType() == DatumType.PATTERN && it.getPayload().equals(OpCloseTransmit.PATTERN))
 					break;
-				}
 				
 				iter.remove();
 				transmittingTo.receiveIota(it);
 			}
+			
+			this.escapeNext = false;
 		}
 		
+		boolean wasTransmitting = transmitting;
 		// send all remaining iotas to the harness.
 		var ret = harness.executeIotas(toExecute, world);
-		boolean makesCastSound = ret.getMakesCastSound();
+		transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());
+		transmitting = transmittingTo != null;
+		boolean isEdgeTransmit = transmitting ^ wasTransmitting; // don't mark ESCAPED the opening and closing patterns.
 		boolean isStackClear = ret.isStackClear() && !transmitting;
-		ResolvedPatternType type = transmitting ? ResolvedPatternType.ESCAPED : ret.getResolutionType();
+		ResolvedPatternType type = (transmitting && !isUnescapedEscape && !isEdgeTransmit) ? ResolvedPatternType.ESCAPED : ret.getResolutionType();
 		List<Component> stackDesc = transmitting ? transmittingTo.transmittingTargetReturnDisplay() : ret.getStackDesc();
 		
-		ret = ret.copy(makesCastSound, isStackClear, type, stackDesc);
+		ret = ret.copy(ret.getMakesCastSound(), isStackClear, type, stackDesc);
 
 		cir.setReturnValue(ret);
 	}

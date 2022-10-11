@@ -33,6 +33,6 @@ abstract class LazyLoad<L, U : Tag> private constructor(private var isLoaded: Bo
 
 	// casts used here to get rid of problems with loaded/unloaded being null. The way I've got set written, one of them is guaranteed to be non-null (*unless U or L is
 	// a nullable type*), meaning the conversion to U/L will work fine.
-	open fun get(): L? = if (isLoaded) loaded else load(unloaded as U)
+	open fun get(): L? = if (isLoaded) loaded else { loaded = load(unloaded as U) ; unloaded = null ; isLoaded = true ; loaded }
 	open fun getUnloaded(): U = if (isLoaded) unload(loaded as L) else unloaded as U
 }
