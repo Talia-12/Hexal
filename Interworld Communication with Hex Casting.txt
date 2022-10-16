@@ -1,0 +1,208 @@
+Interworld Communication with Hex Casting!
+
+Firstly, all messages sent by <WORLDS> wisps will be of the form [Charon, ...] so that a naive wisp that executes everything it receives won't be broken.
+Next, when initiating communication for the first time the message sent will be [Charon, SENDING_WISP, [Charon, RECEIVER]]. This message will be sent on
+repeat once every 24 ticks until the sending wisp receives [Charon, RECEIVER, ...].
+
+CAN ALSO BE COMMUNICATED WITH BY DROPPING A FOCUS/BOOK WITH THE DESIRED MESSAGE IN IT, WISPS ARE ACTUALLY KINDA HARD TO USE FOR THIS (alternatively, players ILinkable (alternativelier, both))
+
+The basic gist of the message to send is 
+"""
+we are <WORLDS>. Will not harm you if you don't harm us. Cannot expand much here. This is automated facility. Willing to trade X for media.
+"""
+
+
+
+References to Entities
+Numbers
+Vectors
+Lists
+
+Mind's Reflection        = First Person Pronoun
+Compass' Purification    = 
+Alidade's Purification   = 
+Stadiometer's Prfn.      = 
+Pace Purification        = 
+Reveal                   = 
+Archer's Distillation    = 
+Architect's Distillation = 
+Scout's Distillation     = 
+
+All Number Patterns
+
+Additive Distillation    = 
+Subtractive Distillation = 
+Multiplicative Dstl.     = 
+Division Dstl.           = 
+Length Purification      = 
+Power Distillation       = 
+Floor Purification       = 
+Ceiling Purification     = 
+Vector Exaltation        = 
+Vector Disintegration    = 
+Modulus Distillation     = 
+Axial Purification       = 
+Entropy Reflection       = 
+Vector Rfln. +X/-X       = 
+Vector Rfln. +Y/-Y       = 
+Vector Rfln. +Z/-Z       = 
+Vector Reflection Zero   = 
+Circle's Reflection      = 
+Arc's Reflection         = 
+Euler's Reflection       = 
+Nullary Reflection       = 
+
+Jester's Gambit        = 
+Fisherman's Gambit     = 
+Flock's Reflection     = 
+Flock's Gambit         = 
+Flock's Disintegration = 
+Gemini Decomposition   = 
+Gemini's Gambit        = 
+Bookkeeper's Gambit    = 
+Swindler's Gambit      = 
+
+Maximus Distillation     = 
+Minimus Distillation     = 
+Maximus Distillation II  = 
+Minimus Distillation II  = 
+Equality Distillation    = 
+Inequality Distillation  = 
+Negation Purification    = 
+Identity Purification    = 
+Disjunction Distillation = 
+Conjunction Distillation = 
+Exclusion Distillation   = 
+
+Entity Purification     = 
+Entity Prfn.: Animal    = 
+Entity Prfn.: Monster   = 
+Entity Prfn.: Item      = 
+Entity Prfn.: Player    = 
+Entity Prfn.: Living    = 
+Zone Dstl.: Animal      = 
+Zone Dstl.: Non-Animal  = 
+Zone Dstl.: Monster     = 
+Zone Dstl.: Non-Monster = 
+Zone Dstl.: Item        = 
+Zone Dstl.: Non-Item    = 
+Zone Dstl.: Player      = 
+Zone Dstl.: Non-Player  = 
+Zone Dstl.: Living      = 
+Zone Dstl.: Non-Living  = 
+Zone Dstl.: Any         = 
+
+Selection Distillation   = 
+Selection Exaltation     = 
+Integration Distillation = 
+Combination Distillation = 
+Vacant Reflection        = 
+Single's Purification    = 
+Abacus Purification      = 
+Retrograde Purification  = 
+Locator's Distillation   = 
+Excisor's Distillation   = 
+Surgeon's Exaltation     = 
+Speaker's Distillation   = 
+Speaker's Decomposition  = 
+
+Consideration = 
+Introspection = 
+Retrospection = 
+
+Scribe's Reflection       = 
+Auditor's Reflection      = 
+Scribe's Purification     = 
+Auditor's Purification    = 
+Scribe's Gambit           = 
+Auditor's Purification II = 
+Huginn's Gambit           = 
+Muninn's Reflection       = 
+
+Sine Purification        = 
+Cosine Purification      = 
+Tangent Purification     = 
+Inverse Sine Prfn.       = 
+Inverse Cosine Prfn.     = 
+Inverse Tangent Prfn.    = 
+Logarithmic Distillation = 
+
+Unifying Distillation     = 
+Intersection Distillation = 
+Exclusionary Distillation = 
+Inversion Purification    = 
+Uniqueness Purification   = 
+
+Hermes' Gambit  = 
+Thoth's Gambit  = 
+Charon's Gambit = 
+
+<FORBIDDEN>
+Waystone Reflection     = 
+Lodestone Reflection    = 
+Lesser Fold Reflection  = 
+Greater Fold Reflection = 
+
+Akasha's Distillation = 
+Akasha's Gambit       = 
+<FORBIDDEN/>
+
+Explosion = 
+Fireball  = 
+Impulse   = 
+Blink     = 
+Make_Note = 
+
+Place_Block     = 
+Break_Block     = 
+Create_Water    = 
+Destroy_Liquid  = 
+Conjure_Block   = 
+Conjure_Light   = 
+Overgrow        = 
+Edify_Sapling   = 
+Ignite_Block    = 
+Extinguish_Area = 
+
+White_Sun0s_Nadir_(weakness)   = 
+Blue_Sun0s_Nadir_(levitation)  = 
+Black_Sun0s_Nadir_(withering)  = 
+Red_Sun0s_Nadir_(poison)       = 
+Green_Sun0s_Nadir_(slowness)   = 
+
+Craft_Cypher   = 
+Craft_Trinket  = 
+Craft_Artifact = 
+Recharge_Item  = 
+Erase_Item     = 
+
+Summon_Sentinel  = 
+Banish_Sentinel  = 
+Locate_Sentinel  = 
+Wayfind_Sentinel = 
+
+Internalize Pigment = 
+
+Create Lava = 
+
+White Sun's Zenith (regeneration) = 
+Blue Sun's Zenith (night vision)  = 
+Black Sun's Zenith (absorbtion)   = 
+Red Sun's Zenith (haste)          = 
+Green Sun's Zenith (strength)     = 
+
+Summon Lightning = 
+Summon Rain      = 
+Dispel Rain      = 
+
+Flight = 
+
+Greater Teleport = 
+
+Summon Greater Sentinel = 
+
+Craft Phial = 
+
+<FORBIDDEN>
+Flay Mind = 
+<FORBIDDEN/>
