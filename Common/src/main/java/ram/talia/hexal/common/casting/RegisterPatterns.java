@@ -54,6 +54,12 @@ public class RegisterPatterns {
 																 modLoc("light_level"),
 																 OpGetLightLevel.INSTANCE);
 			
+			// =============================== Misc Maths =====================================
+			
+			PatternRegistry.mapPattern(HexPattern.fromAngles("wawdedwaw", HexDir.SOUTH_EAST),
+																 modLoc("factorial"),
+																 OpFactorial.INSTANCE);
+			
 			// ================================ Everbook ======================================
 			
 			PatternRegistry.mapPattern(HexPattern.fromAngles("eweeewedqdeddw", HexDir.NORTH_EAST),

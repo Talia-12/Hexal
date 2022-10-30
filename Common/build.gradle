@@ -39,6 +39,9 @@ dependencies {
     compileOnly "at.petra-k.hexcasting:hexcasting-common-$minecraftVersion:$hexcastingVersion"
     compileOnly "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
 
+    testImplementation "at.petra-k.paucal:paucal-common-$minecraftVersion:$paucalVersion"
+    testImplementation "at.petra-k.hexcasting:hexcasting-common-$minecraftVersion:$hexcastingVersion"
+    testImplementation "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }

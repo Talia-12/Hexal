@@ -11,7 +11,7 @@ displayName = "Hexal"
 displayURL = "https://github.com/Talia-12/Hexal"
 logoFile = "logo.png"
 credits = "petrak@ and other developers of Hex Casting for the mod that this is an addon for."
-authors = "petrak@ (aka gamma-delta)"
+authors = "Talia"
 description = ""
 
 [[dependencies.hexal]]

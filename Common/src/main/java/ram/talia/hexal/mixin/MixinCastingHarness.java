@@ -130,7 +130,7 @@ public abstract class MixinCastingHarness {
 				var it = iter.next();
 				
 				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
-				if (!this.escapeNext && it.getType() == DatumType.PATTERN && it.getPayload().equals(OpCloseTransmit.PATTERN))
+				if (!this.escapeNext && it.getType() == DatumType.PATTERN && ((HexPattern) it.getPayload()).anglesSignature().equals(OpCloseTransmit.PATTERN.anglesSignature()))
 					break;
 				
 				iter.remove();
