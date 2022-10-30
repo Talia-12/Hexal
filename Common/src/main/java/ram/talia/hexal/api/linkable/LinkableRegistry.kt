@@ -14,6 +14,7 @@ object LinkableRegistry {
 
 	class RegisterLinkableTypeException(msg: String) : Exception(msg)
 	class InvalidLinkableTypeException(msg: String) : Exception(msg)
+	class NullLinkableException(msg: String) : Exception(msg)
 
 	init {
 		registerLinkableType(LinkableTypes.LINKABLE_ENTITY_TYPE)
@@ -78,14 +79,17 @@ object LinkableRegistry {
 	fun wrapNbt(linkable: ILinkable<*>) = linkable.getLinkableType().wrapNbt(linkable.writeToNbt())
 
 	@JvmStatic
-	fun fromNbt(tag: CompoundTag, level: ServerLevel): ILinkable<*>? {
+	fun fromNbt(tag: CompoundTag, level: ServerLevel): Result<ILinkable<*>> {
 		val typeId = tag.getString(TAG_TYPE)
 		if (!ResourceLocation.isValidResourceLocation(typeId))
-			throw InvalidLinkableTypeException("$typeId is not a valid resource location")
+			return Result.failure(InvalidLinkableTypeException("$typeId is not a valid resource location"))
 
-		val type = linkableTypes[ResourceLocation(typeId)] ?: throw InvalidLinkableTypeException("no LinkableType registered for $typeId")
+		val type = linkableTypes[ResourceLocation(typeId)] ?: return Result.failure(InvalidLinkableTypeException("$typeId is not a valid resource location"))
 
-		return type.fromNbt(tag.get(TAG_LINKABLE)!!, level)
+		return when (val linkable = type.fromNbt(tag.get(TAG_LINKABLE)!!, level)) {
+			null -> Result.failure(NullLinkableException("linkable for $tag returned null."))
+			else -> Result.success(linkable)
+		}
 	}
 
 	/**

@@ -81,12 +81,12 @@ interface ILinkable<T : ILinkable<T>> {
 	}
 
 	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>?, CompoundTag>(null) { // default to empty compound tag
-		override fun load(unloaded: CompoundTag): ILinkable<*>? = if (unloaded.isEmpty) null else LinkableRegistry.fromNbt(unloaded, level)
+		override fun load(unloaded: CompoundTag): ILinkable<*>? = if (unloaded.isEmpty) null else LinkableRegistry.fromNbt(unloaded, level).getOrNull()
 		override fun unload(loaded: ILinkable<*>?) = if (loaded == null) CompoundTag() else LinkableRegistry.wrapNbt(loaded)
 	}
 
 	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable<*>>, ListTag>(mutableListOf()) {
-		override fun load(unloaded: ListTag): MutableList<ILinkable<*>> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level) } as MutableList
+		override fun load(unloaded: ListTag): MutableList<ILinkable<*>> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level).getOrNull() } as MutableList
 		override fun unload(loaded: MutableList<ILinkable<*>>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
 
 		override fun get(): MutableList<ILinkable<*>> = super.get()!!
