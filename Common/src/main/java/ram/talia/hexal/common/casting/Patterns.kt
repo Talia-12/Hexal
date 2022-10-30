@@ -25,71 +25,118 @@ object Patterns {
 	var PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
 
 	// ============================ Type Comparison ===================================
+	@JvmField
 	val COMPARE_BLOCKS = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("compare/blocks"), OpCompareBlocks)
+	@JvmField
 	val COMPARE_ENTITIES = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("compare/entities"), OpCompareEntities)
+	@JvmField
 	val COMPARE_TYPES = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("compare/types"), OpCompareTypes)
 
 	// ========================== Misc Info Gathering =================================
+	@JvmField
 	val CURRENT_TICK = make(HexPattern.fromAngles("ddwaa", HexDir.NORTH_WEST), modLoc("current_tick"), OpCurrentTick)
+	@JvmField
 	val REMAINING_EVALS = make(HexPattern.fromAngles("eedqa", HexDir.WEST), modLoc("remaining_evals"), OpRemainingEvals)
+	@JvmField
 	val BREATH = make(HexPattern.fromAngles("aqawdwaqawd", HexDir.NORTH_WEST), modLoc("breath"), OpGetBreath)
+	@JvmField
 	val HEALTH =make(HexPattern.fromAngles("aqwawqa", HexDir.NORTH_WEST), modLoc("health"), OpGetHealth)
+	@JvmField
 	val LIGHT_LEVEL = make(HexPattern.fromAngles("qedqde", HexDir.NORTH_EAST), modLoc("light_level"), OpGetLightLevel)
 
 	// =============================== Misc Maths =====================================
+	@JvmField
 	val FACTORIAL = make(HexPattern.fromAngles("wawdedwaw", HexDir.SOUTH_EAST), modLoc("factorial"), OpFactorial)
 
 	// ================================ Everbook ======================================
+	@JvmField
 	val EVERBOOK_READ = make(HexPattern.fromAngles("eweeewedqdeddw", HexDir.NORTH_EAST), modLoc("everbook/read"), OpEverbookRead)
+	@JvmField
 	val EVERBOOK_WRITE = make(HexPattern.fromAngles("qwqqqwqaeaqaaw", HexDir.SOUTH_EAST), modLoc("everbook/write"), OpEverbookWrite)
+	@JvmField
 	val EVERBOOK_DELETE = make(HexPattern.fromAngles("qwqqqwqaww", HexDir.SOUTH_EAST), modLoc("everbook/delete"), OpEverbookDelete)
+	@JvmField
 	val EVERBOOK_TOGGLE_MACRO = make(HexPattern.fromAngles("eweeewedww", HexDir.SOUTH_WEST), modLoc("everbook/toggle_macro"), OpToggleMacro)
 
 	// ============================== Misc Spells =====================================
+	@JvmField
 	val SMELT = make(HexPattern.fromAngles("wqqqwqqadad", HexDir.EAST), modLoc("smelt"), OpSmelt)
+	@JvmField
 	val FREEZE = make(HexPattern.fromAngles("weeeweedada", HexDir.WEST), modLoc("freeze"), OpFreeze)
+	@JvmField
 	val FALLING_BLOCK = make(HexPattern.fromAngles("wqwawqwqwqwqwqw", HexDir.EAST), modLoc("falling_block"), OpFallingBlock)
 
 	// =============================== Wisp Stuff =====================================
+	@JvmField
 	val WISP_SUMMON_PROJECTILE = make(HexPattern.fromAngles("aqaeqeeeee", HexDir.NORTH_WEST), modLoc("wisp/summon/projectile"), OpSummonWisp(false))
+	@JvmField
 	val WISP_SUMMON_TICKING = make(HexPattern.fromAngles("aqaweewaqawee", HexDir.NORTH_WEST), modLoc("wisp/summon/ticking"), OpSummonWisp(true))
+	@JvmField
 	val WISP_MEDIA = make(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST), modLoc("wisp/media"), OpWispMedia)
+	@JvmField
 	val WISP_HEX = make(HexPattern.fromAngles("aweewaqaweewaawww", HexDir.SOUTH_EAST), modLoc("wisp/hex"), OpWispHex)
 
 	// Set and Get Move Target WEST awqwawqaw
+	@JvmField
 	val WISP_MOVE_TARGET_SET = make(HexPattern.fromAngles("awqwawqaw", HexDir.WEST), modLoc("wisp/move_target/set"), OpSetMoveTarget)
+	@JvmField
 	val WISP_MOVE_TARGET_GET = make(HexPattern.fromAngles("ewdwewdew", HexDir.EAST), modLoc("wisp/move_target/get"), OpGetMoveTarget)
 
 	// Entity purification and Zone distillations
+	@JvmField
 	val GET_ENTITY_WISP = make(HexPattern.fromAngles("qqwdedwqqdaqaaww", HexDir.SOUTH_EAST),
 		                         modLoc("get_entity/wisp"),
 		                         OpGetEntityAt{ entity -> entity is BaseWisp })
+	@JvmField
 	val ZONE_ENTITY_WISP = make(HexPattern.fromAngles("qqwdedwqqwdeddww", HexDir.SOUTH_EAST),
 		                          modLoc("zone_entity/wisp"),
 		                          OpGetEntitiesBy({ entity -> entity is BaseWisp }, false))
+	@JvmField
 	val ZONE_ENTITY_NOT_WISP = make(HexPattern.fromAngles("eewaqaweewaqaaww", HexDir.NORTH_EAST),
 		                              modLoc("zone_entity/not_wisp"),
 		                              OpGetEntitiesBy({ entity -> entity is BaseWisp }, true))
 
 	// Triggers
-	val WISP_TRIGGER_TICK = make(HexPattern.fromAngles("aqawded", HexDir.NORTH_WEST), modLoc("wisp/trigger/tick"), OpWispSetTrigger(WispTriggerTypes.TICK_TRIGGER_TYPE))
-	val WISP_TRIGGER_COMM = make(HexPattern.fromAngles("aqqqqqwdeddw", HexDir.EAST), modLoc("wisp/trigger/comm"), OpWispSetTrigger(WispTriggerTypes.COMM_TRIGGER_TYPE))
-	val WISP_TRIGGER_MOVE = make(HexPattern.fromAngles("eqwawqwaqww", HexDir.EAST), modLoc("wisp/trigger/move"), OpWispSetTrigger(WispTriggerTypes.MOVE_TRIGGER_TYPE))
+	@JvmField
+	val WISP_TRIGGER_TICK = make(HexPattern.fromAngles("aqawded", HexDir.NORTH_WEST),
+		                           modLoc("wisp/trigger/tick"),
+		                           OpWispSetTrigger(WispTriggerTypes.TICK_TRIGGER_TYPE))
+	@JvmField
+	val WISP_TRIGGER_COMM = make(HexPattern.fromAngles("aqqqqqwdeddw", HexDir.EAST),
+		                           modLoc("wisp/trigger/comm"),
+		                           OpWispSetTrigger(WispTriggerTypes.COMM_TRIGGER_TYPE))
+	@JvmField
+	val WISP_TRIGGER_MOVE = make(HexPattern.fromAngles("eqwawqwaqww", HexDir.EAST),
+		                           modLoc("wisp/trigger/move"),
+		                           OpWispSetTrigger(WispTriggerTypes.MOVE_TRIGGER_TYPE))
 
 	// Great
+	@JvmField
 	val CONSUME_WISP = make(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
-						              modLoc("wisp/consume"), OpConsumeWisp, true)
+						              modLoc("wisp/consume"),
+						              OpConsumeWisp,
+						              true)
 
 	// =============================== Link Stuff =====================================
+	@JvmField
 	val LINK_ENTITY = make(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST), modLoc("link/link_entity"), OpLinkEntity)
+	@JvmField
 	val LINK_ENTITIES = make(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST), modLoc("link/link_two_entities"), OpLinkEntities)
+	@JvmField
 	val UNLINK = make(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST), modLoc("link/unlink"), OpUnlink)
+	@JvmField
 	val LINK_GET = make(HexPattern.fromAngles("eqqqqqaww", HexDir.EAST), modLoc("link/get"), OpGetLinked)
+	@JvmField
 	val LINK_GET_INDEX = make(HexPattern.fromAngles("aeqqqqqawwd", HexDir.SOUTH_WEST), modLoc("link/get_index"), OpGetLinkedIndex)
+	@JvmField
 	val LINK_NUM = make(HexPattern.fromAngles("qeeeeedww", HexDir.WEST), modLoc("link/num"), OpNumLinked)
+	@JvmField
 	val LINK_COMM_SEND = make(HexPattern.fromAngles("qqqqqwdeddw", HexDir.NORTH_WEST), modLoc("link/comm/send"), OpSendIota)
+	@JvmField
 	val LINK_COMM_READ = make(HexPattern.fromAngles("weeeeew", HexDir.NORTH_EAST), modLoc("link/comm/read"), OpReadReceivedIota)
+	@JvmField
 	val LINK_COMM_NUM = make(HexPattern.fromAngles("aweeeeewaa", HexDir.SOUTH_EAST), modLoc("link/comm/num"), OpNumReceivedIota)
+	@JvmField
 	val LINK_COMM_OPEN_TRANSMIT = make(HexPattern.fromAngles("qwdedwq", HexDir.WEST), modLoc("link/comm/open_transmit"), OpOpenTransmit)
 	@JvmField
 	val LINK_COMM_CLOSE_TRANSMIT = make(HexPattern.fromAngles("ewaqawe", HexDir.EAST), modLoc("link/comm/close_transmit"), OpCloseTransmit)
