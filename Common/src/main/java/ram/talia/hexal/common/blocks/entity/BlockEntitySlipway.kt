@@ -51,7 +51,7 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 
 			val colouriser = getRandomColouriser()
 
-			val wisp = WanderingWisp(level!!, Vec3.atCenterOf(pos), 30 * ManaConstants.DUST_UNIT)
+			val wisp = WanderingWisp(level!!, Vec3.atCenterOf(pos))
 			wisp.setColouriser(colouriser)
 			level!!.addFreshEntity(wisp)
 

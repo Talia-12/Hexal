@@ -25,7 +25,6 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
         if (mCast != null && mCast.hasWisp() && mCast.wisp.summonedChildThisCast) // wisps can only summon one child per cast.
             throw MishapEvalTooDeep()
 
-
         val spell = when (ticking) {
             true -> {
                 media = args.getChecked(2, argc)

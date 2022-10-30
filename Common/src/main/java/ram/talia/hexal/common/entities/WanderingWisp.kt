@@ -43,9 +43,8 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = false
 
-	constructor(world: Level, pos: Vec3, media: Int) : this(HexalEntities.WANDERING_WISP, world) {
+	constructor(world: Level, pos: Vec3) : this(HexalEntities.WANDERING_WISP, world) {
 		setPos(pos)
-		this.media = media
 		startTick = world.gameTime
 	}
 
