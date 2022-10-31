@@ -14,9 +14,7 @@ class MsgToggleMacroAck(val key: HexPattern) : IMessage {
 		buf.writeNbt(key.serializeToNBT())
 	}
 
-	override fun getFabricId(): ResourceLocation {
-		TODO("Not yet implemented")
-	}
+	override fun getFabricId() = ID
 
 	companion object {
 		@JvmField
