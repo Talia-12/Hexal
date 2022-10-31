@@ -497,6 +497,8 @@ def write_page(out, pageid, page):
 					with out.pair_tag("canvas", clazz="spell-viz", width=216, height=216, data_string=string, data_start=start_angle.lower(), data_per_world=per_world):
 						out.text("Your browser does not support visualizing patterns. Pattern code: " + string)
 			write_block(out, page["text"])
+		elif ty == "hexal:everbook_entry":
+			return
 		else:
 			with out.pair_tag("p", clazz="todo-note"):
 				out.text("TODO: Missing processor for type: " + ty)
