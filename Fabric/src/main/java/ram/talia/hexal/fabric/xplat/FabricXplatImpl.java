@@ -17,6 +17,7 @@ import ram.talia.hexal.common.network.MsgToggleMacroAck;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class FabricXplatImpl implements IXplatAbstractions {
@@ -117,6 +118,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
         HexalCardinalComponents.EVERBOOK.get(player).setIota(key, iota);
     }
     
+    @Nullable
     @Override
     public void removeEverbookIota (ServerPlayer player, HexPattern key) {
         HexalCardinalComponents.EVERBOOK.get(player).removeIota(key);

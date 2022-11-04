@@ -92,6 +92,12 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 	}
 	
 	@Override
+	public CompoundTag getClientEverbookIota (HexPattern key) {
+		assert Minecraft.getInstance().player != null;
+		return HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).getClientIota(key);
+	}
+	
+	@Override
 	public void setClientEverbookIota (HexPattern key, CompoundTag iota) {
 		assert Minecraft.getInstance().player != null;
 		HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).setClientIota(key, iota);
@@ -100,7 +106,7 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public void removeClientEverbookIota (HexPattern key) {
 		assert Minecraft.getInstance().player != null;
-		HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).removeIota(key);
+		HexalCardinalComponents.EVERBOOK.get(Minecraft.getInstance().player).removeClientIota(key);
 	}
 	
 	@Override

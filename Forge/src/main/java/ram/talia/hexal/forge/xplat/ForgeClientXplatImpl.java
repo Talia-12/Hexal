@@ -25,8 +25,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.MinecraftForgeClient;
-import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.api.everbook.Everbook;
+import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
 
@@ -66,6 +65,15 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public void registerItemProperty (Item item, ResourceLocation id, ItemPropertyFunction func) {
 		ItemProperties.register(item, id, func);
+	}
+	
+	@Nullable
+	@Override
+	public CompoundTag getClientEverbookIota (HexPattern key) {
+		if (EverbookEventHandler.localEverbook == null)
+			return null;
+		
+		return EverbookEventHandler.localEverbook.getClientIota(key);
 	}
 	
 	@Override

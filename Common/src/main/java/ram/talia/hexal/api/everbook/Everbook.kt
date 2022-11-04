@@ -80,6 +80,8 @@ class Everbook(val uuid: UUID,
 		return entries.values.map { it.first }.sortedBy { it.anglesSignature() }[index]
 	}
 
+	fun getClientIota(key: HexPattern): CompoundTag? = entries[getKey(key)]?.second
+
 	private fun getKey(key: HexPattern): String {
 		val angles = key.anglesSignature()
 		// Bookkeepers: - contains no angle characters, so can't occur any way other than this

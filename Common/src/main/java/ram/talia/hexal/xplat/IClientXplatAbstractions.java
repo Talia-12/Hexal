@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.everbook.Everbook;
 
+import javax.annotation.Nullable;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,12 +44,18 @@ public interface IClientXplatAbstractions {
 	void registerItemProperty(Item item, ResourceLocation id, ItemPropertyFunction func);
 	
 	/**
-	 * Should only be called on the clientside; sets the client's everbook to contain the passed iota at the passed key.
+	 * Gets the iota at the passed key in the client's Everbook.
+	 */
+	@Nullable
+	CompoundTag getClientEverbookIota(HexPattern key);
+	
+	/**
+	 * Sets the client's everbook to contain the passed iota at the passed key.
 	 */
 	void setClientEverbookIota(HexPattern key, CompoundTag iota);
 	
 	/**
-	 * Should only be called on the clientside; removes the passed key from the client's everbook.
+	 * Removes the passed key from the client's everbook.
 	 */
 	void removeClientEverbookIota(HexPattern key);
 	

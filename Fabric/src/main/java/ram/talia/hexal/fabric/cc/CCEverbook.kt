@@ -71,6 +71,7 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 
 	fun isMacro(key: HexPattern) = everbook?.isMacro(key)
 
+	fun getClientIota(key: HexPattern): CompoundTag? = everbook?.getClientIota(key)
 	fun setClientIota(key: HexPattern, iota: CompoundTag) = everbook!!.setIota(key, iota)
 	fun removeClientIota(key: HexPattern) = everbook!!.removeIota(key)
 
@@ -86,6 +87,7 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 	 * Data stored on the client rather than the server
 	 */
 	override fun writeToNbt(tag: CompoundTag) { }
+
 	//endregion
 	companion object {
 
