@@ -6,12 +6,14 @@ import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
+import java.nio.file.Files
+import java.nio.file.attribute.BasicFileAttributes
 import java.util.UUID
+import kotlin.io.path.*
 
 /**
  * In a similar vein to [ram.talia.hexal.api.spell.casting.WispCastingManager], one instance of this class will be created per player; when that player leaves the world
@@ -102,15 +104,37 @@ class Everbook(val uuid: UUID,
 	}
 
 	/**
-	 * This function saves the Everbook to the client's disk so that it is accessible between worlds (ONLY CALL ON THE CLIENT).
+	 * This function saves the Everbook to the client's disk so that it is accessible between worlds (ONLY CALL ON THE CLIENT). Keeps 6 backups of the Everbook around,
+	 * overwriting the oldest if 6 or more exist.
 	 */
 	fun saveToDisk() {
 		// has to be here rather than an instance variable so that it doesn't try to access Minecraft on the server thread.
-		val EVERBOOK_PATH = Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
+		val MINECRAFT_PATH = Minecraft.getInstance().gameDirectory.toPath()
+		val everbookPath = MINECRAFT_PATH.resolve("everbook/everbook-$uuid.dat")
+
+		val oldEverbookPath = if (everbookPath.exists()) everbookPath else Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
+
+		if (oldEverbookPath.exists()) {
+			val currentBackups = { Files.list(MINECRAFT_PATH.resolve("everbook/").apply { createDirectories() })
+																	.filter{ p -> p.fileName.name.contains("backup") && p.fileName.name.contains(uuid.toString()) } }
+
+			val currentBackupCount = currentBackups.invoke().count()
+
+			val destination =
+				if (currentBackupCount < 6)
+					MINECRAFT_PATH.resolve("everbook/everbook-$uuid-backup-$currentBackupCount.dat")
+				else
+					currentBackups.invoke()
+						.min(Comparator.comparing { p -> Files.readAttributes(p, BasicFileAttributes::class.java).lastModifiedTime().toInstant() }) // minimum by file age
+						.orElse(MINECRAFT_PATH.resolve("everbook/everbook-$uuid-backup-$currentBackupCount.dat"))
+
+			destination.deleteIfExists()
+			oldEverbookPath.copyTo(destination)
+		}
 
 		val tag = this.serialiseToNBT()
-		HexalAPI.LOGGER.info("saving everbook $tag for $uuid at $EVERBOOK_PATH")
-		everbookEncrypterDecrypter.encrypt(tag, EVERBOOK_PATH.toFile())
+		HexalAPI.LOGGER.info("saving everbook $tag at $everbookPath")
+		everbookEncrypterDecrypter.encrypt(tag, everbookPath.toFile())
 	}
 
 	companion object {
@@ -139,12 +163,16 @@ class Everbook(val uuid: UUID,
 		@JvmStatic
 		fun fromDisk(uuid: UUID): Everbook {
 			// has to be here rather than an instance variable so that it doesn't try to access Minecraft on the server thread.
-			val EVERBOOK_PATH = Minecraft.getInstance().gameDirectory.toPath().resolve("everbook.dat")
+			val MINECRAFT_PATH = Minecraft.getInstance().gameDirectory.toPath()
+			var everbookPath = MINECRAFT_PATH.resolve("everbook/everbook-$uuid.dat")
+
+			if (!everbookPath.exists())
+				everbookPath = MINECRAFT_PATH.resolve("everbook.dat")
 
 			val everbookEncrypterDecrypter = FileEncrypterDecrypter(FileEncrypterDecrypter.getKey(uuid, "AES"), "AES/CBC/PKCS5Padding")
-			val tag = everbookEncrypterDecrypter.decryptCompound(EVERBOOK_PATH.toFile()) ?: return Everbook(uuid)
+			val tag = everbookEncrypterDecrypter.decryptCompound(everbookPath.toFile()) ?: return Everbook(uuid)
 
-			HexalAPI.LOGGER.info("loading everbook $tag for $uuid from $EVERBOOK_PATH")
+			HexalAPI.LOGGER.info("loading everbook $tag for $uuid from $everbookPath")
 
 			return fromNbt(tag)
 		}

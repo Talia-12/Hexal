@@ -12,14 +12,13 @@ import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 import vazkii.patchouli.api.IComponentRenderContext
 import vazkii.patchouli.api.IVariable
 import vazkii.patchouli.client.book.gui.GuiBook
 import java.util.function.UnaryOperator
 
-@Suppress("SameParameterValue")
+@Suppress("SameParameterValue", "unused")
 class EverbookPatternComponent : AbstractPatternComponent() {
 	@Transient
 	var indexNum: Int = -1
@@ -29,7 +28,6 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 	var iota: CompoundTag? = null
 
 	override fun build(x: Int, y: Int, pagenum: Int) {
-		HexalAPI.LOGGER.info("$x, $y")
 		super.build(x, if (y != -1 && y != 70) { y } else { 50 }, pagenum)
 		indexNum = pagenum - 1
 	}
