@@ -1,8 +1,10 @@
 package ram.talia.hexal.common.casting.actions.spells.great
 
-import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import com.mojang.datafixers.util.Either
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.HexalAPI
@@ -11,8 +13,8 @@ import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln
 
-object OpConsumeWisp : SpellOperator {
-	const val COST_FOR_OWN = ManaConstants.SHARD_UNIT
+object OpConsumeWisp : SpellAction {
+	const val COST_FOR_OWN = MediaConstants.SHARD_UNIT
 	const val COST_FOR_OTHERS_PER_MEDIA = 1.5
 
 	override val argc = 1
@@ -20,8 +22,8 @@ object OpConsumeWisp : SpellOperator {
 	override val isGreat = true
 
 	@Suppress("CAST_NEVER_SUCCEEDS")
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		val consumed = args.getChecked<IMediaEntity<*>>(0, argc)
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+		val consumed = args.getEntity(0, argc) as? IMediaEntity<*> ?: throw MishapInvalidIota.ofType(args[0], 0, "consumable_entity")
 
 		ctx.assertEntityInRange(consumed.get())
 

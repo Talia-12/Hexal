@@ -8,8 +8,8 @@ import at.petrak.hexcasting.datagen.recipe.HexplatRecipes
 import at.petrak.hexcasting.forge.datagen.HexForgeDataGenerators
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import at.petrak.paucal.api.forge.datagen.PaucalForgeDatagenWrappers
+import net.minecraftforge.data.event.GatherDataEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.lib.HexalSounds
 import ram.talia.hexal.datagen.recipes.HexalplatRecipes
@@ -32,14 +32,10 @@ class HexalForgeDataGenerators {
 
 			val gen = ev.generator
 //			val efh = ev.existingFileHelper
-			if (ev.includeClient()) {
-					gen.addProvider(HexalSounds.provider(gen))
-//				gen.addProvider(HexItemModels(gen, efh))
-//				gen.addProvider(HexBlockStatesAndModels(gen, efh))
-			}
-			if (ev.includeServer()) {
-//				gen.addProvider(PaucalForgeDatagenWrappers.addEFHToAdvancements(HexAdvancements(gen), efh))
-			}
+			gen.addProvider(ev.includeClient(), HexalSounds.provider(gen))
+//			gen.addProvider(ev.includeClient(), HexItemModels(gen, efh))
+//			gen.addProvider(ev.includeClient(), HexBlockStatesAndModels(gen, efh))
+//			gen.addProvider(ev.includeServer(), PaucalForgeDatagenWrappers.addEFHToAdvancements(HexAdvancements(gen), efh))
 		}
 
 		private fun configureForgeDatagen(ev: GatherDataEvent) {
@@ -47,8 +43,7 @@ class HexalForgeDataGenerators {
 
 			val gen = ev.generator
 			val efh = ev.existingFileHelper
-			if (ev.includeServer()) {
-				gen.addProvider(HexalplatRecipes(gen))
+			gen.addProvider(ev.includeServer(), HexalplatRecipes(gen))
 //				val xtags = IXplatAbstractions.INSTANCE.tags()
 //				val blockTagProvider = PaucalForgeDatagenWrappers.addEFHToTagProvider(
 //					HexBlockTagProvider(gen, xtags), efh
@@ -58,7 +53,6 @@ class HexalForgeDataGenerators {
 //					HexItemTagProvider(gen, blockTagProvider, IXplatAbstractions.INSTANCE.tags()), efh
 //				)
 //				gen.addProvider(itemTagProvider)
-			}
 		}
 	}
 }

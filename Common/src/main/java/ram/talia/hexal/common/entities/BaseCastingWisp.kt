@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.misc.ManaConstants
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.misc.MediaConstants
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
@@ -79,18 +79,18 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	// LazyIotaList used so that the ListTag loaded from NBT is only converted
 	// into a List of SpellDatum's when needed, meaning that it's guaranteed
 	// to happen at the point where Level.getEntity works properly.
-	var hex: List<SpellDatum<*>>
+	var hex: List<Iota>
 		get() {
 			if (level.isClientSide)
 				throw Exception("BaseCastingWisp.hex should only be accessed on server.") // TODO: create and replace with ServerOnlyException
 			return lazyHex!!.get()
 		}
 		set(value) {
-			(value as? MutableList<SpellDatum<*>>)?.let { lazyHex?.set(it) }
+			(value as? MutableList<Iota>)?.let { lazyHex?.set(it) }
 		}
 	private val lazyHex: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 
-	var receivedIotas: MutableList<SpellDatum<*>>
+	var receivedIotas: MutableList<Iota>
 		get() {
 			if (level.isClientSide)
 				throw Exception("BaseCastingWisp.receivedIotas should only be accessed on server.") // TODO: create and replace with ServerOnlyException
@@ -199,9 +199,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	 */
 	fun scheduleCast(
 		priority: Int,
-		hex: List<SpellDatum<*>>,
-		initialStack: MutableList<SpellDatum<*>> = ArrayList<SpellDatum<*>>(),
-		initialRavenmind: SpellDatum<*> = SpellDatum.make(Widget.NULL),
+		hex: List<Iota>,
+		initialStack: MutableList<Iota> = ArrayList<Iota>(),
+		initialRavenmind: Iota? = null,
 	): Boolean {
 		if (level.isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
@@ -217,13 +217,13 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		return scheduledCast
 	}
 
-	override fun receiveIota(iota: SpellDatum<*>) {
+	override fun receiveIota(iota: Iota) {
 		receivedIotas.add(iota)
 	}
 
-	override fun nextReceivedIota(): SpellDatum<*> {
+	override fun nextReceivedIota(): Iota {
 		if (receivedIotas.size == 0) {
-			return SpellDatum.make(Widget.NULL)
+			return NullIota()
 		}
 
 		val iota = receivedIotas[0]
@@ -352,9 +352,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		const val TAG_ACTIVE_TRIGGER = "active_trigger"
 		const val TAG_SEON = "seon"
 
-		const val WISP_COST_PER_TICK_NORMAL      = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()
-		const val WISP_COST_PER_TICK_UNTRIGGERED = (0.25  * ManaConstants.DUST_UNIT / 20.0).toInt()
-		const val COST_PER_LINK_PER_TICK = (0.01 * ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK_NORMAL      = (0.325 * MediaConstants.DUST_UNIT / 20.0).toInt()
+		const val WISP_COST_PER_TICK_UNTRIGGERED = (0.25  * MediaConstants.DUST_UNIT / 20.0).toInt()
+		const val COST_PER_LINK_PER_TICK = (0.01 * MediaConstants.DUST_UNIT / 20.0).toInt()
 		const val SEON_DISCOUNT_FACTOR = 20
 	}
 }

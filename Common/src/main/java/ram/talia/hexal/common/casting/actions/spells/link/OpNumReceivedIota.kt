@@ -1,21 +1,21 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.spell.ConstManaOperator
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.asSpellResult
+import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpNumReceivedIota : ConstManaOperator {
+object OpNumReceivedIota : ConstManaAction {
 	override val argc = 0
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
+	@Suppress("CAST_NEVER_SUCCEEDS")
+	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
 		HexalAPI.LOGGER.info("pattern OpNumReceivedIota executed")
 
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
@@ -23,6 +23,6 @@ object OpNumReceivedIota : ConstManaOperator {
 			else -> wisp
 		}
 
-		return linkThis.numRemainingIota().asSpellResult
+		return linkThis.numRemainingIota().asActionResult
 	}
 }

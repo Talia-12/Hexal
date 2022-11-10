@@ -2,10 +2,12 @@ package ram.talia.hexal.common.casting.actions
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.DoubleIota
+import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.HexalAPI
 import kotlin.math.*
 
-object OpFactorial : ConstManaOperator {
+object OpFactorial : ConstManaAction {
 	override val argc = 1
 
 	private fun factorial(number: Int): Long {
@@ -31,13 +33,13 @@ object OpFactorial : ConstManaOperator {
 		return exp(logGamma(x))
 	}
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		val arg = args.getChecked<Double>(0, argc)
+	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+		val arg = args.getDouble(0, argc)
 		val argInt = arg.roundToInt()
-		if (argInt >= 0 && arg.tolerantEquals(argInt)) {
-			return factorial(argInt).asSpellResult
+		if (argInt >= 0 && DoubleIota.tolerates(arg, argInt.toDouble())) {
+			return factorial(argInt).asActionResult
 		}
 
-		return gamma(arg + 1).asSpellResult
+		return gamma(arg + 1).asActionResult
 	}
 }

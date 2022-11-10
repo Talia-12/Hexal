@@ -1,6 +1,5 @@
 package ram.talia.hexal.xplat;
 
-import at.petrak.hexcasting.api.spell.SpellDatum;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -20,7 +19,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.api.everbook.Everbook;
 
 import javax.annotation.Nullable;
 import java.util.ServiceLoader;
@@ -38,8 +36,6 @@ public interface IClientXplatAbstractions {
 	
 	<T extends ParticleOptions> void registerParticleType(ParticleType<T> type,
 																												Function<SpriteSet, ParticleProvider<T>> factory);
-	
-	<T extends ClientTooltipComponent & TooltipComponent> void registerIdentityTooltipMapping(Class<T> clazz);
 	
 	void registerItemProperty(Item item, ResourceLocation id, ItemPropertyFunction func);
 	

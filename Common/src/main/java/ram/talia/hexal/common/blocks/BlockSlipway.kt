@@ -25,10 +25,12 @@ class BlockSlipway(properties: Properties) : Block(properties), EntityBlock, IFo
 		return BlockEntityTicker(Companion::tick)
 	}
 
+	@Deprecated("Deprecated in Java", ReplaceWith("RenderShape.ENTITYBLOCK_ANIMATED", "net.minecraft.world.level.block.RenderShape"))
 	override fun getRenderShape(state: BlockState): RenderShape {
 		return RenderShape.ENTITYBLOCK_ANIMATED
 	}
 
+	@Deprecated("Deprecated in Java", ReplaceWith("Shapes.empty()", "net.minecraft.world.phys.shapes.Shapes"))
 	override fun getShape(state: BlockState, worldIn: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
 		return Shapes.empty()
 	}

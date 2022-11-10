@@ -2,6 +2,9 @@ package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.mishaps.MishapEntityTooFarAway
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
 import net.minecraft.server.level.ServerPlayer
@@ -11,13 +14,13 @@ import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpLinkEntities : SpellOperator {
+object OpLinkEntities : SpellAction {
 	override val argc = 2
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		val entityThis = args.getChecked<Entity>(0, OpLinkEntity.argc)
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+		val entityThis = args.getEntity(0, OpLinkEntity.argc)
 		if (entityThis !is LinkableEntity && entityThis !is ServerPlayer)
-			throw MishapInvalidIota.ofClass(SpellDatum.make(entityThis), 1, LinkableEntity::class.java)
+			throw MishapInvalidIota.ofType(EntityIota(entityThis), 1, "entity.linkable")
 
 		val linkThis = when (entityThis) {
 			is LinkableEntity -> entityThis
@@ -25,9 +28,9 @@ object OpLinkEntities : SpellOperator {
 			else -> throw Exception("How did I get here")
 		}
 
-		val entityOther = args.getChecked<Entity>(1, OpLinkEntity.argc)
+		val entityOther = args.getEntity(1, OpLinkEntity.argc)
 		if (entityOther !is LinkableEntity && entityOther !is ServerPlayer)
-			throw MishapInvalidIota.ofClass(SpellDatum.make(entityOther), 0, LinkableEntity::class.java)
+			throw MishapInvalidIota.ofType(EntityIota(entityOther), 0, "entity.linkable")
 		if (entityThis.uuid == entityOther.uuid)
 			throw MishapLinkToSelf(linkThis)
 

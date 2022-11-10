@@ -2,7 +2,7 @@
 
 package ram.talia.hexal.common.casting
 
-import at.petrak.hexcasting.api.spell.Operator
+import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.common.casting.operators.selectors.*
@@ -20,9 +20,9 @@ import ram.talia.hexal.common.entities.BaseWisp
 object Patterns {
 
 	@JvmField
-	val PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
+	var PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()
 	@JvmField
-	val PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
+	var PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()
 
 	// ============================ Type Comparison ===================================
 	@JvmField
@@ -156,7 +156,7 @@ object Patterns {
 	@JvmField
 	val LINK_COMM_CLOSE_TRANSMIT = make(HexPattern.fromAngles("ewaqawe", HexDir.EAST), modLoc("link/comm/close_transmit"), OpCloseTransmit)
 
-	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Operator, isPerWorld: Boolean = false): Triple<HexPattern, ResourceLocation, Operator> {
+	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): Triple<HexPattern, ResourceLocation, Action> {
 		val triple = Triple(pattern, location, operator)
 		if (isPerWorld)
 			PER_WORLD_PATTERNS.add(triple)

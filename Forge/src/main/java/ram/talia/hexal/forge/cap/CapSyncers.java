@@ -16,7 +16,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions;
 public class CapSyncers {
 	@SubscribeEvent
 	public static void syncDataOnLogin(PlayerEvent.PlayerLoggedInEvent evt) {
-		if (!(evt.getPlayer() instanceof ServerPlayer loggedInPlayer)) {
+		if (!(evt.getEntity() instanceof ServerPlayer loggedInPlayer)) {
 			return;
 		}
 		
@@ -31,7 +31,7 @@ public class CapSyncers {
 	
 	@SubscribeEvent
 	public static void syncDataOnRejoin(PlayerEvent.PlayerRespawnEvent evt) {
-		if (!(evt.getPlayer() instanceof ServerPlayer loggedInPlayer)) {
+		if (!(evt.getEntity() instanceof ServerPlayer loggedInPlayer)) {
 			return;
 		}
 		

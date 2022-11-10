@@ -1,16 +1,16 @@
 package ram.talia.hexal.common.casting.actions
 
-import at.petrak.hexcasting.api.spell.ConstManaOperator
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.asSpellResult
+import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 
-object OpRemainingEvals : ConstManaOperator {
+object OpRemainingEvals : ConstManaAction {
 	override val argc = 0
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
+	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
 		@Suppress("KotlinConstantConditions", "CAST_NEVER_SUCCEEDS")
-		return (ctx as? IMixinCastingContext)?.remainingDepth()?.asSpellResult ?: (-1).asSpellResult
+		return (ctx as? IMixinCastingContext)?.remainingDepth()?.asActionResult ?: (-1).asActionResult
 	}
 }

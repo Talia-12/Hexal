@@ -1,9 +1,10 @@
 package ram.talia.hexal.api.everbook
 
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
+import at.petrak.hexcasting.common.lib.HexIotaTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.StringTag
@@ -33,9 +34,9 @@ class Everbook(val uuid: UUID,
 
 	private val macroHolder: MacroHolder = MacroHolder(this, macros)
 
-	fun getIota(key: HexPattern, level: ServerLevel): SpellDatum<*> {
+	fun getIota(key: HexPattern, level: ServerLevel): Iota {
 		val entry = entries[getKey(key)]
-		return if (entry == null) SpellDatum.make(Widget.NULL) else SpellDatum.fromNBT(entry.second, level)
+		return if (entry == null) NullIota() else HexIotaTypes.deserialize(entry.second, level)
 	}
 
 	internal fun getIota(key: String) : CompoundTag {
@@ -43,8 +44,8 @@ class Everbook(val uuid: UUID,
 		return entry?.second ?: CompoundTag()
 	}
 
-	fun setIota(key: HexPattern, iota: SpellDatum<*>) {
-		entries[getKey(key)] = Pair(key, iota.serializeToNBT())
+	fun setIota(key: HexPattern, iota: Iota) {
+		entries[getKey(key)] = Pair(key, HexIotaTypes.serialize(iota))
 
 		if (macroHolder.isMacro(key))
 			macroHolder.recalcMacros()

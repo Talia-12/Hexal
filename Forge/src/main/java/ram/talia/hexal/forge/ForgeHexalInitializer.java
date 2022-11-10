@@ -2,16 +2,23 @@ package ram.talia.hexal.forge;
 
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.GenericEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegisterEvent;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.common.casting.RegisterPatterns;
 import ram.talia.hexal.common.lib.*;
@@ -19,9 +26,9 @@ import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
 import ram.talia.hexal.common.lib.feature.HexalFeatures;
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
+import ram.talia.hexal.common.recipe.HexalRecipeTypes;
 import ram.talia.hexal.forge.cap.CapSyncers;
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
-import ram.talia.hexal.forge.eventhandlers.BiomeGenerationEventHandler;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
@@ -46,17 +53,18 @@ public class ForgeHexalInitializer {
 	}
 	
 	private static void initRegistry () {
-		bind(ForgeRegistries.FEATURES, HexalFeatures::registerFeatures);
+		bind(Registry.FEATURE_REGISTRY, HexalFeatures::registerFeatures);
 		bind(BuiltinRegistries.CONFIGURED_FEATURE, HexalConfiguredFeatures::registerConfiguredFeatures);
 		bind(BuiltinRegistries.PLACED_FEATURE, HexalPlacedFeatures::registerPlacedFeatures);
 		
-		bind(ForgeRegistries.SOUND_EVENTS, HexalSounds::registerSounds);
-		bind(ForgeRegistries.BLOCKS, HexalBlocks::registerBlocks);
-		bind(ForgeRegistries.ITEMS, HexalBlocks::registerBlockItems);
-		bind(ForgeRegistries.BLOCK_ENTITIES, HexalBlockEntities::registerBlockEntities);
-		bind(ForgeRegistries.ENTITIES, HexalEntities::registerEntities);
+		bind(Registry.SOUND_EVENT_REGISTRY, HexalSounds::registerSounds);
+		bind(Registry.BLOCK_REGISTRY, HexalBlocks::registerBlocks);
+		bind(Registry.ITEM_REGISTRY, HexalBlocks::registerBlockItems);
+		bind(Registry.BLOCK_ENTITY_TYPE_REGISTRY, HexalBlockEntities::registerBlockEntities);
+		bind(Registry.ENTITY_TYPE_REGISTRY, HexalEntities::registerEntities);
 		
-		bind(ForgeRegistries.RECIPE_SERIALIZERS, HexalRecipeSerializers::registerSerializers);
+		bind(Registry.RECIPE_SERIALIZER_REGISTRY, HexalRecipeSerializers::registerSerializers);
+		bind(Registry.RECIPE_TYPE_REGISTRY, HexalRecipeTypes::registerTypes);
 	}
 	
 	private static void initListeners () {
@@ -74,7 +82,12 @@ public class ForgeHexalInitializer {
 		modBus.addListener((FMLCommonSetupEvent evt) -> evt.enqueueWork(RegisterPatterns::registerPatterns));
 		
 		// We have to do these at some point when the registries are still open
-		modBus.addGenericListener(Item.class, (RegistryEvent<Item> evt) -> HexalRecipeSerializers.registerTypes());
+//		modBus.addGenericListener(Item.class, (GenericEvent<Item> evt) -> HexalRecipeSerializers.registerTypes());
+//		modBus.addListener((RegisterEvent evt) -> {
+//			if (evt.getRegistryKey().equals(Registry.ITEM_REGISTRY)) {
+//				HexalRecipeSerializers.registerTypes();
+//			}
+//		});
 		
 		modBus.register(HexalForgeDataGenerators.class);
 		
@@ -82,17 +95,14 @@ public class ForgeHexalInitializer {
 		evBus.register(CapSyncers.class);
 		evBus.register(PlayerLinkstoreEventHandler.class);
 		evBus.register(EverbookEventHandler.class);
-		evBus.register(BiomeGenerationEventHandler.class);
 	}
 	
 	// https://github.com/VazkiiMods/Botania/blob/1.18.x/Forge/src/main/java/vazkii/botania/forge/ForgeCommonInitializer.java
-	private static <T extends IForgeRegistryEntry<T>> void bind (IForgeRegistry<T> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
-		getModEventBus().addGenericListener(registry.getRegistrySuperType(), (RegistryEvent.Register<T> event) -> {
-			IForgeRegistry<T> forgeRegistry = event.getRegistry();
-			source.accept((t, rl) -> {
-				t.setRegistryName(rl);
-				forgeRegistry.register(t);
-			});
+	private static <T> void bind (ResourceKey<Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+		getModEventBus().addListener((RegisterEvent event) -> {
+			if (registry.equals(event.getRegistryKey())) {
+				source.accept((t, rl) -> event.register(registry, rl, () -> t));
+			}
 		});
 	}
 	

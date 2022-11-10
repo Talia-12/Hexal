@@ -1,6 +1,6 @@
 package ram.talia.hexal.forge.xplat;
 
-import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.network.protocol.Packet;
@@ -96,12 +96,12 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key) {
+	public Iota getEverbookIota (ServerPlayer player, HexPattern key) {
 		return EverbookEventHandler.getIota(player, key);
 	}
 	
 	@Override
-	public void setEverbookIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+	public void setEverbookIota (ServerPlayer player, HexPattern key, Iota iota) {
 		EverbookEventHandler.setIota(player, key, iota);
 	}
 	
@@ -116,7 +116,7 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key) {
+	public List<Iota> getEverbookMacro (ServerPlayer player, HexPattern key) {
 		return EverbookEventHandler.getMacro(player, key);
 	}
 	

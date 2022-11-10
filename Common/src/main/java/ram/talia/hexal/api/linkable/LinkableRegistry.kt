@@ -10,6 +10,7 @@ object LinkableRegistry {
 	const val TAG_TYPE = "type"
 	const val TAG_LINKABLE = "linkable"
 
+	// TODO: Refactor to use Minecraft Registry class
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*, *>> = mutableMapOf()
 
 	class RegisterLinkableTypeException(msg: String) : Exception(msg)

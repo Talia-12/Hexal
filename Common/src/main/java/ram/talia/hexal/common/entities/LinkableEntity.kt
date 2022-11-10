@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.spellListOf
+import at.petrak.hexcasting.api.spell.SpellList
+import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asList
 import net.minecraft.nbt.CompoundTag
@@ -22,8 +23,8 @@ import ram.talia.hexal.api.linkable.LinkableTypes
 import ram.talia.hexal.api.nbt.toNbtList
 
 abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable<LinkableEntity>, ILinkable.IRenderCentre {
-	override val asSpellResult
-		get() = spellListOf(this)
+	override val asActionResult
+		get() = listOf(EntityIota(this))
 
 	var linked: MutableList<ILinkable<*>>
 		get() {

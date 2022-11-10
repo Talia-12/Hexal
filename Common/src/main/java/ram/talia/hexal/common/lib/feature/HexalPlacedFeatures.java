@@ -1,20 +1,15 @@
 package ram.talia.hexal.common.lib.feature;
 
 import net.minecraft.core.Holder;
-import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.*;
-import org.apache.logging.log4j.util.TriConsumer;
-import ram.talia.hexal.api.HexalAPI;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 import static ram.talia.hexal.api.HexalAPI.modLoc;
 

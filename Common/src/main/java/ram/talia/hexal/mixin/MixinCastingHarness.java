@@ -1,11 +1,12 @@
 package ram.talia.hexal.mixin;
 
-import at.petrak.hexcasting.api.spell.DatumType;
-import at.petrak.hexcasting.api.spell.SpellDatum;
-import at.petrak.hexcasting.api.spell.Widget;
 import at.petrak.hexcasting.api.spell.casting.*;
+import at.petrak.hexcasting.api.spell.iota.Iota;
+import at.petrak.hexcasting.api.spell.iota.PatternIota;
+import at.petrak.hexcasting.api.spell.math.HexDir;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
-import net.minecraft.network.chat.Component;
+import at.petrak.hexcasting.common.lib.HexIotaTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.casting.Patterns;
-import ram.talia.hexal.common.casting.RegisterPatterns;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -97,10 +97,10 @@ public abstract class MixinCastingHarness {
 					cancellable = true,
 					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 					remap = false)
-	private void executeIotaMacro (SpellDatum<?> iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
+	private void executeIotaMacro (Iota iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
 		CastingContext ctx = harness.getCtx();
 		
-		List<SpellDatum<?>> toExecute;
+		List<Iota> toExecute;
 		
 		// only work if the caster's enlightened, the caster is staff-casting, and they haven't escaped this pattern
 		// (meaning you can get a copy of the pattern to mark it as not a macro again)
@@ -108,10 +108,11 @@ public abstract class MixinCastingHarness {
 			return;
 		if (!ctx.isCasterEnlightened() || this.escapeNext)
 			toExecute = new ArrayList<>(Collections.singleton(iota));
-		else if (iota.getType() != DatumType.PATTERN || ((HexPattern) iota.getPayload()).anglesSignature().equals("qqqaw")) // hacky, make it so people can't lock themselves
+		else if (iota.getType() != HexIotaTypes.PATTERN
+						 || ((PatternIota) iota).getPattern().sigsEqual(HexPattern.fromAngles("qqqaw", HexDir.EAST))) // hacky, make it so people can't lock themselves
 			toExecute = new ArrayList<>(Collections.singleton(iota));
 		else {
-			HexPattern pattern = (HexPattern) iota.getPayload();
+			HexPattern pattern = ((PatternIota) iota).getPattern();
 			toExecute = IXplatAbstractions.INSTANCE.getEverbookMacro(ctx.getCaster(), pattern);
 			if (toExecute == null)
 				toExecute = new ArrayList<>(Collections.singleton(iota));
@@ -119,7 +120,9 @@ public abstract class MixinCastingHarness {
 		
 		// don't send unescaped escapes to the Linkable (lets you escape macros)
 		// TODO: HACKYY
-		boolean isUnescapedEscape = !this.escapeNext && iota.getType() == DatumType.PATTERN && ((HexPattern) iota.getPayload()).anglesSignature().equals("qqqaw");
+		boolean isUnescapedEscape = !this.escapeNext &&
+																iota.getType() == HexIotaTypes.PATTERN &&
+																((PatternIota) iota).getPattern().sigsEqual(HexPattern.fromAngles("qqqaw", HexDir.EAST));
 
 		// sends the iotas straight to the Linkable that the player is forwarding iotas to, if it exists
 		var transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());
@@ -131,8 +134,8 @@ public abstract class MixinCastingHarness {
 				var it = iter.next();
 				
 				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
-				if (!this.escapeNext && it.getType() == DatumType.PATTERN &&
-						((HexPattern) it.getPayload()).anglesSignature().equals(Patterns.LINK_COMM_CLOSE_TRANSMIT.getFirst().anglesSignature()))
+				if (!this.escapeNext && iota.getType() == HexIotaTypes.PATTERN &&
+						((PatternIota) iota).getPattern().sigsEqual(Patterns.LINK_COMM_CLOSE_TRANSMIT.getFirst()))
 					break;
 				
 				iter.remove();
@@ -150,9 +153,12 @@ public abstract class MixinCastingHarness {
 		boolean isEdgeTransmit = transmitting ^ wasTransmitting; // don't mark ESCAPED the opening and closing patterns.
 		boolean isStackClear = ret.isStackClear() && !transmitting;
 		ResolvedPatternType type = (transmitting && !isUnescapedEscape && !isEdgeTransmit) ? ResolvedPatternType.ESCAPED : ret.getResolutionType();
-		List<Component> stackDesc = transmitting ? transmittingTo.transmittingTargetReturnDisplay() : ret.getStackDesc();
+		List<CompoundTag> stack = transmitting ? transmittingTo.getAsActionResult().stream().map(HexIotaTypes::serialize).toList() : ret.getStack();
+		List<CompoundTag> parenthesized = transmitting ? List.of() : ret.getParenthesized();
+		CompoundTag ravenmind = transmitting ? null : ret.getRavenmind();
+		int parenCount = transmitting ? 1 : ret.getParenCount();
 		
-		ret = ret.copy(ret.getMakesCastSound(), isStackClear, type, stackDesc);
+		ret = ret.copy(ret.getMakesCastSound(), isStackClear, type, stack, parenthesized, ravenmind, parenCount);
 
 		cir.setReturnValue(ret);
 	}

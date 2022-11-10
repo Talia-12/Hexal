@@ -1,11 +1,11 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.ManaConstants
-import at.petrak.hexcasting.api.spell.ParticleSpray
-import at.petrak.hexcasting.api.spell.RenderedSpell
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.SpellOperator
+import at.petrak.hexcasting.api.misc.MediaConstants
+import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.Vec3Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.utils.asTranslatedComponent
 import com.mojang.datafixers.util.Either
@@ -17,12 +17,11 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import java.util.*
 
-object OpSmelt : SpellOperator {
-    const val COST_PER_SMELT = 0.75 * ManaConstants.DUST_UNIT
+object OpSmelt : SpellAction {
+    const val COST_PER_SMELT = (0.75 * MediaConstants.DUST_UNIT).toInt()
 
     override val argc = 1
 
@@ -30,10 +29,11 @@ object OpSmelt : SpellOperator {
         return toSmelt.map({ 1 }, { item -> item.item.count })
     }
 
-    override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-        val toSmelt = when (val _toSmelt = args[0].payload) {
-            is Vec3 -> Either.left(Vec3.atCenterOf(BlockPos(_toSmelt)))
-            is ItemEntity -> Either.right(_toSmelt)
+    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+        val toSmelt = when (val _toSmelt = args[0]) {
+            is Vec3Iota -> Either.left(Vec3.atCenterOf(BlockPos(_toSmelt.vec3)))
+            is EntityIota -> Either.right(_toSmelt.entity as? ItemEntity ?: // throws an error if the entity isn't an item.
+                throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent))
             else -> throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent)
         }
 
@@ -43,7 +43,7 @@ object OpSmelt : SpellOperator {
 
         return Triple(
             Spell(toSmelt),
-            (COST_PER_SMELT * numToSmelt(toSmelt)).toInt(),
+            COST_PER_SMELT * numToSmelt(toSmelt),
             listOf(ParticleSpray.burst(pos, 1.0))
         )
     }

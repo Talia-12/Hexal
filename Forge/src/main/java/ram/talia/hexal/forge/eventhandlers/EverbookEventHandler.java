@@ -1,8 +1,9 @@
 package ram.talia.hexal.forge.eventhandlers;
 
-import at.petrak.hexcasting.api.spell.SpellDatum;
-import at.petrak.hexcasting.api.spell.Widget;
+import at.petrak.hexcasting.api.spell.iota.Iota;
+import at.petrak.hexcasting.api.spell.iota.NullIota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.common.lib.HexIotaTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,17 +44,17 @@ public class EverbookEventHandler {
 		everbooks.put(player.getUUID(), everbook);
 	}
 	
-	public static SpellDatum<?> getIota(ServerPlayer player, HexPattern key) {
+	public static Iota getIota(ServerPlayer player, HexPattern key) {
 		if (everbooks.get(player.getUUID()) == null)
-			return SpellDatum.make(Widget.NULL);
+			return new NullIota();
 		return everbooks.get(player.getUUID()).getIota(key, player.getLevel());
 	}
 	
-	public static void setIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+	public static void setIota (ServerPlayer player, HexPattern key, Iota iota) {
 		if (everbooks.get(player.getUUID()) == null)
 			return;
 		everbooks.get(player.getUUID()).setIota(key, iota);
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookAck(key, iota.serializeToNBT()));
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookAck(key, HexIotaTypes.serialize(iota)));
 	}
 	
 	public static void removeIota (ServerPlayer player, HexPattern key) {
@@ -63,7 +64,7 @@ public class EverbookEventHandler {
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgRemoveEverbookAck(key));
 	}
 	
-	public static List<SpellDatum<?>> getMacro (ServerPlayer player, HexPattern key) {
+	public static List<Iota> getMacro (ServerPlayer player, HexPattern key) {
 		if (everbooks.get(player.getUUID()) == null)
 			return List.of();
 		return everbooks.get(player.getUUID()).getMacro(key, player.getLevel());
@@ -78,7 +79,7 @@ public class EverbookEventHandler {
 	
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 		
 		if (!everbooks.containsKey(player.getUUID()))
 			everbooks.put(player.getUUID(), new Everbook(player.getUUID()));
@@ -102,7 +103,7 @@ public class EverbookEventHandler {
 	
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
 		if (localEverbook != null)
 			localEverbook.saveToDisk();
 		

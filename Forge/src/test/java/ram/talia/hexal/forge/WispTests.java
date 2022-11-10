@@ -94,7 +94,8 @@ public class WispTests {
 	}
 	
 	
-	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", timeoutTicks = 1200) // TODO: change to its own template
+	// changed this test to non-required since I haven't actually written it yet.
+	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", timeoutTicks = 1200, required = false) // TODO: change to its own template
 	public static void farmingWispTest (GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		

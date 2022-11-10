@@ -1,6 +1,7 @@
 package ram.talia.hexal.client.sounds
 
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance
+import net.minecraft.client.resources.sounds.SoundInstance
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.common.lib.HexalSounds
@@ -8,7 +9,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 // https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/src/main/java/com/simibubi/create/content/contraptions/components/steam/whistle/WhistleSoundInstance.java
-class WispCastingSoundInstance(val wisp: BaseWisp) : AbstractTickableSoundInstance(HexalSounds.WISP_CASTING_CONTINUE.mainEvent, HexalSounds.WISP_CASTING_CONTINUE.category) {
+class WispCastingSoundInstance(val wisp: BaseWisp)
+	: AbstractTickableSoundInstance(HexalSounds.WISP_CASTING_CONTINUE.mainEvent, HexalSounds.WISP_CASTING_CONTINUE.category, SoundInstance.createUnseededRandom()) {
 
 	override fun getX() = wisp.x
 	override fun getY() = wisp.y
