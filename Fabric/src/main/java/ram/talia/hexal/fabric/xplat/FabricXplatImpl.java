@@ -1,14 +1,18 @@
 package ram.talia.hexal.fabric.xplat;
 
-import at.petrak.hexcasting.api.spell.SpellDatum;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
@@ -132,7 +136,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
     
     @Override
-    public void setEverbookIota (ServerPlayer player, HexPattern key, SpellDatum<?> iota) {
+    public void setEverbookIota (ServerPlayer player, HexPattern key, Iota iota) {
         HexalCardinalComponents.EVERBOOK.get(player).setIota(key, iota);
     }
     
@@ -155,6 +159,11 @@ public class FabricXplatImpl implements IXplatAbstractions {
     public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
         HexalCardinalComponents.EVERBOOK.get(player).toggleMacro(key);
         IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroAck(key));
+    }
+    
+    @Override
+    public boolean isBreakingAllowed (Level level, BlockPos pos, BlockState state, Player player) {
+        return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
     }
     
     //    @Override

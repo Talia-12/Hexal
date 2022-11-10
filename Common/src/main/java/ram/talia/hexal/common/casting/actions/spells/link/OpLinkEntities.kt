@@ -19,25 +19,22 @@ object OpLinkEntities : SpellAction {
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val entityThis = args.getEntity(0, OpLinkEntity.argc)
-		if (entityThis !is LinkableEntity && entityThis !is ServerPlayer)
-			throw MishapInvalidIota.ofType(EntityIota(entityThis), 1, "entity.linkable")
 
 		val linkThis = when (entityThis) {
 			is LinkableEntity -> entityThis
 			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(entityThis)
-			else -> throw Exception("How did I get here")
+			else -> throw MishapInvalidIota.ofType(EntityIota(entityThis), 1, "entity.linkable")
 		}
 
 		val entityOther = args.getEntity(1, OpLinkEntity.argc)
-		if (entityOther !is LinkableEntity && entityOther !is ServerPlayer)
-			throw MishapInvalidIota.ofType(EntityIota(entityOther), 0, "entity.linkable")
+
 		if (entityThis.uuid == entityOther.uuid)
 			throw MishapLinkToSelf(linkThis)
 
 		val linkOther = when (entityOther) {
 			is LinkableEntity -> entityOther
 			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(entityOther)
-			else -> throw Exception("How did I get here")
+			else -> throw MishapInvalidIota.ofType(EntityIota(entityOther), 0, "entity.linkable")
 		}
 
 		ctx.assertEntityInRange(entityThis)

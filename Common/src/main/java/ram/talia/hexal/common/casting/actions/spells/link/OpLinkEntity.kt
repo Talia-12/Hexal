@@ -30,13 +30,11 @@ object OpLinkEntity : SpellAction {
 		}
 
 		val other = args.getEntity(0, argc)
-		if (other !is LinkableEntity && other !is ServerPlayer)
-			throw MishapInvalidIota.ofType(EntityIota(other), 0, "entity.linkable")
 
 		val linkOther = when (other) {
 			is LinkableEntity -> other
 			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(other)
-			else -> throw Exception("How did I get here")
+			else -> throw MishapInvalidIota.ofType(EntityIota(other), 0, "entity.linkable")
 		}
 
 		if (linkThis == linkOther)

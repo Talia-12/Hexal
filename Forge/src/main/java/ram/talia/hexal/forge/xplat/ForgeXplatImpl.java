@@ -3,10 +3,16 @@ package ram.talia.hexal.forge.xplat;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
@@ -123,5 +129,10 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	@Override
 	public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
 		EverbookEventHandler.toggleMacro(player, key);
+	}
+	
+	@Override
+	public boolean isBreakingAllowed (Level level, BlockPos pos, BlockState state, Player player) {
+		return !MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, player));
 	}
 }

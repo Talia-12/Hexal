@@ -14,7 +14,7 @@ object OpNumReceivedIota : ConstManaAction {
 
 	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-		HexalAPI.LOGGER.info("pattern OpNumReceivedIota executed")
+		HexalAPI.LOGGER.debug("pattern OpNumReceivedIota executed")
 
 		val mCast = ctx as? IMixinCastingContext
 
