@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.xplat.IXplatAbstractions
 import java.util.*
 
 object OpSmelt : SpellAction {
@@ -30,16 +31,15 @@ object OpSmelt : SpellAction {
     }
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-        val toSmelt = when (val _toSmelt = args[0]) {
-            is Vec3Iota -> Either.left(Vec3.atCenterOf(BlockPos(_toSmelt.vec3)))
-            is EntityIota -> Either.right(_toSmelt.entity as? ItemEntity ?: // throws an error if the entity isn't an item.
+        val toSmelt = when (val toSmeltIota = args[0]) {
+            is Vec3Iota -> Either.left(Vec3.atCenterOf(BlockPos(toSmeltIota.vec3)))
+            is EntityIota -> Either.right(toSmeltIota.entity as? ItemEntity ?: // throws an error if the entity isn't an item.
                 throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent))
             else -> throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent)
         }
 
-        toSmelt.map({ vec -> ctx.assertVecInRange(vec) }, { item -> ctx.assertEntityInRange(item) })
-
         val pos = toSmelt.map({ vec -> vec }, { item -> item.position() })
+        ctx.assertVecInRange(pos)
 
         return Triple(
             Spell(toSmelt),
@@ -52,13 +52,13 @@ object OpSmelt : SpellAction {
         override fun cast(ctx: CastingContext) {
             vOrI.map({vec -> // runs this code if the player passed a BlockPos
                 val pos = BlockPos(vec)
-                // if (!ctx.canEditBlockAt(pos)) return@map
+                 if (!ctx.canEditBlockAt(pos)) return@map
                 val blockState = ctx.world.getBlockState(pos)
-                // if (!IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockstate, ctx.caster)) return@map
+                 if (!IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockState, ctx.caster)) return@map
 
                 // Stealing code from Ars Nouveau
                 val optional: Optional<SmeltingRecipe> = ctx.world.recipeManager.getRecipeFor(
-                    RecipeType.SMELTING, SimpleContainer(ItemStack(blockState.getBlock().asItem(), 1)),
+                    RecipeType.SMELTING, SimpleContainer(ItemStack(blockState.block.asItem(), 1)),
                     ctx.world
                 )
 

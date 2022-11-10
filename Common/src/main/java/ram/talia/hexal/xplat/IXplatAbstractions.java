@@ -4,9 +4,13 @@ import at.petrak.hexcasting.api.HexAPI;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
@@ -102,7 +106,7 @@ public interface IXplatAbstractions {
 //
 //    String getModName(String namespace);
 //
-//    boolean isBreakingAllowed(Level world, BlockPos pos, BlockState state, Player player);
+    boolean isBreakingAllowed(Level level, BlockPos pos, BlockState state, Player player);
 //
 //    boolean isPlacingAllowed(Level world, BlockPos pos, ItemStack blockStack, Player player);
 

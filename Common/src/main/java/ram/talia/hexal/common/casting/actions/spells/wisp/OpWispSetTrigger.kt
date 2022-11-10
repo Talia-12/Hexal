@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.spell.ConstManaOperator
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
@@ -23,7 +23,7 @@ class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerT
 		if (mCast == null || mCast.wisp == null)
 			throw MishapNoWisp()
 
-//		HexalAPI.LOGGER.info("Setting ${mCast.wisp} trigger to $triggerType")
+		HexalAPI.LOGGER.debug("Setting ${mCast.wisp} trigger to $triggerType")
 
 		mCast.wisp.setTrigger(triggerType.makeFromArgs(mCast.wisp, args, ctx))
 

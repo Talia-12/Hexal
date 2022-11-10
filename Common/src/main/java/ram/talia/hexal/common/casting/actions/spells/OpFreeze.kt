@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.LiquidBlock
 import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.common.recipe.CopyProperties
-import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import ram.talia.hexal.common.recipe.HexalRecipeTypes
 
 object OpFreeze : SpellAction {
@@ -34,21 +33,21 @@ object OpFreeze : SpellAction {
 	private data class Spell(val vec: Vec3) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			val pos = BlockPos(vec)
-			val blockstate = ctx.world.getBlockState(pos)
-			val fluidstate = ctx.world.getFluidState(pos)
+			val blockState = ctx.world.getBlockState(pos)
+			val fluidState = ctx.world.getFluidState(pos)
 
-			if (!ctx.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockstate, ctx.caster))
+			if (!ctx.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockState, ctx.caster))
 				return
 
-			if (fluidstate.type == Fluids.WATER && blockstate.block is LiquidBlock) {
+			if (fluidState.type == Fluids.WATER && blockState.block is LiquidBlock) {
 				ctx.world.setBlockAndUpdate(pos, Blocks.ICE.defaultBlockState())
 				return
 			}
-			if (fluidstate.type == Fluids.LAVA && blockstate.block is LiquidBlock) {
+			if (fluidState.type == Fluids.LAVA && blockState.block is LiquidBlock) {
 				ctx.world.setBlockAndUpdate(pos, Blocks.OBSIDIAN.defaultBlockState())
 				return
 			}
-			if (fluidstate.type == Fluids.FLOWING_LAVA && blockstate.block is LiquidBlock) {
+			if (fluidState.type == Fluids.FLOWING_LAVA && blockState.block is LiquidBlock) {
 				ctx.world.setBlockAndUpdate(pos, Blocks.COBBLESTONE.defaultBlockState())
 				return
 			}
@@ -56,10 +55,10 @@ object OpFreeze : SpellAction {
 			val recman = ctx.world.recipeManager
 			val recipes = recman.getAllRecipesFor(HexalRecipeTypes.FREEZE_TYPE)
 
-			val recipe = recipes.find{ it.matches(blockstate) }
+			val recipe = recipes.find{ it.matches(blockState) }
 
 			if (recipe != null)
-				ctx.world.setBlockAndUpdate(pos, CopyProperties.copyProperties(blockstate, recipe.result))
+				ctx.world.setBlockAndUpdate(pos, CopyProperties.copyProperties(blockState, recipe.result))
 		}
 	}
 }
