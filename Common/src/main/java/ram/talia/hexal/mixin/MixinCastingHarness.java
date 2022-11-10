@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.casting.Patterns;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
@@ -78,9 +79,9 @@ public abstract class MixinCastingHarness {
 		
 		if (wisp != null) {
 			int mediaAvailable = wisp.getMedia();
-//			HexalAPI.LOGGER.info("charging wisp %s for casting".formatted(wisp.getStringUUID()));
-//			HexalAPI.LOGGER.info("mediaAvailable: %d".formatted(mediaAvailable));
-//			HexalAPI.LOGGER.info("manaCost: %d".formatted(manaCost));
+			HexalAPI.LOGGER.debug("charging wisp %s for casting".formatted(wisp.getStringUUID()));
+			HexalAPI.LOGGER.debug("mediaAvailable: %d".formatted(mediaAvailable));
+			HexalAPI.LOGGER.debug("manaCost: %d".formatted(manaCost));
 			int mediaToTake = Math.min(manaCost, mediaAvailable);
 			manaCost -= mediaToTake;
 			wisp.addMedia(-mediaToTake);

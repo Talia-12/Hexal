@@ -61,8 +61,9 @@ class Everbook(val uuid: UUID,
 	fun removeIota(key: HexPattern) {
 		entries.remove(getKey(key))
 
-		if (macroHolder.isMacro(key))
-			macroHolder.recalcMacros()
+		if (macroHolder.isMacro(key)) {
+			macroHolder.deleteMacro(key)
+		}
 	}
 
 	fun getMacro(key: HexPattern, level: ServerLevel) = macroHolder.getMacro(key, level)
