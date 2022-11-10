@@ -1,14 +1,13 @@
 package ram.talia.hexal.api.everbook
 
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.IotaType
-import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.common.lib.HexIotaTypes
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.spell.toCompoundTagList
@@ -115,8 +114,8 @@ class MacroHolder(val everbook: Everbook) {
 	}
 
 	private fun extractList(spellListTag: CompoundTag): MutableList<CompoundTag>? {
-		return when (spellListTag.getString(HexIotaTypes.KEY_TYPE)) {
-			"list" -> spellListTag.getList(HexIotaTypes.KEY_DATA, Tag.TAG_COMPOUND.toInt()).toCompoundTagList()
+		return when (HexIotaTypes.REGISTRY[ResourceLocation(spellListTag.getString(HexIotaTypes.KEY_TYPE))]) {
+			HexIotaTypes.LIST -> spellListTag.getList(HexIotaTypes.KEY_DATA, Tag.TAG_COMPOUND.toInt()).toCompoundTagList()
 			else -> null
 		}
 	}
