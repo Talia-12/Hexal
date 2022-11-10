@@ -12,6 +12,7 @@ import at.petrak.hexcasting.common.casting.operators.eval.OpEval
 import at.petrak.hexcasting.common.casting.operators.lists.OpIndex
 import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolAnd
+import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIf
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolOr
 import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
 import at.petrak.hexcasting.common.casting.operators.stack.OpDuplicate
@@ -38,12 +39,10 @@ object Patterns {
 
 	@JvmField
 	val EQUALITY = patternOf(HexAPI.modLoc("equals"))
-//	@JvmField
-//	val IDENTITY = patternOf(OpBoolIdentityKindOf)
-//	@JvmField
-//	val CONJUNCTION = patternOf(OpBoolAnd)
-//	@JvmField
-//	val DISJUNCTION = patternOf(OpBoolOr)
+	@JvmField
+	val INEQUALITY = patternOf(HexAPI.modLoc("not_equals"))
+	@JvmField
+	val AUGERS = patternOf(OpBoolIf)
 
 	@JvmField
 	val NULLARY = patternOf(HexAPI.modLoc("const/null"))
