@@ -1,6 +1,5 @@
 package ram.talia.hexal.forge.xplat;
 
-import at.petrak.hexcasting.api.spell.SpellDatum;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import at.petrak.hexcasting.forge.network.ForgePacketHandler;
@@ -24,7 +23,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
@@ -55,11 +53,6 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public <T extends ParticleOptions> void registerParticleType (ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> factory) {
 		Minecraft.getInstance().particleEngine.register(type, factory::apply);
-	}
-	
-	@Override
-	public <T extends ClientTooltipComponent & TooltipComponent> void registerIdentityTooltipMapping (Class<T> clazz) {
-		MinecraftForgeClient.registerTooltipComponentFactory(clazz, Function.identity());
 	}
 	
 	@Override

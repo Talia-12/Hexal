@@ -1,21 +1,20 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
-import at.petrak.hexcasting.api.spell.ConstManaOperator
-import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.ConstManaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getChecked
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.spell.getPattern
+import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpToggleMacro : ConstManaOperator {
+object OpToggleMacro : ConstManaAction {
 	override val argc = 1
 
 	override val isGreat = true
 	override val alwaysProcessGreatSpell = false
 	override val causesBlindDiversion = false
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		val key = args.getChecked<HexPattern>(0, argc)
+	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+		val key = args.getPattern(0, argc)
 
 		IXplatAbstractions.INSTANCE.toggleEverbookMacro(ctx.caster, key)
 

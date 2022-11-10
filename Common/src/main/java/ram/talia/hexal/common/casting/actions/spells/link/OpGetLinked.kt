@@ -2,16 +2,16 @@ package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
-import kotlin.math.max
 
-object OpGetLinked : ConstManaOperator {
+object OpGetLinked : ConstManaAction {
 	override val argc = 1
 
 	@Suppress("CAST_NEVER_SUCCEEDS")
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
+	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
@@ -19,13 +19,13 @@ object OpGetLinked : ConstManaOperator {
 			else -> wisp
 		}
 
-		val linkedIndex = max(args.getChecked<Double>(0, OpSendIota.argc).toInt(), 0)
+		val linkedIndex = args.getPositiveInt(0, OpSendIota.argc)
 
 		if (linkedIndex >= linkThis.numLinked())
-			return Widget.NULL.asSpellResult
+			return null.asActionResult
 
 		val other = linkThis.getLinked(linkedIndex)
 
-		return if (ctx.isVecInRange(other.getPos())) other.asSpellResult else Widget.NULL.asSpellResult
+		return if (ctx.isVecInRange(other.getPos())) other.asActionResult else null.asActionResult
 	}
 }

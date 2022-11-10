@@ -1,7 +1,7 @@
 package ram.talia.hexal.xplat;
 
 import at.petrak.hexcasting.api.HexAPI;
-import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.network.protocol.Packet;
@@ -63,18 +63,18 @@ public interface IXplatAbstractions {
     //endregion
 
     //region Everbook
-    SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key);
-    void setEverbookIota(ServerPlayer player, HexPattern key, SpellDatum<?> iota);
+    Iota getEverbookIota(ServerPlayer player, HexPattern key);
+    void setEverbookIota(ServerPlayer player, HexPattern key, Iota iota);
     
     void removeEverbookIota(ServerPlayer player, HexPattern key);
     
     void setFullEverbook(ServerPlayer player, Everbook everbook);
     
-    List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key);
+    List<Iota> getEverbookMacro (ServerPlayer player, HexPattern key);
     
     void toggleEverbookMacro (ServerPlayer player, HexPattern key);
     //endregion
-    
+
     // Blocks
 
 //    <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> func,

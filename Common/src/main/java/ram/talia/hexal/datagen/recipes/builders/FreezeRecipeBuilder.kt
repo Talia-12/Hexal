@@ -1,6 +1,5 @@
 package ram.talia.hexal.datagen.recipes.builders
 
-import at.petrak.hexcasting.common.recipe.HexRecipeSerializers
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredient
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
 import com.google.gson.JsonObject

@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -78,36 +79,36 @@ public class HexalSounds {
 	public record SoundEntryProvider(DataGenerator generator) implements DataProvider {
 		
 		@Override
-			public void run (@NotNull HashCache cache) {
+		public void run (@NotNull CachedOutput cache) {
 				generate(generator.getOutputFolder(), cache);
 			}
 			
-			@Override
-			public @NotNull String getName () {
+		@Override
+		public @NotNull String getName () {
 				return "Hexal's Custom Sounds";
 			}
 			
-			public void generate (Path path, HashCache cache) {
-				Gson GSON = (new GsonBuilder()).setPrettyPrinting()
-																			 .disableHtmlEscaping()
-																			 .create();
-				path = path.resolve("assets/hexal");
-				
-				try {
-					JsonObject json = new JsonObject();
-					SOUNDS.entrySet()
-								.stream()
-								.sorted(Map.Entry.comparingByKey())
-								.forEach(entry -> entry.getValue().write(json));
-					DataProvider.save(GSON, cache, json, path.resolve("sounds.json"));
-					
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		public void generate (Path path, CachedOutput cache) {
+//			Gson GSON = (new GsonBuilder()).setPrettyPrinting()
+//																		 .disableHtmlEscaping()
+//																		 .create();
+			path = path.resolve("assets/hexal");
 			
+			try {
+				JsonObject json = new JsonObject();
+				SOUNDS.entrySet()
+							.stream()
+							.sorted(Map.Entry.comparingByKey())
+							.forEach(entry -> entry.getValue().write(json));
+				DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
+				
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+			
+	}
 	
 	public record ConfiguredSoundEvent(Supplier<SoundEvent> event, float volume, float pitch) {}
 	

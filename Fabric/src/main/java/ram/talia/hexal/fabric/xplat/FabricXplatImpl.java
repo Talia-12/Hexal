@@ -1,6 +1,7 @@
 package ram.talia.hexal.fabric.xplat;
 
 import at.petrak.hexcasting.api.spell.SpellDatum;
+import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -126,7 +127,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     //endregion
     
     @Override
-    public SpellDatum<?> getEverbookIota (ServerPlayer player, HexPattern key) {
+    public Iota getEverbookIota (ServerPlayer player, HexPattern key) {
         return HexalCardinalComponents.EVERBOOK.get(player).getIota(key, player.getLevel());
     }
     
@@ -146,7 +147,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
     
     @Override
-    public List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key) {
+    public List<Iota> getEverbookMacro (ServerPlayer player, HexPattern key) {
         return HexalCardinalComponents.EVERBOOK.get(player).getMacro(key, player.getLevel());
     }
     

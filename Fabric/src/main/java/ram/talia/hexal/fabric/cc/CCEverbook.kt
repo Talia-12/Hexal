@@ -1,8 +1,9 @@
 package ram.talia.hexal.fabric.cc
 
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.common.lib.HexIotaTypes
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
 import net.fabricmc.api.EnvType
@@ -43,13 +44,13 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 		ClientPlayConnectionEvents.DISCONNECT.register { _, client -> HexalAPI.LOGGER.info("CCEverbook saveToDisk"); saveToDisk(client.player) }
 	}
 
-	fun getIota(key: HexPattern, level: ServerLevel) = everbook?.getIota(key, level) ?: SpellDatum.make(Widget.NULL)
-	fun setIota(key: HexPattern, iota: SpellDatum<*>) {
+	fun getIota(key: HexPattern, level: ServerLevel) = everbook?.getIota(key, level) ?: NullIota()
+	fun setIota(key: HexPattern, iota: Iota) {
 		if (player.level.isClientSide) throw Exception("CCEverbook.setIota can only be called on the server") // TODO
 
 		if (everbook != null) {
 			everbook!!.setIota(key, iota)
-			IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgSetEverbookAck(key, iota.serializeToNBT()))
+			IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgSetEverbookAck(key, HexIotaTypes.serialize(iota)))
 		}
 	}
 

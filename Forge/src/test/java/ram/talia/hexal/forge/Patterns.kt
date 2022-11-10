@@ -2,8 +2,9 @@ package ram.talia.hexal.forge
 
 import at.petrak.hexcasting.api.HexAPI
 import at.petrak.hexcasting.api.PatternRegistry
-import at.petrak.hexcasting.api.spell.Operator
-import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.Action
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.PatternIota
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.common.casting.operators.OpEntityPos
@@ -11,9 +12,7 @@ import at.petrak.hexcasting.common.casting.operators.eval.OpEval
 import at.petrak.hexcasting.common.casting.operators.lists.OpIndex
 import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolAnd
-import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIdentityKindOf
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolOr
-import at.petrak.hexcasting.common.casting.operators.math.logic.OpEquality
 import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
 import at.petrak.hexcasting.common.casting.operators.stack.OpDuplicate
 import at.petrak.hexcasting.common.casting.operators.stack.OpSwap
@@ -30,31 +29,31 @@ object Patterns {
 	val REVEAL = patternOf(OpPrint)
 
 	@JvmField
-	val COMPASS = patternOf(OpEntityPos)
+	val COMPASS = patternOf(HexAPI.modLoc("entity_pos/foot"))
 
 	@JvmField
-	val DROP = SpellDatum.make(HexPattern.fromAngles("a", HexDir.SOUTH_EAST))
+	val DROP = PatternIota(HexPattern.fromAngles("a", HexDir.SOUTH_EAST))
 	@JvmField
 	val SWAP = patternOf(OpSwap)
 
 	@JvmField
 	val EQUALITY = patternOf(HexAPI.modLoc("equals"))
-	@JvmField
-	val IDENTITY = patternOf(OpBoolIdentityKindOf)
-	@JvmField
-	val CONJUNCTION = patternOf(OpBoolAnd)
-	@JvmField
-	val DISJUNCTION = patternOf(OpBoolOr)
+//	@JvmField
+//	val IDENTITY = patternOf(OpBoolIdentityKindOf)
+//	@JvmField
+//	val CONJUNCTION = patternOf(OpBoolAnd)
+//	@JvmField
+//	val DISJUNCTION = patternOf(OpBoolOr)
 
 	@JvmField
 	val NULLARY = patternOf(HexAPI.modLoc("const/null"))
 
 	@JvmField
-	val ZERO = SpellDatum.make(HexPattern.fromAngles("aqaa", HexDir.EAST))
+	val ZERO = PatternIota(HexPattern.fromAngles("aqaa", HexDir.EAST))
 	@JvmField
-	val ONE = SpellDatum.make(HexPattern.fromAngles("aqaaw", HexDir.EAST))
+	val ONE = PatternIota(HexPattern.fromAngles("aqaaw", HexDir.EAST))
 	@JvmField
-	val FOUR = SpellDatum.make(HexPattern.fromAngles("aqaawaa", HexDir.EAST))
+	val FOUR = PatternIota(HexPattern.fromAngles("aqaawaa", HexDir.EAST))
 
 	@JvmField
 	val GEMINIS_DISINTEGRATION = patternOf(OpDuplicate)
@@ -68,9 +67,9 @@ object Patterns {
 	val HERMES = patternOf(OpEval)
 
 	@JvmField
-	val INTRO = SpellDatum.make(HexPattern.fromAngles("qqq", HexDir.WEST))
+	val INTRO = PatternIota(HexPattern.fromAngles("qqq", HexDir.WEST))
 	@JvmField
-	val RETRO = SpellDatum.make(HexPattern.fromAngles("eee", HexDir.EAST))
+	val RETRO = PatternIota(HexPattern.fromAngles("eee", HexDir.EAST))
 
 
 
@@ -90,6 +89,6 @@ object Patterns {
 	@JvmField
 	val RECITATION = patternOf(OpReadReceivedIota)
 
-	private fun patternOf(op: Operator): SpellDatum<*> = SpellDatum.make(PatternRegistry.lookupPattern(PatternRegistry.lookupPattern(op)!!).prototype)
-	private fun patternOf(loc: ResourceLocation): SpellDatum<*> = SpellDatum.make(PatternRegistry.lookupPattern(loc).prototype)
+	private fun patternOf(op: Action): PatternIota = PatternIota(PatternRegistry.lookupPattern(PatternRegistry.lookupPattern(op)!!).prototype)
+	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(PatternRegistry.lookupPattern(loc).prototype)
 }

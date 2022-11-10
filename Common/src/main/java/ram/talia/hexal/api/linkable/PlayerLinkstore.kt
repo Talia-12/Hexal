@@ -1,8 +1,11 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.spell.Operator
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.spell.Action
+import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
+import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.ListTag
@@ -18,9 +21,9 @@ import ram.talia.hexal.api.plus
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
-	override val asSpellResult = listOf(SpellDatum.make(player))
+	override val asActionResult = listOf(EntityIota(player))
 
-	var receivedIotas: MutableList<SpellDatum<*>>
+	var receivedIotas: MutableList<Iota>
 		get() = lazyReceivedIotas.get()
 		set(value) = lazyReceivedIotas.set(value)
 	private val lazyReceivedIotas: LazyIotaList = LazyIotaList(player.level as ServerLevel)
@@ -90,7 +93,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	override fun get() = this
 
-	override fun maxSqrLinkRange() = Operator.MAX_DISTANCE * Operator.MAX_DISTANCE
+	override fun maxSqrLinkRange() = Action.MAX_DISTANCE * Action.MAX_DISTANCE
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<PlayerLinkstore, *> = LinkableTypes.PLAYER_LINKSTORE_TYPE
 
@@ -128,13 +131,13 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	override fun numLinked() = linked.size
 
-	override fun receiveIota(iota: SpellDatum<*>) {
+	override fun receiveIota(iota: Iota) {
 		receivedIotas.add(iota)
 	}
 
-	override fun nextReceivedIota(): SpellDatum<*> {
+	override fun nextReceivedIota(): Iota {
 		if (receivedIotas.size == 0) {
-			return SpellDatum.make(Widget.NULL)
+			return NullIota()
 		}
 
 		val iota = receivedIotas[0]

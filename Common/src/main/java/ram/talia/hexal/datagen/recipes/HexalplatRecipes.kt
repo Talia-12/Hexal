@@ -18,13 +18,13 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 
 	override fun makeRecipes(recipes: Consumer<FinishedRecipe>) {
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.ICE), Blocks.PACKED_ICE.defaultBlockState())
-			.unlockedBy("has_item", hasItem(HexItemTags.WANDS))
+			.unlockedBy("has_item", hasItem(HexItemTags.STAVES))
 			.save(recipes, modLoc("freeze/packed_ice"))
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.PACKED_ICE), Blocks.BLUE_ICE.defaultBlockState())
-			.unlockedBy("has_item", hasItem(HexItemTags.WANDS))
+			.unlockedBy("has_item", hasItem(HexItemTags.STAVES))
 			.save(recipes, modLoc("freeze/blue_ice"))
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.WATER_CAULDRON), Blocks.POWDER_SNOW_CAULDRON.defaultBlockState())
-			.unlockedBy("has_item", hasItem(HexItemTags.WANDS))
+			.unlockedBy("has_item", hasItem(HexItemTags.STAVES))
 			.save(recipes, modLoc("freeze/powder_snow_cauldron"))
 
 //		val enlightenment = OvercastTrigger.Instance(

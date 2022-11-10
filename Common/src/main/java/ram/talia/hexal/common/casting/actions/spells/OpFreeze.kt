@@ -1,8 +1,9 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.Blocks
@@ -11,14 +12,15 @@ import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.common.recipe.CopyProperties
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
+import ram.talia.hexal.common.recipe.HexalRecipeTypes
 
-object OpFreeze : SpellOperator {
-	const val FREEZE_COST = 3 * ManaConstants.DUST_UNIT
+object OpFreeze : SpellAction {
+	const val FREEZE_COST = 3 * MediaConstants.DUST_UNIT
 
 	override val argc = 1
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-		val toFreeze = Vec3.atCenterOf(BlockPos(args.getChecked<Vec3>(0, argc)))
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+		val toFreeze = Vec3.atCenterOf(BlockPos(args.getVec3(0, argc)))
 
 		ctx.assertVecInRange(toFreeze)
 
@@ -52,7 +54,7 @@ object OpFreeze : SpellOperator {
 			}
 
 			val recman = ctx.world.recipeManager
-			val recipes = recman.getAllRecipesFor(HexalRecipeSerializers.FREEZE_TYPE!!)
+			val recipes = recman.getAllRecipesFor(HexalRecipeTypes.FREEZE_TYPE)
 
 			val recipe = recipes.find{ it.matches(blockstate) }
 

@@ -2,9 +2,10 @@
 
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapEvalTooDeep
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
@@ -13,12 +14,12 @@ import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
 import java.lang.Integer.max
 
-class OpSummonWisp(val ticking: Boolean) : SpellOperator {
+class OpSummonWisp(val ticking: Boolean) : SpellAction {
     override val argc = if (ticking) 3 else 4
 
-    override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-        val hex = args.getChecked<SpellList>(0, argc)
-        val pos = args.getChecked<Vec3>(1, argc)
+    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+        val hex = args.getList(0, argc)
+        val pos = args.getVec3(1, argc)
         val media: Double
         val cost: Int
 
@@ -28,16 +29,16 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
 
         val spell = when (ticking) {
             true -> {
-                media = args.getChecked(2, argc)
-                cost = COST_SUMMON_WISP_TICKING + (media * ManaConstants.DUST_UNIT).toInt()
-                Spell(true, pos, hex.toList(), (media * ManaConstants.DUST_UNIT).toInt())
+                media = args.getPositiveDouble(2, argc)
+                cost = COST_SUMMON_WISP_TICKING + (media * MediaConstants.DUST_UNIT).toInt()
+                Spell(true, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt())
             }
             false -> {
-                val vel = args.getChecked<Vec3>(2, argc)
-                media = args.getChecked(3, argc)
+                val vel = args.getVec3(2, argc)
+                media = args.getPositiveDouble(3, argc)
                 cost = max((COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt(), COST_SUMMON_WISP_PROJECTILE_MIN) +
-                        (media * ManaConstants.DUST_UNIT).toInt()
-                Spell(false, pos, hex.toList(), (media * ManaConstants.DUST_UNIT).toInt(), vel)
+                        (media * MediaConstants.DUST_UNIT).toInt()
+                Spell(false, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt(), vel)
             }
         }
 
@@ -50,7 +51,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
         )
     }
 
-    private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<SpellDatum<*>>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
+    private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<Iota>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             // wisps can only summon one child per cast
             val mCast = ctx as? IMixinCastingContext
@@ -69,8 +70,8 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     }
 
     companion object {
-        private const val COST_SUMMON_WISP_TICKING = 3 * ManaConstants.DUST_UNIT
-        private const val COST_SUMMON_WISP_PROJECTILE = 3/1.75 * ManaConstants.DUST_UNIT
-        private const val COST_SUMMON_WISP_PROJECTILE_MIN = ManaConstants.DUST_UNIT / 2
+        private const val COST_SUMMON_WISP_TICKING = 3 * MediaConstants.DUST_UNIT
+        private const val COST_SUMMON_WISP_PROJECTILE = 3/1.75 * MediaConstants.DUST_UNIT
+        private const val COST_SUMMON_WISP_PROJECTILE_MIN = MediaConstants.DUST_UNIT / 2
     }
 }

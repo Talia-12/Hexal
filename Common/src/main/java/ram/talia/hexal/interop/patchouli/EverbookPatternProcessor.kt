@@ -7,7 +7,5 @@ import vazkii.patchouli.api.IVariableProvider
 class EverbookPatternProcessor : IComponentProcessor {
 	override fun setup(variables: IVariableProvider) { }
 
-	override fun process(key: String): IVariable? {
-		return null
-	}
+	override fun process(key: String): IVariable = IVariable.empty()
 }

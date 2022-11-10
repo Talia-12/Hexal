@@ -1,9 +1,11 @@
 package ram.talia.hexal.api.nbt
 
-import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.PatternIota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asInt
+import at.petrak.hexcasting.common.lib.HexIotaTypes
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
@@ -16,24 +18,24 @@ import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import java.util.*
 
-fun ListTag.toIotaList(level: ServerLevel): MutableList<SpellDatum<*>> {
-	val out = ArrayList<SpellDatum<*>>()
+fun ListTag.toIotaList(level: ServerLevel): MutableList<Iota> {
+	val out = ArrayList<Iota>()
 	for (patTag in this) {
 		val tag = patTag.asCompound
 		if (tag.size() != 1) {
-			out.add(SpellDatum.make(HexPattern.fromNBT(tag)))
+			out.add(PatternIota(HexPattern.fromNBT(tag)))
 		} else {
-			out.add(SpellDatum.fromNBT(tag, level))
+			out.add(HexIotaTypes.deserialize(tag, level))
 		}
 	}
 	return out
 }
 
 @JvmName("toNbtListSpellDatum")
-fun List<SpellDatum<*>>.toNbtList(): ListTag {
+fun List<Iota>.toNbtList(): ListTag {
 	val patsTag = ListTag()
 	for (pat in this) {
-		patsTag.add(pat.serializeToNBT())
+		patsTag.add(HexIotaTypes.serialize(pat))
 	}
 	return patsTag
 }

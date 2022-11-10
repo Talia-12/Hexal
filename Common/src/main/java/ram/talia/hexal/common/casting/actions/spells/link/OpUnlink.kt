@@ -1,22 +1,20 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import net.minecraft.network.chat.TranslatableComponent
+import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
-import kotlin.math.max
 
-object OpUnlink : SpellOperator {
-	const val UNLINK_COST = 2 * ManaConstants.DUST_UNIT
+object OpUnlink : SpellAction {
+	const val UNLINK_COST = 2 * MediaConstants.DUST_UNIT
 
 	override val argc = 1
 
 	@Suppress("CAST_NEVER_SUCCEEDS")
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
@@ -24,15 +22,7 @@ object OpUnlink : SpellOperator {
 			else -> wisp
 		}
 
-		val otherIndex = max(args.getChecked<Double>(0, OpSendIota.argc).toInt(), 0)
-
-		if (otherIndex >= linkThis.numLinked())
-			throw MishapInvalidIota(
-				SpellDatum.make(otherIndex),
-				0,
-				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, linkThis.numLinked())
-			)
-
+		val otherIndex = args.getPositiveIntUnder(0, OpSendIota.argc, linkThis.numLinked())
 		val other = linkThis.getLinked(otherIndex)
 
 		return Triple(

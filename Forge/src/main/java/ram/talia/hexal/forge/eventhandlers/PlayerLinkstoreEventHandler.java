@@ -76,17 +76,14 @@ public class PlayerLinkstoreEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 		
 		linkstores.put(player.getUUID(), loadLinkstore(player));
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
-		if (event.getPlayer() == null)
-			return;
-		
+	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
 		renderLinks.computeIfAbsent(event.getPlayer().getUUID(), k -> new ArrayList<>());
 	}
 	
@@ -95,7 +92,7 @@ public class PlayerLinkstoreEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 		
 		CompoundTag tag = new CompoundTag();
 		getLinkstore(player).saveAdditionalData(tag);
@@ -107,7 +104,7 @@ public class PlayerLinkstoreEventHandler {
 	
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+	public static void clientPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
 		if (event.getPlayer() == null)
 			return;
 		

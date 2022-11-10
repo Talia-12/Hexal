@@ -2,31 +2,32 @@ package ram.talia.hexal.common.casting.actions.everbook
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.spell.mishaps.MishapNoAkashicRecord
 import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
-import at.petrak.hexcasting.common.blocks.akashic.BlockEntityAkashicRecord
+import at.petrak.hexcasting.common.blocks.akashic.BlockAkashicRecord
 import at.petrak.hexcasting.common.lib.HexSounds
 import net.minecraft.core.BlockPos
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpEverbookRead : SpellOperator {
+object OpEverbookRead : SpellAction {
 	override val argc = 2
 
 	override val isGreat = true
 	override val alwaysProcessGreatSpell = false
 	override val causesBlindDiversion = false
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		val pos = BlockPos(args.getChecked<Vec3>(0, argc))
-		val key = args.getChecked<HexPattern>(1, argc)
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+		val pos = args.getBlockPos(0, argc)
+		val key = args.getPattern(1, argc)
 
 		ctx.assertVecInRange(Vec3.atCenterOf(pos))
 
-		val tile = ctx.world.getBlockEntity(pos)
-		if (tile !is BlockEntityAkashicRecord) {
+		val record = ctx.world.getBlockState(pos).block
+		if (record !is BlockAkashicRecord) {
 			throw MishapNoAkashicRecord(pos)
 		}
 
@@ -37,17 +38,17 @@ object OpEverbookRead : SpellOperator {
 			throw MishapOthersName(trueName)
 
 		return Triple(
-			Spell(tile, key, iota),
+			Spell(record, pos, key, iota),
 			0,
 			listOf()
 		)
 	}
 
-	private data class Spell(val record: BlockEntityAkashicRecord, val key: HexPattern, val datum: SpellDatum<*>) : RenderedSpell {
+	private data class Spell(val record: BlockAkashicRecord, val recordPos: BlockPos, val key: HexPattern, val datum: Iota) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
-			record.addNewDatum(key, datum)
+			record.addNewDatum(recordPos, ctx.world, key, datum)
 
-			ctx.world.playSound(null, record.blockPos, HexSounds.SCROLL_SCRIBBLE, SoundSource.BLOCKS, 1f, 0.8f)
+			ctx.world.playSound(null, recordPos, HexSounds.SCROLL_SCRIBBLE, SoundSource.BLOCKS, 1f, 0.8f)
 		}
 	}
 }

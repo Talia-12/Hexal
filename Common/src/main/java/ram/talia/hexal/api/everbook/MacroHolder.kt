@@ -1,14 +1,17 @@
 package ram.talia.hexal.api.everbook
 
-import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.IotaType
+import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.common.lib.HexIotaTypes
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.nbt.toCompoundTagList
+import ram.talia.hexal.api.spell.toCompoundTagList
 
 /**
  * One instance per Everbook, holds compiled versions of all the macros that a player has created (by marking patterns in the Everbook as keys for macros).
@@ -21,8 +24,8 @@ class MacroHolder(val everbook: Everbook) {
 		recalcMacros()
 	}
 
-	fun getMacro(key: HexPattern, level: ServerLevel): List<SpellDatum<*>>? {
-		return macros[getKey(key)]?.map { SpellDatum.fromNBT(it, level) }
+	fun getMacro(key: HexPattern, level: ServerLevel): List<Iota>? {
+		return macros[getKey(key)]?.map { HexIotaTypes.deserialize(it, level) }
 	}
 
 	fun isMacro(key: HexPattern): Boolean {
@@ -112,12 +115,8 @@ class MacroHolder(val everbook: Everbook) {
 	}
 
 	private fun extractList(spellListTag: CompoundTag): MutableList<CompoundTag>? {
-		val keys = spellListTag.allKeys
-
-		if (keys.size != 1)
-			return null
-		return when (val key = keys.iterator().next()) {
-			SpellDatum.TAG_LIST -> spellListTag.getList(key, Tag.TAG_COMPOUND.toInt()).toCompoundTagList()
+		return when (spellListTag.getString(HexIotaTypes.KEY_TYPE)) {
+			"list" -> spellListTag.getList(HexIotaTypes.KEY_DATA, Tag.TAG_COMPOUND.toInt()).toCompoundTagList()
 			else -> null
 		}
 	}
@@ -127,8 +126,8 @@ class MacroHolder(val everbook: Everbook) {
 
 		if (keys.size != 1)
 			return null
-		return when (keys.iterator().next()) {
-			SpellDatum.TAG_PATTERN -> HexPattern.fromNBT(patternTag.getCompound(SpellDatum.TAG_PATTERN))
+		return when (patternTag.getString(HexIotaTypes.KEY_TYPE)) {
+			"pattern"-> HexPattern.fromNBT(patternTag.getCompound(HexIotaTypes.KEY_DATA))
 			else -> null
 		}
 	}

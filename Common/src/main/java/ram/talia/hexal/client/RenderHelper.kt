@@ -1,6 +1,7 @@
 package ram.talia.hexal.client
 
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable.IRenderCentre
@@ -11,7 +12,7 @@ import kotlin.math.ln
 import kotlin.math.sqrt
 
 @JvmName("playLinkParticles")
-fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: Random, level: Level) {
+fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: RandomSource, level: Level) {
 	val sourceCentre = source.renderCentre(sink)
 	val delta = sink.renderCentre(source) - sourceCentre
 	val dist = delta.length() * 12
@@ -36,7 +37,7 @@ fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: Random
 	}
 }
 
-fun Random.nextGamma(shape: Int): Double {
+fun RandomSource.nextGamma(shape: Int): Double {
 	return when (shape) {
 		0 -> 0.0
 		1 -> -ln(1 - this.nextDouble())
@@ -66,7 +67,7 @@ fun Random.nextGamma(shape: Int): Double {
 	}
 }
 
-fun Random.nextBeta(alpha: Int, beta: Int): Double {
+fun RandomSource.nextBeta(alpha: Int, beta: Int): Double {
 	val Ga = this.nextGamma(alpha)
 	val Gb = this.nextGamma(beta)
 	return Ga / (Ga + Gb)

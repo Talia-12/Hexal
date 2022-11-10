@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
@@ -73,7 +73,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	}
 
 	protected open fun playWispParticles(colouriser: FrozenColorizer) {
-		val radius = (media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 100
+		val radius = (media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 100
 
 		for (i in 0..50) {
 			val colour: Int = colouriser.nextColour(random)
@@ -91,7 +91,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	}
 
 	protected open fun playTrailParticles(colouriser: FrozenColorizer) {
-		val radius = ceil((media.toDouble() / ManaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
+		val radius = ceil((media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
 
 		val delta = oldPos - position()
 		val dist = delta.length() * 12 * radius * radius * radius
@@ -141,7 +141,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		super.defineSynchedData()
 
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
-		entityData.define(MEDIA, 20 * ManaConstants.DUST_UNIT)
+		entityData.define(MEDIA, 20 * MediaConstants.DUST_UNIT)
 	}
 
 	override fun getAddEntityPacket(): Packet<*> {

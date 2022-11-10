@@ -68,10 +68,10 @@ public class WispCastingMangerEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getPlayer().getLevel().isClientSide())
+		if (event.getEntity().getLevel().isClientSide())
 			return;
 		
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 
 		castingManagers.put(player.getUUID(), loadCastingManager(player));
 		seons.put(player.getUUID(), loadSeon(player));
@@ -83,10 +83,10 @@ public class WispCastingMangerEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (event.getPlayer().getLevel().isClientSide())
+		if (event.getEntity().getLevel().isClientSide())
 			return;
 		
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 		
 		CompoundTag tag = new CompoundTag();
 		getCastingManager(player).writeToNbt(tag);

@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.linkable
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.utils.asCompound
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -15,7 +15,7 @@ import ram.talia.hexal.api.nbt.toNbtList
 import kotlin.math.max
 
 interface ILinkable<T : ILinkable<T>> {
-	val asSpellResult: List<SpellDatum<*>>
+	val asActionResult: List<Iota>
 
 	/**
 	 * Return the [ILinkable] as its type - E.g., an [ILinkable]<[ram.talia.hexal.common.entities.LinkableEntity]> would return LinkableEntity
@@ -48,16 +48,16 @@ interface ILinkable<T : ILinkable<T>> {
 
 	fun numLinked(): Int
 
-	fun receiveIota(iota: SpellDatum<*>)
+	fun receiveIota(iota: Iota)
 
-	fun nextReceivedIota(): SpellDatum<*>
+	fun nextReceivedIota(): Iota
 
 	fun numRemainingIota(): Int
 
 	/**
 	 * Called when the player is transmitting to this [ILinkable], should return what should be displayed instead of the stack.
 	 */
-	fun transmittingTargetReturnDisplay(): List<Component> = this.asSpellResult.map(SpellDatum<*>::display)
+	fun transmittingTargetReturnDisplay(): List<Component> = this.asActionResult.map(Iota::display)
 
 	fun writeToNbt(): Tag
 

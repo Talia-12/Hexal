@@ -1,21 +1,18 @@
 package ram.talia.hexal.common.casting.actions
 
-import at.petrak.hexcasting.api.spell.ConstManaOperator
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.asSpellResult
+import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getChecked
-import net.minecraft.core.BlockPos
+import at.petrak.hexcasting.api.spell.getBlockPos
+import at.petrak.hexcasting.api.spell.iota.Iota
 import net.minecraft.world.level.LightLayer
-import net.minecraft.world.phys.Vec3
 
-object OpGetLightLevel : ConstManaOperator {
+object OpGetLightLevel : ConstManaAction {
 	override val argc = 1
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		val vec = args.getChecked<Vec3>(0, argc)
-		val pos = BlockPos(vec)
+	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+		val pos = args.getBlockPos(0, argc)
 
-		return ctx.world.getBrightness(LightLayer.BLOCK, pos).asSpellResult
+		return ctx.world.getBrightness(LightLayer.BLOCK, pos).asActionResult
 	}
 }

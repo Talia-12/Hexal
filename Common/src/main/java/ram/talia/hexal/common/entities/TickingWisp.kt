@@ -1,8 +1,8 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
-import at.petrak.hexcasting.api.utils.hasByte
+import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -26,7 +26,7 @@ import java.lang.Double.min
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
-	var stack: MutableList<SpellDatum<*>>
+	var stack: MutableList<Iota>
 		get() {
 			if (level.isClientSide)
 				throw Exception("TickingWisp.stack should only be accessed on server.") // TODO: create and replace with ServerOnlyException
@@ -37,7 +37,7 @@ class TickingWisp : BaseCastingWisp {
 		}
 	private var lazyStack: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
 
-	var ravenmind: SpellDatum<*>
+	var ravenmind: Iota?
 		get() {
 			if (level.isClientSide)
 				throw Exception("TickingWisp.stack should only be accessed on server.") // TODO: create and replace with ServerOnlyException
@@ -75,11 +75,11 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	init {
-		lazyStack?.set(mutableListOf(SpellDatum.make(this)))
-		lazyRavenmind?.set(SpellDatum.make(Widget.NULL))
+		lazyStack?.set(mutableListOf(EntityIota(this)))
+		lazyRavenmind?.set(NullIota())
 	}
 
-	override fun transmittingTargetReturnDisplay() = stack.map(SpellDatum<*>::display)
+	override fun transmittingTargetReturnDisplay() = stack.map(Iota::display)
 
 	override val normalCostPerTick =  2 * WISP_COST_PER_TICK_NORMAL
 
@@ -150,7 +150,7 @@ class TickingWisp : BaseCastingWisp {
 			else -> lazyStack!!.set(stackTag as ListTag)
 		}
 		when (val ravenmindTag = compound.getCompound(TAG_RAVENMIND)) {
-			null -> lazyRavenmind!!.set(SpellDatum.make(Widget.NULL))
+			null -> lazyRavenmind!!.set(NullIota())
 			else -> lazyRavenmind!!.set(ravenmindTag)
 		}
 

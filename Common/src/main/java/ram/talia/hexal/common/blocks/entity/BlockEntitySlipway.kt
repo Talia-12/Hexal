@@ -2,7 +2,6 @@ package ram.talia.hexal.common.blocks.entity
 
 import at.petrak.hexcasting.api.block.HexBlockEntity
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.common.lib.HexItems
 import net.minecraft.Util
 import net.minecraft.core.BlockPos
@@ -10,7 +9,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.entities.WanderingWisp
 import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
@@ -77,7 +75,7 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 		const val SPAWN_INTERVAL_MU = 80
 		const val SPAWN_INTERVAL_SIG = 10
 
-		val RANDOM = Random()
+		private val RANDOM = Random()
 
 		fun getRandomColouriser(): FrozenColorizer {
 			return FrozenColorizer(ItemStack(HexItems.DYE_COLORIZERS.values.elementAt(RANDOM.nextInt(HexItems.DYE_COLORIZERS.size))), Util.NIL_UUID)

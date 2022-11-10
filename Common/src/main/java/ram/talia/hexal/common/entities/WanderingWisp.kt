@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.misc.ManaConstants
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.misc.MediaConstants
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalEntities
+import ram.talia.hexal.api.nextDouble
 import kotlin.math.abs
 
 class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : BaseWisp(entityType, world) {
@@ -35,9 +36,9 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 
 	override fun maxSqrLinkRange() = 16.0
 
-	override fun receiveIota(iota: SpellDatum<*>) { }
+	override fun receiveIota(iota: Iota) { }
 
-	override fun nextReceivedIota() = SpellDatum.make(Widget.NULL)
+	override fun nextReceivedIota() = NullIota()
 
 	override fun numRemainingIota() = 0
 
@@ -143,7 +144,7 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 		const val TAG_START_TICK = "start_tick"
 
 		const val MAX_TICKS_ALIVE = 300
-		const val MIN_MEDIA = 2 * ManaConstants.SHARD_UNIT
-		const val MAX_MEDIA = 5 * ManaConstants.SHARD_UNIT
+		const val MIN_MEDIA = 2 * MediaConstants.SHARD_UNIT
+		const val MAX_MEDIA = 5 * MediaConstants.SHARD_UNIT
 	}
 }

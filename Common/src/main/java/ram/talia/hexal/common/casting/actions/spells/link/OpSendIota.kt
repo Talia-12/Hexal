@@ -1,22 +1,22 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.misc.ManaConstants
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import net.minecraft.network.chat.TranslatableComponent
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.max
 
-object OpSendIota : SpellOperator {
-	private const val COST_SEND_IOTA = ManaConstants.DUST_UNIT / 100
+object OpSendIota : SpellAction {
+	private const val COST_SEND_IOTA = MediaConstants.DUST_UNIT / 100
 	override val argc = 2
 
-	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
+	@Suppress("CAST_NEVER_SUCCEEDS")
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
@@ -24,15 +24,8 @@ object OpSendIota : SpellOperator {
 			else -> wisp
 		}
 
-		val linkedIndex = max(args.getChecked<Double>(0, argc).toInt(), 0)
+		val linkedIndex = args.getPositiveIntUnder(0, argc, linkThis.numLinked())
 		val iota = args[1]
-
-		if (linkedIndex >= linkThis.numLinked())
-			throw MishapInvalidIota(
-				linkedIndex.asSpellResult[0],
-				0,
-				TranslatableComponent("hexcasting.mishap.invalid_value.int.between", 0, linkThis.numLinked())
-			)
 
 		val other = linkThis.getLinked(linkedIndex)
 
@@ -43,7 +36,7 @@ object OpSendIota : SpellOperator {
 		)
 	}
 
-	private data class Spell(val other: ILinkable<*>, val iota: SpellDatum<*>) : RenderedSpell {
+	private data class Spell(val other: ILinkable<*>, val iota: Iota) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			HexalAPI.LOGGER.info("sending $iota to $other")
 			other.receiveIota(iota)

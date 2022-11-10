@@ -25,7 +25,7 @@ import java.util.function.BiConsumer
 import java.util.function.Consumer
 import javax.annotation.ParametersAreNonnullByDefault
 
-class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.server, level, name) {
+class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.server, level, name, null) {
 
 	private val sendMessageListeners: MutableList<BiConsumer<Component, UUID>> = mutableListOf()
 	init {
@@ -35,10 +35,12 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 	override fun position() = Vec3.ZERO
 	override fun blockPosition() = BlockPos.ZERO
 	override fun displayClientMessage(chatComponent: Component, actionBar: Boolean) {}
-	override fun sendMessage(component: Component, senderUUID: UUID) {
-		HexalAPI.LOGGER.debug("player $uuid sent ${component.string} by $senderUUID")
-		sendMessageListeners.forEach { it.accept(component, senderUUID) }
-	}
+
+	// TODO: Fix?
+//	override fun sendMessage(component: Component, senderUUID: UUID) {
+//		HexalAPI.LOGGER.debug("player $uuid sent ${component.string} by $senderUUID")
+//		sendMessageListeners.forEach { it.accept(component, senderUUID) }
+//	}
 	override fun awardStat(par1StatBase: Stat<*>, par2: Int) {}
 	//@Override public void openGui(Object mod, int modGuiId, World world, int x, int y, int z){}
 	override fun isInvulnerableTo(source: DamageSource) = true
@@ -101,7 +103,6 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 		override fun handlePaddleBoat(packet: ServerboundPaddleBoatPacket) {}
 		override fun onDisconnect(message: Component) {}
 		override fun send(packet: Packet<*>) {}
-		override fun send(packet: Packet<*>, listener: GenericFutureListener<out Future<in Void?>?>?) {}
 		override fun handleSetCarriedItem(packet: ServerboundSetCarriedItemPacket) {}
 		override fun handleChat(packet: ServerboundChatPacket) {}
 		override fun handleAnimate(packet: ServerboundSwingPacket) {}

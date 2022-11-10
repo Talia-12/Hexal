@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features", // required
+  "biomes": "#minecraft:is_overworld", // accepts a biome id, [list of biome ids], or #namespace:biome_tag
+  "features": "hexal:amethyst_slipway_geode", // accepts a placed feature id, [list of placed feature ids], or #namespace:feature_tag
+  "step": "underground_decoration" // accepts a Decoration enum name
+}
