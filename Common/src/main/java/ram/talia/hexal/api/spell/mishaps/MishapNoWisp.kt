@@ -26,6 +26,9 @@ class MishapNoWisp : Mishap() {
 	}
 
 	override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
+		if (ctx.spellCircle != null)
+			return
+
 		dropAll(ctx.caster, ctx.caster.inventory.items)
 		dropAll(ctx.caster, ctx.caster.inventory.offhand)
 		dropAll(ctx.caster, ctx.caster.inventory.armor) {

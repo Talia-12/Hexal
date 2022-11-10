@@ -59,20 +59,20 @@ public class WispTests {
 		});
 	}
 	
-	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", batch = "wispBatch", required = false)
+	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", batch = "wispBatch")
 	public static void linkWispsMessageTest (GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
 		HexalAPI.LOGGER.debug("running link wisps message test");
 		
-//		var receivingHex = List.of(Patterns.RECITATION, Patterns.GEMINIS_DISINTEGRATION, Patterns.NULLARY, Patterns.EQUALITY, Patterns.INTRO,
-//															 Patterns.REVEAL, Patterns.DROP, Patterns.RETRO, Patterns.SWAP, Patterns.SELECTION_DISTILLATION, Patterns.HERMES);
-//		var sendingHex = List.of(Patterns.POPULARITY, Patterns.ZERO, Patterns.EQUALITY, Patterns.IDENTITY, Patterns.INTRO, Patterns.COMPASS,
-//														 Patterns.FOUR, Patterns.ZONE_DSTL_WISP, Patterns.FLOCKS_DISINTEGRATION, Patterns.LINK_ENTITY, Patterns.RETRO, Patterns.CONJUNCTION,
-//														 Patterns.INTRO, Patterns.ZERO, Patterns.FOUR, Patterns.SEND_IOTA, Patterns.RETRO, Patterns.DISJUNCTION, Patterns.HERMES);
+		List<Iota> receivingHex = List.of(Patterns.RECITATION, Patterns.GEMINIS_DISINTEGRATION, Patterns.NULLARY, Patterns.EQUALITY, Patterns.INTRO,
+															 Patterns.REVEAL, Patterns.DROP, Patterns.RETRO, Patterns.SWAP, Patterns.SELECTION_DISTILLATION, Patterns.HERMES);
+		List<Iota> sendingHex = List.of(Patterns.POPULARITY, Patterns.ZERO, Patterns.INEQUALITY, Patterns.INTRO, Patterns.COMPASS,
+														 Patterns.FOUR, Patterns.ZONE_DSTL_WISP, Patterns.FLOCKS_DISINTEGRATION, Patterns.LINK_ENTITY, Patterns.RETRO,
+														 Patterns.INTRO, Patterns.ZERO, Patterns.FOUR, Patterns.SEND_IOTA, Patterns.RETRO, Patterns.AUGERS, Patterns.HERMES);
 		
-		TickingWisp receivingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(0.0, 2.0, 0.0), List.of());
-		TickingWisp sendingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(2.0, 2.0, 2.0), List.of());
+		TickingWisp receivingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(0.0, 2.0, 0.0), receivingHex);
+		TickingWisp sendingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(2.0, 2.0, 2.0), sendingHex);
 		
 		if (receivingWisp == null || sendingWisp == null)
 			return;
