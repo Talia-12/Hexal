@@ -65,6 +65,8 @@ public class ForgeHexalInitializer {
 		
 		bind(Registry.RECIPE_SERIALIZER_REGISTRY, HexalRecipeSerializers::registerSerializers);
 		bind(Registry.RECIPE_TYPE_REGISTRY, HexalRecipeTypes::registerTypes);
+
+		HexalIotaTypes.registerTypes();
 	}
 	
 	private static void initListeners () {

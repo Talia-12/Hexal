@@ -26,11 +26,11 @@ object Patterns {
 
 	// ============================ Type Comparison ===================================
 	@JvmField
-	val COMPARE_BLOCKS = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("compare/blocks"), OpCompareBlocks)
+	val COMPARE_BLOCKS = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("compare/blocks"), OpTypeBlock)
 	@JvmField
-	val COMPARE_ENTITIES = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("compare/entities"), OpCompareEntities)
+	val COMPARE_ENTITIES = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("compare/entities"), OpTypeEntity)
 	@JvmField
-	val COMPARE_TYPES = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("compare/types"), OpCompareTypes)
+	val COMPARE_TYPES = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("compare/types"), OpTypeIota)
 
 	// ========================== Misc Info Gathering =================================
 	@JvmField
