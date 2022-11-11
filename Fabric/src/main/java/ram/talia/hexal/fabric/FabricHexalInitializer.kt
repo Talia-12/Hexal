@@ -8,14 +8,12 @@ import net.minecraft.core.Registry
 import net.minecraft.data.BuiltinRegistries
 import ram.talia.hexal.common.casting.RegisterPatterns
 import net.minecraft.resources.ResourceLocation
-import ram.talia.hexal.common.lib.HexalBlockEntities
-import ram.talia.hexal.common.lib.HexalEntities
-import ram.talia.hexal.common.lib.HexalSounds
-import ram.talia.hexal.common.lib.HexalBlocks
+import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
+import ram.talia.hexal.common.recipe.HexalRecipeTypes
 import ram.talia.hexal.fabric.network.FabricPacketHandler
 import java.util.function.BiConsumer
 
@@ -53,7 +51,9 @@ object FabricHexalInitializer : ModInitializer {
         HexalEntities.registerEntities(bind(Registry.ENTITY_TYPE))
 
         HexalRecipeSerializers.registerSerializers(bind(Registry.RECIPE_SERIALIZER))
-        HexalRecipeSerializers.registerTypes()
+        HexalRecipeTypes.registerTypes(bind(Registry.RECIPE_TYPE))
+
+        HexalIotaTypes.registerTypes();
     }
 
 
