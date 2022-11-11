@@ -7,7 +7,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.spell.mishaps.MishapOthersWisp
 import ram.talia.hexal.common.entities.BaseCastingWisp
 
-object OpWispHex : ConstManaAction {
+object OpWispHex : ConstMediaAction {
 	override val argc = 1
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {

@@ -1,12 +1,12 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
-import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getPattern
 import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpToggleMacro : ConstManaAction {
+object OpToggleMacro : ConstMediaAction {
 	override val argc = 1
 
 	override val isGreat = true

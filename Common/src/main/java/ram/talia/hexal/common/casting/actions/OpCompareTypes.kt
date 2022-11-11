@@ -1,11 +1,11 @@
 package ram.talia.hexal.common.casting.actions
 
-import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 
-object OpCompareTypes : ConstManaAction {
+object OpCompareTypes : ConstMediaAction {
     override val argc = 2
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {

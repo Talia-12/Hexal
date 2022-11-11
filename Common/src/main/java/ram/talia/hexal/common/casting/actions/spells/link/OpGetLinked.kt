@@ -7,7 +7,7 @@ import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpGetLinked : ConstManaAction {
+object OpGetLinked : ConstMediaAction {
 	override val argc = 1
 
 	@Suppress("CAST_NEVER_SUCCEEDS")
