@@ -9,7 +9,7 @@ import ram.talia.hexal.api.spell.mishaps.MishapNoLinked
 import ram.talia.hexal.api.spell.mishaps.MishapNonPlayer
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpOpenTransmit : ConstManaAction {
+object OpOpenTransmit : ConstMediaAction {
 	override val argc = 1
 
 	@Suppress("CAST_NEVER_SUCCEEDS")

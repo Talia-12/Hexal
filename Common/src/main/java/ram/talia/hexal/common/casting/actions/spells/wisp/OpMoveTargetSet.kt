@@ -7,7 +7,7 @@ import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
-object OpMoveTargetSet : ConstManaAction {
+object OpMoveTargetSet : ConstMediaAction {
 	override val argc = 1
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {

@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
@@ -8,7 +8,7 @@ import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
-object OpGetMoveTarget : ConstManaAction {
+object OpGetMoveTarget : ConstMediaAction {
 	override val argc = 0
 
 	@Suppress("CAST_NEVER_SUCCEEDS")

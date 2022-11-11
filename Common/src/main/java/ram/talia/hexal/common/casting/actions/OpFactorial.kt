@@ -7,7 +7,7 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.HexalAPI
 import kotlin.math.*
 
-object OpFactorial : ConstManaAction {
+object OpFactorial : ConstMediaAction {
 	override val argc = 1
 
 	private fun factorial(number: Int): Long {

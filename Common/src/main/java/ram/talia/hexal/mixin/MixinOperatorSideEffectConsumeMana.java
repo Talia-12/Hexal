@@ -13,7 +13,7 @@ import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
-@Mixin(OperatorSideEffect.ConsumeMana.class)
+@Mixin(OperatorSideEffect.ConsumeMedia.class)
 public abstract class MixinOperatorSideEffectConsumeMana {
 	
 	/**

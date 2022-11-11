@@ -1,13 +1,12 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
-import at.petrak.hexcasting.api.spell.ConstManaAction
+import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getPattern
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.math.HexPattern
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpEverbookDelete : ConstManaAction {
+object OpEverbookDelete : ConstMediaAction {
 	override val argc = 1
 
 	override val isGreat = true

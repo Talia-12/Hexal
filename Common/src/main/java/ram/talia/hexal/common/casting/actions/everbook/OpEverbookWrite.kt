@@ -10,7 +10,7 @@ import at.petrak.hexcasting.common.blocks.akashic.BlockAkashicRecord
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpEverbookWrite : ConstManaAction {
+object OpEverbookWrite : ConstMediaAction {
 	override val argc = 2
 
 	override val isGreat = true

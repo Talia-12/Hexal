@@ -5,7 +5,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import net.minecraft.world.entity.item.ItemEntity
 
-object OpCompareEntities : ConstManaAction {
+object OpCompareEntities : ConstMediaAction {
 	override val argc = 2
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {

@@ -5,7 +5,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import net.minecraft.world.phys.Vec3
 
-object OpCompareBlocks : ConstManaAction {
+object OpCompareBlocks : ConstMediaAction {
     override val argc = 2
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
