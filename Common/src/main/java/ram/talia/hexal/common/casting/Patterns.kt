@@ -75,6 +75,8 @@ object Patterns {
 	val WISP_MEDIA = make(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST), modLoc("wisp/media"), OpWispMedia)
 	@JvmField
 	val WISP_HEX = make(HexPattern.fromAngles("aweewaqaweewaawww", HexDir.SOUTH_EAST), modLoc("wisp/hex"), OpWispHex)
+	@JvmField
+	val WISP_OWNER = make(HexPattern.fromAngles("dwqqwdedwqqwddwww", HexDir.SOUTH_WEST), modLoc("wisp/owner"), OpWispOwner)
 
 	// Set and Get Move Target WEST awqwawqaw
 	@JvmField

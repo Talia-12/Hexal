@@ -56,6 +56,14 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/owner",
+      "anchor": "hexal:wisp/owner",
+      "input": "entity, entity",
+      "output": "0/1",
+      "text": "hexal.page.wisps.wisp/owner"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:wisp/move_target/set",
       "anchor": "hexal:wisp/move_target/set",
       "input": "vec",
