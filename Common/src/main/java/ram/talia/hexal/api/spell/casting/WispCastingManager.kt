@@ -3,7 +3,6 @@ package ram.talia.hexal.api.spell.casting
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.orNull
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
@@ -18,11 +17,10 @@ import ram.talia.hexal.api.nbt.toIotaList
 import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
-import kotlin.collections.ArrayList
 
 class WispCastingManager(private val caster: ServerPlayer) {
 
-	val queue: PriorityQueue<WispCast> = PriorityQueue()
+	private val queue: PriorityQueue<WispCast> = PriorityQueue()
 
 	/**
 	 * Schedule a given cast to be added to this WispCastingManager's priority queue. It will be evaluated in the next tick unless the player is doing something that
