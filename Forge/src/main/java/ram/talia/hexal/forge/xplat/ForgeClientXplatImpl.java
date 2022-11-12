@@ -4,11 +4,8 @@ import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import at.petrak.hexcasting.forge.network.ForgePacketHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -20,9 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
@@ -33,11 +28,6 @@ public class ForgeClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public void sendPacketToServer (IMessage packet) {
 		ForgePacketHandler.getNetwork().sendToServer(packet);
-	}
-	
-	@Override
-	public void setRenderLayer (Block block, RenderType type) {
-		ItemBlockRenderTypes.setRenderLayer(block, type);
 	}
 	
 	@Override

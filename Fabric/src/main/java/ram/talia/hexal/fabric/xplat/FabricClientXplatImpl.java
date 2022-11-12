@@ -3,7 +3,6 @@ package ram.talia.hexal.fabric.xplat;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import at.petrak.hexcasting.fabric.client.ExtendedTexture;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -11,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -26,7 +24,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IClientXplatAbstractions;
@@ -37,11 +34,6 @@ public class FabricClientXplatImpl implements IClientXplatAbstractions {
 	@Override
 	public void sendPacketToServer (IMessage packet) {
 		ClientPlayNetworking.send(packet.getFabricId(), packet.toBuf());
-	}
-	
-	@Override
-	public void setRenderLayer (Block block, RenderType type) {
-		BlockRenderLayerMap.INSTANCE.putBlock(block, type);
 	}
 	
 	@Override
