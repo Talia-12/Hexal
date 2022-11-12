@@ -10,7 +10,7 @@ import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.toCompoundTagList
+import ram.talia.hexal.api.nbt.toCompoundTagList
 
 /**
  * One instance per Everbook, holds compiled versions of all the macros that a player has created (by marking patterns in the Everbook as keys for macros).

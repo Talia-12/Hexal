@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.SpellList
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asList

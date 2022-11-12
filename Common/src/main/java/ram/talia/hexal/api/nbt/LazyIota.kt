@@ -1,14 +1,11 @@
 package ram.talia.hexal.api.nbt
 
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.orNull
 import at.petrak.hexcasting.common.lib.HexIotaTypes
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.level.ServerLevel
-import ram.talia.hexal.api.spell.toIotaList
-import ram.talia.hexal.api.spell.toNbtList
 
 class LazyIota(val level: ServerLevel): LazyLoad<Iota?, CompoundTag>(null) {
 	override fun load(unloaded: CompoundTag) = HexIotaTypes.deserialize(unloaded, level)
