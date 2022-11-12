@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.lib
 
-import at.petrak.hexcasting.api.HexAPI
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.IotaType
 import at.petrak.hexcasting.common.lib.HexIotaTypes
@@ -8,7 +7,6 @@ import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 import ram.talia.hexal.api.HexalAPI.modLoc
-import ram.talia.hexal.api.spell.iota.BlockTypeIota
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
 import ram.talia.hexal.api.spell.iota.ItemTypeIota
@@ -28,8 +26,6 @@ object HexalIotaTypes {
 
     @JvmField
     val IOTA_TYPE: IotaType<IotaTypeIota> = type("iota_type", IotaTypeIota.TYPE)
-    @JvmField
-    val BLOCK_TYPE: IotaType<BlockTypeIota> = type("block_type", BlockTypeIota.TYPE)
     @JvmField
     val ENTITY_TYPE: IotaType<EntityTypeIota> = type("entity_type", EntityTypeIota.TYPE)
     @JvmField

@@ -11,19 +11,9 @@
   "hexcasting.mishap.no_links": "%s has no links.",
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
 
-  "hexal.spelldata.entity_type": "Iota",
-  "hexcasting.iota.hexcasting:null": "Null Iota",
-  "hexcasting.iota.hexcasting:double": "Double Iota",
-  "hexcasting.iota.hexcasting:boolean": "Boolean Iota",
-  "hexcasting.iota.hexcasting:entity": "Entity Iota",
-  "hexcasting.iota.hexcasting:list": "List Iota",
-  "hexcasting.iota.hexcasting:pattern": "Pattern Iota",
-  "hexcasting.iota.hexcasting:garbage": "Garbage Iota",
-  "hexcasting.iota.hexcasting:vec3": "Vector Iota",
-  "hexcasting.iota.hexal:iota_type": "Iota Type Iota",
-  "hexcasting.iota.hexal:block_type": "Block Type Iota",
-  "hexcasting.iota.hexal:entity_type": "Entity Type Iota",
-  "hexcasting.iota.hexal:item_type": "Item Type Iota",
+  "hexcasting.iota.hexal:iota_type": "Iota Type",
+  "hexcasting.iota.hexal:entity_type": "Entity Type",
+  "hexcasting.iota.hexal:item_type": "Item Type",
 
   "hexcasting.spell.hexal:compare/blocks": "Surveyor's Distillation",
   "hexcasting.spell.hexal:compare/entities": "Physician's Distillation",
@@ -121,7 +111,7 @@
   "hexal.page.wisps.wisp/summon/ticking.1": "The first time it casts the stack will start with a reference to itself, from which point it will always start with the stack and ravenmind in the state they finished on the last cast. This wisp has a less stable form making it lose significantly more media every second, losing one $(l:items/amethyst)$(item)Amethyst Dust/$ per second once summoned, as well as an amount proportional to the amount remaining. It has a range of influence of 8 blocks.",
   "hexal.page.wisps.wisp/media": "Add the amount of media in the wisp's reservoir to the stack. This must be cast by a wisp; trying to cast it through a staff will fail rather spectacularly.",
   "hexal.page.wisps.wisp/hex": "Removes a reference to a wisp from the stack, and replaces it with the wisp's contained hex. Must be a wisp you summoned.",
-  "hexal.page.wisps.wisp/owner": "Removes a reference to a wisp and an entity from the stack, and returns one if that entity owns that wisp, and a zero otherwise.",
+  "hexal.page.wisps.wisp/owner": "Removes a reference to a wisp and an entity from the stack, and returns true if that entity owns that wisp, and false otherwise.",
   "hexal.page.wisps.wisp/move/target/set": "Removes a position vector from the stack; The Cyclic Wisp that executed this pattern will move in a straight line towards that position (colliding with terrain in its path) until it reaches it.",
   "hexal.page.wisps.wisp/move/target/get": "Adds to the stack the position vector that the executing Cyclic Wisp is currently moving towards.",
   "hexal.page.wisps.wisp/move/speed/set": "Removes a number from the stack, and sets the executing Cyclic Wisp's maximum speed to that number.",
@@ -155,9 +145,9 @@
   "hexal.page.great_wisps.wisp/seon/get": "Returns my currently bound wisp. (This is not a great spell, I have simply placed it here for convenience.)",
 
   "hexal.entry.type_comparison": "Type Comparisons",
-  "hexal.page.type_comparison.compare/blocks": "Remove two locations from the stack; if the block at the first is equal to the block at the second, return 1. Otherwise, return 0.",
-  "hexal.page.type_comparison.compare/entities": "Remove two entities from the stack; if the entities are the same type (with items comparing the type of item) return 1. Otherwise, return 0.",
-  "hexal.page.type_comparison.compare/types": "Remove two iota from the stack; if iota are the same type, return 1. Otherwise, return 0. For example, removing 0 and 5 would return 1, as would removing [] and [12], while removing 1 and (1,2,3) would return 0.",
+  "hexal.page.type_comparison.compare/blocks": "Remove a location from the stack, and adds the type of the block at that location to the stack.",
+  "hexal.page.type_comparison.compare/entities": "Remove an entity from the stack, and adds the type of the entity at that location to the stack (with item entities adding their item type).",
+  "hexal.page.type_comparison.compare/types": "Remove an iota from the stack, and adds the type of that iota to the stack.",
 
 
 

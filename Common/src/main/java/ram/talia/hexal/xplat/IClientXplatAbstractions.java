@@ -2,10 +2,8 @@ package ram.talia.hexal.xplat;
 
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -15,9 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import ram.talia.hexal.api.HexalAPI;
 
 import javax.annotation.Nullable;
@@ -27,8 +23,6 @@ import java.util.stream.Collectors;
 
 public interface IClientXplatAbstractions {
 	void sendPacketToServer(IMessage packet);
-	
-	void setRenderLayer(Block block, RenderType type);
 	
 	void initPlatformSpecific();
 	
