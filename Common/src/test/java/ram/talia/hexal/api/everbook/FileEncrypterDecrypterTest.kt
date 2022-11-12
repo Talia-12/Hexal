@@ -1,5 +1,8 @@
 package ram.talia.hexal.api.everbook
 
+import at.petrak.hexcasting.api.spell.SpellDatum
+import at.petrak.hexcasting.api.spell.math.HexDir
+import at.petrak.hexcasting.api.spell.math.HexPattern
 import net.minecraft.nbt.CompoundTag
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -42,5 +45,17 @@ internal class FileEncrypterDecrypterTest {
 		val decryptedContent = fileEncrypterDecrypter.decryptCompound(File("baz.enc"))
 
 		assertEquals(originalContent, decryptedContent)
+	}
+
+	@Test
+	fun testEncryptDecryptEverbook() {
+		val everbook = Everbook(UUID.fromString("41C82C87-7AfB-4024-BA57-13D2C99CAE77"))
+
+		everbook.setIota(HexPattern.fromAngles("a", HexDir.EAST), SpellDatum.make(15.0))
+
+		fileEncrypterDecrypter.encrypt(everbook.serialiseToNBT(), File("baz.enc"))
+		val decryptedContent = fileEncrypterDecrypter.decryptCompound(File("baz.enc"))
+
+		assertEquals(everbook.serialiseToNBT(), decryptedContent)
 	}
 }

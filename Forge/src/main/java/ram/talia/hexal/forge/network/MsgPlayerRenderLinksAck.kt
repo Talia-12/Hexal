@@ -8,12 +8,12 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI.modLoc
-import ram.talia.hexal.api.spell.toIRenderCentreList
+import ram.talia.hexal.api.nbt.toIRenderCentreList
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler
 import java.util.*
 
 data class MsgPlayerRenderLinksAck(val playerUUID: UUID, val renderLinksTag: ListTag) : IMessage {
-	public val ID: ResourceLocation = modLoc("relinks")
+	val ID: ResourceLocation = modLoc("relinks")
 
 	override fun getFabricId() = ID
 

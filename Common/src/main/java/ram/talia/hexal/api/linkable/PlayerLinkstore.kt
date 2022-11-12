@@ -1,10 +1,8 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.Operator
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
-import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.ListTag
@@ -17,7 +15,6 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyIotaList
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.toNbtList
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
@@ -87,7 +84,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	}
 
 	fun resetTransmittingTo() {
-		transmittingTo = null;
+		transmittingTo = null
 	}
 	//endregion
 

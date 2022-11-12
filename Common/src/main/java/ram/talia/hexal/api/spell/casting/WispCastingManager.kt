@@ -12,8 +12,8 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.toIotaList
-import ram.talia.hexal.api.spell.toNbtList
+import ram.talia.hexal.api.nbt.toIotaList
+import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
 import kotlin.collections.ArrayList

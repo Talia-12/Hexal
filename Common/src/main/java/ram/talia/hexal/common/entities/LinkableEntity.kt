@@ -19,7 +19,7 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.LinkableTypes
-import ram.talia.hexal.api.spell.toNbtList
+import ram.talia.hexal.api.nbt.toNbtList
 
 abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable<LinkableEntity>, ILinkable.IRenderCentre {
 	override val asSpellResult

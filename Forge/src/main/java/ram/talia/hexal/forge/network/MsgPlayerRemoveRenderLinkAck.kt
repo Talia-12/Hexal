@@ -4,12 +4,10 @@ import at.petrak.hexcasting.common.network.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.Tag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.api.linkable.LinkableRegistry
-import ram.talia.hexal.api.spell.toIRenderCentreList
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler
 import java.util.*
 

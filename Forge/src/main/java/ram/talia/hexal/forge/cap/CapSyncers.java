@@ -2,13 +2,11 @@ package ram.talia.hexal.forge.cap;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.LinkableRegistry;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
-import ram.talia.hexal.api.spell.HexalNBTHelperKt;
+import ram.talia.hexal.api.nbt.HexalNBTHelperKt;
 import ram.talia.hexal.forge.network.MsgPlayerAddRenderLinkAck;
 import ram.talia.hexal.forge.network.MsgPlayerClearRenderLinksAck;
 import ram.talia.hexal.forge.network.MsgPlayerRemoveRenderLinkAck;

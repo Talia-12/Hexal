@@ -18,6 +18,6 @@ object OpGetMoveTarget : ConstManaOperator {
 		if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
 			throw MishapNoSpellCircle()
 
-		return (mCast.wisp as TickingWisp).getTargetMovePos().asSpellResult
+		return (mCast.wisp as TickingWisp).getTargetMovePos()?.asSpellResult ?: null.asSpellResult
 	}
 }

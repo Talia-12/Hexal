@@ -13,9 +13,9 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.PlayerLinkstore
-import ram.talia.hexal.api.spell.toCompoundTagList
-import ram.talia.hexal.api.spell.toIRenderCentreList
-import ram.talia.hexal.api.spell.toSyncTag
+import ram.talia.hexal.api.nbt.toCompoundTagList
+import ram.talia.hexal.api.nbt.toIRenderCentreList
+import ram.talia.hexal.api.nbt.toSyncTag
 import ram.talia.hexal.client.playLinkParticles
 
 public class CCPlayerLinkstore(private val player: Player) : ServerTickingComponent, ClientTickingComponent, AutoSyncedComponent {

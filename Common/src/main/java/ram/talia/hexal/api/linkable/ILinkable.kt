@@ -3,7 +3,6 @@ package ram.talia.hexal.api.linkable
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.utils.asCompound
-import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
@@ -12,7 +11,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyLoad
-import ram.talia.hexal.api.spell.toNbtList
+import ram.talia.hexal.api.nbt.toNbtList
 import kotlin.math.max
 
 interface ILinkable<T : ILinkable<T>> {

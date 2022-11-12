@@ -8,7 +8,7 @@ import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.toCompoundTagList
+import ram.talia.hexal.api.nbt.toCompoundTagList
 
 /**
  * One instance per Everbook, holds compiled versions of all the macros that a player has created (by marking patterns in the Everbook as keys for macros).
@@ -127,7 +127,7 @@ class MacroHolder(val everbook: Everbook) {
 
 		if (keys.size != 1)
 			return null
-		return when (val key = keys.iterator().next()) {
+		return when (keys.iterator().next()) {
 			SpellDatum.TAG_PATTERN -> HexPattern.fromNBT(patternTag.getCompound(SpellDatum.TAG_PATTERN))
 			else -> null
 		}

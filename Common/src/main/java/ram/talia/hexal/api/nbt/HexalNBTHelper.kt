@@ -1,4 +1,4 @@
-package ram.talia.hexal.api.spell
+package ram.talia.hexal.api.nbt
 
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.math.HexPattern
