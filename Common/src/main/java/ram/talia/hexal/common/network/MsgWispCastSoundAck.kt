@@ -31,7 +31,7 @@ data class MsgWispCastSoundAck private constructor(val wispId: Int) : IMessage {
 				val mc = Minecraft.getInstance()
 				val level = mc.level ?: return@execute
 
-				(level.getEntity(self.wispId) as BaseCastingWisp).playCastSoundClient()
+				(level.getEntity(self.wispId) as? BaseCastingWisp)?.playCastSoundClient()
 			}
 		}
 	}

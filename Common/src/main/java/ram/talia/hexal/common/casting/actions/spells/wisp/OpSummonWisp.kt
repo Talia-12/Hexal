@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
+import java.lang.Integer.max
 
 class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     override val argc = if (ticking) 3 else 4
@@ -34,7 +35,8 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
             false -> {
                 val vel = args.getChecked<Vec3>(2, argc)
                 media = args.getChecked(3, argc)
-                cost = (COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt() + (media * ManaConstants.DUST_UNIT).toInt()
+                cost = max((COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt(), COST_SUMMON_WISP_PROJECTILE_MIN) +
+                        (media * ManaConstants.DUST_UNIT).toInt()
                 Spell(false, pos, hex.toList(), (media * ManaConstants.DUST_UNIT).toInt(), vel)
             }
         }
@@ -69,5 +71,6 @@ class OpSummonWisp(val ticking: Boolean) : SpellOperator {
     companion object {
         private const val COST_SUMMON_WISP_TICKING = 3 * ManaConstants.DUST_UNIT
         private const val COST_SUMMON_WISP_PROJECTILE = 3/1.75 * ManaConstants.DUST_UNIT
+        private const val COST_SUMMON_WISP_PROJECTILE_MIN = ManaConstants.DUST_UNIT / 2
     }
 }

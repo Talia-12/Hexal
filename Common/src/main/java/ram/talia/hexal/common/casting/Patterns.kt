@@ -20,9 +20,9 @@ import ram.talia.hexal.common.entities.BaseWisp
 object Patterns {
 
 	@JvmField
-	var PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
+	val PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
 	@JvmField
-	var PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
+	val PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Operator>> = ArrayList()
 
 	// ============================ Type Comparison ===================================
 	@JvmField
