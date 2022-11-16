@@ -19,7 +19,7 @@ object OpConsumeWisp : SpellOperator {
 
 	override val isGreat = true
 
-	@Suppress("CAST_NEVER_SUCCEEDS", "KotlinConstantConditions")
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val consumed = args.getChecked<IMediaEntity<*>>(0, argc)
 
@@ -46,7 +46,7 @@ object OpConsumeWisp : SpellOperator {
 	}
 
 	private data class Spell(val consumed: IMediaEntity<*>) : RenderedSpell {
-		@Suppress("CAST_NEVER_SUCCEEDS", "KotlinConstantConditions")
+		@Suppress("CAST_NEVER_SUCCEEDS")
 		override fun cast(ctx: CastingContext) {
 			HexalAPI.LOGGER.info("cast method of Spell of OpConsumeWisp triggered targeting $consumed")
 

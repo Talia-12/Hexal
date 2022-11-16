@@ -129,11 +129,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 //		HexalAPI.LOGGER.info("wisp $uuid ticked and ${if (scheduledCast) "does" else "doesn't"} have a cast scheduled.")
 
-		if (!scheduledCast || caster == null) {
+		oldPos = position()
+
+		if (!scheduledCast && caster != null) {
 			if (!level.isClientSide)
 				deductMedia()
-
-			oldPos = position()
 
 			childTick()
 			move()

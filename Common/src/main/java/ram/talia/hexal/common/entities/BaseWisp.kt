@@ -4,29 +4,22 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
-import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntityDimensions
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.Pose
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.client.playLinkParticles
-import ram.talia.hexal.client.sounds.WispCastingSoundInstance
-import ram.talia.hexal.common.lib.HexalSounds
-import ram.talia.hexal.common.network.MsgWispCastSoundAck
-import ram.talia.hexal.xplat.IXplatAbstractions
 import kotlin.math.*
 
 abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : LinkableEntity(entityType, world), IMediaEntity<BaseWisp> {
@@ -133,6 +126,8 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
 
 		media = compound.getInt(TAG_MEDIA)
+
+		oldPos = position() // so that reloading a wisp doesn't result in it having a trail to the origin forever
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
