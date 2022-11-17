@@ -4,8 +4,8 @@ import at.petrak.hexcasting.api.spell.ConstManaOperator
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.asSpellResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
 object OpGetMoveTarget : ConstManaOperator {
@@ -16,7 +16,7 @@ object OpGetMoveTarget : ConstManaOperator {
 		val mCast = ctx as? IMixinCastingContext
 
 		if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
-			throw MishapNoSpellCircle()
+			throw MishapNoWisp()
 
 		return (mCast.wisp as TickingWisp).getTargetMovePos()?.asSpellResult ?: null.asSpellResult
 	}

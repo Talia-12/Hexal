@@ -10,8 +10,8 @@ import kotlin.math.max
 object OpGetLinked : ConstManaOperator {
 	override val argc = 1
 
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {

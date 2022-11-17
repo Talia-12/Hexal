@@ -36,9 +36,6 @@ object OpSendIota : SpellOperator {
 
 		val other = linkThis.getLinked(linkedIndex)
 
-		// TODO: Links have their own range that is enforced
-//		ctx.assertVecInRange(other.getPos())
-
 		return Triple(
 			Spell(other, iota),
 			COST_SEND_IOTA,

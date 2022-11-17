@@ -15,8 +15,8 @@ object OpUnlink : SpellOperator {
 
 	override val argc = 1
 
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {

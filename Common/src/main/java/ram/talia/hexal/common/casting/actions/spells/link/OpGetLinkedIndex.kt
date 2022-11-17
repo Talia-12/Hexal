@@ -15,8 +15,8 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpGetLinkedIndex : ConstManaOperator {
 	override val argc = 1
 
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
@@ -24,9 +24,7 @@ object OpGetLinkedIndex : ConstManaOperator {
 			else -> wisp
 		}
 
-		val entityOther = args.getChecked<Entity>(0, argc)
-
-		val linkOther = when (entityOther) {
+		val linkOther = when (val entityOther = args.getChecked<Entity>(0, argc)) {
 			is LinkableEntity -> entityOther
 			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(entityOther)
 			else -> return (-1).asSpellResult

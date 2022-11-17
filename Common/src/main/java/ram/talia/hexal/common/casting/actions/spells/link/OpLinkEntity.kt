@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
 
@@ -17,8 +18,8 @@ object OpLinkEntity : SpellOperator {
 
 	override val argc = 1
 
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
@@ -35,6 +36,9 @@ object OpLinkEntity : SpellOperator {
 			is ServerPlayer -> IXplatAbstractions.INSTANCE.getLinkstore(other)
 			else -> throw Exception("How did I get here")
 		}
+
+		if (linkThis == linkOther)
+			throw MishapLinkToSelf(linkThis)
 
 		if (!linkThis.isInRange(linkOther))
 			throw MishapLocationTooFarAway(linkOther.getPos())

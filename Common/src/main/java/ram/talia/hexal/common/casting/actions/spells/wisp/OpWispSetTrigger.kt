@@ -3,9 +3,9 @@ package ram.talia.hexal.common.casting.actions.spells.wisp
 import at.petrak.hexcasting.api.spell.ConstManaOperator
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
+import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 
 /**
  * Accepts a [WispTriggerRegistry.WispTriggerType] for an [ram.talia.hexal.api.spell.casting.triggers.IWispTrigger], a wisp executing the spell will create a trigger of
@@ -19,7 +19,7 @@ class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerT
 		val mCast = ctx as? IMixinCastingContext
 
 		if (mCast == null || mCast.wisp == null)
-			throw MishapNoSpellCircle()
+			throw MishapNoWisp()
 
 //		HexalAPI.LOGGER.info("Setting ${mCast.wisp} trigger to $triggerType")
 
