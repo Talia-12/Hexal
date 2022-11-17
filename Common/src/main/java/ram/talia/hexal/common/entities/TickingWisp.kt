@@ -93,7 +93,7 @@ class TickingWisp : BaseCastingWisp {
 		if (reachedTargetPos()) // also checks if within close enough distance of target.
 			return
 
-		val currentTarget = getTargetMovePos()!!
+		val currentTarget = getTargetMovePosRaw()
 		val diffVec = currentTarget - position()
 		val sqrDist = diffVec.lengthSqr()
 
@@ -116,10 +116,12 @@ class TickingWisp : BaseCastingWisp {
 
 		super.castCallback(result)
 	}
-	fun getTargetMovePos(): Vec3? = if (reachedTargetPos()) null
-		else Vec3(entityData.get(TARGET_MOVE_POS_X).toDouble(),
-		          entityData.get(TARGET_MOVE_POS_Y).toDouble(),
-		          entityData.get(TARGET_MOVE_POS_Z).toDouble())
+	fun getTargetMovePos(): Vec3? = if (reachedTargetPos()) null else getTargetMovePosRaw()
+
+	private fun getTargetMovePosRaw(): Vec3 =
+			Vec3(entityData.get(TARGET_MOVE_POS_X).toDouble(),
+			     entityData.get(TARGET_MOVE_POS_Y).toDouble(),
+			     entityData.get(TARGET_MOVE_POS_Z).toDouble())
 
 	fun setTargetMovePos(pos: Vec3) {
 		entityData.set(HAS_TARGET_MOVE_POS, true)
@@ -129,14 +131,14 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	fun reachedTargetPos(): Boolean {
-		return if (entityData.get(HAS_TARGET_MOVE_POS)) {
-			false
-		} else if ((getTargetMovePos()!! - position()).lengthSqr() < 0.01) {
-			setPos(getTargetMovePos()!!)
-			entityData.set(HAS_TARGET_MOVE_POS, false)
-			false
-		} else {
+		return if (!entityData.get(HAS_TARGET_MOVE_POS)) {
 			true
+		} else if ((getTargetMovePosRaw() - position()).lengthSqr() < 0.01) {
+			setPos(getTargetMovePosRaw())
+			entityData.set(HAS_TARGET_MOVE_POS, false)
+			true
+		} else {
+			false
 		}
 	}
 
@@ -222,7 +224,7 @@ class TickingWisp : BaseCastingWisp {
 		const val CASTING_SCHEDULE_PRIORITY = -5
 		const val CASTING_RADIUS = 8.0
 
-		const val BASE_MAX_SPEED_PER_TICK = 5.0 / 20
+		const val BASE_MAX_SPEED_PER_TICK = 6.0 / 20
 		const val SCALE = 0.2
 	}
 }
