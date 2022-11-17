@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getChecked
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoLinked
-import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
+import ram.talia.hexal.api.spell.mishaps.MishapNonPlayer
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpOpenTransmit : ConstManaOperator {
@@ -17,7 +17,7 @@ object OpOpenTransmit : ConstManaOperator {
 		val mCtx = ctx as? IMixinCastingContext
 
 		if (ctx.spellCircle != null || mCtx?.hasWisp() == true)
-			throw MishapNoWisp()
+			throw MishapNonPlayer()
 
 		val playerLinkable = IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
 
