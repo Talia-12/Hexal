@@ -3,7 +3,6 @@ package ram.talia.hexal.common.casting.actions.spells.link
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoSpellCircle
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoLinked
 import ram.talia.hexal.api.spell.mishaps.MishapNonPlayer
