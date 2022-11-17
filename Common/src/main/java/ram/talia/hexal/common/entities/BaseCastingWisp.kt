@@ -23,11 +23,9 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.nbt.LazyIotaList
-import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.casting.triggers.IWispTrigger
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
-import ram.talia.hexal.api.times
 import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
 import ram.talia.hexal.common.network.MsgWispCastSoundAck
@@ -106,14 +104,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
 		set(value) = entityData.set(SCHEDULED_CAST, value)
-
-	var velocity: Vec3
-		get() = scaleVecByMedia(deltaMovement)
-		set(value) {
-			// change the wisp to look where its velocity points, useful for blinking
-			setLookVector(value)
-			deltaMovement = value
-		}
 
 	override fun get() = this
 
@@ -278,30 +268,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		scheduledCast = false
 	}
 
-	fun addVelocityScaled(vel: Vec3) {
-		deltaMovement += scaleVecByMedia(vel)
-		// change the wisp to look where its velocity points, useful for blinking
-		setLookVector(deltaMovement)
-	}
-
-	override fun push(x: Double, y: Double, z: Double) {
-		// TODO: figure out how I actually want this to work since it is desireable for OpAddMove (or whatever) and OpGetMove to return what you'd expect
-		// TODO: but also desireable for it to be setup such that your ballistics maths doesn't need to account for the velocity scaling stuff at all
-		deltaMovement += Vec3(x, y, z)
-		// change the wisp to look where its velocity points, useful for blinking
-		setLookVector(deltaMovement)
-		hasImpulse = true
-	}
-
-	private fun scaleVecByMedia(vec: Vec3) = scaleVecByMedia(vec, 1, media)
-
-	private fun scaleVecByMedia(vec: Vec3, oldMedia: Int, newMedia: Int): Vec3 {
-		val WIDTH_SCALE = 0.015
-		val LIMIT = 0.25
-
-		val oldScale = (1 - LIMIT) / ((oldMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) * (oldMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) + 1) + LIMIT
-		val newScale = (1 - LIMIT) / ((newMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) * (newMedia * WIDTH_SCALE / ManaConstants.DUST_UNIT) + 1) + LIMIT
-		return (newScale / oldScale) * vec
+	override fun setDeltaMovement(dV: Vec3) {
+		super.setDeltaMovement(dV)
+		setLookVector(dV)
 	}
 
 

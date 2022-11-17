@@ -14,27 +14,26 @@ import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
-import ram.talia.hexal.api.times
 import ram.talia.hexal.common.lib.HexalEntities
 
-class ProjectileWisp : BaseCastingWisp {
+open class ProjectileWisp : BaseCastingWisp {
 	var isAffectedByGravity = true
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
-		velocity = vel
+		deltaMovement = vel
 	}
 	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
-		velocity = vel
+		deltaMovement = vel
 	}
 
 	override fun move() {
 		if (isAffectedByGravity)
-			addVelocityScaled(Vec3(0.0, -0.05, 0.0))
+			deltaMovement += Vec3(0.0, -0.05, 0.0)
 
 		// either [position] + [velocity] if there was nothing in between the two points of the
 		// trace, or the collision point if there was.
-		val endPos = traceAnyHit(position(), position() + velocity)
+		val endPos = traceAnyHit(position(), position() + deltaMovement)
 
 		setPos(endPos)
 	}
@@ -49,7 +48,7 @@ class ProjectileWisp : BaseCastingWisp {
 			this,
 			start,
 			end,
-			boundingBox.expandTowards(velocity).inflate(1.0),
+			boundingBox.expandTowards(deltaMovement).inflate(1.0),
 			this::canHitEntity
 		)
 
@@ -61,11 +60,11 @@ class ProjectileWisp : BaseCastingWisp {
 		}
 	}
 
-	public fun traceAnyHit(start: Vec3, end: Vec3): Vec3 {
+	fun traceAnyHit(start: Vec3, end: Vec3): Vec3 {
 		return traceAnyHit(getHitResult(start, end), start, end)
 	}
 
-	public fun traceAnyHit(raytraceResult: HitResult?, start: Vec3, end: Vec3): Vec3 {
+	fun traceAnyHit(raytraceResult: HitResult?, start: Vec3, end: Vec3): Vec3 {
 		var tEnd = end
 
 
