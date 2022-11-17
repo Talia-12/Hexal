@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpGetSeonWisp : ConstManaOperator {
+object OpSeonWispGet : ConstManaOperator {
     override val argc = 0
 
     override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {

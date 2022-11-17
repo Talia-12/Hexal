@@ -9,7 +9,7 @@ import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
-object OpSetMoveTarget : ConstManaOperator {
+object OpMoveTargetSet : ConstManaOperator {
 	override val argc = 1
 
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {

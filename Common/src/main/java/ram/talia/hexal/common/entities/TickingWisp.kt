@@ -21,6 +21,7 @@ import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.times
 import ram.talia.hexal.common.lib.HexalEntities
+import java.lang.Double.min
 
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
@@ -47,7 +48,9 @@ class TickingWisp : BaseCastingWisp {
 		}
 	private var lazyRavenmind: LazyIota? = if (level.isClientSide) null else LazyIota(level as ServerLevel)
 
-
+	var currentMoveMultiplier: Float
+		get() = entityData.get(CURRENT_MOVE_MULTIPLIER)
+		set(value) = entityData.set(CURRENT_MOVE_MULTIPLIER, value)
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(
@@ -80,24 +83,19 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	override fun move() {
-		if (reachedTargetPos())
+		if (reachedTargetPos()) // also checks if within close enough distance of target.
 			return
-		if ((getTargetMovePos()!! - position()).lengthSqr() < 0.0001*0.0001) {
-			entityData.set(HAS_TARGET_MOVE_POS, false)
-			return
-		}
 
-		val diffVec = getTargetMovePos()!! - position()
+		val currentTarget = getTargetMovePos()!!
+		val diffVec = currentTarget - position()
 		val sqrDist = diffVec.lengthSqr()
 
-		if (sqrDist < 0.01) {
-			setPos(getTargetMovePos()!!)
-			entityData.set(HAS_TARGET_MOVE_POS, false)
-		}
+		// smoothly slow down as it approaches the goal
+		val distToStep = currentMoveMultiplier * BASE_MAX_SPEED_PER_TICK * sqrDist / (sqrDist + SCALE)
 
-		val distToStep = MAX_SPEED_PER_TICK * sqrDist / (sqrDist + SCALE) // smoothly slow down as it approaches the goal
-
-		val step = maxMove(diffVec.normalize() * distToStep)
+		// multiplied by min(distToStep, diffVec.length()) rather than just distToStep so that if the player sets the
+		// move speed multiplier high enough to overshoot the target, the wisp instead jumps to the target.
+		val step = maxMove(diffVec.normalize() * min(distToStep, diffVec.length()))
 
 		setPos(position() + step)
 	}
@@ -123,7 +121,17 @@ class TickingWisp : BaseCastingWisp {
 		entityData.set(TARGET_MOVE_POS_Z, pos.z.toFloat())
 	}
 
-	fun reachedTargetPos(): Boolean = !entityData.get(HAS_TARGET_MOVE_POS)
+	fun reachedTargetPos(): Boolean {
+		return if (entityData.get(HAS_TARGET_MOVE_POS)) {
+			false
+		} else if ((getTargetMovePos()!! - position()).lengthSqr() < 0.01) {
+			setPos(getTargetMovePos()!!)
+			entityData.set(HAS_TARGET_MOVE_POS, false)
+			false
+		} else {
+			true
+		}
+	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)
@@ -153,6 +161,10 @@ class TickingWisp : BaseCastingWisp {
 			true -> compound.getFloat(TAG_TARGET_MOVE_POS_Z)
 			false -> position().z.toFloat()
 		})
+		entityData.set(CURRENT_MOVE_MULTIPLIER, when(compound.hasFloat(TAG_CURRENT_MOVE_MULTIPLIER)) {
+			true -> compound.getFloat(TAG_CURRENT_MOVE_MULTIPLIER)
+			false -> 1f
+		})
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -164,6 +176,7 @@ class TickingWisp : BaseCastingWisp {
 		compound.putFloat(TAG_TARGET_MOVE_POS_X, entityData.get(TARGET_MOVE_POS_X))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Y, entityData.get(TARGET_MOVE_POS_Y))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Z, entityData.get(TARGET_MOVE_POS_Z))
+		compound.putFloat(TAG_CURRENT_MOVE_MULTIPLIER, entityData.get(CURRENT_MOVE_MULTIPLIER))
 	}
 
 	override fun defineSynchedData() {
@@ -173,6 +186,7 @@ class TickingWisp : BaseCastingWisp {
 		entityData.define(TARGET_MOVE_POS_X, position().x.toFloat())
 		entityData.define(TARGET_MOVE_POS_Y, position().y.toFloat())
 		entityData.define(TARGET_MOVE_POS_Z, position().z.toFloat())
+		entityData.define(CURRENT_MOVE_MULTIPLIER, 1f)
 	}
 
 	companion object {
@@ -180,6 +194,7 @@ class TickingWisp : BaseCastingWisp {
 		val TARGET_MOVE_POS_Y: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 		val TARGET_MOVE_POS_Z: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 		val TARGET_MOVE_POS_X: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
+		val CURRENT_MOVE_MULTIPLIER: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 
 		const val TAG_STACK = "stack"
 		const val TAG_RAVENMIND = "ravenmind"
@@ -187,11 +202,12 @@ class TickingWisp : BaseCastingWisp {
 		const val TAG_TARGET_MOVE_POS_X = "target_move_pos_x"
 		const val TAG_TARGET_MOVE_POS_Y = "target_move_pos_y"
 		const val TAG_TARGET_MOVE_POS_Z = "target_move_pos_z"
+		const val TAG_CURRENT_MOVE_MULTIPLIER = "current_move_multiplier"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
 		const val CASTING_RADIUS = 8.0
 
-		const val MAX_SPEED_PER_TICK = 2.0 / 20
+		const val BASE_MAX_SPEED_PER_TICK = 5.0 / 20
 		const val SCALE = 0.2
 	}
 }

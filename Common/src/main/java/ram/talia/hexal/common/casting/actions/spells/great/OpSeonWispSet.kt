@@ -7,7 +7,7 @@ import ram.talia.hexal.api.spell.mishaps.MishapOthersWisp
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpSetSeonWisp : SpellOperator {
+object OpSeonWispSet : SpellOperator {
     const val MAKE_SEON_COST = 5 * ManaConstants.CRYSTAL_UNIT
 
     override val argc = 1

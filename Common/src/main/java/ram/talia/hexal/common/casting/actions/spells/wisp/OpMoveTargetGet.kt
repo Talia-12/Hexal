@@ -8,11 +8,11 @@ import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
-object OpGetMoveTarget : ConstManaOperator {
+object OpMoveTargetGet : ConstManaOperator {
 	override val argc = 0
 
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)

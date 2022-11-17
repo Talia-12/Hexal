@@ -80,9 +80,14 @@ object Patterns {
 
 	// Set and Get Move Target WEST awqwawqaw
 	@JvmField
-	val WISP_MOVE_TARGET_SET = make(HexPattern.fromAngles("awqwawqaw", HexDir.WEST), modLoc("wisp/move_target/set"), OpSetMoveTarget)
+	val WISP_MOVE_TARGET_SET = make(HexPattern.fromAngles("awqwawqaw", HexDir.WEST), modLoc("wisp/move/target/set"), OpMoveTargetSet)
 	@JvmField
-	val WISP_MOVE_TARGET_GET = make(HexPattern.fromAngles("ewdwewdew", HexDir.EAST), modLoc("wisp/move_target/get"), OpGetMoveTarget)
+	val WISP_MOVE_TARGET_GET = make(HexPattern.fromAngles("ewdwewdew", HexDir.EAST), modLoc("wisp/move/target/get"), OpMoveTargetGet)
+	@JvmField
+	val WISP_MOVE_SPEED_SET = make(HexPattern.fromAngles("aeawqqqae", HexDir.WEST), modLoc("wisp/move/speed/set"), OpMoveSpeedSet)
+	@JvmField
+	val WISP_MOVE_SPEED_GET = make(HexPattern.fromAngles("eeewdqdee", HexDir.EAST), modLoc("wisp/move/speed/get"), OpMoveSpeedGet)
+
 
 	// Entity purification and Zone distillations
 	@JvmField
@@ -114,7 +119,7 @@ object Patterns {
 
 	val WISP_SEON_GET = make(HexPattern.fromAngles("daqweewqaeaqweewqaqwwww", HexDir.EAST),
 			modLoc("wisp/seon/get"),
-			OpGetSeonWisp)
+			OpSeonWispGet)
 
 	// Great
 	@JvmField
@@ -124,7 +129,7 @@ object Patterns {
 						              true)
 	val WISP_SEON_SET = make(HexPattern.fromAngles("aqweewqaeaqweewqaqwww", HexDir.SOUTH_WEST),
 			                 modLoc("wisp/seon/set"),
-	                         OpSetSeonWisp,
+	                         OpSeonWispSet,
 			        true)
 
 	// =============================== Link Stuff =====================================

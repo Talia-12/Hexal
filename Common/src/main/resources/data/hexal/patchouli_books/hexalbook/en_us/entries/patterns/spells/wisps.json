@@ -64,19 +64,35 @@
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:wisp/move_target/set",
-      "anchor": "hexal:wisp/move_target/set",
+      "op_id": "hexal:wisp/move/target/set",
+      "anchor": "hexal:wisp/move/target/set",
       "input": "vec",
       "output": "",
-      "text": "hexal.page.wisps.wisp/move_target/set"
+      "text": "hexal.page.wisps.wisp/move/target/set"
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:wisp/move_target/get",
-      "anchor": "hexal:wisp/move_target/get",
+      "op_id": "hexal:wisp/move/target/get",
+      "anchor": "hexal:wisp/move/target/get",
       "input": "",
       "output": "vec",
-      "text": "hexal.page.wisps.wisp/move_target/get"
+      "text": "hexal.page.wisps.wisp/move/target/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/move/speed/set",
+      "anchor": "hexal:wisp/move/speed/set",
+      "input": "num",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/move/speed/set"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/move/speed/get",
+      "anchor": "hexal:wisp/move/speed/get",
+      "input": "",
+      "output": "num",
+      "text": "hexal.page.wisps.wisp/move/speed/get"
     },
     {
       "type": "hexcasting:pattern",
