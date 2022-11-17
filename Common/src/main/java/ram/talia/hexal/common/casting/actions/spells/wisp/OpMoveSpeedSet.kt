@@ -25,9 +25,20 @@ object OpMoveSpeedSet : SpellOperator {
         if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
             throw MishapNoWisp()
 
+        val tWisp = mCast.wisp as TickingWisp
+        val oldMax = tWisp.maximumMoveMultiplier
+
+        // cost scales quadratically with newMult, but as with Impulse a player can reduce the cost requirement with
+        // many small increases to the max (limited to a minimum cost of BASE_COST if the maximum is being updated at
+        // all to not incentivise very laggy stuff). If the newMult is older than the old max, there is no cost;
+        // reducing speed is not penalised.
+        val cost = if (newMult > oldMax) {
+            (BASE_COST * min(1.0, (newMult - oldMax) * (newMult - oldMax))).toInt()
+        } else 0
+
         return Triple(
-                Spell(mCast.wisp as TickingWisp, newMult),
-                (BASE_COST * newMult * newMult).toInt(),
+                Spell(tWisp, newMult),
+                cost,
                 listOf(ParticleSpray.burst(mCast.wisp.position(), min(1.0, ln(newMult))))
         )
     }

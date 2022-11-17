@@ -50,7 +50,14 @@ class TickingWisp : BaseCastingWisp {
 
 	var currentMoveMultiplier: Float
 		get() = entityData.get(CURRENT_MOVE_MULTIPLIER)
-		set(value) = entityData.set(CURRENT_MOVE_MULTIPLIER, value)
+		set(value) {
+			if (value > entityData.get(MAXIMUM_MOVE_MULTIPLIER))
+				entityData.set(MAXIMUM_MOVE_MULTIPLIER, value)
+			entityData.set(CURRENT_MOVE_MULTIPLIER, value)
+		}
+
+	val maximumMoveMultiplier: Float
+		get() = entityData.get(MAXIMUM_MOVE_MULTIPLIER)
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
 	constructor(
@@ -165,6 +172,10 @@ class TickingWisp : BaseCastingWisp {
 			true -> compound.getFloat(TAG_CURRENT_MOVE_MULTIPLIER)
 			false -> 1f
 		})
+		entityData.set(MAXIMUM_MOVE_MULTIPLIER, when(compound.hasFloat(TAG_MAXIMUM_MOVE_MULTIPLIER)) {
+			true -> compound.getFloat(TAG_MAXIMUM_MOVE_MULTIPLIER)
+			false -> 1f
+		})
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -177,6 +188,7 @@ class TickingWisp : BaseCastingWisp {
 		compound.putFloat(TAG_TARGET_MOVE_POS_Y, entityData.get(TARGET_MOVE_POS_Y))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Z, entityData.get(TARGET_MOVE_POS_Z))
 		compound.putFloat(TAG_CURRENT_MOVE_MULTIPLIER, entityData.get(CURRENT_MOVE_MULTIPLIER))
+		compound.putFloat(TAG_MAXIMUM_MOVE_MULTIPLIER, entityData.get(MAXIMUM_MOVE_MULTIPLIER))
 	}
 
 	override fun defineSynchedData() {
@@ -187,6 +199,7 @@ class TickingWisp : BaseCastingWisp {
 		entityData.define(TARGET_MOVE_POS_Y, position().y.toFloat())
 		entityData.define(TARGET_MOVE_POS_Z, position().z.toFloat())
 		entityData.define(CURRENT_MOVE_MULTIPLIER, 1f)
+		entityData.define(MAXIMUM_MOVE_MULTIPLIER, 1f)
 	}
 
 	companion object {
@@ -195,6 +208,7 @@ class TickingWisp : BaseCastingWisp {
 		val TARGET_MOVE_POS_Z: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 		val TARGET_MOVE_POS_X: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 		val CURRENT_MOVE_MULTIPLIER: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
+		val MAXIMUM_MOVE_MULTIPLIER: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 
 		const val TAG_STACK = "stack"
 		const val TAG_RAVENMIND = "ravenmind"
@@ -203,6 +217,7 @@ class TickingWisp : BaseCastingWisp {
 		const val TAG_TARGET_MOVE_POS_Y = "target_move_pos_y"
 		const val TAG_TARGET_MOVE_POS_Z = "target_move_pos_z"
 		const val TAG_CURRENT_MOVE_MULTIPLIER = "current_move_multiplier"
+		const val TAG_MAXIMUM_MOVE_MULTIPLIER = "maximum_move_multiplier"
 
 		const val CASTING_SCHEDULE_PRIORITY = -5
 		const val CASTING_RADIUS = 8.0
