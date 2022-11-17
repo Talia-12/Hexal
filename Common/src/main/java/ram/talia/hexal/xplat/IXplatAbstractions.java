@@ -12,6 +12,7 @@ import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.List;
 import java.util.ServiceLoader;
@@ -38,6 +39,12 @@ public interface IXplatAbstractions {
     // Things that used to be caps
 
     WispCastingManager getWispCastingManager(ServerPlayer caster);
+
+    /**
+     * Takes in a caster and wisp, and sets that caster's Seon (wisp that costs significantly less to maintain) to the
+     * accepted wisp. The old Seon if one exists is unmarked.
+     */
+    void setSeon(ServerPlayer caster, BaseCastingWisp wisp);
     
     PlayerLinkstore getLinkstore(ServerPlayer player);
     
@@ -50,7 +57,8 @@ public interface IXplatAbstractions {
     void setPlayerTransmittingTo (ServerPlayer player, int to);
     void resetPlayerTransmittingTo (ServerPlayer player);
     //endregion
-    
+
+    //region Everbook
     SpellDatum<?> getEverbookIota(ServerPlayer player, HexPattern key);
     void setEverbookIota(ServerPlayer player, HexPattern key, SpellDatum<?> iota);
     
@@ -61,6 +69,7 @@ public interface IXplatAbstractions {
     List<SpellDatum<?>> getEverbookMacro (ServerPlayer player, HexPattern key);
     
     void toggleEverbookMacro (ServerPlayer player, HexPattern key);
+    //endregion
     
     // Blocks
 

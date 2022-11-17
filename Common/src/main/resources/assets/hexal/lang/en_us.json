@@ -43,6 +43,7 @@
   "hexcasting.spell.hexal:wisp/trigger/comm": "Listen",
   "hexcasting.spell.hexal:wisp/trigger/move": "Wander",
   "hexcasting.spell.hexal:wisp/consume": "Consume Wisp",
+  "hexcasting.spell.hexal:wisp/seon": "Bind Wisp",
 
   "hexcasting.spell.hexal:get_entity/wisp": "Entity Purification: Wisp",
   "hexcasting.spell.hexal:zone_entity/wisp": "Zone Distillation: Wisp",
@@ -131,6 +132,7 @@
   "hexal.entry.great_wisps": "Great Wisp Spells",
   "hexal.page.great_wisps.wisp/consume.0": "Remove a wisp from the stack, and disassemble the wisp. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
   "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
+  "hexal.page.great_wisps.wisp/seon": "Bind one of my wisps closer to me; I may only have one bound wisp at a time, but whichever wisp is bound costs significantly less upkeep.",
 
   "hexal.entry.type_comparison": "Type Comparisons",
   "hexal.page.type_comparison.compare/blocks": "Remove two locations from the stack; if the block at the first is equal to the block at the second, return 1. Otherwise, return 0.",

@@ -13,6 +13,7 @@ import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.forge.cap.CapSyncers;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
@@ -44,7 +45,12 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	public WispCastingManager getWispCastingManager (ServerPlayer caster) {
 		return WispCastingMangerEventHandler.getCastingManager(caster);
 	}
-	
+
+	@Override
+	public void setSeon(ServerPlayer caster, BaseCastingWisp wisp) {
+		WispCastingMangerEventHandler.setSeon(caster, wisp);
+	}
+
 	@Override
 	public PlayerLinkstore getLinkstore (ServerPlayer player) {
 		return PlayerLinkstoreEventHandler.getLinkstore(player);

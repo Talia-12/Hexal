@@ -118,6 +118,10 @@ object Patterns {
 						              modLoc("wisp/consume"),
 						              OpConsumeWisp,
 						              true)
+	val WISP_SEON = make(HexPattern.fromAngles("aqweewqaeaqweewqaqwww", HexDir.SOUTH_WEST),
+			             modLoc("wisp/seon"),
+	                     OpSeonWisp,
+	                     true)
 
 	// =============================== Link Stuff =====================================
 	@JvmField

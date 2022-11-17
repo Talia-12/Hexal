@@ -71,9 +71,7 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun transmittingTargetReturnDisplay() = stack.map(SpellDatum<*>::display)
 
-	override fun deductMedia() {
-		media -= 2 * WISP_COST_PER_TICK_NORMAL
-	}
+	override val normalCostPerTick =  2 * WISP_COST_PER_TICK_NORMAL
 
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")

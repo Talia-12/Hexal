@@ -13,11 +13,12 @@ import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.common.network.MsgToggleMacroAck;
+import ram.talia.hexal.fabric.cc.CCWispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class FabricXplatImpl implements IXplatAbstractions {
@@ -74,7 +75,17 @@ public class FabricXplatImpl implements IXplatAbstractions {
     public WispCastingManager getWispCastingManager (ServerPlayer caster) {
         return HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster).getManager();
     }
-    
+
+    @Override
+    public void setSeon(ServerPlayer caster, BaseCastingWisp wisp) {
+        CCWispCastingManager manager = HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster);
+        BaseCastingWisp old = manager.getSeon();
+        if (old != null)
+            old.setSeon(false);
+        wisp.setSeon(true);
+        manager.setSeon(wisp);
+    }
+
     @Override
     public PlayerLinkstore getLinkstore (ServerPlayer player) {
         return HexalCardinalComponents.PLAYER_LINKSTORE.get(player).getLinkstore();
@@ -118,7 +129,6 @@ public class FabricXplatImpl implements IXplatAbstractions {
         HexalCardinalComponents.EVERBOOK.get(player).setIota(key, iota);
     }
     
-    @Nullable
     @Override
     public void removeEverbookIota (ServerPlayer player, HexPattern key) {
         HexalCardinalComponents.EVERBOOK.get(player).removeIota(key);

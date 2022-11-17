@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.misc.ManaConstants
 import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.Widget
 import at.petrak.hexcasting.api.utils.asCompound
+import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
@@ -69,6 +70,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		set(value) = entityData.set(MEDIA, max(value, 0))
 
 	override val isConsumable = true
+
+	var seon: Boolean
+		get() = entityData.get(SEON)
+		set(value) = entityData.set(SEON, value)
 
 	// true at the end will be not-ed to false by the ! out the front
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
@@ -151,13 +156,18 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	/**
 	 * Called in [tick], expected to reduce the amount of [media] remaining in the wisp.
 	 */
-	open fun deductMedia() {
-		media -= when(canScheduleCast()) {
-			true  -> WISP_COST_PER_TICK_NORMAL
+	fun deductMedia() {
+		var cost = when(canScheduleCast()) {
+			true  -> normalCostPerTick
 			false -> WISP_COST_PER_TICK_UNTRIGGERED
 		}
-		media -= COST_PER_LINK_PER_TICK * linked.size
+		cost += COST_PER_LINK_PER_TICK * linked.size
+		if (seon)
+			cost /= SEON_DISCOUNT_FACTOR
+		media -= cost
 	}
+
+	open val normalCostPerTick = WISP_COST_PER_TICK_NORMAL
 
 
 	/**
@@ -319,6 +329,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			null -> null
 			else -> WispTriggerRegistry.fromNbt(activeTriggerTag.asCompound, level as ServerLevel)
 		}
+
+		seon = if (compound.hasByte(TAG_SEON)) { compound.getBoolean(TAG_SEON) } else { false }
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -334,6 +346,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		compound.put(TAG_RECEIVED_IOTAS, lazyReceivedIotas!!.getUnloaded())
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
+		compound.putBoolean(TAG_SEON, seon)
 	}
 
 	override fun defineSynchedData() {
@@ -342,6 +355,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		// defines the entry in SynchedEntityData associated with the EntityDataAccessor COLOURISER, and gives it a default value
 //		HexalAPI.LOGGER.info("defineSynchedData for $uuid called!")
 		entityData.define(SCHEDULED_CAST, false)
+		entityData.define(SEON, false)
 	}
 
 	override fun getAddEntityPacket(): Packet<*> {
@@ -359,15 +373,20 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	companion object {
 		@JvmStatic
 		val SCHEDULED_CAST: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseCastingWisp::class.java, EntityDataSerializers.BOOLEAN)
+		@JvmStatic
+		val SEON: EntityDataAccessor<Boolean> = SynchedEntityData.defineId(BaseCastingWisp::class.java, EntityDataSerializers.BOOLEAN)
+
 
 		const val TAG_CASTER = "caster"
 		const val TAG_HEX = "hex"
 		const val TAG_RECEIVED_IOTAS = "received_iotas"
 		const val TAG_ACTIVE_TRIGGER = "active_trigger"
+		const val TAG_SEON = "seon"
 
 		const val WISP_COST_PER_TICK_NORMAL      = (0.325 * ManaConstants.DUST_UNIT / 20.0).toInt()
 		const val WISP_COST_PER_TICK_UNTRIGGERED = (0.25  * ManaConstants.DUST_UNIT / 20.0).toInt()
 		const val COST_PER_LINK_PER_TICK = (0.01 * ManaConstants.DUST_UNIT / 20.0).toInt()
+		const val SEON_DISCOUNT_FACTOR = 20
 	}
 }
 
