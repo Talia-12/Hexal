@@ -112,16 +112,20 @@ object Patterns {
 		                           modLoc("wisp/trigger/move"),
 		                           OpWispSetTrigger(WispTriggerTypes.MOVE_TRIGGER_TYPE))
 
+	val WISP_SEON_GET = make(HexPattern.fromAngles("daqweewqaeaqweewqaqwwww", HexDir.EAST),
+			modLoc("wisp/seon/get"),
+			OpGetSeonWisp)
+
 	// Great
 	@JvmField
 	val CONSUME_WISP = make(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
 						              modLoc("wisp/consume"),
 						              OpConsumeWisp,
 						              true)
-	val WISP_SEON = make(HexPattern.fromAngles("aqweewqaeaqweewqaqwww", HexDir.SOUTH_WEST),
-			             modLoc("wisp/seon"),
-	                     OpSeonWisp,
-	                     true)
+	val WISP_SEON_SET = make(HexPattern.fromAngles("aqweewqaeaqweewqaqwww", HexDir.SOUTH_WEST),
+			                 modLoc("wisp/seon/set"),
+	                         OpSetSeonWisp,
+			        true)
 
 	// =============================== Link Stuff =====================================
 	@JvmField

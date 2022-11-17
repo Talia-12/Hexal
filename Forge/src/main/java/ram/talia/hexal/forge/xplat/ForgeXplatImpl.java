@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
@@ -49,6 +50,11 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	@Override
 	public void setSeon(ServerPlayer caster, BaseCastingWisp wisp) {
 		WispCastingMangerEventHandler.setSeon(caster, wisp);
+	}
+
+	@Override
+	public @Nullable BaseCastingWisp getSeon(ServerPlayer caster) {
+		return WispCastingMangerEventHandler.getSeon(caster);
 	}
 
 	@Override

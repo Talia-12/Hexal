@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
@@ -84,6 +85,11 @@ public class FabricXplatImpl implements IXplatAbstractions {
             old.setSeon(false);
         wisp.setSeon(true);
         manager.setSeon(wisp);
+    }
+
+    @Override
+    public @Nullable BaseCastingWisp getSeon(ServerPlayer caster) {
+        return HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster).getSeon();
     }
 
     @Override
