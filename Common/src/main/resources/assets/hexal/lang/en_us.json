@@ -5,11 +5,17 @@
   "entity.hexal.wisp.ticking": "Cyclic Wisp",
   "entity.hexal.wisp.wandering": "Wandering Wisp",
 
+
   "hexcasting.mishap.non_player": "%s expected to be cast by a player.",
   "hexcasting.mishap.no_wisp": "%s expected to be cast by a wisp.",
   "hexcasting.mishap.others_wisp": "That wisp is owned by %s, not you.",
   "hexcasting.mishap.no_links": "%s has no links.",
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
+
+  "hexcasting.mishap.invalid_value.class.wisp": "a wisp",
+  "hexcasting.mishap.invalid_value.class.wisp.casting": "a casting wisp",
+  "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
+
 
   "hexcasting.iota.hexal:iota_type": "Iota Type",
   "hexcasting.iota.hexal:entity_type": "Entity Type",
@@ -68,8 +74,6 @@
   "hexcasting.spell.hexal:link/comm/num": "Postmaster's Reflection",
   "hexcasting.spell.hexal:link/comm/open_transmit": "Open Transmit",
   "hexcasting.spell.hexal:link/comm/close_transmit": "Close Transmit",
-
-  "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
 
 

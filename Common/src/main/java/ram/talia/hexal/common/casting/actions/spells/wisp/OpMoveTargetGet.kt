@@ -8,7 +8,7 @@ import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
-object OpGetMoveTarget : ConstMediaAction {
+object OpMoveTargetGet : ConstMediaAction {
 	override val argc = 0
 
 	@Suppress("CAST_NEVER_SUCCEEDS")

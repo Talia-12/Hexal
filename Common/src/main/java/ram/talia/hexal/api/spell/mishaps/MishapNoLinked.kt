@@ -1,8 +1,8 @@
 package ram.talia.hexal.api.spell.mishaps
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.SpellDatum
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.Mishap
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.DyeColor
@@ -16,7 +16,7 @@ class MishapNoLinked(val linkable: ILinkable<*>) : Mishap() {
     override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component =
             error("no_links", linkable.toString())
 
-    override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<SpellDatum<*>>) {
+    override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
         val pos = linkable.getPos()
         ctx.world.explode(null, pos.x, pos.y, pos.z, 0.25f, Explosion.BlockInteraction.NONE)
     }
