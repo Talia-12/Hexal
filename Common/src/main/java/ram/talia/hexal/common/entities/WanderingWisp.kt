@@ -70,6 +70,7 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 
 	fun move() {
 		val adjDelta = maxMove(deltaMovement)
+		setPos(position() + adjDelta)
 
 		var dX = deltaMovement.x
 		var dY = deltaMovement.y
@@ -93,8 +94,6 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : 
 
 		deltaMovement = Vec3(dX, dY, dZ)
 		acceleration = Vec3(aX, aY, aZ)
-
-		setPos(position() + adjDelta)
 
 		deltaMovement += acceleration
 		acceleration += Vec3(random.nextDouble(-0.005, 0.005), random.nextDouble(-0.005, 0.005), random.nextDouble(-0.005, 0.005))

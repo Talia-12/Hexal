@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
 import ram.talia.hexal.api.spell.iota.ItemTypeIota
+import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.BaseWisp
 
 operator fun Double.times(vec: Vec3): Vec3 = vec.scale(this)
@@ -35,4 +36,14 @@ fun List<Iota>.getBaseWisp(idx: Int, argc: Int = 0): BaseWisp {
             return e
     }
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "entity.wisp")
+}
+
+fun List<Iota>.getBaseCastingWisp(idx: Int, argc: Int = 0): BaseCastingWisp {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is EntityIota) {
+        val e = x.entity
+        if (e is BaseCastingWisp)
+            return e
+    }
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "entity.wisp.casting")
 }

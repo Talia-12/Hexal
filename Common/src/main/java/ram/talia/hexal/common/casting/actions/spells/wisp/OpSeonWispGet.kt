@@ -1,15 +1,15 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.spell.ConstManaOperator
-import at.petrak.hexcasting.api.spell.SpellDatum
-import at.petrak.hexcasting.api.spell.Widget
+import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-object OpSeonWispGet : ConstManaOperator {
+object OpSeonWispGet : ConstMediaAction {
     override val argc = 0
 
-    override fun execute(args: List<SpellDatum<*>>, ctx: CastingContext): List<SpellDatum<*>> {
-        return IXplatAbstractions.INSTANCE.getSeon(ctx.caster)?.asSpellResult ?: listOf(SpellDatum.make(Widget.NULL))
+    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+        return IXplatAbstractions.INSTANCE.getSeon(ctx.caster)?.asActionResult ?: listOf(NullIota())
     }
 }

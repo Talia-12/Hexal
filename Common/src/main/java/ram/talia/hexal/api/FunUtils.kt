@@ -15,4 +15,4 @@ fun FrozenColorizer.nextColour(random: RandomSource): Int {
 	)
 }
 
-fun RandomSource.nextDouble(lower: Double, upper: Double) = lower + upper * this.nextDouble()
+fun RandomSource.nextDouble(lower: Double, upper: Double) = lower + (upper - lower) * this.nextDouble()
