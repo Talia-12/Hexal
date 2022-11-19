@@ -60,7 +60,7 @@ public abstract class MixinCastingHarness {
 	/**
 	 * Makes it so that the wisp casting draws its mana from the wisp rather than the player's inventory.
 	 */
-	@Inject(method = "withdrawMana",
+	@Inject(method = "withdrawMedia",
 					at = @At("HEAD"),
 					cancellable = true,
 					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
@@ -159,7 +159,7 @@ public abstract class MixinCastingHarness {
 		CompoundTag ravenmind = transmitting ? null : ret.getRavenmind();
 		int parenCount = transmitting ? 1 : ret.getParenCount();
 		
-		ret = ret.copy(ret.getMakesCastSound(), isStackClear, type, stack, parenthesized, ravenmind, parenCount);
+		ret = ret.copy(isStackClear, type, stack, parenthesized, ravenmind, parenCount);
 
 		cir.setReturnValue(ret);
 	}

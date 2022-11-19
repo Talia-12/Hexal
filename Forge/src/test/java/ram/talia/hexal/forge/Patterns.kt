@@ -3,20 +3,14 @@ package ram.talia.hexal.forge
 import at.petrak.hexcasting.api.HexAPI
 import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.PatternIota
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.casting.operators.OpEntityPos
 import at.petrak.hexcasting.common.casting.operators.eval.OpEval
 import at.petrak.hexcasting.common.casting.operators.lists.OpIndex
 import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
-import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolAnd
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIf
-import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolOr
 import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
-import at.petrak.hexcasting.common.casting.operators.stack.OpDuplicate
-import at.petrak.hexcasting.common.casting.operators.stack.OpSwap
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.casting.actions.OpCurrentTick
@@ -34,8 +28,8 @@ object Patterns {
 
 	@JvmField
 	val DROP = PatternIota(HexPattern.fromAngles("a", HexDir.SOUTH_EAST))
-	@JvmField
-	val SWAP = patternOf(OpSwap)
+//	@JvmField
+//	val SWAP = patternOf(OpSwap)
 
 	@JvmField
 	val EQUALITY = patternOf(HexAPI.modLoc("equals"))
@@ -54,8 +48,8 @@ object Patterns {
 	@JvmField
 	val FOUR = PatternIota(HexPattern.fromAngles("aqaawaa", HexDir.EAST))
 
-	@JvmField
-	val GEMINIS_DISINTEGRATION = patternOf(OpDuplicate)
+//	@JvmField
+//	val GEMINIS_DISINTEGRATION = patternOf(OpDuplicate)
 	@JvmField
 	val FLOCKS_DISINTEGRATION = patternOf(OpSplat)
 

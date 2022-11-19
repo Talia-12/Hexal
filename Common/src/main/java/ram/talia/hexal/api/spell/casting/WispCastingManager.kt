@@ -92,7 +92,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	fun cast(cast: WispCast): WispCastResult {
 		val ctx = CastingContext(
 			caster,
-			InteractionHand.MAIN_HAND
+			InteractionHand.MAIN_HAND,
+			CastingContext.CastSource.PACKAGED_HEX
 		)
 
 		val wisp = cast.wisp!!
@@ -111,7 +112,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 		// the wisp will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
 		// stack and ravenmind is. This is returned and added to a list that [executeCasts] will loop over to hopefully prevent concurrent modification problems.
-		return WispCastResult(wisp, info.resolutionType.success, info.makesCastSound, harness.stack, harness.ravenmind)
+		return WispCastResult(wisp, info.resolutionType.success, harness.stack, harness.ravenmind)
 	}
 
 	fun readFromNbt(tag: CompoundTag?, level: ServerLevel) {
@@ -213,7 +214,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val makesCastSound: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota?) {
+	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota?) {
 		fun callback() { wisp.castCallback(this) }
 	}
 
