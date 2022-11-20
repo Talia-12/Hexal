@@ -45,6 +45,6 @@ side = "BOTH"
 [[dependencies.hexal]]
 modId = "hexcasting"
 mandatory = true
-versionRange = "[1.0-pre-449,)"
+versionRange = "[0.10.0,)"
 ordering = "NONE"
 side = "BOTH"
