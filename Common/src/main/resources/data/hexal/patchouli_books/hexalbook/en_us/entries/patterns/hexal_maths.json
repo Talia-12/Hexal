@@ -10,9 +10,25 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:factorial",
       "anchor": "hexal:factorial",
-      "input": "number",
-      "output": "number",
+      "input": "num",
+      "output": "num",
       "text": "hexal.page.hexal_maths.factorial"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:running/sum",
+      "anchor": "hexal:running/sum",
+      "input": "[num]",
+      "output": "[num]",
+      "text": "hexal.page.hexal_maths.running/sum"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:running/mul",
+      "anchor": "hexal:running/mul",
+      "input": "[num]",
+      "output": "[num]",
+      "text": "hexal.page.hexal_maths.running/mul"
     }
   ]
 }

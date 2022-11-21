@@ -16,6 +16,7 @@
   "hexcasting.mishap.invalid_value.class.wisp.casting": "a casting wisp",
   "hexcasting.mishap.invalid_value.class.type.block": "a block type",
   "hexcasting.mishap.invalid_value.class.type.block.able": "an item type that has a block",
+  "hexcasting.mishap.invalid_value.class.type.list.double": "a list of numbers",
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
 
 
@@ -34,6 +35,8 @@
   "hexcasting.spell.hexal:light_level": "Lamplighter's Purification",
 
   "hexcasting.spell.hexal:factorial": "Factorial Purification",
+  "hexcasting.spell.hexal:running/sum": "Running Sum Purification",
+  "hexcasting.spell.hexal:running/mul": "Running Product Purification",
 
   "hexcasting.spell.hexal:everbook/read": "Mnemosyne's Gambit",
   "hexcasting.spell.hexal:everbook/write": "Elysium's Gambit",
@@ -82,6 +85,9 @@
 
   "hexcasting.spell.book.hexal:light_level": "Lamplighter's Prfn.",
 
+  "hexcasting.spell.book.hexal:running/sum": "Running Sum Prfn.",
+  "hexcasting.spell.book.hexal:running/mul": "Running Product Prfn.",
+
   "hexcasting.spell.book.hexal:get_entity/wisp": "Entity Prfn.: Wisp",
   "hexcasting.spell.book.hexal:zone_entity/wisp": "Zone Dstl.: Wisp",
   "hexcasting.spell.book.hexal:zone_entity/not_wisp": "Zone Dstl.: Non-Wisp",
@@ -101,7 +107,9 @@
   "hexal.page.hexal_basics.light_level": "Removes a position vector from the stack and returns the light level at that position.",
 
   "hexal.entry.hexal_maths": "Hexal Maths",
-  "hexal.page.hexal_maths.factorial": "Removes a number from the stack and computes its factorial, for example inputting 4 would return 4*3*2*1=24.",
+  "hexal.page.hexal_maths.factorial": "Takes a number from the stack and computes its factorial, for example inputting 4 would return 4*3*2*1=24.",
+  "hexal.page.hexal_maths.running/sum": "Takes a list from the stack and computes its running sum, for example inputting [1,2,5] would return [1,3,8].",
+  "hexal.page.hexal_maths.running/mul": "Takes a list from the stack and computes its running product, for example inputting [1,2,5] would return [1,2,10].",
 
   "hexal.entry.hexal_spell": "Hexal Spells",
   "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",
