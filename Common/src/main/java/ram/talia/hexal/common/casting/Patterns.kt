@@ -54,7 +54,7 @@ object Patterns {
 	})
 	@JvmField
 	val RUNNING_MUL = make(HexPattern.fromAngles("qaawaaq", HexDir.NORTH_EAST), modLoc("running/mul"), OpRunningOp{ running, iota ->
-		running + ((iota as? DoubleIota)?.double ?: throw OpRunningOp.InvalidIotaException("list.double"))
+		running * ((iota as? DoubleIota)?.double ?: throw OpRunningOp.InvalidIotaException("list.double"))
 	})
 
 	// ================================ Everbook ======================================

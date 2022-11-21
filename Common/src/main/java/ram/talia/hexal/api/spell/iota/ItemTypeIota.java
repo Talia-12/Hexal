@@ -11,6 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -34,16 +35,19 @@ public class ItemTypeIota extends Iota {
 
     @Nullable
     public Block getBlock() {
-        if (this.payload instanceof Block block)
-            return block;
-        return null;
+        return this.getEither().map(item -> {
+            if (item instanceof BlockItem blockItem)
+                return blockItem.getBlock();
+            else return null;
+        }, block -> block);
     }
 
+    /**
+     * If the block has no item form this returns Items.AIR
+     */
     @Nullable
     public Item getItem() {
-        if (this.payload instanceof Item item)
-            return item;
-        return null;
+        return this.getEither().map(item -> item, Block::asItem);
     }
 
     @Override
