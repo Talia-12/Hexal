@@ -21,7 +21,7 @@ import java.util.*;
  * Manages a Map of player UUIDs to {@link PlayerLinkstore}s,
  */
 public class PlayerLinkstoreEventHandler {
-	private static final String TAG_PLAYER_LINKSTORE = "player_linkstore";
+	private static final String TAG_PLAYER_LINKSTORE = "hexal:player_linkstore";
 	
 	private static final Map<UUID, PlayerLinkstore> linkstores = new HashMap<>();
 	private static final Map<UUID, List<ILinkable.IRenderCentre>> renderLinks = new HashMap<>();

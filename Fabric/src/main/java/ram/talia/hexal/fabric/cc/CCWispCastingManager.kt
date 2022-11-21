@@ -39,7 +39,7 @@ class CCWispCastingManager(private val player: Player, var seon: BaseCastingWisp
 	}
 
 	companion object {
-		const val TAG_MANAGER = "manager"
-		const val TAG_SEON = "seon"
+		const val TAG_MANAGER = "hexal:manager"
+		const val TAG_SEON = "hexal:seon"
 	}
 }

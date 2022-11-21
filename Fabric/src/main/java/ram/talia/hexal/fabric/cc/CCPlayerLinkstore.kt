@@ -94,7 +94,7 @@ class CCPlayerLinkstore(private val player: Player) : ServerTickingComponent, Cl
 	}
 
 	companion object {
-		const val TAG_RENDER_LINKS_ADD = "render_links_add"
-		const val TAG_RENDER_LINKS_REMOVE = "render_links_remove"
+		const val TAG_RENDER_LINKS_ADD = "hexal:render_links_add"
+		const val TAG_RENDER_LINKS_REMOVE = "hexal:render_links_remove"
 	}
 }
