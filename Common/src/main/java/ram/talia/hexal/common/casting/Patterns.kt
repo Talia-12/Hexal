@@ -47,6 +47,16 @@ object Patterns {
 	// =============================== Misc Maths =====================================
 	@JvmField
 	val FACTORIAL = make(HexPattern.fromAngles("wawdedwaw", HexDir.SOUTH_EAST), modLoc("factorial"), OpFactorial)
+	@JvmField
+	val RUNNING_SUM = make(HexPattern.fromAngles("aea", HexDir.WEST), modLoc("running/sum"), OpRunningOp (0.0)
+	{ running, iota ->
+		running + (iota.payload as? Double ?: throw OpRunningOp.InvalidIotaException("list.double"))
+	})
+	@JvmField
+	val RUNNING_MUL = make(HexPattern.fromAngles("qaawaaq", HexDir.NORTH_EAST), modLoc("running/mul"), OpRunningOp (1.0)
+	{ running, iota ->
+		running * (iota.payload as? Double ?: throw OpRunningOp.InvalidIotaException("list.double"))
+	})
 
 	// ================================ Everbook ======================================
 	@JvmField
