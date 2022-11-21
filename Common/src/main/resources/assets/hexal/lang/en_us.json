@@ -21,9 +21,9 @@
   "hexcasting.iota.hexal:entity_type": "Entity Type",
   "hexcasting.iota.hexal:item_type": "Item Type",
 
-  "hexcasting.spell.hexal:compare/blocks": "Surveyor's Distillation",
-  "hexcasting.spell.hexal:compare/entities": "Physician's Distillation",
-  "hexcasting.spell.hexal:compare/types": "Classifier's Distillation",
+  "hexcasting.spell.hexal:type/block": "Surveyor's Purification",
+  "hexcasting.spell.hexal:type/entity": "Physician's Purification",
+  "hexcasting.spell.hexal:type/iota": "Classifier's Purification",
 
   "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
   "hexcasting.spell.hexal:remaining_evals": "Thanatos' Reflection",
@@ -148,10 +148,10 @@
   "hexal.page.great_wisps.wisp/seon/set": "Bind one of my wisps closer to me; I may only have one bound wisp at a time, but whichever wisp is bound costs significantly less upkeep.",
   "hexal.page.great_wisps.wisp/seon/get": "Returns my currently bound wisp. (This is not a great spell, I have simply placed it here for convenience.)",
 
-  "hexal.entry.type_comparison": "Type Comparisons",
-  "hexal.page.type_comparison.compare/blocks": "Remove a location from the stack, and adds the type of the block at that location to the stack.",
-  "hexal.page.type_comparison.compare/entities": "Remove an entity from the stack, and adds the type of the entity at that location to the stack (with item entities adding their item type).",
-  "hexal.page.type_comparison.compare/types": "Remove an iota from the stack, and adds the type of that iota to the stack.",
+  "hexal.entry.types": "Types",
+  "hexal.page.types.type/block": "Remove a location from the stack, and adds the type of the block at that location to the stack.",
+  "hexal.page.types.type/entity": "Remove an entity from the stack, and adds the type of the entity at that location to the stack (with item entities adding their item type).",
+  "hexal.page.types.type/iota": "Remove an iota from the stack, and adds the type of that iota to the stack.",
 
 
 

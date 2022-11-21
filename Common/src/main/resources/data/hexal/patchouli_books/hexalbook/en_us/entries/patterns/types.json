@@ -1,0 +1,34 @@
+{
+  "name": "hexal.entry.types",
+  "category": "hexcasting:patterns",
+  "icon": "minecraft:lectern",
+  "sortnum": 5.5,
+  "advancement": "hexcasting:root",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:type/block",
+      "anchor": "hexal:type/block",
+      "input": "vec",
+      "output": "itemtype",
+      "text": "hexal.page.types.type/blocks"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:type/entity",
+      "anchor": "hexal:type/entity",
+      "input": "entity",
+      "output": "entitytype | itemtype",
+      "text": "hexal.page.types.type/entities"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:type/iota",
+      "anchor": "hexal:type/iota",
+      "input": "any",
+      "output": "iotatype",
+      "text": "hexal.page.types.type/types"
+    }
+  ]
+}

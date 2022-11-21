@@ -26,17 +26,17 @@ object Patterns {
 
 	// ============================ Type Comparison ===================================
 	@JvmField
-	val COMPARE_BLOCKS = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("compare/blocks"), OpTypeBlock)
+	val TYPE_BLOCK = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block"), OpTypeBlock)
 	@JvmField
-	val COMPARE_ENTITIES = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("compare/entities"), OpTypeEntity)
+	val TYPE_ENTITY = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("type/entity"), OpTypeEntity)
 	@JvmField
-	val COMPARE_TYPES = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("compare/types"), OpTypeIota)
+	val TYPE_IOTA = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("type/iota"), OpTypeIota)
 
 	// ========================== Misc Info Gathering =================================
 	@JvmField
 	val CURRENT_TICK = make(HexPattern.fromAngles("ddwaa", HexDir.NORTH_WEST), modLoc("current_tick"), OpCurrentTick)
 	@JvmField
-	val REMAINING_EVALS = make(HexPattern.fromAngles("eedqa", HexDir.WEST), modLoc("remaining_evals"), OpRemainingEvals)
+	val REMAINING_EVALS = make(HexPattern.fromAngles("qqaed", HexDir.SOUTH_EAST), modLoc("remaining_evals"), OpRemainingEvals)
 	@JvmField
 	val BREATH = make(HexPattern.fromAngles("aqawdwaqawd", HexDir.NORTH_WEST), modLoc("breath"), OpGetBreath)
 	@JvmField
