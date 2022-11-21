@@ -33,6 +33,14 @@
       "input": "vec",
       "output": "",
       "text": "hexal.page.hexal_spell.falling_block"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:place_type",
+      "anchor": "hexal:place_type",
+      "input": "vec, itemtype",
+      "output": "",
+      "text": "hexal.page.hexal_spell.place_type"
     }
   ]
 }

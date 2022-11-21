@@ -65,6 +65,8 @@ object Patterns {
 	val FREEZE = make(HexPattern.fromAngles("weeeweedada", HexDir.WEST), modLoc("freeze"), OpFreeze)
 	@JvmField
 	val FALLING_BLOCK = make(HexPattern.fromAngles("wqwawqwqwqwqwqw", HexDir.EAST), modLoc("falling_block"), OpFallingBlock)
+	@JvmField
+	val PLACE_TYPE = make(HexPattern.fromAngles("eeeeedeeeee", HexDir.WEST), modLoc("place_type"), OpPlaceType)
 
 	// =============================== Wisp Stuff =====================================
 	@JvmField
