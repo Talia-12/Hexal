@@ -8,11 +8,13 @@ import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.lib.HexIotaTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
@@ -33,7 +35,7 @@ public abstract class MixinCastingHarness {
 	@Shadow(remap = false) private boolean escapeNext;
 	
 	/**
-	 * Makes it so that the wisp casting doesn't play side effects around the player.
+	 * Makes it so that the wisp casting doesn't play particle effects around the player.
 	 */
 	@Redirect(method = "updateWithPattern",
 						at = @At(
@@ -45,7 +47,7 @@ public abstract class MixinCastingHarness {
 		
 		if (o instanceof OperatorSideEffect.Particles particles) {
 			
-			CastingContext ctx = ((CastingHarness)(Object)this).getCtx();
+			CastingContext ctx = harness.getCtx();
 			IMixinCastingContext ctxi = (IMixinCastingContext)(Object) ctx;
 			
 			if (!ctxi.hasWisp())
@@ -55,6 +57,25 @@ public abstract class MixinCastingHarness {
 		}
 		
 		return sideEffects.add((OperatorSideEffect) o);
+	}
+
+	@Inject(method = "performSideEffects", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/server/level/ServerLevel;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"),
+			remap = false,
+			cancellable = true)
+	private void playSoundWisp (CastingHarness.TempControllerInfo info, List<? extends OperatorSideEffect> sideEffects,
+								EvalSound sound, CallbackInfo ci) {
+		CastingContext ctx = harness.getCtx();
+		IMixinCastingContext wispContext = (IMixinCastingContext) (Object) ctx;
+
+		BaseCastingWisp wisp = wispContext.getWisp();
+
+		if (wisp != null) {
+			wisp.scheduleCastSound();
+			// Stolen from performSideEffects and seems non-unlikely that it'll change.
+			ctx.getWorld().gameEvent(ctx.getCaster(), GameEvent.ITEM_INTERACT_FINISH, ctx.getPosition());
+			ci.cancel();
+		}
 	}
 	
 	/**
