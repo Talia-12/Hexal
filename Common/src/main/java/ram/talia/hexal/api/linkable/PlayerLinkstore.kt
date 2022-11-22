@@ -13,17 +13,14 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.nbt.LazyIotaList
+import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	override val asSpellResult = listOf(SpellDatum.make(player))
 
-	var receivedIotas: MutableList<SpellDatum<*>>
-		get() = lazyReceivedIotas.get()
-		set(value) = lazyReceivedIotas.set(value)
-	private val lazyReceivedIotas: LazyIotaList = LazyIotaList(player.level as ServerLevel)
+	private val serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
 
 	var linked: MutableList<ILinkable<*>>
 		get() = lazyLinked.get()
@@ -128,20 +125,9 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	override fun numLinked() = linked.size
 
-	override fun receiveIota(iota: SpellDatum<*>) {
-		receivedIotas.add(iota)
-	}
+	override fun receiveIota(iota: SpellDatum<*>) = serReceivedIotas.add(iota, player.getLevel())
 
-	override fun nextReceivedIota(): SpellDatum<*> {
-		if (receivedIotas.size == 0) {
-			return SpellDatum.make(Widget.NULL)
-		}
-
-		val iota = receivedIotas[0]
-		receivedIotas.removeAt(0)
-
-		return iota
-	}
+	override fun nextReceivedIota() = serReceivedIotas.pop(player.getLevel()) ?: SpellDatum.make(Widget.NULL)
 
 	override fun numRemainingIota() = linked.size
 
@@ -159,8 +145,8 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 			else -> lazyRenderLinks.set(renderLinkedTag)
 		}
 		when (val receivedIotaTag = tag.get(TAG_RECEIVED_IOTAS) as? ListTag) {
-			null -> lazyReceivedIotas.set(mutableListOf())
-			else -> lazyReceivedIotas.set(receivedIotaTag)
+			null -> serReceivedIotas.set(mutableListOf())
+			else -> serReceivedIotas.tag = receivedIotaTag
 		}
 		when (val transmittingToTag = tag.get(TAG_TRANSMITTING_TO) as? CompoundTag) {
 			null -> lazyTransmittingTo.set(null)
@@ -171,7 +157,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	fun saveAdditionalData(tag: CompoundTag) {
 		tag.put(TAG_LINKS, lazyLinked.getUnloaded())
 		tag.put(TAG_RENDER_LINKS, lazyRenderLinks.getUnloaded())
-		tag.put(TAG_RECEIVED_IOTAS, lazyReceivedIotas.getUnloaded())
+		serReceivedIotas.tag?.let { tag.put(TAG_RECEIVED_IOTAS, it) }
 		tag.put(TAG_TRANSMITTING_TO, lazyTransmittingTo.getUnloaded())
 	}
 
