@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
-import at.petrak.hexcasting.common.lib.HexIotaTypes
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.StringTag

@@ -3,7 +3,7 @@ package ram.talia.hexal.api.nbt
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asInt
-import at.petrak.hexcasting.common.lib.HexIotaTypes
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
