@@ -13,7 +13,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -33,8 +32,6 @@ import java.util.List;
 @Mixin(CastingHarness.class)
 public abstract class MixinCastingHarness {
 	private final CastingHarness harness = (CastingHarness) (Object) this;
-	
-	@Shadow(remap = false) private boolean escapeNext;
 	
 	/**
 	 * Makes it so that the wisp casting doesn't play particle effects around the player.
@@ -127,7 +124,7 @@ public abstract class MixinCastingHarness {
 		// (meaning you can get a copy of the pattern to mark it as not a macro again)
 		if (ctx.getSpellCircle() != null || ((IMixinCastingContext) (Object) ctx).hasWisp())
 			return;
-		if (!ctx.isCasterEnlightened() || this.escapeNext)
+		if (!ctx.isCasterEnlightened() || harness.getEscapeNext())
 			toExecute = new ArrayList<>(Collections.singleton(iota));
 		else if (iota.getType() != HexIotaTypes.PATTERN
 						 || ((PatternIota) iota).getPattern().sigsEqual(HexPattern.fromAngles("qqqaw", HexDir.EAST))) // hacky, make it so people can't lock themselves
@@ -141,9 +138,9 @@ public abstract class MixinCastingHarness {
 		
 		// don't send unescaped escapes to the Linkable (lets you escape macros)
 		// TODO: HACKYY
-		boolean isUnescapedEscape = !this.escapeNext &&
-																iota.getType() == HexIotaTypes.PATTERN &&
-																((PatternIota) iota).getPattern().sigsEqual(HexPattern.fromAngles("qqqaw", HexDir.EAST));
+		boolean isUnescapedEscape = !harness.getEscapeNext() &&
+				iota.getType() == HexIotaTypes.PATTERN &&
+				((PatternIota) iota).getPattern().sigsEqual(HexPattern.fromAngles("qqqaw", HexDir.EAST));
 
 		// sends the iotas straight to the Linkable that the player is forwarding iotas to, if it exists
 		var transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());
@@ -155,7 +152,7 @@ public abstract class MixinCastingHarness {
 				var it = iter.next();
 				
 				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
-				if (!this.escapeNext && iota.getType() == HexIotaTypes.PATTERN &&
+				if (!harness.getEscapeNext() && iota.getType() == HexIotaTypes.PATTERN &&
 						((PatternIota) iota).getPattern().sigsEqual(Patterns.LINK_COMM_CLOSE_TRANSMIT.getFirst()))
 					break;
 				
@@ -163,7 +160,7 @@ public abstract class MixinCastingHarness {
 				transmittingTo.receiveIota(it);
 			}
 			
-			this.escapeNext = false;
+			harness.setEscapeNext(false);
 		}
 		
 		boolean wasTransmitting = transmitting;
