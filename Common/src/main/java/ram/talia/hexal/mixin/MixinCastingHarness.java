@@ -1,8 +1,6 @@
 package ram.talia.hexal.mixin;
 
 import at.petrak.hexcasting.api.spell.casting.*;
-import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation;
-import at.petrak.hexcasting.api.spell.casting.sideeffects.EvalSound;
 import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.iota.PatternIota;
@@ -11,7 +9,9 @@ import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -61,14 +61,10 @@ public abstract class MixinCastingHarness {
 		return sideEffects.add((OperatorSideEffect) o);
 	}
 
-	@Inject(method = "executeIotas", at = @At(value = "INVOKE",
-			target = "Lat/petrak/hexcasting/api/spell/casting/sideeffects/EvalSound;sound()Lnet/minecraft/sounds/SoundEvent;"),
-			remap = false,
-			cancellable = true,
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void playSoundWisp (List<? extends Iota> iotas, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir,
-								SpellContinuation continuation, CastingHarness.TempControllerInfo info,
-								ResolvedPatternType lastResolutionType, EvalSound sound) {
+	@Redirect(method = "executeIotas", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/server/level/ServerLevel;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"),
+			remap = false)
+	private void playSoundWisp (ServerLevel level, Player player, double x, double y, double z, SoundEvent soundEvent, SoundSource soundSource, float v, float p) {
 		CastingContext ctx = harness.getCtx();
 		IMixinCastingContext wispContext = (IMixinCastingContext) (Object) ctx;
 
@@ -76,34 +72,8 @@ public abstract class MixinCastingHarness {
 
 		if (wisp != null) {
 			wisp.scheduleCastSound();
-
-			// Stolen from performSideEffects and seems non-unlikely that it'll change.
-			ctx.getWorld().gameEvent(ctx.getCaster(), GameEvent.ITEM_INTERACT_FINISH, ctx.getPosition());
-
-			// Copying everything that has to happen after the sound, since I don't think there's an easy way to replace
-			// JUST the sound while also getting the locals required.
-			if (continuation instanceof SpellContinuation.NotDone) {
-				if (lastResolutionType.getSuccess())
-					lastResolutionType = ResolvedPatternType.EVALUATED;
-				else
-					lastResolutionType = ResolvedPatternType.ERRORED;
-			}
-
-			var descs = harness.generateDescs();
-			var stackDescs = descs.component1();
-			var parenDescs = descs.component2();
-			var ravenmind = descs.component3();
-
-			var out = new ControllerInfo(
-					harness.getStack().isEmpty() && harness.getParenCount() == 0 && !harness.getEscapeNext(),
-					lastResolutionType,
-					stackDescs,
-					parenDescs,
-					ravenmind,
-					harness.getParenCount()
-			);
-
-			cir.setReturnValue(out);
+		} else {
+			level.playSound(player, x, y, z, soundEvent, soundSource, v, p);
 		}
 	}
 	
