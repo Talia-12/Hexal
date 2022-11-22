@@ -1,8 +1,7 @@
 package ram.talia.hexal.mixin;
 
 import at.petrak.hexcasting.api.spell.casting.CastingHarness;
-import at.petrak.hexcasting.api.spell.casting.OperatorSideEffect;
-import net.minecraft.Util;
+import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

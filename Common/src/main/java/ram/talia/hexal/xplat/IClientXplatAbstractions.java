@@ -29,7 +29,7 @@ public interface IClientXplatAbstractions {
 	<T extends Entity> void registerEntityRenderer(EntityType<? extends T> type, EntityRendererProvider<T> renderer);
 	
 	<T extends ParticleOptions> void registerParticleType(ParticleType<T> type,
-																												Function<SpriteSet, ParticleProvider<T>> factory);
+														  Function<SpriteSet, ParticleProvider<T>> factory);
 	
 	void registerItemProperty(Item item, ResourceLocation id, ItemPropertyFunction func);
 	

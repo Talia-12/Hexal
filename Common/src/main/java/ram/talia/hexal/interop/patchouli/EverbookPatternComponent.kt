@@ -3,18 +3,27 @@ package ram.talia.hexal.interop.patchouli
 import at.petrak.hexcasting.api.spell.math.HexCoord
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
-import at.petrak.hexcasting.common.lib.HexIotaTypes
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.KEY_DATA
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.getTypeFromTag
 import at.petrak.hexcasting.interop.patchouli.AbstractPatternComponent
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.datafixers.util.Pair
+import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
+import net.minecraft.util.FormattedCharSequence
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 import vazkii.patchouli.api.IComponentRenderContext
 import vazkii.patchouli.api.IVariable
 import vazkii.patchouli.client.book.gui.GuiBook
 import java.util.function.UnaryOperator
+
 
 @Suppress("SameParameterValue", "unused")
 class EverbookPatternComponent : AbstractPatternComponent() {
@@ -70,7 +79,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 
 		val font = Minecraft.getInstance().font
 
-		val iotaText = HexIotaTypes.getDisplayWithMaxWidth(iota, GuiBook.PAGE_WIDTH, font).iterator()
+		val iotaText = getDisplayWithMaxWidth(iota, GuiBook.PAGE_WIDTH, font).iterator()
 
 		var currentY = y
 
@@ -82,6 +91,67 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 			ms.popPose()
 			currentY += 9
 		}
+	}
+
+	// Stolen old DisplayWithMaxWidth code from HexIotaTypes and ListIota since they fit better in the Patchouli book.
+	private fun getDisplayWithMaxWidth(tag: CompoundTag, maxWidth: Int, font: Font): List<FormattedCharSequence> {
+		val type = getTypeFromTag(tag)
+				?: return font.split(brokenIota(), maxWidth)
+		val data = tag[KEY_DATA]
+				?: return font.split(brokenIota(), maxWidth)
+		if (type != HexIotaTypes.LIST)
+			return font.split(type.display(data), maxWidth)
+		return getListDisplayWithMaxWidth(data, maxWidth, font)
+	}
+
+	private fun getListDisplayWithMaxWidth(tag: Tag, maxWidth: Int, font: Font): List<FormattedCharSequence> {
+		// We aim to not break one iota between lines
+		val listTag = tag.downcast(ListTag.TYPE)
+
+		val start = FormattedCharSequence.forward(if (listTag.isEmpty()) "[]" else "[",
+				Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE))
+		var cursor = font.width(start)
+		var currentLine = ArrayList(java.util.List.of(start))
+		val out = ArrayList<FormattedCharSequence>()
+
+		for (i in 0 until listTag.size) {
+			val subtag = listTag[i]
+			val cSubtag = subtag.downcast(CompoundTag.TYPE)
+			val translation = HexIotaTypes.getDisplay(cSubtag)
+			var currentElement = translation.visualOrderText
+			val addl = if (i < listTag.size - 1) {
+				", "
+			} else {
+				// Last go-around, so add the closing bracket
+				"]"
+			}
+			currentElement = FormattedCharSequence.composite(currentElement,
+					FormattedCharSequence.forward(addl, Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE)))
+			val width = font.width(currentElement)
+			if (cursor + width > maxWidth) {
+				out.add(FormattedCharSequence.composite(currentLine))
+				currentLine = ArrayList()
+				// Indent further lines by two spaces
+				val indentation = FormattedCharSequence.forward("  ", Style.EMPTY)
+				val lineStart = FormattedCharSequence.composite(indentation, currentElement)
+				currentLine.add(lineStart)
+				cursor = font.width(lineStart)
+			} else {
+				currentLine.add(currentElement)
+				cursor += width
+			}
+		}
+
+		if (currentLine.isNotEmpty()) {
+			out.add(FormattedCharSequence.composite(currentLine))
+		}
+
+		return out
+	}
+
+	private fun brokenIota(): Component {
+		return Component.translatable("hexcasting.spelldata.unknown")
+				.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
 	}
 
 	companion object {
