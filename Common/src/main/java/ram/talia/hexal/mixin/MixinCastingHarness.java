@@ -58,8 +58,12 @@ public abstract class MixinCastingHarness {
 		return sideEffects.add((OperatorSideEffect) o);
 	}
 
-	@Redirect(method = "executeIotas", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/server/level/ServerLevel;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"),
+	@Redirect(method = "executeIotas",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/server/level/ServerLevel;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V",
+					remap = true
+			),
 			remap = false)
 	private void playSoundWisp (ServerLevel level, Player player, double x, double y, double z, SoundEvent soundEvent, SoundSource soundSource, float v, float p) {
 		CastingContext ctx = harness.getCtx();
