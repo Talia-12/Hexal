@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.utils.hasByte
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.network.chat.Component
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -15,8 +16,8 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.nbt.LazyIota
-import ram.talia.hexal.api.nbt.LazyIotaList
+import ram.talia.hexal.api.nbt.SerialisedIota
+import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.times
@@ -26,27 +27,8 @@ import java.lang.Double.min
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
-	var stack: MutableList<SpellDatum<*>>
-		get() {
-			if (level.isClientSide)
-				throw Exception("TickingWisp.stack should only be accessed on server.") // TODO: create and replace with ServerOnlyException
-			return lazyStack!!.get()
-		}
-		set(value) {
-			lazyStack?.set(value)
-		}
-	private var lazyStack: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
-
-	var ravenmind: SpellDatum<*>
-		get() {
-			if (level.isClientSide)
-				throw Exception("TickingWisp.stack should only be accessed on server.") // TODO: create and replace with ServerOnlyException
-			return lazyRavenmind!!.get()
-		}
-		set(value) {
-			lazyRavenmind?.set(value)
-		}
-	private var lazyRavenmind: LazyIota? = if (level.isClientSide) null else LazyIota(level as ServerLevel)
+	private var serStack: SerialisedIotaList = SerialisedIotaList(null)
+	private var serRavenmind: SerialisedIota = SerialisedIota(null)
 
 	var currentMoveMultiplier: Float
 		get() = entityData.get(CURRENT_MOVE_MULTIPLIER)
@@ -75,18 +57,22 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	init {
-		lazyStack?.set(mutableListOf(SpellDatum.make(this)))
-		lazyRavenmind?.set(SpellDatum.make(Widget.NULL))
+		serStack.set(mutableListOf(SpellDatum.make(this)))
+		serRavenmind.set(SpellDatum.make(Widget.NULL))
 	}
 
-	override fun transmittingTargetReturnDisplay() = stack.map(SpellDatum<*>::display)
+	override fun transmittingTargetReturnDisplay(): List<Component> {
+		if (level.isClientSide)
+			throw Exception("TickingWisp.transmittingTargetReturnDisplay should only be called on server.") // TODO
+		return serStack.get(level as ServerLevel).map(SpellDatum<*>::display)
+	}
 
 	override val normalCostPerTick =  2 * WISP_COST_PER_TICK_NORMAL
 
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")
 		if (level.isClientSide) return
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, stack, ravenmind)
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
 	}
 
 	override fun move() {
@@ -111,8 +97,8 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
-		stack = result.endStack
-		ravenmind = result.endRavenmind
+		serStack.copy(result.endStack)
+		serRavenmind.copy(result.endRavenmind)
 
 		super.castCallback(result)
 	}
@@ -146,12 +132,12 @@ class TickingWisp : BaseCastingWisp {
 		super.readAdditionalSaveData(compound)
 
 		when (val stackTag = compound.get(TAG_STACK)) {
-			null -> lazyStack!!.set(mutableListOf())
-			else -> lazyStack!!.set(stackTag as ListTag)
+			null -> serStack.set(mutableListOf())
+			else -> serStack.tag = stackTag as? ListTag
 		}
-		when (val ravenmindTag = compound.getCompound(TAG_RAVENMIND)) {
-			null -> lazyRavenmind!!.set(SpellDatum.make(Widget.NULL))
-			else -> lazyRavenmind!!.set(ravenmindTag)
+		when (val ravenmindTag = compound.get(TAG_RAVENMIND) as? CompoundTag) {
+			null -> serRavenmind.set(SpellDatum.make(Widget.NULL))
+			else -> serRavenmind.tag = ravenmindTag
 		}
 
 		entityData.set(HAS_TARGET_MOVE_POS, when(compound.hasByte(TAG_HAS_TARGET_MOVE_POS)) {
@@ -183,8 +169,8 @@ class TickingWisp : BaseCastingWisp {
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		compound.put(TAG_STACK, lazyStack!!.getUnloaded())
-		compound.put(TAG_RAVENMIND, lazyRavenmind!!.getUnloaded())
+		serStack.tag?.let { compound.put(TAG_STACK, it) }
+		serRavenmind.tag?.let { compound.put(TAG_RAVENMIND, it) }
 		compound.putBoolean(TAG_HAS_TARGET_MOVE_POS, entityData.get(HAS_TARGET_MOVE_POS))
 		compound.putFloat(TAG_TARGET_MOVE_POS_X, entityData.get(TARGET_MOVE_POS_X))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Y, entityData.get(TARGET_MOVE_POS_Y))

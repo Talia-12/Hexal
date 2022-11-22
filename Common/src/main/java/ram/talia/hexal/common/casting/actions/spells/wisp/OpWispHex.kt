@@ -17,6 +17,6 @@ object OpWispHex : ConstManaOperator {
 		if (wisp.caster != ctx.caster)
 			throw MishapOthersWisp(wisp.caster)
 
-		return wisp.hex.asSpellResult
+		return wisp.serHex.get(ctx.world).asSpellResult
 	}
 }

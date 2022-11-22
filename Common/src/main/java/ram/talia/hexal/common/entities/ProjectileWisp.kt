@@ -12,6 +12,8 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.nbt.SerialisedIotaList
+import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.common.lib.HexalEntities
@@ -102,16 +104,20 @@ open class ProjectileWisp : BaseCastingWisp {
 		setPos(result.location)
 		if (level.isClientSide)
 			playTrailParticles()
-		else
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, mutableListOf(SpellDatum.make(this), SpellDatum.make(result.entity)))
+		else {
+			val serStack = SerialisedIotaList(mutableListOf(SpellDatum.make(this), SpellDatum.make(result.entity)).toNbtList())
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack)
+		}
 	}
 
 	fun onHitBlock(result: BlockHitResult) {
 		setPos(result.location)
 		if (level.isClientSide)
 			playTrailParticles()
-		else
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, hex, mutableListOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))))
+		else {
+			val serStack = SerialisedIotaList(mutableListOf(SpellDatum.make(this), SpellDatum.make(Vec3.atCenterOf(result.blockPos))).toNbtList())
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack)
+		}
 	}
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {

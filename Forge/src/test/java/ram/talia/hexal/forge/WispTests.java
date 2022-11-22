@@ -130,7 +130,7 @@ public class WispTests {
 		
 		TickingWisp wisp = new TickingWisp(helper.getLevel(), spawnPos, fakePlayer, 10 * ManaConstants.SHARD_UNIT);
 		
-		wisp.setHex(hex);
+		wisp.getSerHex().set(hex);
 		
 		if (helper.getLevel().addFreshEntity(wisp))
 			return wisp;
