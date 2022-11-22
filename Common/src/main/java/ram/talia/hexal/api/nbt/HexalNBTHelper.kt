@@ -1,8 +1,6 @@
 package ram.talia.hexal.api.nbt
 
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.PatternIota
-import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asInt
 import at.petrak.hexcasting.common.lib.HexIotaTypes
@@ -22,11 +20,7 @@ fun ListTag.toIotaList(level: ServerLevel): MutableList<Iota> {
 	val out = ArrayList<Iota>()
 	for (patTag in this) {
 		val tag = patTag.asCompound
-		if (tag.size() != 1) {
-			out.add(PatternIota(HexPattern.fromNBT(tag)))
-		} else {
-			out.add(HexIotaTypes.deserialize(tag, level))
-		}
+		out.add(HexIotaTypes.deserialize(tag, level))
 	}
 	return out
 }

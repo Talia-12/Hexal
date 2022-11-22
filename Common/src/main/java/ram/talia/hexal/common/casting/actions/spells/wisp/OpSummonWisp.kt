@@ -64,7 +64,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
                 false -> ProjectileWisp(ctx.world, pos, vel, ctx.caster, media)
             }
             wisp.setColouriser(colouriser)
-            wisp.hex = hex
+            wisp.serHex.set(hex)
             ctx.world.addFreshEntity(wisp)
         }
     }

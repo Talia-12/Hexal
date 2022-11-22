@@ -22,7 +22,8 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.nbt.LazyIotaList
+import ram.talia.hexal.api.nbt.SerialisedIota
+import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.spell.casting.triggers.IWispTrigger
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
@@ -76,30 +77,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	// true at the end will be not-ed to false by the ! out the front
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
 
-	// LazyIotaList used so that the ListTag loaded from NBT is only converted
-	// into a List of SpellDatum's when needed, meaning that it's guaranteed
-	// to happen at the point where Level.getEntity works properly.
-	var hex: List<Iota>
-		get() {
-			if (level.isClientSide)
-				throw Exception("BaseCastingWisp.hex should only be accessed on server.") // TODO: create and replace with ServerOnlyException
-			return lazyHex!!.get()
-		}
-		set(value) {
-			(value as? MutableList<Iota>)?.let { lazyHex?.set(it) }
-		}
-	private val lazyHex: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
+	val serHex: SerialisedIotaList = SerialisedIotaList(null)
 
-	var receivedIotas: MutableList<Iota>
-		get() {
-			if (level.isClientSide)
-				throw Exception("BaseCastingWisp.receivedIotas should only be accessed on server.") // TODO: create and replace with ServerOnlyException
-			return lazyReceivedIotas!!.get()
-		}
-		set(value) {
-			lazyReceivedIotas?.set(value)
-		}
-	private val lazyReceivedIotas: LazyIotaList? = if (level.isClientSide) null else LazyIotaList(level as ServerLevel)
+	val serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -198,10 +178,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	 * the results of the cast somewhere) a callback can be provided as [castCallback]. Returns whether the hex was successfully scheduled.
 	 */
 	fun scheduleCast(
-		priority: Int,
-		hex: List<Iota>,
-		initialStack: MutableList<Iota> = ArrayList<Iota>(),
-		initialRavenmind: Iota? = null,
+			priority: Int,
+			hex: SerialisedIotaList,
+			initialStack: SerialisedIotaList = SerialisedIotaList(null),
+			initialRavenmind: SerialisedIota = SerialisedIota(null),
 	): Boolean {
 		if (level.isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
@@ -218,34 +198,33 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	override fun receiveIota(iota: Iota) {
-		receivedIotas.add(iota)
+		if (level.isClientSide)
+			throw Exception("BaseWisp.receiveIota should only be called on server.") // TODO
+
+		serReceivedIotas.add(iota, level as ServerLevel)
 	}
 
 	override fun nextReceivedIota(): Iota {
-		if (receivedIotas.size == 0) {
-			return NullIota()
-		}
+		if (level.isClientSide)
+			throw Exception("BaseWisp.receiveIota should only be called on server.") // TODO
 
-		val iota = receivedIotas[0]
-		receivedIotas.removeAt(0)
-
-		return iota
+		return serReceivedIotas.pop(level as ServerLevel) ?: NullIota()
 	}
 
 	override fun numRemainingIota(): Int {
-		return receivedIotas.size
+		return serReceivedIotas.size
 	}
 
 	fun scheduleCastSound() {
 		if (level.isClientSide)
-			throw Exception("BaseWisp.scheduleCastSound should only be called on server.") // TODO: create and replace with ServerOnlyException
+			throw Exception("BaseWisp.scheduleCastSound should only be called on server.") // TODO
 		HexalAPI.LOGGER.info("scheduling casting sound, level is $level")
 		IXplatAbstractions.INSTANCE.sendPacketNear(position(), 32.0, level as ServerLevel, MsgWispCastSoundAck(this))
 	}
 
 	fun playCastSoundClient() {
 		if (!level.isClientSide)
-			throw Exception("BaseWisp.playCastSoundClient should only be called on client.") // TODO: create and replace with ClientOnlyException
+			throw Exception("BaseWisp.playCastSoundClient should only be called on client.") // TODO
 
 		HexalAPI.LOGGER.info("playing casting sound, level is $level")
 		if (soundInstance == null || soundInstance!!.isStopped) {
@@ -283,15 +262,15 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		}
 
 		when (val hexTag = compound.get(TAG_HEX)) {
-			null -> lazyHex!!.set(mutableListOf())
-			else -> lazyHex!!.set(hexTag as ListTag)
+			null -> serHex.set(mutableListOf())
+			else -> serHex.tag = hexTag as? ListTag
 		}
 
 //		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
 
 		when (val receivedIotasTag = compound.get(TAG_RECEIVED_IOTAS)) {
-			null -> lazyReceivedIotas!!.set(mutableListOf())
-			else -> lazyReceivedIotas!!.set(receivedIotasTag as ListTag)
+			null -> serReceivedIotas.set(mutableListOf())
+			else -> serReceivedIotas.tag = receivedIotasTag as? ListTag
 		}
 
 		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
@@ -311,8 +290,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			compound.putUUID(TAG_CASTER, casterUUID!!)
 
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
-		compound.put(TAG_HEX, lazyHex!!.getUnloaded())
-		compound.put(TAG_RECEIVED_IOTAS, lazyReceivedIotas!!.getUnloaded())
+		serHex.tag?.let { compound.put(TAG_HEX, it) }
+		serReceivedIotas.tag?.let { compound.put(TAG_RECEIVED_IOTAS, it) }
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 		compound.putBoolean(TAG_SEON, seon)

@@ -3,7 +3,6 @@ package ram.talia.hexal.api.spell.casting
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.orNull
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.lib.HexIotaTypes
@@ -13,7 +12,8 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.nbt.toIotaList
+import ram.talia.hexal.api.nbt.SerialisedIota
+import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
@@ -28,11 +28,11 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	 * preferred.
 	 */
 	fun scheduleCast(
-		wisp: BaseCastingWisp,
-		priority: Int,
-		hex: List<Iota>,
-		initialStack: MutableList<Iota> = ArrayList<Iota>().toMutableList(),
-		initialRavenmind: Iota? = null,
+			wisp: BaseCastingWisp,
+			priority: Int,
+			hex: SerialisedIotaList,
+			initialStack: SerialisedIotaList = SerialisedIotaList(null),
+			initialRavenmind: SerialisedIota = SerialisedIota(null),
 	) {
 		val cast = WispCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind)
 
@@ -105,10 +105,10 @@ class WispCastingManager(private val caster: ServerPlayer) {
 
 		val harness = CastingHarness(ctx)
 
-		harness.stack = cast.initialStack
-		harness.ravenmind = cast.initialRavenmind
+		harness.stack = cast.initialStack.get(ctx.world).toMutableList()
+		harness.ravenmind = cast.initialRavenmind.get(ctx.world)
 
-		val info = harness.executeIotas(cast.hex, caster.getLevel())
+		val info = harness.executeIotas(cast.hex.get(ctx.world), caster.getLevel())
 
 		// the wisp will have things it wants to do once the cast is successful, so a callback on it is called to let it know that happened, and what the end state of the
 		// stack and ravenmind is. This is returned and added to a list that [executeCasts] will loop over to hopefully prevent concurrent modification problems.
@@ -134,12 +134,12 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	}
 
 	data class WispCast(
-		val wispUUID: UUID,
-		val priority: Int,
-		val timeAdded: Long,
-		val hex: List<Iota>,
-		val initialStack: MutableList<Iota> = ArrayList<Iota>().toMutableList(),
-		val initialRavenmind: Iota? = null,
+			val wispUUID: UUID,
+			val priority: Int,
+			val timeAdded: Long,
+			val hex: SerialisedIotaList,
+			val initialStack: SerialisedIotaList = SerialisedIotaList(null),
+			val initialRavenmind: SerialisedIota = SerialisedIota(null),
 	) : Comparable<WispCast> {
 		/**
 		 * when loading from NBT, it calls ServerLevel.entity(UUID), which could return null.
@@ -150,9 +150,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			wisp: BaseCastingWisp,
 			priority: Int,
 			timeAdded: Long,
-			hex: List<Iota>,
-			initialStack: MutableList<Iota>,
-			initialRavenmind: Iota?
+			hex: SerialisedIotaList,
+			initialStack: SerialisedIotaList,
+			initialRavenmind: SerialisedIota
 		) : this(wisp.uuid, priority, timeAdded, hex, initialStack, initialRavenmind) {
 			this.wisp = wisp
 		}
@@ -169,9 +169,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			tag.putUUID(TAG_WISP, wispUUID)
 			tag.putInt(TAG_PRIORITY, priority)
 			tag.putLong(TAG_TIME_ADDED, timeAdded)
-			tag.put(TAG_HEX, hex.toNbtList())
-			tag.put(TAG_INITIAL_STACK, initialStack.toNbtList())
-			tag.putCompound(TAG_INITIAL_RAVENMIND, HexIotaTypes.serialize(initialRavenmind.orNull()))
+			hex.tag?.let { tag.put(TAG_HEX, it) }
+			initialStack.tag?.let { tag.put(TAG_INITIAL_STACK, it) }
+			initialRavenmind.tag?.let{ tag.putCompound(TAG_INITIAL_RAVENMIND, it) }
 
 			return tag
 		}
@@ -193,9 +193,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 						wisp,
 						tag.getInt(TAG_PRIORITY),
 						tag.getLong(TAG_TIME_ADDED),
-						(tag.get(TAG_HEX) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
-						(tag.get(TAG_INITIAL_STACK) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
-						HexIotaTypes.deserialize(tag.getCompound(TAG_INITIAL_RAVENMIND), level)
+						SerialisedIotaList(tag.get(TAG_HEX) as? ListTag),
+						SerialisedIotaList(tag.get(TAG_INITIAL_STACK) as? ListTag),
+						SerialisedIota(tag.get(TAG_INITIAL_RAVENMIND) as? CompoundTag)
 					)
 				}
 
@@ -203,9 +203,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 					tag.getUUID(TAG_WISP),
 					tag.getInt(TAG_PRIORITY),
 					tag.getLong(TAG_TIME_ADDED),
-					(tag.get(TAG_HEX) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
-					(tag.get(TAG_INITIAL_STACK) as? ListTag)?.toIotaList(level) ?: mutableListOf(),
-					HexIotaTypes.deserialize(tag.getCompound(TAG_INITIAL_RAVENMIND), level)
+					SerialisedIotaList(tag.get(TAG_HEX) as? ListTag),
+					SerialisedIotaList(tag.get(TAG_INITIAL_STACK) as? ListTag),
+					SerialisedIota(tag.get(TAG_INITIAL_RAVENMIND) as? CompoundTag)
 				)
 			}
 		}
@@ -214,7 +214,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota?) {
+	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: SerialisedIotaList, val endRavenmind: SerialisedIota) {
+		constructor(wisp: BaseCastingWisp, succeeded: Boolean, endStack: List<Iota>, endRavenmind: Iota?)
+			: this(wisp, succeeded, SerialisedIotaList(endStack.toNbtList()), SerialisedIota(endRavenmind?.let { HexIotaTypes.serialize(it) }))
 		fun callback() { wisp.castCallback(this) }
 	}
 
