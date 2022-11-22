@@ -13,6 +13,7 @@
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
 
   "hexcasting.mishap.invalid_value.class.wisp": "a wisp",
+  "hexcasting.mishap.invalid_value.class.consumable_entity": "a consumable entity",
   "hexcasting.mishap.invalid_value.class.wisp.casting": "a casting wisp",
   "hexcasting.mishap.invalid_value.class.type.block": "a block type",
   "hexcasting.mishap.invalid_value.class.type.block.able": "an item type that has a block",

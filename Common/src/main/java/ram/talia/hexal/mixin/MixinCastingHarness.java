@@ -37,24 +37,24 @@ public abstract class MixinCastingHarness {
 	 * Makes it so that the wisp casting doesn't play particle effects around the player.
 	 */
 	@Redirect(method = "updateWithPattern",
-						at = @At(
-									value="INVOKE",
-									target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
-					),
-      remap = false)
+			at = @At(
+				value="INVOKE",
+				target = "Ljava/util/List;add(Ljava/lang/Object;)Z"
+			),
+			remap = false)
 	private boolean updateWithPatternWisp (List<OperatorSideEffect> sideEffects, Object o) {
-		
+
 		if (o instanceof OperatorSideEffect.Particles particles) {
-			
+
 			CastingContext ctx = harness.getCtx();
 			IMixinCastingContext ctxi = (IMixinCastingContext)(Object) ctx;
-			
+
 			if (!ctxi.hasWisp())
 				return sideEffects.add(particles);
 			else
 				return false;
 		}
-		
+
 		return sideEffects.add((OperatorSideEffect) o);
 	}
 
@@ -78,10 +78,10 @@ public abstract class MixinCastingHarness {
 	 * Makes it so that the wisp casting draws its mana from the wisp rather than the player's inventory.
 	 */
 	@Inject(method = "withdrawMedia",
-					at = @At("HEAD"),
-					cancellable = true,
-					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
-					remap = false)
+			at = @At("HEAD"),
+			cancellable = true,
+			locals = LocalCapture.CAPTURE_FAILEXCEPTION,
+			remap = false)
 	private void withdrawManaWisp (int manaCost, boolean allowOvercast, CallbackInfoReturnable<Integer> cir) {
 		if (manaCost <= 0) {
 			cir.setReturnValue(0);
@@ -107,14 +107,15 @@ public abstract class MixinCastingHarness {
 	}
 	
 	/**
-	 * Has two functions. Firstly, makes it so that when a player executes a pattern, if that pattern is marked as a macro in their Everbook it executes the macro instead.
-	 * Secondly, if the caster is transmitting to a Linkable it will send all iotas that would have been executed to the Linkable instead.
+	 * Has two functions. Firstly, makes it so that when a player executes a pattern, if that pattern is marked as a
+	 * macro in their Everbook it executes the macro instead. Secondly, if the caster is transmitting to a Linkable it
+	 * will send all iotas that would have been executed to the Linkable instead.
 	 */
 	@Inject(method = "executeIota",
-					at = @At("HEAD"),
-					cancellable = true,
-					locals = LocalCapture.CAPTURE_FAILEXCEPTION,
-					remap = false)
+			at = @At("HEAD"),
+			cancellable = true,
+			locals = LocalCapture.CAPTURE_FAILEXCEPTION,
+			remap = false)
 	private void executeIotaMacro (Iota iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
 		CastingContext ctx = harness.getCtx();
 		

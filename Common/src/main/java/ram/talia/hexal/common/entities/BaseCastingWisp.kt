@@ -32,7 +32,6 @@ import ram.talia.hexal.common.lib.HexalSounds
 import ram.talia.hexal.common.network.MsgWispCastSoundAck
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.util.*
-import kotlin.math.*
 
 
 abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, world: Level) : BaseWisp(entityType, world) {
@@ -63,10 +62,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 				cachedCaster = value
 			}
 		}
-
-	override var media: Int
-		get() = entityData.get(MEDIA)
-		set(value) = entityData.set(MEDIA, max(value, 0))
 
 	override val isConsumable = true
 

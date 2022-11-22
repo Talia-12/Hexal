@@ -55,7 +55,7 @@ object OpConsumeWisp : SpellAction {
 			val mCast = ctx as? IMixinCastingContext
 
 			if (mCast != null && mCast.wisp != null)
-				mCast.wisp.media += 19 * consumed.media / 20
+				mCast.wisp.addMedia(19 * consumed.media / 20) // using addMedia to prevent overflow.
 
 			HexalAPI.LOGGER.info("discarding $consumed")
 			consumed.get().discard()
