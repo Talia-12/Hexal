@@ -17,6 +17,7 @@ out
 build
 .gradle
 keys.properties
+changelog.md
 
 # other
 eclipse

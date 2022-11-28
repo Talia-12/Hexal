@@ -173,6 +173,18 @@ compileTestKotlin {
     }
 }
 
+private void createReleaseTag() {
+    def tagName = "$modVersion"
+    ("git tag $tagName").execute()
+    ("git push --tags").execute()
+}
+
+task modrinth {
+    dependsOn ":Fabric:modrinth"
+    dependsOn ":Forge:modrinth"
+    createReleaseTag()
+}
+
 def getGitChangelog = { ->
     try {
         def stdout = new ByteArrayOutputStream()
