@@ -11,8 +11,8 @@ import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 object OpWispMedia : ConstMediaAction {
 	override val argc = 0
 
+	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
 		val mCast = ctx as? IMixinCastingContext
 
 		if (mCast == null || !mCast.hasWisp())

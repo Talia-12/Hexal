@@ -85,6 +85,8 @@ object Patterns {
 	@JvmField
 	val WISP_SUMMON_TICKING = make(HexPattern.fromAngles("aqaweewaqawee", HexDir.NORTH_WEST), modLoc("wisp/summon/ticking"), OpSummonWisp(true))
 	@JvmField
+	val WISP_SELF = make(HexPattern.fromAngles("dedwqqwdedwqqaw", HexDir.NORTH_EAST), modLoc("wisp/self"), OpWispSelf)
+	@JvmField
 	val WISP_MEDIA = make(HexPattern.fromAngles("aqaweewaqaweedw", HexDir.NORTH_WEST), modLoc("wisp/media"), OpWispMedia)
 	@JvmField
 	val WISP_HEX = make(HexPattern.fromAngles("aweewaqaweewaawww", HexDir.SOUTH_EAST), modLoc("wisp/hex"), OpWispHex)
