@@ -1,10 +1,7 @@
 package ram.talia.hexal.api.fakes
 
 import com.mojang.authlib.GameProfile
-import io.netty.util.concurrent.Future
-import io.netty.util.concurrent.GenericFutureListener
 import net.minecraft.core.BlockPos
-import net.minecraft.data.BuiltinRegistries
 import net.minecraft.network.Connection
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
@@ -21,13 +18,12 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
 import java.util.*
-import java.util.function.BiConsumer
 import java.util.function.Consumer
 import javax.annotation.ParametersAreNonnullByDefault
 
 class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.server, level, name, null) {
 
-	private val sendMessageListeners: MutableList<BiConsumer<Component, UUID>> = mutableListOf()
+	private val sendMessageListeners: MutableList<Consumer<Component>> = mutableListOf()
 	init {
 		connection = FakePlayerNetHandler(level.server, this)
 	}
@@ -36,11 +32,10 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 	override fun blockPosition() = BlockPos.ZERO
 	override fun displayClientMessage(chatComponent: Component, actionBar: Boolean) {}
 
-	// TODO: Fix?
-//	override fun sendMessage(component: Component, senderUUID: UUID) {
-//		HexalAPI.LOGGER.debug("player $uuid sent ${component.string} by $senderUUID")
-//		sendMessageListeners.forEach { it.accept(component, senderUUID) }
-//	}
+	override fun sendSystemMessage(component: Component, forceAcceptMessage: Boolean) {
+		HexalAPI.LOGGER.debug("player $uuid sent ${component.string} ")
+		sendMessageListeners.forEach { it.accept(component) }
+	}
 	override fun awardStat(par1StatBase: Stat<*>, par2: Int) {}
 	//@Override public void openGui(Object mod, int modGuiId, World world, int x, int y, int z){}
 	override fun isInvulnerableTo(source: DamageSource) = true
@@ -58,12 +53,12 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 	 * Register a [listener], which will be alerted whenever this [FakePlayer] is (on the server) sent a message. The parameters the listener receives are the [Component]
 	 * for the message, and the [UUID] of the sender.
 	 */
-	public fun registerSendMessageListener(listener: BiConsumer<Component, UUID>) {
+	fun registerSendMessageListener(listener: Consumer<Component>) {
 		if (!sendMessageListeners.contains(listener))
 			sendMessageListeners += listener
 	}
 
-	public fun deregisterSendMessageListener(listener: BiConsumer<Component, UUID>) {
+	fun deregisterSendMessageListener(listener: Consumer<Component>) {
 		sendMessageListeners -= listener
 	}
 

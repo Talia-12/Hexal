@@ -36,7 +36,7 @@ class WispCastingSoundInstance(val wisp: BaseWisp)
 	}
 
 	override fun tick() {
-		HexalAPI.LOGGER.info("attenuation type: $attenuation, is relative: $relative, position: (${getX()}, ${getY()}, ${getZ()})")
+		HexalAPI.LOGGER.debug("attenuation type: $attenuation, is relative: $relative, position: (${getX()}, ${getY()}, ${getZ()})")
 
 		if (active) {
 			volume = min(1f, volume + .25f)
@@ -45,7 +45,7 @@ class WispCastingSoundInstance(val wisp: BaseWisp)
 				fadeOut()
 			return
 		}
-		volume = max(0f, volume - .25f);
+		volume = max(0f, volume - .25f)
 		if (volume < 0.00001)
 			stop()
 	}

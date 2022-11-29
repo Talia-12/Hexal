@@ -70,7 +70,7 @@ object LinkableRegistry {
 		 * Takes in an [ILinkable.IRenderCentre] and a [Tag] and returns whether that [Tag] is a reference to that [ILinkable.IRenderCentre]. Used to determine which
 		 * [ILinkable.IRenderCentre]s to remove on the client, since e.g. getEntity won't work if the entity's been removed.
 		 */
-		internal abstract fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag): Boolean
+		abstract fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag): Boolean
 	}
 
 	/**

@@ -12,14 +12,9 @@ import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIf
 import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
 import net.minecraft.resources.ResourceLocation
-import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.common.casting.actions.OpCurrentTick
-import ram.talia.hexal.common.casting.actions.spells.link.OpLinkEntity
-import ram.talia.hexal.common.casting.actions.spells.link.OpNumLinked
-import ram.talia.hexal.common.casting.actions.spells.link.OpReadReceivedIota
-import ram.talia.hexal.common.casting.actions.spells.link.OpSendIota
+import ram.talia.hexal.common.casting.Patterns
 
-object Patterns {
+object OtherPatterns {
 	@JvmField
 	val REVEAL = patternOf(OpPrint)
 
@@ -27,9 +22,11 @@ object Patterns {
 	val COMPASS = patternOf(HexAPI.modLoc("entity_pos/foot"))
 
 	@JvmField
+	val NOOP = PatternIota(HexPattern.fromAngles("", HexDir.SOUTH_EAST))
+	@JvmField
 	val DROP = PatternIota(HexPattern.fromAngles("a", HexDir.SOUTH_EAST))
-//	@JvmField
-//	val SWAP = patternOf(OpSwap)
+	@JvmField
+	val SWAP = patternOf(HexAPI.modLoc("swap"))
 
 	@JvmField
 	val EQUALITY = patternOf(HexAPI.modLoc("equals"))
@@ -48,8 +45,8 @@ object Patterns {
 	@JvmField
 	val FOUR = PatternIota(HexPattern.fromAngles("aqaawaa", HexDir.EAST))
 
-//	@JvmField
-//	val GEMINIS_DISINTEGRATION = patternOf(OpDuplicate)
+	@JvmField
+	val GEMINIS_DISINTEGRATION = patternOf(HexAPI.modLoc("duplicate"))
 	@JvmField
 	val FLOCKS_DISINTEGRATION = patternOf(OpSplat)
 
@@ -67,20 +64,22 @@ object Patterns {
 
 
 	@JvmField
-	val TIMEKEEPER = patternOf(OpCurrentTick)
+	val TIMEKEEPER = Patterns.CURRENT_TICK
 
 	@JvmField
-	val ZONE_DSTL_WISP = patternOf(HexalAPI.modLoc("zone_entity/wisp"))
+	val ZONE_DSTL_WISP = Patterns.ZONE_ENTITY_WISP
+	@JvmField
+	val WISP_TRIGGER_COMM = Patterns.WISP_TRIGGER_COMM
 
 	@JvmField
-	val LINK_ENTITY = patternOf(OpLinkEntity)
+	val LINK_ENTITY = Patterns.LINK_ENTITY
 	@JvmField
-	val POPULARITY = patternOf(OpNumLinked)
+	val POPULARITY = Patterns.LINK_NUM
 
 	@JvmField
-	val SEND_IOTA = patternOf(OpSendIota)
+	val SEND_IOTA = Patterns.LINK_COMM_SEND
 	@JvmField
-	val RECITATION = patternOf(OpReadReceivedIota)
+	val RECITATION = Patterns.LINK_COMM_READ
 
 	private fun patternOf(op: Action): PatternIota = PatternIota(PatternRegistry.lookupPattern(PatternRegistry.lookupPattern(op)!!).prototype)
 	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(PatternRegistry.lookupPattern(loc).prototype)

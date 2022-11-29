@@ -23,9 +23,7 @@ import java.util.List;
 public class WispTests {
 	private static final List<FakePlayer> fakePlayers = new ArrayList<>();
 	
-	private static final List<Iota> defaultHex = List.of(Patterns.REVEAL);
-	
-	private static final int NUM_TESTS = 2;
+	private static final List<Iota> defaultHex = List.of(OtherPatterns.REVEAL);
 	
 	@AfterBatch(batch = "wispBatch")
 	public static void afterWispTests (ServerLevel level) {
@@ -43,7 +41,7 @@ public class WispTests {
 		if (wisp == null)
 			return;
 		
-		fakePlayer.registerSendMessageListener((component, senderUUID) -> {
+		fakePlayer.registerSendMessageListener((component) -> {
 			HexalAPI.LOGGER.debug("received in WispTests.basicTickingWispTest: " + component.getString());
 			
 			// succeed as soon as the wisp sends successfully executes the "Reveal" pattern.
@@ -65,19 +63,18 @@ public class WispTests {
 		
 		HexalAPI.LOGGER.debug("running link wisps message test");
 		
-//		List<Iota> receivingHex = List.of(Patterns.RECITATION, Patterns.GEMINIS_DISINTEGRATION, Patterns.NULLARY, Patterns.EQUALITY, Patterns.INTRO,
-//															 Patterns.REVEAL, Patterns.DROP, Patterns.RETRO, Patterns.SWAP, Patterns.SELECTION_DISTILLATION, Patterns.HERMES);
-//		List<Iota> sendingHex = List.of(Patterns.POPULARITY, Patterns.ZERO, Patterns.INEQUALITY, Patterns.INTRO, Patterns.COMPASS,
-//														 Patterns.FOUR, Patterns.ZONE_DSTL_WISP, Patterns.FLOCKS_DISINTEGRATION, Patterns.LINK_ENTITY, Patterns.RETRO,
-//														 Patterns.INTRO, Patterns.ZERO, Patterns.FOUR, Patterns.SEND_IOTA, Patterns.RETRO, Patterns.AUGERS, Patterns.HERMES);
+		List<Iota> receivingHex = List.of(OtherPatterns.RECITATION, OtherPatterns.REVEAL, OtherPatterns.DROP, OtherPatterns.WISP_TRIGGER_COMM);
+		List<Iota> sendingHex = List.of(OtherPatterns.POPULARITY, OtherPatterns.ZERO, OtherPatterns.INEQUALITY, OtherPatterns.INTRO, OtherPatterns.COMPASS,
+		                                OtherPatterns.FOUR, OtherPatterns.ZONE_DSTL_WISP, OtherPatterns.FLOCKS_DISINTEGRATION, OtherPatterns.LINK_ENTITY, OtherPatterns.RETRO,
+		                                OtherPatterns.INTRO, OtherPatterns.ZERO, OtherPatterns.FOUR, OtherPatterns.SEND_IOTA, OtherPatterns.RETRO, OtherPatterns.AUGERS, OtherPatterns.HERMES);
 		
-//		TickingWisp receivingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(0.0, 2.0, 0.0), receivingHex);
-//		TickingWisp sendingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(2.0, 2.0, 2.0), sendingHex);
+		TickingWisp receivingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(0.0, 2.0, 0.0), receivingHex);
+		TickingWisp sendingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(2.0, 2.0, 2.0), sendingHex);
 		
-//		if (receivingWisp == null || sendingWisp == null)
-//			return;
+		if (receivingWisp == null || sendingWisp == null)
+			return;
 		
-		fakePlayer.registerSendMessageListener((component, senderUUID) -> {
+		fakePlayer.registerSendMessageListener((component) -> {
 			HexalAPI.LOGGER.debug("received in WispTests.linkWispsMessageTest: " + component.getString());
 			
 			// succeed as soon as the wisp sends successfully executes the "Reveal" pattern.
@@ -101,7 +98,7 @@ public class WispTests {
 		
 		HexalAPI.LOGGER.debug("testing farming wisp");
 		
-		List<Iota> farmingHex = List.of(Patterns.ZERO, Patterns.REVEAL, Patterns.DROP);
+		List<Iota> farmingHex = List.of(OtherPatterns.ZERO, OtherPatterns.REVEAL, OtherPatterns.DROP);
 		
 		//TODO: change offset to centre of template.
 		var wisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(0.0, 0.0, 0.0), farmingHex);

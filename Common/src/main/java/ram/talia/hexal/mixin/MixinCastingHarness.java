@@ -58,6 +58,7 @@ public abstract class MixinCastingHarness {
 		return sideEffects.add((OperatorSideEffect) o);
 	}
 
+	@SuppressWarnings("DefaultAnnotationParam")
 	@Redirect(method = "executeIotas",
 			at = @At(
 					value = "INVOKE",
@@ -158,7 +159,7 @@ public abstract class MixinCastingHarness {
 				
 				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
 				if (!harness.getEscapeNext() && iota.getType() == HexIotaTypes.PATTERN &&
-						((PatternIota) iota).getPattern().sigsEqual(Patterns.LINK_COMM_CLOSE_TRANSMIT.getFirst()))
+						Iota.tolerates(iota, Patterns.LINK_COMM_CLOSE_TRANSMIT))
 					break;
 				
 				iter.remove();

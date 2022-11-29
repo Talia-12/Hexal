@@ -179,6 +179,8 @@ private void createReleaseTag() {
     ("git push --tags").execute()
 }
 
+// this task requires a keys.properties file in the base directory containing my modrinth key, as well as changelog.md
+// containing the changelog; running it will probably break for you.
 task modrinth {
     dependsOn ":Fabric:modrinth"
     dependsOn ":Forge:modrinth"

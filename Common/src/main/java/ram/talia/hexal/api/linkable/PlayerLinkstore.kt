@@ -130,7 +130,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	override fun nextReceivedIota() = serReceivedIotas.pop(player.getLevel()) ?: NullIota()
 
-	override fun numRemainingIota() = linked.size
+	override fun numRemainingIota() = serReceivedIotas.size
 
 	override fun writeToNbt(): Tag = NbtUtils.createUUID(player.uuid)
 

@@ -4,6 +4,7 @@ package ram.talia.hexal.common.casting
 
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.DoubleIota
+import at.petrak.hexcasting.api.spell.iota.PatternIota
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.common.casting.operators.selectors.*
@@ -171,12 +172,12 @@ object Patterns {
 	@JvmField
 	val LINK_COMM_CLOSE_TRANSMIT = make(HexPattern.fromAngles("ewaqawe", HexDir.EAST), modLoc("link/comm/close_transmit"), OpCloseTransmit)
 
-	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): Triple<HexPattern, ResourceLocation, Action> {
+	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): PatternIota {
 		val triple = Triple(pattern, location, operator)
 		if (isPerWorld)
 			PER_WORLD_PATTERNS.add(triple)
 		else
 			PATTERNS.add(triple)
-		return triple
+		return PatternIota(pattern)
 	}
 }
