@@ -6,12 +6,10 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.Material
 import net.minecraft.world.level.material.MaterialColor
 import net.minecraft.world.level.material.PushReaction
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.blocks.BlockSlipway
 import java.util.function.BiConsumer
@@ -20,7 +18,7 @@ class HexalBlocks {
 
 	companion object {
 		@JvmStatic
-		public fun registerBlocks(r: BiConsumer<Block, ResourceLocation>) {
+		fun registerBlocks(r: BiConsumer<Block, ResourceLocation>) {
 			for ((key, value) in BLOCKS) {
 				r.accept(value, key)
 			}
@@ -39,7 +37,8 @@ class HexalBlocks {
 		@JvmField
 		val SLIPWAY = blockNoItem("slipway", BlockSlipway(
 			//Material.Builder.notSolidBlocking is for some unimaginable reason package-private, so we're doing this instead
-			BlockBehaviour.Properties.of(Material(MaterialColor.NONE, false, false, false, false, false, false, PushReaction.BLOCK))
+			// setting the slipway as blocksMotion even though it doesn't so that fluids can't replace it.
+			BlockBehaviour.Properties.of(Material(MaterialColor.NONE, false, false, true, false, false, false, PushReaction.BLOCK))
 				.noLootTable()
 				.strength(-1.0f, 3600000.0f)
 				.noCollission()

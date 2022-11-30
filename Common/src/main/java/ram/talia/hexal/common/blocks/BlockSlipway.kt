@@ -2,7 +2,6 @@ package ram.talia.hexal.common.blocks
 
 import at.petrak.hexcasting.xplat.IForgeLikeBlock
 import net.minecraft.core.BlockPos
-import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -27,7 +26,7 @@ class BlockSlipway(properties: Properties) : Block(properties), EntityBlock, IFo
 
 	@Deprecated("Deprecated in Java", ReplaceWith("RenderShape.ENTITYBLOCK_ANIMATED", "net.minecraft.world.level.block.RenderShape"))
 	override fun getRenderShape(state: BlockState): RenderShape {
-		return RenderShape.ENTITYBLOCK_ANIMATED
+		return RenderShape.INVISIBLE
 	}
 
 	@Deprecated("Deprecated in Java", ReplaceWith("Shapes.empty()", "net.minecraft.world.phys.shapes.Shapes"))
