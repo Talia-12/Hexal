@@ -16,9 +16,9 @@ object LinkableRegistry {
 	// TODO: Refactor to use Minecraft Registry class
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*, *>> = mutableMapOf()
 	private val castingContextExtractionQueue: PriorityQueue<LinkableType<*, *>>
-		= PriorityQueue { type0, type1 -> type0.castingContextPriority - type1.castingContextPriority }
+		= PriorityQueue { type0, type1 -> type1.castingContextPriority - type0.castingContextPriority }
 	private val iotaExtractionQueue: PriorityQueue<LinkableType<*, *>>
-			= PriorityQueue { type0, type1 -> type0.iotaPriority - type1.iotaPriority }
+			= PriorityQueue { type0, type1 -> type1.iotaPriority - type0.iotaPriority }
 
 	class RegisterLinkableTypeException(msg: String) : Exception(msg)
 	class InvalidLinkableTypeException(msg: String) : Exception(msg)
@@ -99,7 +99,7 @@ object LinkableRegistry {
 
 		/**
 		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
-		 * from a [CastingContext].
+		 * from a [CastingContext]. (Lower number means lower priority)
 		 */
 		abstract val castingContextPriority: Int
 
@@ -111,7 +111,7 @@ object LinkableRegistry {
 
 		/**
 		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
-		 * from an [Iota].
+		 * from an [Iota]. (Lower number means lower priority)
 		 */
 		abstract val iotaPriority: Int
 	}
