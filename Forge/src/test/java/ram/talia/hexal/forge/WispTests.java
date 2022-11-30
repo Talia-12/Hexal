@@ -64,7 +64,7 @@ public class WispTests {
 		HexalAPI.LOGGER.debug("running link wisps message test");
 		
 		List<Iota> receivingHex = List.of(OtherPatterns.RECITATION, OtherPatterns.REVEAL, OtherPatterns.DROP, OtherPatterns.WISP_TRIGGER_COMM);
-		List<Iota> sendingHex = List.of(OtherPatterns.POPULARITY, OtherPatterns.ZERO, OtherPatterns.INEQUALITY, OtherPatterns.INTRO, OtherPatterns.COMPASS,
+		List<Iota> sendingHex = List.of(OtherPatterns.POPULARITY, OtherPatterns.ZERO, OtherPatterns.EQUALITY, OtherPatterns.INTRO, OtherPatterns.COMPASS,
 		                                OtherPatterns.FOUR, OtherPatterns.ZONE_DSTL_WISP, OtherPatterns.FLOCKS_DISINTEGRATION, OtherPatterns.LINK_ENTITY, OtherPatterns.RETRO,
 		                                OtherPatterns.INTRO, OtherPatterns.ZERO, OtherPatterns.FOUR, OtherPatterns.SEND_IOTA, OtherPatterns.RETRO, OtherPatterns.AUGERS, OtherPatterns.HERMES);
 		
@@ -73,13 +73,13 @@ public class WispTests {
 		
 		if (receivingWisp == null || sendingWisp == null)
 			return;
-		
+
 		fakePlayer.registerSendMessageListener((component) -> {
 			HexalAPI.LOGGER.debug("received in WispTests.linkWispsMessageTest: " + component.getString());
 			
 			// succeed as soon as the wisp sends successfully executes the "Reveal" pattern.
 			
-			if (component.getString().equals("4.0000"))
+			if (component.getString().equals("4.00"))
 				helper.succeed();
 		});
 		
@@ -174,9 +174,5 @@ public class WispTests {
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private static void tickAllPlayers () {
-		fakePlayers.forEach(WispTests::tickPlayer);
 	}
 }

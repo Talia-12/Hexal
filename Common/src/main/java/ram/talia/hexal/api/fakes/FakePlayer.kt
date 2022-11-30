@@ -33,7 +33,7 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 	override fun displayClientMessage(chatComponent: Component, actionBar: Boolean) {}
 
 	override fun sendSystemMessage(component: Component, forceAcceptMessage: Boolean) {
-		HexalAPI.LOGGER.debug("player $uuid sent ${component.string} ")
+		HexalAPI.LOGGER.debug("player $uuid received ${component.string} ")
 		sendMessageListeners.forEach { it.accept(component) }
 	}
 	override fun awardStat(par1StatBase: Stat<*>, par2: Int) {}

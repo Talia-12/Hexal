@@ -4,12 +4,10 @@ import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.xplat.IXplatAbstractions
-import kotlin.math.max
 
 object OpSendIota : SpellAction {
 	private const val COST_SEND_IOTA = MediaConstants.DUST_UNIT / 100
@@ -24,7 +22,7 @@ object OpSendIota : SpellAction {
 			else -> wisp
 		}
 
-		val linkedIndex = args.getPositiveIntUnder(0, argc, linkThis.numLinked())
+		val linkedIndex = args.getPositiveIntUnder(0, linkThis.numLinked(), argc)
 		val iota = args[1]
 
 		val other = linkThis.getLinked(linkedIndex)

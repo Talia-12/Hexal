@@ -14,15 +14,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.client.renderer.entity.ItemRenderer
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.levelgen.SingleThreadedRandomSource
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.common.blocks.entity.BlockEntitySlipway
-import java.util.*
 
 class BlockEntitySlipwayRenderer(ctx: BlockEntityRendererProvider.Context) : BlockEntityRenderer<BlockEntitySlipway> {
 
-	private val random = RandomSource.create() // a bit cursed, not sure how I'm actually meant to do this
+	private val random = RandomSource.create()
 
 	private val bDispatcher: BlockRenderDispatcher
 	private val bEDispatcher: BlockEntityRenderDispatcher
