@@ -80,6 +80,7 @@
   "hexcasting.spell.hexal:link/comm/send": "Send Iota",
   "hexcasting.spell.hexal:link/comm/read": "Recitation Reflection",
   "hexcasting.spell.hexal:link/comm/num": "Postmaster's Reflection",
+  "hexcasting.spell.hexal:link/comm/clear": "Unclogging Gambit",
   "hexcasting.spell.hexal:link/comm/open_transmit": "Open Transmit",
   "hexcasting.spell.hexal:link/comm/close_transmit": "Close Transmit",
 
@@ -154,6 +155,7 @@
   "hexal.page.links.link/comm/send": "Removes an iota from the stack, then removes an index from the stack and sends the iota along the link at the given index.  This costs one hundredth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.links.link/comm/read": "When something receives an iota along a link it is added to a queue. This pattern adds the first iota in the queue to the stack, removing it from the queue.",
   "hexal.page.links.link/comm/num": "Adds to the stack the number of unread iota in the caster's received iota queue.",
+  "hexal.page.links.link/comm/clear": "Removes all unread iota from the caster's received iota queue.",
   "hexal.page.links.link/comm/open_transmit": "Similar to $(l:patterns/patterns_as_iotas#hexcasting:open_paren)$(action)Introspection/$, until drawing a $(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)Close Transmit/$ all patterns I draw are sent along the link whose index is at the top of the stack.",
   "hexal.page.links.link/comm/close_transmit": "When drawn after $(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)Open Transmit/$ I stop transmitting drawn patterns. If either $(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)Open Transmit/$ or $(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)Close Transmit/$ are executed by an intermediary caster such as a wisp, they will mishap.",
 

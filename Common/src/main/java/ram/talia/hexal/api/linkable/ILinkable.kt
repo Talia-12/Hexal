@@ -46,7 +46,7 @@ interface ILinkable<T : ILinkable<T>> {
 	/**
 	 * Initialise to [SerialisedIotaList] (null)
 	 */
-	val serReceivedIotas: SerialisedIotaList
+	val _serReceivedIotas: SerialisedIotaList
 
 	/**
 	 * Return the [ILinkable] as its type - E.g., an [ILinkable]<[ram.talia.hexal.common.entities.LinkableEntity]> would return LinkableEntity
@@ -169,17 +169,22 @@ interface ILinkable<T : ILinkable<T>> {
 		if (_level.isClientSide)
 			throw Exception("BaseWisp.receiveIota should only be called on server.") // TODO
 
-		serReceivedIotas.add(iota, _level as ServerLevel)
+		if (numRemainingIota() < MAX_RECEIVED_IOTAS)
+			_serReceivedIotas.add(iota, _level as ServerLevel)
 	}
 
 	fun nextReceivedIota(): Iota {
 		if (_level.isClientSide)
 			throw Exception("BaseWisp.receiveIota should only be called on server.") // TODO
 
-		return serReceivedIotas.pop(_level as ServerLevel) ?: NullIota()
+		return _serReceivedIotas.pop(_level as ServerLevel) ?: NullIota()
 	}
 
-	fun numRemainingIota() = serReceivedIotas.size
+	fun numRemainingIota() = _serReceivedIotas.size
+
+	fun clearReceivedIotas() {
+		_serReceivedIotas.tag = ListTag()
+	}
 
 	/**
 	 * Called when the player is transmitting to this [ILinkable], should return what should be displayed instead of the stack.
@@ -213,5 +218,9 @@ interface ILinkable<T : ILinkable<T>> {
 		override fun unload(loaded: MutableList<ILinkable<*>>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
 
 		override fun get(): MutableList<ILinkable<*>> = super.get()!!
+	}
+
+	companion object {
+		const val MAX_RECEIVED_IOTAS = 144
 	}
 }

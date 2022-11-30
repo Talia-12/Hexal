@@ -88,6 +88,14 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:link/comm/clear",
+      "anchor": "hexal:link/comm/clear",
+      "input": "",
+      "output": "",
+      "text": "hexal.page.links.link/comm/clear"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:link/comm/open_transmit",
       "anchor": "hexal:link/comm/open_transmit",
       "input": "number",

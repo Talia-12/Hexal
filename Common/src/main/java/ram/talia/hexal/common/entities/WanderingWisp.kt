@@ -20,7 +20,7 @@ import ram.talia.hexal.api.nextDouble
 import kotlin.math.abs
 
 class WanderingWisp	(entityType: EntityType<out WanderingWisp>, level: Level) : BaseWisp(entityType, level) {
-	override val serReceivedIotas = SerialisedIotaList(null)
+	override val _serReceivedIotas = SerialisedIotaList(null)
 	override var media: Int
 		get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
 		set(_) {}

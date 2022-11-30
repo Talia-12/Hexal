@@ -20,7 +20,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	override val asActionResult = listOf(EntityIota(player))
 	override val _level: ServerLevel = player.getLevel()
 
-	override val serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
+	override val _serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
 
 	override val _lazyLinked = ILinkable.LazyILinkableList(player.level as ServerLevel)
 
@@ -85,8 +85,8 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 			else -> _lazyRenderLinks.set(renderLinkedTag)
 		}
 		when (val receivedIotaTag = tag.get(TAG_RECEIVED_IOTAS) as? ListTag) {
-			null -> serReceivedIotas.set(mutableListOf())
-			else -> serReceivedIotas.tag = receivedIotaTag
+			null -> _serReceivedIotas.set(mutableListOf())
+			else -> _serReceivedIotas.tag = receivedIotaTag
 		}
 		when (val transmittingToTag = tag.get(TAG_TRANSMITTING_TO) as? CompoundTag) {
 			null -> lazyTransmittingTo.set(null)
@@ -97,7 +97,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	fun saveAdditionalData(tag: CompoundTag) {
 		tag.put(TAG_LINKS, _lazyLinked.getUnloaded())
 		tag.put(TAG_RENDER_LINKS, _lazyRenderLinks.getUnloaded())
-		serReceivedIotas.tag?.let { tag.put(TAG_RECEIVED_IOTAS, it) }
+		_serReceivedIotas.tag?.let { tag.put(TAG_RECEIVED_IOTAS, it) }
 		tag.put(TAG_TRANSMITTING_TO, lazyTransmittingTo.getUnloaded())
 	}
 

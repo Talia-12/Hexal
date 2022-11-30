@@ -168,6 +168,8 @@ object Patterns {
 	@JvmField
 	val LINK_COMM_NUM = make(HexPattern.fromAngles("aweeeeewaa", HexDir.SOUTH_EAST), modLoc("link/comm/num"), OpNumReceivedIota)
 	@JvmField
+	val LINK_COMM_CLEAR = make(HexPattern.fromAngles("aweeeeewa", HexDir.SOUTH_EAST), modLoc("link/comm/clear"), OpClearReceivedIotas)
+	@JvmField
 	val LINK_COMM_OPEN_TRANSMIT = make(HexPattern.fromAngles("qwdedwq", HexDir.WEST), modLoc("link/comm/open_transmit"), OpOpenTransmit)
 	@JvmField
 	val LINK_COMM_CLOSE_TRANSMIT = make(HexPattern.fromAngles("ewaqawe", HexDir.EAST), modLoc("link/comm/close_transmit"), OpCloseTransmit)

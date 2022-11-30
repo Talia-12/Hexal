@@ -72,7 +72,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	val serHex: SerialisedIotaList = SerialisedIotaList(null)
 
-	override val serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
+	override val _serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -244,8 +244,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 //		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
 
 		when (val receivedIotasTag = compound.get(TAG_RECEIVED_IOTAS)) {
-			null -> serReceivedIotas.set(mutableListOf())
-			else -> serReceivedIotas.tag = receivedIotasTag as? ListTag
+			null -> _serReceivedIotas.set(mutableListOf())
+			else -> _serReceivedIotas.tag = receivedIotasTag as? ListTag
 		}
 
 		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
@@ -266,7 +266,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
 		serHex.tag?.let { compound.put(TAG_HEX, it) }
-		serReceivedIotas.tag?.let { compound.put(TAG_RECEIVED_IOTAS, it) }
+		_serReceivedIotas.tag?.let { compound.put(TAG_RECEIVED_IOTAS, it) }
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 		compound.putBoolean(TAG_SEON, seon)
