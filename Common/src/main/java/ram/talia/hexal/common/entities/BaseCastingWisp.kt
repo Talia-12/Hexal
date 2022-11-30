@@ -2,8 +2,6 @@ package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
@@ -74,7 +72,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	val serHex: SerialisedIotaList = SerialisedIotaList(null)
 
-	val serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
+	override val serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -190,24 +188,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		scheduledCast = true
 
 		return scheduledCast
-	}
-
-	override fun receiveIota(iota: Iota) {
-		if (level.isClientSide)
-			throw Exception("BaseWisp.receiveIota should only be called on server.") // TODO
-
-		serReceivedIotas.add(iota, level as ServerLevel)
-	}
-
-	override fun nextReceivedIota(): Iota {
-		if (level.isClientSide)
-			throw Exception("BaseWisp.receiveIota should only be called on server.") // TODO
-
-		return serReceivedIotas.pop(level as ServerLevel) ?: NullIota()
-	}
-
-	override fun numRemainingIota(): Int {
-		return serReceivedIotas.size
 	}
 
 	fun scheduleCastSound() {

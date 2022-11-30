@@ -1,6 +1,5 @@
 package ram.talia.hexal.forge.eventhandlers;
 
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -123,7 +122,7 @@ public class PlayerLinkstoreEventHandler {
 	}
 	
 	private static void serverTick(ServerPlayer player) {
-		linkstores.get(player.getUUID()).pruneLinks();
+		linkstores.get(player.getUUID()).checkLinks();
 	}
 	
 	@OnlyIn(Dist.CLIENT)

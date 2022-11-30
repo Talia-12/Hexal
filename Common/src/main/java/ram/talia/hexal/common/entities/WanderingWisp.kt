@@ -13,13 +13,14 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalEntities
 import ram.talia.hexal.api.nextDouble
 import kotlin.math.abs
 
-class WanderingWisp	(entityType: EntityType<out WanderingWisp>, world: Level) : BaseWisp(entityType, world) {
-
+class WanderingWisp	(entityType: EntityType<out WanderingWisp>, level: Level) : BaseWisp(entityType, level) {
+	override val serReceivedIotas = SerialisedIotaList(null)
 	override var media: Int
 		get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
 		set(_) {}
