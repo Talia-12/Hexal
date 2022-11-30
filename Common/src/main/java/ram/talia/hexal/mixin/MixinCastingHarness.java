@@ -13,9 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
@@ -27,6 +25,8 @@ import ram.talia.hexal.xplat.IXplatAbstractions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static java.lang.Math.max;
 
 @SuppressWarnings("ConstantConditions")
 @Mixin(CastingHarness.class)
@@ -78,6 +78,32 @@ public abstract class MixinCastingHarness {
 			level.playSound(player, x, y, z, soundEvent, soundSource, v, p);
 		}
 	}
+
+	/**
+	 * Makes it so that a player/circle/whatever casting consume wisp grants that cast access to all the media from the
+	 * consumed wisp that another wisp consuming it would get, to use in the next parts of the cast.
+	 */
+	@ModifyVariable(
+			method = "withdrawMedia",
+			at = @At("STORE"),
+			ordinal = 0,
+			remap = false,
+			argsOnly = true
+	)
+	private int removeConsumedFromCost(int value) {
+		CastingContext ctx = harness.getCtx();
+		IMixinCastingContext iCtx = (IMixinCastingContext) (Object) ctx;
+
+		var consumedMedia = iCtx.getConsumedMedia();
+		if (consumedMedia == 0)
+			return value;
+
+		var newValue = max(value - consumedMedia, 0);
+		consumedMedia -= (value - newValue);
+		iCtx.setConsumedMedia(consumedMedia);
+
+		return newValue;
+	}
 	
 	/**
 	 * Makes it so that the wisp casting draws its mana from the wisp rather than the player's inventory.
@@ -87,7 +113,7 @@ public abstract class MixinCastingHarness {
 			cancellable = true,
 			locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 			remap = false)
-	private void withdrawManaWisp (int manaCost, boolean allowOvercast, CallbackInfoReturnable<Integer> cir) {
+	private void withdrawMediaWisp(int manaCost, boolean allowOvercast, CallbackInfoReturnable<Integer> cir) {
 		if (manaCost <= 0) {
 			cir.setReturnValue(0);
 			return;

@@ -56,6 +56,8 @@ object OpConsumeWisp : SpellAction {
 
 			if (mCast != null && mCast.wisp != null)
 				mCast.wisp!!.addMedia(19 * consumed.media / 20) // using addMedia to prevent overflow.
+			else if (mCast != null)
+				mCast.consumedMedia += 19 * consumed.media / 20
 
 			HexalAPI.LOGGER.info("discarding $consumed")
 			consumed.get().discard()

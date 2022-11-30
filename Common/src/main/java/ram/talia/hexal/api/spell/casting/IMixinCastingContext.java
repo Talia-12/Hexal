@@ -10,4 +10,8 @@ public interface IMixinCastingContext {
 	boolean hasWisp();
 	
 	int remainingDepth();
+
+	int getConsumedMedia();
+
+	void setConsumedMedia(int media);
 }

@@ -13,12 +13,26 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
+import static java.lang.Math.max;
+
 /**
  * Modifies {@link at.petrak.hexcasting.api.spell.casting.CastingContext} to make it properly allow wisps to affect things within their range.
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements IMixinCastingContext {
 	private BaseCastingWisp wisp;
+
+	private int consumedMedia;
+
+	@Override
+	public int getConsumedMedia() {
+		return consumedMedia;
+	}
+
+	@Override
+	public void setConsumedMedia(int media) {
+		consumedMedia = max(media, 0);
+	}
 	
 	@Shadow(remap = false) private int depth;
 	
