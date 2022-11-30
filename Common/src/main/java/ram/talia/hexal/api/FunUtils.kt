@@ -16,3 +16,5 @@ fun FrozenColorizer.nextColour(random: RandomSource): Int {
 }
 
 fun RandomSource.nextDouble(lower: Double, upper: Double) = lower + (upper - lower) * this.nextDouble()
+
+fun RandomSource.nextGaussian(mean: Double, stdev: Double) = mean + stdev * this.nextGaussian()
