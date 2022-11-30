@@ -41,7 +41,7 @@ class CCPlayerLinkstore(private val player: Player) : ServerTickingComponent, Cl
 
 	fun resetTransmittingTo() = linkstore!!.resetTransmittingTo()
 
-	override fun serverTick() = linkstore!!.pruneLinks()
+	override fun serverTick() = linkstore!!.checkLinks()
 
 	override fun clientTick() {
 		val iter = renderLinks.iterator()
