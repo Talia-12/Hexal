@@ -16,6 +16,6 @@ object OpWispSelf : ConstMediaAction {
         if (mCast == null || !mCast.hasWisp())
             throw MishapNoWisp()
 
-        return mCast.wisp.asActionResult
+        return mCast.wisp!!.asActionResult
     }
 }

@@ -24,7 +24,7 @@ class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerT
 
 		HexalAPI.LOGGER.debug("Setting ${mCast.wisp} trigger to $triggerType")
 
-		mCast.wisp.setTrigger(triggerType.makeFromArgs(mCast.wisp, args, ctx))
+		mCast.wisp!!.setTrigger(triggerType.makeFromArgs(mCast.wisp!!, args, ctx))
 
 		return listOf()
 	}

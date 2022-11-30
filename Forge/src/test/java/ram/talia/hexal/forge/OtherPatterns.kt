@@ -72,7 +72,7 @@ object OtherPatterns {
 	val WISP_TRIGGER_COMM = Patterns.WISP_TRIGGER_COMM
 
 	@JvmField
-	val LINK_ENTITY = Patterns.LINK_ENTITY
+	val LINK = Patterns.LINK
 	@JvmField
 	val POPULARITY = Patterns.LINK_NUM
 

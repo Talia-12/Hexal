@@ -65,7 +65,7 @@ public class WispTests {
 		
 		List<Iota> receivingHex = List.of(OtherPatterns.RECITATION, OtherPatterns.REVEAL, OtherPatterns.DROP, OtherPatterns.WISP_TRIGGER_COMM);
 		List<Iota> sendingHex = List.of(OtherPatterns.POPULARITY, OtherPatterns.ZERO, OtherPatterns.EQUALITY, OtherPatterns.INTRO, OtherPatterns.COMPASS,
-		                                OtherPatterns.FOUR, OtherPatterns.ZONE_DSTL_WISP, OtherPatterns.FLOCKS_DISINTEGRATION, OtherPatterns.LINK_ENTITY, OtherPatterns.RETRO,
+		                                OtherPatterns.FOUR, OtherPatterns.ZONE_DSTL_WISP, OtherPatterns.FLOCKS_DISINTEGRATION, OtherPatterns.LINK, OtherPatterns.RETRO,
 		                                OtherPatterns.INTRO, OtherPatterns.ZERO, OtherPatterns.FOUR, OtherPatterns.SEND_IOTA, OtherPatterns.RETRO, OtherPatterns.AUGERS, OtherPatterns.HERMES);
 		
 		TickingWisp receivingWisp = makeTickingWispAtRelativePos(helper, fakePlayer, new Vec3(0.0, 2.0, 0.0), receivingHex);

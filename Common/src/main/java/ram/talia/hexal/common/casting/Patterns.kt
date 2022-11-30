@@ -150,9 +150,9 @@ object Patterns {
 
 	// =============================== Link Stuff =====================================
 	@JvmField
-	val LINK_ENTITY = make(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST), modLoc("link/link_entity"), OpLink)
+	val LINK = make(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST), modLoc("link"), OpLink)
 	@JvmField
-	val LINK_ENTITIES = make(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST), modLoc("link/link_two_entities"), OpLinkOthers)
+	val LINK_OTHERS = make(HexPattern.fromAngles("eqqqqqawqeeeeedww", HexDir.EAST), modLoc("link/others"), OpLinkOthers)
 	@JvmField
 	val UNLINK = make(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST), modLoc("link/unlink"), OpUnlink)
 	@JvmField

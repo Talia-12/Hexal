@@ -39,7 +39,7 @@ object OpMoveSpeedSet : SpellAction {
         return Triple(
                 Spell(tWisp, newMult),
                 cost,
-                listOf(ParticleSpray.burst(mCast.wisp.position(), min(1.0, ln(newMult))))
+                listOf(ParticleSpray.burst(mCast.wisp!!.position(), min(1.0, ln(newMult))))
         )
     }
 

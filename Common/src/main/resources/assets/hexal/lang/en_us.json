@@ -12,6 +12,7 @@
   "hexcasting.mishap.no_links": "%s has no links.",
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
 
+  "hexcasting.mishap.invalid_value.class.linkable": "a linkable",
   "hexcasting.mishap.invalid_value.class.wisp": "a wisp",
   "hexcasting.mishap.invalid_value.class.consumable_entity": "a consumable entity",
   "hexcasting.mishap.invalid_value.class.wisp.casting": "a casting wisp",
@@ -70,8 +71,8 @@
   "hexcasting.spell.hexal:zone_entity/wisp": "Zone Distillation: Wisp",
   "hexcasting.spell.hexal:zone_entity/not_wisp": "Zone Distillation: Non-Wisp",
 
-  "hexcasting.spell.hexal:link/link_entity": "Link Entity",
-  "hexcasting.spell.hexal:link/link_two_entities": "Link Entities",
+  "hexcasting.spell.hexal:link": "Link",
+  "hexcasting.spell.hexal:link/others": "Link Others",
   "hexcasting.spell.hexal:link/unlink": "Unlink",
   "hexcasting.spell.hexal:link/get": "Phonebook Purification",
   "hexcasting.spell.hexal:link/get_index": "Recognition Purification",
@@ -145,9 +146,9 @@
 
   "hexal.entry.links": "Links",
   "hexal.page.links.0": "These patterns outline a system that I have found for communicating information from one $(l:hexal:patterns/spells/wisps)$(thing)wisp/$ to another, among other things. There are a number of patterns related to creating these links that are able to transmit information, and a number of patterns related to sending and receiving iotas over a link once it is created. A wisp can have any number of links active, with each costing a negligible amount of media to maintain each twentieth of a second.",
-  "hexal.page.links.1": "As links are created connected to a wisp that wisp will assign an order to them, based on the order which they were created, which is used to reference the links in a number of patterns. Unless otherwise stated, these patterns must be evaluated by a wisp, with unpleasant consequences if I try to evaluate them myself.",
-  "hexal.page.links.link/link_entity": "Links the casting wisp to the entity removed from the stack, which must be linkable. This costs one $(l:items/amethyst)$(item)Amethyst Shard/$.",
-  "hexal.page.links.link/link_two_entities": "May be evaluated by any casting instrument. Links two entities, which must be linkable. This costs one $(l:items/amethyst)$(item)Amethyst Shard/$.",
+  "hexal.page.links.1": "When a link is created both ends will assign a number to it, equal to the previous number of links that end had, which is used to reference the links in a number of patterns. The linkable type present in a number of the following signatures is not its own type, but a shorthand for any type that can be coerced into a linkable (e.g. Entity -> Linkable entities, Vec -> Linkable blocks, ...).",
+  "hexal.page.links.link": "Links the casting wisp to the entity removed from the stack, which must be linkable. This costs one $(l:items/amethyst)$(item)Amethyst Shard/$.",
+  "hexal.page.links.link/others": "May be evaluated by any casting instrument. Links two entities, which must be linkable. This costs one $(l:items/amethyst)$(item)Amethyst Shard/$.",
   "hexal.page.links.link/unlink": "Removes the link at the given index from the casting wisp's links. This costs two $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.links.link/get": "Removes an index from the stack, and adds the entity connected to the link at that index to the stack.",
   "hexal.page.links.link/get_index": "Removes an entity from the stack, and adds the index to the link to that entity to the stack (or -1 if the caster isn't linked to that entity).",

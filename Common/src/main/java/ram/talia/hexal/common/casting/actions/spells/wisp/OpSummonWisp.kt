@@ -24,8 +24,8 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
         val cost: Int
 
         val mCast = ctx as? IMixinCastingContext
-        if (mCast != null && mCast.hasWisp() && mCast.wisp.summonedChildThisCast) // wisps can only summon one child per cast.
-            throw MishapEvalTooDeep()
+        if (mCast != null && mCast.hasWisp() && mCast.wisp!!.summonedChildThisCast)
+            throw MishapEvalTooDeep() // wisps can only summon one child per cast.
 
         val spell = when (ticking) {
             true -> {
@@ -56,7 +56,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
             // wisps can only summon one child per cast
             val mCast = ctx as? IMixinCastingContext
             if (mCast != null && mCast.hasWisp())
-                mCast.wisp.summonedChildThisCast = true
+                mCast.wisp!!.summonedChildThisCast = true
 
             val colouriser = IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
             val wisp = when (ticking) {

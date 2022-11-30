@@ -18,6 +18,6 @@ object OpWispMedia : ConstMediaAction {
 		if (mCast == null || !mCast.hasWisp())
 			throw MishapNoWisp()
 
-		return (mCast.wisp.media.toFloat() / MediaConstants.DUST_UNIT).asActionResult
+		return (mCast.wisp!!.media.toFloat() / MediaConstants.DUST_UNIT).asActionResult
 	}
 }
