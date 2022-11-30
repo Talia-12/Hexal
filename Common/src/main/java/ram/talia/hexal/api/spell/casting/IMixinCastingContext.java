@@ -1,11 +1,11 @@
 package ram.talia.hexal.api.spell.casting;
 
-import ram.talia.hexal.api.linkable.ILinkable;
+import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 public interface IMixinCastingContext {
-	BaseCastingWisp getWisp();
-	BaseCastingWisp setWisp(BaseCastingWisp wisp);
+	@Nullable BaseCastingWisp getWisp();
+	@Nullable BaseCastingWisp setWisp(@Nullable BaseCastingWisp wisp);
 	
 	boolean hasWisp();
 	

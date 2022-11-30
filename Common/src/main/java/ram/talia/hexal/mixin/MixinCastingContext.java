@@ -3,6 +3,7 @@ package ram.talia.hexal.mixin;
 import at.petrak.hexcasting.api.mod.HexConfig;
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,11 +22,11 @@ public abstract class MixinCastingContext implements IMixinCastingContext {
 	
 	@Shadow(remap = false) private int depth;
 	
-	public BaseCastingWisp getWisp () {
+	public @Nullable BaseCastingWisp getWisp () {
 		return wisp;
 	}
 	
-	public BaseCastingWisp setWisp (BaseCastingWisp wisp) {
+	public @Nullable BaseCastingWisp setWisp (@Nullable BaseCastingWisp wisp) {
 		this.wisp = wisp;
 		return this.wisp;
 	}

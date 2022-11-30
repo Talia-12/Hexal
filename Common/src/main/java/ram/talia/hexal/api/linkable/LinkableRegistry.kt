@@ -1,10 +1,13 @@
 package ram.talia.hexal.api.linkable
 
+import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.spell.iota.Iota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
+import java.util.*
 
 object LinkableRegistry {
 	const val TAG_TYPE = "type"
@@ -12,6 +15,10 @@ object LinkableRegistry {
 
 	// TODO: Refactor to use Minecraft Registry class
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*, *>> = mutableMapOf()
+	private val castingContextExtractionQueue: PriorityQueue<LinkableType<*, *>>
+		= PriorityQueue { type0, type1 -> type0.castingContextPriority - type1.castingContextPriority }
+	private val iotaExtractionQueue: PriorityQueue<LinkableType<*, *>>
+			= PriorityQueue { type0, type1 -> type0.iotaPriority - type1.iotaPriority }
 
 	class RegisterLinkableTypeException(msg: String) : Exception(msg)
 	class InvalidLinkableTypeException(msg: String) : Exception(msg)
@@ -26,13 +33,18 @@ object LinkableRegistry {
 		if (linkableTypes.containsKey(type.id))
 			throw RegisterLinkableTypeException("LinkableRegistry already contains resource id ${type.id}")
 
+		if (type.canCast)
+			castingContextExtractionQueue.add(type)
+		iotaExtractionQueue.add(type)
+
 		linkableTypes[type.id] = type
 	}
 
 	abstract class LinkableType<T : ILinkable<T>, U : ILinkable.IRenderCentre>(val id: ResourceLocation) {
 		/**
-		 * Takes a tag representing a reference to the [ILinkable] and wraps it inside a [CompoundTag] that also stores a reference to the [LinkableType] of the [ILinkable],
-		 * meaning that the loader will know which [LinkableType] to use to restore the reference. This wrap is used to save a reference on saving/loading the world.
+		 * Takes a tag representing a reference to the [ILinkable] and wraps it inside a [CompoundTag] that also stores
+		 * a reference to the [LinkableType] of the [ILinkable], meaning that the loader will know which [LinkableType]
+		 * to use to restore the reference. This wrap is used to save a reference on saving/loading the world.
 		 */
 		fun wrapNbt(itTag: Tag): CompoundTag {
 			val tag = CompoundTag()
@@ -42,16 +54,16 @@ object LinkableRegistry {
 		}
 
 		/**
-		 * Takes a tag containing a saved reference to a [ILinkable] of the type specified by this [LinkableType] and restores the reference. This is used to restore a
-		 * reference on the server.
+		 * Takes a tag containing a saved reference to a [ILinkable] of the type specified by this [LinkableType] and
+		 * restores the reference. This is used to restore a reference on the server.
 		 */
 		abstract fun fromNbt(tag: Tag, level: ServerLevel): T?
 
 		/**
-		 * Takes a tag representing a reference to the [ILinkable.IRenderCentre] and wraps it inside a [CompoundTag] that also stores a
-		 * reference to the [LinkableType] of the [ILinkable], meaning that the loader will know which [LinkableType] to use to restore the
-		 * reference. This wrap is used to save a reference to be synced to the client for rendering the line to the centre of that
-		 * [ILinkable].
+		 * Takes a tag representing a reference to the [ILinkable.IRenderCentre] and wraps it inside a [CompoundTag]
+		 * that also stores a reference to the [LinkableType] of the [ILinkable], meaning that the loader will know
+		 * which [LinkableType] to use to restore the reference. This wrap is used to save a reference to be synced to
+		 * the client for rendering the line to the centre of that [ILinkable].
 		 */
 		fun wrapSync(itTag: Tag): CompoundTag {
 			val tag = CompoundTag()
@@ -61,16 +73,47 @@ object LinkableRegistry {
 		}
 
 		/**
-		 * Takes a tag containing a saved reference to the [ILinkable.IRenderCentre] of the type specified by this [LinkableType] and
-		 * restores the reference. This is used to render to the centre of an [ILinkable] on the client.
+		 * Takes a tag containing a saved reference to the [ILinkable.IRenderCentre] of the type specified by this
+		 * [LinkableType] and restores the reference. This is used to render to the centre of an [ILinkable] on the
+		 * client.
 		 */
 		abstract fun fromSync(tag: Tag, level: Level): U?
 
 		/**
-		 * Takes in an [ILinkable.IRenderCentre] and a [Tag] and returns whether that [Tag] is a reference to that [ILinkable.IRenderCentre]. Used to determine which
-		 * [ILinkable.IRenderCentre]s to remove on the client, since e.g. getEntity won't work if the entity's been removed.
+		 * Takes in an [ILinkable.IRenderCentre] and a [Tag] and returns whether that [Tag] is a reference to that
+		 * [ILinkable.IRenderCentre]. Used to determine which [ILinkable.IRenderCentre]s to remove on the client, since
+		 * e.g. getEntity won't work if the entity's been removed.
 		 */
 		abstract fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag): Boolean
+
+		/**
+		 * Set to true if this ILinkable can cast hexes, and false otherwise.
+		 */
+		abstract val canCast: Boolean
+
+		/**
+		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is connected to the
+		 * [CastingContext], and null otherwise.
+		 */
+		abstract fun linkableFromCastingContext(ctx: CastingContext): T?
+
+		/**
+		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
+		 * from a [CastingContext].
+		 */
+		abstract val castingContextPriority: Int
+
+		/**
+		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is referenced by that
+		 * iota, and null otherwise.
+		 */
+		abstract fun linkableFromIota(iota: Iota): T?
+
+		/**
+		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
+		 * from an [Iota].
+		 */
+		abstract val iotaPriority: Int
 	}
 
 	/**
@@ -120,5 +163,17 @@ object LinkableRegistry {
 		val type = linkableTypes[ResourceLocation(typeId)] ?: throw InvalidLinkableTypeException("no LinkableType registered for $typeId")
 
 		return type == centre.getLinkableType() && type.matchSync(centre, tag.get(TAG_LINKABLE)!!)
+	}
+
+	@JvmStatic
+	fun linkableFromCastingContext(ctx: CastingContext): ILinkable<*> {
+		castingContextExtractionQueue.forEach { type -> type.linkableFromCastingContext(ctx)?.let { return it } }
+		throw Exception("At least one type should have accepted the ctx and returned itself (namely the player type).")
+	}
+
+	@JvmStatic
+	fun linkableFromIota(iota: Iota): ILinkable<*>? {
+		iotaExtractionQueue.forEach { type -> type.linkableFromIota(iota)?.let { return it } }
+		return null
 	}
 }

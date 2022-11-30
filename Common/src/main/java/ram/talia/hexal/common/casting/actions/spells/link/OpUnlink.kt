@@ -5,22 +5,15 @@ import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.linkable.ILinkable
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.xplat.IXplatAbstractions
+import ram.talia.hexal.api.linkable.LinkableRegistry
 
 object OpUnlink : SpellAction {
 	const val UNLINK_COST = 2 * MediaConstants.DUST_UNIT
 
 	override val argc = 1
 
-	@Suppress("CAST_NEVER_SUCCEEDS")
 	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-		val mCast = ctx as? IMixinCastingContext
-
-		val linkThis: ILinkable<*> = when (val wisp = mCast?.wisp) {
-			null -> IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
-			else -> wisp
-		}
+		val linkThis = LinkableRegistry.linkableFromCastingContext(ctx)
 
 		val otherIndex = args.getPositiveIntUnder(0, OpSendIota.argc, linkThis.numLinked())
 		val other = linkThis.getLinked(otherIndex)
