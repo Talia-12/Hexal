@@ -18,6 +18,6 @@ object OpGetLinked : ConstMediaAction {
 
 		val other = linkThis.getLinked(linkedIndex)
 
-		return if (ctx.isVecInRange(other.getPos())) other.asActionResult else null.asActionResult
+		return if (ctx.isVecInRange(other.getPosition())) other.asActionResult else null.asActionResult
 	}
 }

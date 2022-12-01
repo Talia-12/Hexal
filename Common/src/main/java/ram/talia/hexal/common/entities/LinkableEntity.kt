@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
+import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.LinkableTypes
@@ -54,7 +55,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<LinkableEntity, *> = LinkableTypes.LINKABLE_ENTITY_TYPE
 
-	override fun getPos() = position()
+	override fun getPosition(): Vec3 = position()
 
 	override fun shouldRemove() = isRemoved && removalReason?.shouldDestroy() == true
 

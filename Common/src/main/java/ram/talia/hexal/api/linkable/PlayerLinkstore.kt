@@ -61,7 +61,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<PlayerLinkstore, *> = LinkableTypes.PLAYER_LINKSTORE_TYPE
 
-	override fun getPos() = player.position()
+	override fun getPosition(): Vec3 = player.position()
 
 	override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 

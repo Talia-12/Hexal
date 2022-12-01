@@ -21,7 +21,7 @@ object OpUnlink : SpellAction {
 		return Triple(
 			Spell(linkThis, other),
 			UNLINK_COST,
-			listOf(ParticleSpray.burst(other.getPos(), 1.5))
+			listOf(ParticleSpray.burst(other.getPosition(), 1.5))
 		)
 	}
 

@@ -21,16 +21,16 @@ object OpLinkOthers : SpellAction {
 		if (linkThis == linkOther)
 			throw MishapLinkToSelf(linkThis)
 
-		ctx.assertVecInRange(linkThis.getPos())
-		ctx.assertVecInRange(linkOther.getPos())
+		ctx.assertVecInRange(linkThis.getPosition())
+		ctx.assertVecInRange(linkOther.getPosition())
 
 		if (!linkThis.isInRange(linkOther))
-			throw MishapLocationTooFarAway(linkOther.getPos())
+			throw MishapLocationTooFarAway(linkOther.getPosition())
 
 		return Triple(
 			Spell(linkThis, linkOther),
 			OpLink.LINK_COST,
-			listOf(ParticleSpray.burst(linkThis.getPos(), 1.5), ParticleSpray.burst(linkOther.getPos(), 1.5))
+			listOf(ParticleSpray.burst(linkThis.getPosition(), 1.5), ParticleSpray.burst(linkOther.getPosition(), 1.5))
 		)
 	}
 

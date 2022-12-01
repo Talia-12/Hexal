@@ -58,11 +58,11 @@ interface ILinkable<T : ILinkable<T>> {
 	 */
 	fun getLinkableType(): LinkableRegistry.LinkableType<T, *>
 
-	fun getPos(): Vec3
+	fun getPosition(): Vec3
 
 	fun maxSqrLinkRange(): Double
 
-	fun isInRange(other: ILinkable<*>) = (this.getPos() - other.getPos()).lengthSqr() <= max(this.maxSqrLinkRange(), other.maxSqrLinkRange())
+	fun isInRange(other: ILinkable<*>) = (this.getPosition() - other.getPosition()).lengthSqr() <= max(this.maxSqrLinkRange(), other.maxSqrLinkRange())
 
 	/**
 	 * Set to true if the link should be removed, e.g. the [ILinkable] has been discarded.

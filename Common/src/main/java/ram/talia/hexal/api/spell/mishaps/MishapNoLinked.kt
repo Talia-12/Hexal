@@ -17,7 +17,7 @@ class MishapNoLinked(val linkable: ILinkable<*>) : Mishap() {
             error("no_links", linkable.toString())
 
     override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
-        val pos = linkable.getPos()
+        val pos = linkable.getPosition()
         ctx.world.explode(null, pos.x, pos.y, pos.z, 0.25f, Explosion.BlockInteraction.NONE)
     }
 }
