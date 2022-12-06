@@ -29,10 +29,16 @@ object FabricPacketHandler {
 	 * For registering packets that are server -> client (called on the client)
 	 */
 	fun initClientBound() {
-		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler((MsgSetEverbookAck)::deserialise, (MsgSetEverbookAck)::handle));
-		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler((MsgRemoveEverbookAck)::deserialise, (MsgRemoveEverbookAck)::handle));
-		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler((MsgToggleMacroAck)::deserialise, (MsgToggleMacroAck)::handle));
-		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler((MsgWispCastSoundAck)::deserialise, (MsgWispCastSoundAck)::handle));
+		// Everbook
+		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler((MsgSetEverbookAck)::deserialise, (MsgSetEverbookAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler((MsgRemoveEverbookAck)::deserialise, (MsgRemoveEverbookAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler((MsgToggleMacroAck)::deserialise, (MsgToggleMacroAck)::handle))
+		// Cast Sound
+		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler((MsgWispCastSoundAck)::deserialise, (MsgWispCastSoundAck)::handle))
+		// Render links
+		ClientPlayNetworking.registerGlobalReceiver(MsgAddRenderLinkAck.ID, makeClientBoundHandler((MsgAddRenderLinkAck)::deserialise, (MsgAddRenderLinkAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveRenderLinkAck.ID, makeClientBoundHandler((MsgRemoveRenderLinkAck)::deserialise, (MsgRemoveRenderLinkAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgSetRenderLinksAck.ID, makeClientBoundHandler((MsgSetRenderLinksAck)::deserialise, (MsgSetRenderLinksAck)::handle))
 	}
 
 	private fun <T> makeServerBoundHandler(decoder: Function<FriendlyByteBuf, T>, handle: TriConsumer<T, MinecraftServer, ServerPlayer>):

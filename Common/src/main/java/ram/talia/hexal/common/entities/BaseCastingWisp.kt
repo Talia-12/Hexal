@@ -109,7 +109,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 			playWispParticles(colouriser)
 			playTrailParticles(colouriser)
-			playAllLinkParticles()
+			clientLinkableHolder!!.renderLinks()
 		}
 	}
 

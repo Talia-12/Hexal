@@ -12,8 +12,6 @@ import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.nbt.toIRenderCentreList
 
 class MsgSetRenderLinksAck(val sourceLinkTag: CompoundTag, val sinksTag: ListTag) : IMessage {
-    val ID: ResourceLocation = HexalAPI.modLoc("rslinks")
-
     override fun getFabricId() = ID
 
     override fun serialize(buf: FriendlyByteBuf) {
@@ -24,6 +22,9 @@ class MsgSetRenderLinksAck(val sourceLinkTag: CompoundTag, val sinksTag: ListTag
     }
 
     companion object {
+        @JvmField
+        val ID: ResourceLocation = HexalAPI.modLoc("rslinks")
+
         const val TAG_SOURCE_LINK = "source"
         const val TAG_SINKS = "sinks"
 

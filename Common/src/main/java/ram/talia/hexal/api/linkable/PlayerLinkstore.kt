@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
 
-class PlayerLinkstore(val player: ServerPlayer) : AbstractLinkable() {
+class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	override val asActionResult = listOf(EntityIota(player))
 	override val linkableHolder: ServerLinkableHolder = ServerLinkableHolder(this, player.getLevel())
 

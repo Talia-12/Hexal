@@ -34,29 +34,28 @@ public class ForgePacketHandler {
 		
 		// Client -> server
 		NETWORK.registerMessage(messageIdx++, MsgSendEverbookSyn.class, MsgSendEverbookSyn::serialize,
-														MsgSendEverbookSyn::deserialise, makeServerBoundHandler(MsgSendEverbookSyn::handle));
+				MsgSendEverbookSyn::deserialise, makeServerBoundHandler(MsgSendEverbookSyn::handle));
 		
 		// Server -> client
-		//general
+		//everbook
 		NETWORK.registerMessage(messageIdx++, MsgSetEverbookAck.class, MsgSetEverbookAck::serialize,
-														MsgSetEverbookAck::deserialise, makeClientBoundHandler(MsgSetEverbookAck::handle));
+				MsgSetEverbookAck::deserialise, makeClientBoundHandler(MsgSetEverbookAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgRemoveEverbookAck.class, MsgRemoveEverbookAck::serialize,
-														MsgRemoveEverbookAck::deserialise, makeClientBoundHandler(MsgRemoveEverbookAck::handle));
+				MsgRemoveEverbookAck::deserialise, makeClientBoundHandler(MsgRemoveEverbookAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgToggleMacroAck.class, MsgToggleMacroAck::serialize,
-														MsgToggleMacroAck::deserialise, makeClientBoundHandler(MsgToggleMacroAck::handle));
+				MsgToggleMacroAck::deserialise, makeClientBoundHandler(MsgToggleMacroAck::handle));
+
+		//cast sound
 		NETWORK.registerMessage(messageIdx++, MsgWispCastSoundAck.class, MsgWispCastSoundAck::serialize,
-														MsgWispCastSoundAck::deserialise, makeClientBoundHandler(MsgWispCastSoundAck::handle));
-		
-		
-		// forge specific
-		NETWORK.registerMessage(messageIdx++, MsgPlayerRenderLinksAck.class, MsgPlayerRenderLinksAck::serialize,
-														MsgPlayerRenderLinksAck::deserialise, makeClientBoundHandler(MsgPlayerRenderLinksAck::handle));
-		NETWORK.registerMessage(messageIdx++, MsgPlayerAddRenderLinkAck.class, MsgPlayerAddRenderLinkAck::serialize,
-														MsgPlayerAddRenderLinkAck::deserialise, makeClientBoundHandler(MsgPlayerAddRenderLinkAck::handle));
-		NETWORK.registerMessage(messageIdx++, MsgPlayerRemoveRenderLinkAck.class, MsgPlayerRemoveRenderLinkAck::serialize,
-														MsgPlayerRemoveRenderLinkAck::deserialise, makeClientBoundHandler(MsgPlayerRemoveRenderLinkAck::handle));
-		NETWORK.registerMessage(messageIdx++, MsgPlayerClearRenderLinksAck.class, MsgPlayerClearRenderLinksAck::serialize,
-														MsgPlayerClearRenderLinksAck::deserialise, makeClientBoundHandler(MsgPlayerClearRenderLinksAck::handle));
+				MsgWispCastSoundAck::deserialise, makeClientBoundHandler(MsgWispCastSoundAck::handle));
+
+		//syncing render links
+		NETWORK.registerMessage(messageIdx++, MsgAddRenderLinkAck.class, MsgAddRenderLinkAck::serialize,
+				MsgAddRenderLinkAck::deserialise, makeClientBoundHandler(MsgAddRenderLinkAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgRemoveRenderLinkAck.class, MsgRemoveRenderLinkAck::serialize,
+				MsgRemoveRenderLinkAck::deserialise, makeClientBoundHandler(MsgRemoveRenderLinkAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgSetRenderLinksAck.class, MsgSetRenderLinksAck::serialize,
+				MsgSetRenderLinksAck::deserialise, makeClientBoundHandler(MsgSetRenderLinksAck::handle));
 	}
 	
 	private static <T> BiConsumer<T, Supplier<NetworkEvent.Context>> makeServerBoundHandler(

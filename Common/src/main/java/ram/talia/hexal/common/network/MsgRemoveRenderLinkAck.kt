@@ -10,7 +10,6 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.LinkableRegistry
 
 class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: CompoundTag) : IMessage {
-    val ID: ResourceLocation = HexalAPI.modLoc("rmlink")
 
     override fun getFabricId() = ID
 
@@ -22,6 +21,9 @@ class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: Co
     }
 
     companion object {
+        @JvmField
+        val ID: ResourceLocation = HexalAPI.modLoc("rmlink")
+
         const val TAG_SOURCE_LINK = "source"
         const val TAG_SINK_LINK = "sink"
 

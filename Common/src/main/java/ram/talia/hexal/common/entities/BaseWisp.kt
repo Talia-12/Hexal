@@ -19,7 +19,6 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nextColour
-import ram.talia.hexal.client.playLinkParticles
 import kotlin.math.*
 
 abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : LinkableEntity(entityType, world), IMediaEntity<BaseWisp> {
@@ -112,10 +111,6 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	fun playAllLinkParticles() {
-		renderLinks.forEach { playLinkParticles(this, it, random, level) }
-	}
-
 	fun setColouriser(colouriser: FrozenColorizer) {
 		entityData.set(COLOURISER, colouriser.serializeToNBT())
 	}
@@ -138,8 +133,6 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	}
 
 	override fun defineSynchedData() {
-		super.defineSynchedData()
-
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20 * MediaConstants.DUST_UNIT)
 	}
