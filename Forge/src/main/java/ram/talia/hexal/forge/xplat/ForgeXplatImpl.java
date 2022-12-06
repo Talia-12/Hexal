@@ -69,7 +69,7 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable<?> link) {
+	public void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable link) {
 		var allPlayers = player.level.players();
 		
 		for (var other : allPlayers) {
@@ -78,7 +78,7 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable<?> link) {
+	public void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable link) {
 		var allPlayers = player.level.players();
 		
 		for (var other : allPlayers) {
@@ -87,7 +87,7 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public ILinkable<?> getPlayerTransmittingTo (ServerPlayer player) {
+	public ILinkable getPlayerTransmittingTo (ServerPlayer player) {
 		return PlayerLinkstoreEventHandler.getTransmittingTo(player);
 	}
 	

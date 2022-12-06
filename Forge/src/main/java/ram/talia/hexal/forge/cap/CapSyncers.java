@@ -53,11 +53,11 @@ public class CapSyncers {
 		);
 	}
 	
-	public static void syncAddRenderLink (ServerPlayer packetTarget, ServerPlayer syncedPlayer, ILinkable<?> link) {
+	public static void syncAddRenderLink (ServerPlayer packetTarget, ServerPlayer syncedPlayer, ILinkable link) {
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget, new MsgPlayerAddRenderLinkAck(syncedPlayer.getUUID(), LinkableRegistry.wrapSync(link)));
 	}
 	
-	public static void syncRemoveRenderLink (ServerPlayer packetTarget, ServerPlayer syncedPlayer, ILinkable<?> link) {
+	public static void syncRemoveRenderLink (ServerPlayer packetTarget, ServerPlayer syncedPlayer, ILinkable link) {
 		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget, new MsgPlayerRemoveRenderLinkAck(syncedPlayer.getUUID(), LinkableRegistry.wrapSync(link)));
 	}
 	

@@ -58,7 +58,7 @@ public class PlayerLinkstoreEventHandler {
 		return linkstore;
 	}
 	
-	public static ILinkable<?> getTransmittingTo(ServerPlayer player) {
+	public static ILinkable getTransmittingTo(ServerPlayer player) {
 		return getLinkstore(player).getTransmittingTo();
 	}
 	

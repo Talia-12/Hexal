@@ -23,14 +23,14 @@ class CCPlayerLinkstore(private val player: Player) : ServerTickingComponent, Cl
 	private val ownerRenderCentre = if (player.level.isClientSide) PlayerLinkstore.RenderCentre(player) else null
 	var renderLinks: MutableList<ILinkable.IRenderCentre> = mutableListOf()
 
-	private val renderLinksToAdd: MutableList<ILinkable<*>> = mutableListOf()
-	private val renderLinksToRemove: MutableList<ILinkable<*>> = mutableListOf()
+	private val renderLinksToAdd: MutableList<ILinkable> = mutableListOf()
+	private val renderLinksToRemove: MutableList<ILinkable> = mutableListOf()
 
-	fun addRenderLink(link: ILinkable<*>) {
+	fun addRenderLink(link: ILinkable) {
 		renderLinksToAdd.add(link)
 		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
 	}
-	fun removeRenderLink(link: ILinkable<*>) {
+	fun removeRenderLink(link: ILinkable) {
 		renderLinksToRemove.add(link)
 		HexalCardinalComponents.PLAYER_LINKSTORE.sync(player)
 	}
