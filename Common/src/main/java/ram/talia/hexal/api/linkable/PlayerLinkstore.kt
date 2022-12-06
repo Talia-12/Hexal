@@ -12,25 +12,21 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
+class PlayerLinkstore(val player: ServerPlayer) : AbstractLinkable() {
 	override val asActionResult = listOf(EntityIota(player))
 	override val _level: ServerLevel = player.getLevel()
 
-	override val _serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
-
-	override val _lazyLinked = ILinkable.LazyILinkableList(player.level as ServerLevel)
-
-	val renderLinks: MutableList<ILinkable<*>>
+	val renderLinks: MutableList<ILinkable>
 		get() = _lazyRenderLinks.get()
 
-	override val _lazyRenderLinks: ILinkable.LazyILinkableList = ILinkable.LazyILinkableList(player.level as ServerLevel)
+	override val _lazyLinked = super._lazyLinked!!
+	override val _lazyRenderLinks = super._lazyRenderLinks!!
 
 	//region Transmitting
-	var transmittingTo: ILinkable<*>?
+	var transmittingTo: ILinkable?
 		get() {
 			val it = lazyTransmittingTo.get() ?: return null
 
@@ -55,8 +51,6 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 	}
 	//endregion
 
-	override fun get() = this
-
 	override fun maxSqrLinkRange() = Action.MAX_DISTANCE * Action.MAX_DISTANCE
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<PlayerLinkstore, *> = LinkableTypes.PLAYER_LINKSTORE_TYPE
@@ -65,10 +59,10 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable<PlayerLinkstore> {
 
 	override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
-	override fun syncAddRenderLink(other: ILinkable<*>)
+	override fun syncAddRenderLink(other: ILinkable)
 		= IXplatAbstractions.INSTANCE.syncAddRenderLinkPlayer(player, other)
 
-	override fun syncRemoveRenderLink(other: ILinkable<*>)
+	override fun syncRemoveRenderLink(other: ILinkable)
 		= IXplatAbstractions.INSTANCE.syncRemoveRenderLinkPlayer(player, other)
 
 	override fun writeToNbt(): Tag = NbtUtils.createUUID(player.uuid)

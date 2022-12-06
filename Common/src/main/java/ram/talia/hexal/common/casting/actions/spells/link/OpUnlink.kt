@@ -25,7 +25,7 @@ object OpUnlink : SpellAction {
 		)
 	}
 
-	private data class Spell(val linkThis: ILinkable<*>, val other: ILinkable<*>) : RenderedSpell {
+	private data class Spell(val linkThis: ILinkable, val other: ILinkable) : RenderedSpell {
 		override fun cast(ctx: CastingContext) = linkThis.unlink(other)
 	}
 }

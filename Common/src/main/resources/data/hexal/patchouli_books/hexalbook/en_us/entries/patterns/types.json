@@ -12,7 +12,7 @@
       "anchor": "hexal:type/block",
       "input": "vec",
       "output": "itemtype",
-      "text": "hexal.page.types.type/blocks"
+      "text": "hexal.page.types.type/block"
     },
     {
       "type": "hexcasting:pattern",
@@ -20,7 +20,7 @@
       "anchor": "hexal:type/entity",
       "input": "entity",
       "output": "entitytype | itemtype",
-      "text": "hexal.page.types.type/entities"
+      "text": "hexal.page.types.type/entity"
     },
     {
       "type": "hexcasting:pattern",
@@ -28,7 +28,7 @@
       "anchor": "hexal:type/iota",
       "input": "any",
       "output": "iotatype",
-      "text": "hexal.page.types.type/types"
+      "text": "hexal.page.types.type/iota"
     }
   ]
 }

@@ -21,7 +21,7 @@ import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.linkable.LinkableTypes
 import ram.talia.hexal.api.nbt.toNbtList
 
-abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable<LinkableEntity>, ILinkable.IRenderCentre {
+abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable, ILinkable.IRenderCentre {
 	override val asActionResult
 		get() = listOf(EntityIota(this))
 	override val _level = level
@@ -47,11 +47,9 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		entityData.set(RENDER_LINKS, compound)
 	}
 
-	override fun syncAddRenderLink(other: ILinkable<*>) = syncRenderLinks()
+	override fun syncAddRenderLink(other: ILinkable) = syncRenderLinks()
 
-	override fun syncRemoveRenderLink(other: ILinkable<*>) = syncRenderLinks()
-
-	override fun get() = this
+	override fun syncRemoveRenderLink(other: ILinkable) = syncRenderLinks()
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<LinkableEntity, *> = LinkableTypes.LINKABLE_ENTITY_TYPE
 

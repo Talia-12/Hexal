@@ -96,7 +96,7 @@ fun ListTag.toCompoundTagList(): MutableList<CompoundTag> {
 
 
 @JvmName("toSyncTagILinkable")
-fun List<ILinkable<*>>.toSyncTag(): ListTag {
+fun List<ILinkable>.toSyncTag(): ListTag {
 	val listTag = ListTag()
 	this.forEach { listTag.add(LinkableRegistry.wrapSync(it)) }
 	return listTag

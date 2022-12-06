@@ -19,11 +19,11 @@ import ram.talia.hexal.api.nbt.toNbtList
 import kotlin.math.max
 
 @Suppress("PropertyName")
-interface ILinkable<T : ILinkable<T>> {
+interface ILinkable {
 	val asActionResult: List<Iota>
 
 	val _level: Level
-	var linked: MutableList<ILinkable<*>>
+	var linked: MutableList<ILinkable>
 		get() {
 			if (_level.isClientSide)
 				throw Exception("LinkableEntity.linked should only be accessed on server.") // TODO: create and replace with ServerOnlyException
@@ -49,20 +49,15 @@ interface ILinkable<T : ILinkable<T>> {
 	val _serReceivedIotas: SerialisedIotaList
 
 	/**
-	 * Return the [ILinkable] as its type - E.g., an [ILinkable]<[ram.talia.hexal.common.entities.LinkableEntity]> would return LinkableEntity
-	 */
-	fun get(): T
-
-	/**
 	 * Return the registered LinkableType<T> for this [ILinkable], used to save/load the [ILinkable].
 	 */
-	fun getLinkableType(): LinkableRegistry.LinkableType<T, *>
+	fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 
 	fun getPosition(): Vec3
 
 	fun maxSqrLinkRange(): Double
 
-	fun isInRange(other: ILinkable<*>) = (this.getPosition() - other.getPosition()).lengthSqr() <= max(this.maxSqrLinkRange(), other.maxSqrLinkRange())
+	fun isInRange(other: ILinkable) = (this.getPosition() - other.getPosition()).lengthSqr() <= max(this.maxSqrLinkRange(), other.maxSqrLinkRange())
 
 	/**
 	 * Set to true if the link should be removed, e.g. the [ILinkable] has been discarded.
@@ -72,19 +67,19 @@ interface ILinkable<T : ILinkable<T>> {
 	/**
 	 * Sync adding a render link in the serverside version of this Linkable to the clientside.
 	 */
-	fun syncAddRenderLink(other: ILinkable<*>)
+	fun syncAddRenderLink(other: ILinkable)
 
 	/**
 	 * Sync removing a render link in the serverside version of this Linkable to the clientside.
 	 */
-	fun syncRemoveRenderLink(other: ILinkable<*>)
+	fun syncRemoveRenderLink(other: ILinkable)
 
 	fun writeToNbt(): Tag
 
 	fun writeToSync(): Tag
 
 	//region default implementations
-	private fun addRenderLink(other: ILinkable<*>) {
+	private fun addRenderLink(other: ILinkable) {
 		if (_level.isClientSide)
 			throw Exception("LinkableEntity.addRenderLink should only be accessed on server.") // TODO: create and replace with ServerOnlyException
 
@@ -92,7 +87,7 @@ interface ILinkable<T : ILinkable<T>> {
 		syncAddRenderLink(other)
 	}
 
-	private fun removeRenderLink(other: ILinkable<*>) {
+	private fun removeRenderLink(other: ILinkable) {
 		if (_level.isClientSide)
 			throw Exception("LinkableEntity.removeRenderLink should only be accessed on server.") // TODO: create and replace with ServerOnlyException
 		_lazyRenderLinks!!.get().remove(other)
@@ -106,7 +101,7 @@ interface ILinkable<T : ILinkable<T>> {
 		syncRemoveRenderLink(other)
 	}
 
-	fun link(other: ILinkable<*>, linkOther: Boolean = true) {
+	fun link(other: ILinkable, linkOther: Boolean = true) {
 		if (_level.isClientSide) {
 			HexalAPI.LOGGER.info("$this link called in a clientside context.")
 			return
@@ -128,7 +123,7 @@ interface ILinkable<T : ILinkable<T>> {
 		}
 	}
 
-	fun unlink(other: ILinkable<*>, unlinkOther: Boolean = true) {
+	fun unlink(other: ILinkable, unlinkOther: Boolean = true) {
 		if (_level.isClientSide) {
 			HexalAPI.LOGGER.info("linkable $this had unlink called in a clientside context.")
 			return
@@ -144,14 +139,14 @@ interface ILinkable<T : ILinkable<T>> {
 		}
 	}
 
-	fun getLinked(index: Int): ILinkable<*> {
+	fun getLinked(index: Int): ILinkable {
 		if (_level.isClientSide)
 			throw Exception("linkable $this had getLinked called in a clientside context.") // TODO
 
 		return linked[index]
 	}
 
-	fun getLinkedIndex(linked: ILinkable<*>): Int = this.linked.indexOf(linked)
+	fun getLinkedIndex(linked: ILinkable): Int = this.linked.indexOf(linked)
 
 	fun numLinked(): Int = linked.size
 
@@ -208,16 +203,16 @@ interface ILinkable<T : ILinkable<T>> {
 		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 	}
 
-	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable<*>?, CompoundTag>(null) { // default to empty compound tag
-		override fun load(unloaded: CompoundTag): ILinkable<*>? = if (unloaded.isEmpty) null else LinkableRegistry.fromNbt(unloaded, level).getOrNull()
-		override fun unload(loaded: ILinkable<*>?) = if (loaded == null) CompoundTag() else LinkableRegistry.wrapNbt(loaded)
+	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable?, CompoundTag>(null) { // default to empty compound tag
+		override fun load(unloaded: CompoundTag): ILinkable? = if (unloaded.isEmpty) null else LinkableRegistry.fromNbt(unloaded, level).getOrNull()
+		override fun unload(loaded: ILinkable?) = if (loaded == null) CompoundTag() else LinkableRegistry.wrapNbt(loaded)
 	}
 
-	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable<*>>, ListTag>(mutableListOf()) {
-		override fun load(unloaded: ListTag): MutableList<ILinkable<*>> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level).getOrNull() } as MutableList
-		override fun unload(loaded: MutableList<ILinkable<*>>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
+	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable>, ListTag>(mutableListOf()) {
+		override fun load(unloaded: ListTag): MutableList<ILinkable> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level).getOrNull() } as MutableList
+		override fun unload(loaded: MutableList<ILinkable>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
 
-		override fun get(): MutableList<ILinkable<*>> = super.get()!!
+		override fun get(): MutableList<ILinkable> = super.get()!!
 	}
 
 	companion object {

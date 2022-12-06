@@ -34,7 +34,7 @@ object OpLinkOthers : SpellAction {
 		)
 	}
 
-	private data class Spell(val linkThis: ILinkable<*>, val linkOther: ILinkable<*>) : RenderedSpell {
+	private data class Spell(val linkThis: ILinkable, val linkOther: ILinkable) : RenderedSpell {
 		override fun cast(ctx: CastingContext) = linkThis.link(linkOther)
 	}
 }

@@ -9,7 +9,7 @@ import net.minecraft.world.item.DyeColor
 import net.minecraft.world.level.Explosion
 import ram.talia.hexal.api.linkable.ILinkable
 
-class MishapNoLinked(val linkable: ILinkable<*>) : Mishap() {
+class MishapNoLinked(val linkable: ILinkable) : Mishap() {
     override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer =
             dyeColor(DyeColor.MAGENTA)
 

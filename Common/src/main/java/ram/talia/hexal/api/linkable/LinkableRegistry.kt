@@ -40,7 +40,7 @@ object LinkableRegistry {
 		linkableTypes[type.id] = type
 	}
 
-	abstract class LinkableType<T : ILinkable<T>, U : ILinkable.IRenderCentre>(val id: ResourceLocation) {
+	abstract class LinkableType<T : ILinkable, U : ILinkable.IRenderCentre>(val id: ResourceLocation) {
 		/**
 		 * Takes a tag representing a reference to the [ILinkable] and wraps it inside a [CompoundTag] that also stores
 		 * a reference to the [LinkableType] of the [ILinkable], meaning that the loader will know which [LinkableType]
@@ -120,10 +120,10 @@ object LinkableRegistry {
 	 * Accepts an [ILinkable] and returns a [CompoundTag] storing both the [ILinkable]'s type and a tag representing it, which can be loaded with [fromNbt]
 	 */
 	@JvmStatic
-	fun wrapNbt(linkable: ILinkable<*>) = linkable.getLinkableType().wrapNbt(linkable.writeToNbt())
+	fun wrapNbt(linkable: ILinkable) = linkable.getLinkableType().wrapNbt(linkable.writeToNbt())
 
 	@JvmStatic
-	fun fromNbt(tag: CompoundTag, level: ServerLevel): Result<ILinkable<*>> {
+	fun fromNbt(tag: CompoundTag, level: ServerLevel): Result<ILinkable> {
 		val typeId = tag.getString(TAG_TYPE)
 		if (!ResourceLocation.isValidResourceLocation(typeId))
 			return Result.failure(InvalidLinkableTypeException("$typeId is not a valid resource location"))
@@ -141,7 +141,7 @@ object LinkableRegistry {
 	 * loaded with [fromSync]. [wrapSync] and [fromSync] are used to sync the link from Server to Client.
 	 */
 	@JvmStatic
-	fun wrapSync(linkable: ILinkable<*>) = linkable.getLinkableType().wrapSync(linkable.writeToSync())
+	fun wrapSync(linkable: ILinkable) = linkable.getLinkableType().wrapSync(linkable.writeToSync())
 
 	@JvmStatic
 	fun fromSync(tag: CompoundTag, level: Level): ILinkable.IRenderCentre? {
@@ -166,13 +166,13 @@ object LinkableRegistry {
 	}
 
 	@JvmStatic
-	fun linkableFromCastingContext(ctx: CastingContext): ILinkable<*> {
+	fun linkableFromCastingContext(ctx: CastingContext): ILinkable {
 		castingContextExtractionQueue.forEach { type -> type.linkableFromCastingContext(ctx)?.let { return it } }
 		throw Exception("At least one type should have accepted the ctx and returned itself (namely the player type).")
 	}
 
 	@JvmStatic
-	fun linkableFromIota(iota: Iota): ILinkable<*>? {
+	fun linkableFromIota(iota: Iota): ILinkable? {
 		iotaExtractionQueue.forEach { type -> type.linkableFromIota(iota)?.let { return it } }
 		return null
 	}

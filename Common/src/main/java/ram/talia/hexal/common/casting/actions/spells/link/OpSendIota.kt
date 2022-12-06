@@ -27,7 +27,7 @@ object OpSendIota : SpellAction {
 		)
 	}
 
-	private data class Spell(val other: ILinkable<*>, val iota: Iota) : RenderedSpell {
+	private data class Spell(val other: ILinkable, val iota: Iota) : RenderedSpell {
 		override fun cast(ctx: CastingContext) {
 			HexalAPI.LOGGER.debug("sending $iota to $other")
 			other.receiveIota(iota)
