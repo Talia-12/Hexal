@@ -69,20 +69,29 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 	
 	@Override
-	public void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable link) {
-		var allPlayers = player.level.players();
+	public void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
+		var allPlayers = level.players();
 		
 		for (var other : allPlayers) {
-			CapSyncers.syncAddRenderLink((ServerPlayer) other, player, link);
+			CapSyncers.syncAddRenderLink(other, thisLink, otherLink);
 		}
 	}
 	
 	@Override
-	public void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable link) {
-		var allPlayers = player.level.players();
+	public void syncRemoveRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
+		var allPlayers = level.players();
 		
 		for (var other : allPlayers) {
-			CapSyncers.syncRemoveRenderLink((ServerPlayer) other, player, link);
+			CapSyncers.syncRemoveRenderLink(other, thisLink, otherLink);
+		}
+	}
+
+	@Override
+	public void syncSetRenderLinks(ILinkable thisLink, List<ILinkable> others, ServerLevel level) {
+		var allPlayers = level.players();
+
+		for (var other : allPlayers) {
+			CapSyncers.syncSetRenderLinks(other, thisLink, others);
 		}
 	}
 	

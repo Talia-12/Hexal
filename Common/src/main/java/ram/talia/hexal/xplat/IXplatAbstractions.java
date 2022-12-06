@@ -56,10 +56,12 @@ public interface IXplatAbstractions {
 
     PlayerLinkstore getLinkstore(ServerPlayer player);
     
-    void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable link);
-    
-    void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable link);
-    
+    void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level);
+
+    void syncRemoveRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level);
+
+    void syncSetRenderLinks(ILinkable thisLink, List<ILinkable> others, ServerLevel level);
+
     //region Transmission
     ILinkable getPlayerTransmittingTo (ServerPlayer player);
     void setPlayerTransmittingTo (ServerPlayer player, int to);

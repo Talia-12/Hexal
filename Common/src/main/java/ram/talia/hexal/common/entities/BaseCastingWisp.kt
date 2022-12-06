@@ -72,8 +72,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	val serHex: SerialisedIotaList = SerialisedIotaList(null)
 
-	override val _serReceivedIotas: SerialisedIotaList = SerialisedIotaList(null)
-
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
 		set(value) = entityData.set(SCHEDULED_CAST, value)
@@ -124,7 +122,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			true  -> normalCostPerTick
 			false -> WISP_COST_PER_TICK_UNTRIGGERED
 		}
-		cost += COST_PER_LINK_PER_TICK * linked.size
+		cost += COST_PER_LINK_PER_TICK * numLinked()
 		if (seon)
 			cost /= SEON_DISCOUNT_FACTOR
 		media -= cost
@@ -241,13 +239,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			else -> serHex.tag = hexTag as? ListTag
 		}
 
-//		HexalAPI.LOGGER.info("loading wisp $uuid's hex from $hexTag")
-
-		when (val receivedIotasTag = compound.get(TAG_RECEIVED_IOTAS)) {
-			null -> _serReceivedIotas.set(mutableListOf())
-			else -> _serReceivedIotas.tag = receivedIotasTag as? ListTag
-		}
-
 		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
 			null -> null
 			else -> WispTriggerRegistry.fromNbt(activeTriggerTag.asCompound, level as ServerLevel)
@@ -266,7 +257,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
 		serHex.tag?.let { compound.put(TAG_HEX, it) }
-		_serReceivedIotas.tag?.let { compound.put(TAG_RECEIVED_IOTAS, it) }
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 		compound.putBoolean(TAG_SEON, seon)
@@ -302,7 +292,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		const val TAG_CASTER = "caster"
 		const val TAG_HEX = "hex"
-		const val TAG_RECEIVED_IOTAS = "received_iotas"
 		const val TAG_ACTIVE_TRIGGER = "active_trigger"
 		const val TAG_SEON = "seon"
 

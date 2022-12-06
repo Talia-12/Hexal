@@ -17,7 +17,7 @@ import kotlin.math.max
 interface ILinkable {
 	val asActionResult: List<Iota>
 
-	val linkableHolder: LinkableHolder
+	val linkableHolder: ServerLinkableHolder?
 
 	/**
 	 * Return the registered LinkableType<T> for this [ILinkable], used to save/load the [ILinkable].
@@ -35,32 +35,66 @@ interface ILinkable {
 	 */
 	fun shouldRemove(): Boolean
 
-	/**
-	 * Sync adding a render link in the serverside version of this Linkable to the clientside.
-	 */
-	fun syncAddRenderLink(other: ILinkable)
-
-	/**
-	 * Sync removing a render link in the serverside version of this Linkable to the clientside.
-	 */
-	fun syncRemoveRenderLink(other: ILinkable)
-
 	fun writeToNbt(): Tag
 
 	fun writeToSync(): Tag
 
 	//region default implementations
 
-	fun link(other: ILinkable, linkOther: Boolean = true) = linkableHolder.link(other, linkOther)
-	fun unlink(other: ILinkable, unlinkOther: Boolean = true) = linkableHolder.unlink(other, unlinkOther)
-	fun getLinked(index: Int) = linkableHolder.getLinked(index)
-	fun getLinkedIndex(linked: ILinkable) = linkableHolder.getLinkedIndex(linked)
-	fun numLinked() = linkableHolder.numLinked()
-	fun checkLinks() = linkableHolder.checkLinks()
-	fun receiveIota(iota: Iota) = linkableHolder.receiveIota(iota)
-	fun nextReceivedIota() = linkableHolder.nextReceivedIota()
-	fun numRemainingIota() = linkableHolder.numRemainingIota()
-	fun clearReceivedIotas() = linkableHolder.clearReceivedIotas()
+	fun link(other: ILinkable, linkOther: Boolean = true) {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.link should only be accessed on server.") // TODO
+		linkableHolder!!.link(other, linkOther)
+	}
+	fun unlink(other: ILinkable, unlinkOther: Boolean = true) {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.unlink should only be accessed on server.") // TODO
+		linkableHolder!!.unlink(other, unlinkOther)
+	}
+	fun getLinked(index: Int): ILinkable {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.getLinked should only be accessed on server.") // TODO
+		return linkableHolder!!.getLinked(index)
+	}
+	fun getLinkedIndex(linked: ILinkable): Int {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.getLinkedIndex should only be accessed on server.") // TODO
+		return linkableHolder!!.getLinkedIndex(linked)
+	}
+	fun numLinked(): Int {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.numLinked should only be accessed on server.") // TODO
+		return linkableHolder!!.numLinked()
+	}
+
+	/**
+	 * This should be called every tick to remove links that should be removed (i.e. the entity that is linked to has been removed)
+	 */
+	fun checkLinks() {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.checkLinks should only be accessed on server.") // TODO
+		linkableHolder!!.checkLinks()
+	}
+	fun receiveIota(iota: Iota) {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.receiveIota should only be accessed on server.") // TODO
+		linkableHolder!!.receiveIota(iota)
+	}
+	fun nextReceivedIota(): Iota {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.nextReceivedIota should only be accessed on server.") // TODO
+		return linkableHolder!!.nextReceivedIota()
+	}
+	fun numRemainingIota(): Int {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.numRemainingIota should only be accessed on server.") // TODO
+		return linkableHolder!!.numRemainingIota()
+	}
+	fun clearReceivedIotas() {
+		if (linkableHolder == null)
+			throw Exception("ILinkable.clearReceivedIotas should only be accessed on server.") // TODO
+		linkableHolder!!.clearReceivedIotas()
+	}
 
 
 	/**
@@ -73,6 +107,13 @@ interface ILinkable {
 	 * returned by [LinkableRegistry.fromSync] to let client renderers render a link to the render centre of a given [ILinkable].
 	 */
 	interface IRenderCentre {
+		val clientLinkableHolder: ClientLinkableHolder?
+
+		/**
+		 * Should be called every tick on the client to display the links.
+		 */
+		fun renderLinks() = clientLinkableHolder?.renderLinks()
+
 		fun renderCentre(other: IRenderCentre, recursioning: Boolean = true): Vec3 // recursioning to stop a player linked to a player causing an infinite loop
 
 		/**

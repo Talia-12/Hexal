@@ -1,17 +1,18 @@
 package ram.talia.hexal.forge.cap;
 
+import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.LinkableRegistry;
-import ram.talia.hexal.api.linkable.PlayerLinkstore;
-import ram.talia.hexal.api.nbt.HexalNBTHelperKt;
-import ram.talia.hexal.forge.network.MsgPlayerAddRenderLinkAck;
-import ram.talia.hexal.forge.network.MsgPlayerClearRenderLinksAck;
-import ram.talia.hexal.forge.network.MsgPlayerRemoveRenderLinkAck;
-import ram.talia.hexal.forge.network.MsgPlayerRenderLinksAck;
+import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
+import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;
+import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
 import ram.talia.hexal.xplat.IXplatAbstractions;
+
+import java.util.List;
 
 public class CapSyncers {
 	@SubscribeEvent
@@ -43,25 +44,29 @@ public class CapSyncers {
 				syncAllRenderLinks((ServerPlayer) player, loggedInPlayer);
 		}
 	}
-	
-	public static void syncAllRenderLinks (ServerPlayer packetTarget, ServerPlayer syncedPlayer) {
-		PlayerLinkstore linkstore = IXplatAbstractions.INSTANCE.getLinkstore(syncedPlayer);
-		
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(
-						packetTarget,
-						new MsgPlayerRenderLinksAck(syncedPlayer.getUUID(), HexalNBTHelperKt.toSyncTagILinkable(linkstore.getRenderLinks()))
-		);
+
+	private static void syncAllRenderLinks(ServerPlayer loggedInPlayer, ServerPlayer player) {
+		HexalAPI.LOGGER.info("TODO: Re-setup syncing of player render links."); //TODO
+	}
+
+	public static void syncAddRenderLink (ServerPlayer packetTarget, ILinkable thisLink, ILinkable otherLink) {
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget,
+				new MsgAddRenderLinkAck(LinkableRegistry.wrapSync(thisLink), LinkableRegistry.wrapSync(otherLink)));
 	}
 	
-	public static void syncAddRenderLink (ServerPlayer packetTarget, ServerPlayer syncedPlayer, ILinkable link) {
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget, new MsgPlayerAddRenderLinkAck(syncedPlayer.getUUID(), LinkableRegistry.wrapSync(link)));
+	public static void syncRemoveRenderLink (ServerPlayer packetTarget, ILinkable thisLink, ILinkable otherLink) {
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget,
+				new MsgRemoveRenderLinkAck(LinkableRegistry.wrapSync(thisLink), LinkableRegistry.wrapSync(otherLink)));
 	}
-	
-	public static void syncRemoveRenderLink (ServerPlayer packetTarget, ServerPlayer syncedPlayer, ILinkable link) {
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget, new MsgPlayerRemoveRenderLinkAck(syncedPlayer.getUUID(), LinkableRegistry.wrapSync(link)));
+
+	private static ListTag getSyncTag(List<ILinkable> others) {
+		ListTag listTag = new ListTag();
+		others.forEach(it -> listTag.add(LinkableRegistry.wrapSync(it)));
+		return listTag;
 	}
-	
-	public static void syncClearRenderLinks (ServerPlayer packetTarget, ServerPlayer syncedPlayer) {
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget, new MsgPlayerClearRenderLinksAck(syncedPlayer.getUUID()));
+
+	public static void syncSetRenderLinks (ServerPlayer packetTarget, ILinkable thisLink, List<ILinkable> others) {
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(packetTarget,
+				new MsgSetRenderLinksAck(LinkableRegistry.wrapSync(thisLink), getSyncTag(others)));
 	}
 }

@@ -103,16 +103,23 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
     
     @Override
-    public void syncAddRenderLinkPlayer (ServerPlayer player, ILinkable link) {
-        HexalCardinalComponents.PLAYER_LINKSTORE.get(player).addRenderLink(link);
+    public void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
+        // TODO
+//        HexalCardinalComponents.PLAYER_LINKSTORE.get(player).addRenderLink(link);
     }
     
     @Override
-    public void syncRemoveRenderLinkPlayer (ServerPlayer player, ILinkable link) {
-        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
-        cc.removeRenderLink(link);
+    public void syncRemoveRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
+        // TODO
+//        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
+//        cc.removeRenderLink(link);
     }
-    
+
+    @Override
+    public void syncSetRenderLinks(ILinkable thisLink, List<ILinkable> others, ServerLevel level) {
+        // TODO
+    }
+
     //region Transmitting
     @Override
     public ILinkable getPlayerTransmittingTo (ServerPlayer player) {

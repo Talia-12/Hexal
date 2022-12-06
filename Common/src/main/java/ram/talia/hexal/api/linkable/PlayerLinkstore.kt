@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
-import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
@@ -13,17 +12,10 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.xplat.IXplatAbstractions
 
 class PlayerLinkstore(val player: ServerPlayer) : AbstractLinkable() {
 	override val asActionResult = listOf(EntityIota(player))
-	override val _level: ServerLevel = player.getLevel()
-
-	val renderLinks: MutableList<ILinkable>
-		get() = _lazyRenderLinks.get()
-
-	override val _lazyLinked = super._lazyLinked!!
-	override val _lazyRenderLinks = super._lazyRenderLinks!!
+	override val linkableHolder: ServerLinkableHolder = ServerLinkableHolder(this, player.getLevel())
 
 	//region Transmitting
 	var transmittingTo: ILinkable?
@@ -59,29 +51,15 @@ class PlayerLinkstore(val player: ServerPlayer) : AbstractLinkable() {
 
 	override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
-	override fun syncAddRenderLink(other: ILinkable)
-		= IXplatAbstractions.INSTANCE.syncAddRenderLinkPlayer(player, other)
-
-	override fun syncRemoveRenderLink(other: ILinkable)
-		= IXplatAbstractions.INSTANCE.syncRemoveRenderLinkPlayer(player, other)
-
 	override fun writeToNbt(): Tag = NbtUtils.createUUID(player.uuid)
 
 	override fun writeToSync(): Tag = IntTag.valueOf(player.id)
 
 	fun loadAdditionalData(tag: CompoundTag) {
-		when (val linkedTag = tag.get(TAG_LINKS) as? ListTag) {
-			null -> _lazyLinked.set(mutableListOf())
-			else -> _lazyLinked.set(linkedTag)
+		(tag.get(TAG_LINKABLE_HOLDER) as? CompoundTag)?.let {
+			linkableHolder.readFromNbt(it)
 		}
-		when (val renderLinkedTag = tag.get(TAG_RENDER_LINKS) as? ListTag) {
-			null -> _lazyRenderLinks.set(mutableListOf())
-			else -> _lazyRenderLinks.set(renderLinkedTag)
-		}
-		when (val receivedIotaTag = tag.get(TAG_RECEIVED_IOTAS) as? ListTag) {
-			null -> _serReceivedIotas.set(mutableListOf())
-			else -> _serReceivedIotas.tag = receivedIotaTag
-		}
+
 		when (val transmittingToTag = tag.get(TAG_TRANSMITTING_TO) as? CompoundTag) {
 			null -> lazyTransmittingTo.set(null)
 			else -> lazyTransmittingTo.set(transmittingToTag)
@@ -89,13 +67,13 @@ class PlayerLinkstore(val player: ServerPlayer) : AbstractLinkable() {
 	}
 
 	fun saveAdditionalData(tag: CompoundTag) {
-		tag.put(TAG_LINKS, _lazyLinked.getUnloaded())
-		tag.put(TAG_RENDER_LINKS, _lazyRenderLinks.getUnloaded())
-		_serReceivedIotas.tag?.let { tag.put(TAG_RECEIVED_IOTAS, it) }
+		tag.put(TAG_LINKABLE_HOLDER, linkableHolder.writeToNbt())
 		tag.put(TAG_TRANSMITTING_TO, lazyTransmittingTo.getUnloaded())
 	}
 
 	class RenderCentre(val player: Player) : ILinkable.IRenderCentre {
+		override val clientLinkableHolder = ClientLinkableHolder(this, player.level, player.random)
+
 		override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 {
 			if (!recursioning)
 				return player.eyePosition
@@ -110,10 +88,8 @@ class PlayerLinkstore(val player: ServerPlayer) : AbstractLinkable() {
 	}
 
 	companion object {
-		const val TAG_LINKS = "links"
-		const val TAG_RENDER_LINKS = "render_links"
-		const val TAG_RECEIVED_IOTAS = "received_iotas"
-		const val TAG_TRANSMITTING_TO = "transmitting_to"
+		const val TAG_LINKABLE_HOLDER = "hexal:linkable_holder"
+		const val TAG_TRANSMITTING_TO = "hexal:transmitting_to"
 	}
 
 	override fun toString() = "PlayerLinkstore(player=$player)"
