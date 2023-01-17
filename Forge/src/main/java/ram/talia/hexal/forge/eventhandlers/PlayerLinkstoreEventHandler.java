@@ -12,8 +12,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
-import ram.talia.hexal.client.RenderHelperKt;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -23,22 +23,16 @@ public class PlayerLinkstoreEventHandler {
 	private static final String TAG_PLAYER_LINKSTORE = "hexal:player_linkstore";
 	
 	private static final Map<UUID, PlayerLinkstore> linkstores = new HashMap<>();
-	private static final Map<UUID, List<ILinkable.IRenderCentre>> renderLinks = new HashMap<>();
+
+	@OnlyIn(Dist.CLIENT)
+	private static final Map<UUID, PlayerLinkstore.RenderCentre> renderCentres = new HashMap<>();
 	
-	public static List<ILinkable.IRenderCentre> getRenderLinks(Player player) {
-		return getRenderLinks(player.getUUID());
+	public static @Nullable PlayerLinkstore.RenderCentre getRenderCentre(Player player) {
+		return getRenderCentre(player.getUUID());
 	}
 	
-	public static List<ILinkable.IRenderCentre> getRenderLinks(UUID player) {
-		return renderLinks.get(player);
-	}
-	
-	public static List<ILinkable.IRenderCentre> setRenderLinks(Player player, List<ILinkable.IRenderCentre> newRenderLinks) {
-		return setRenderLinks(player.getUUID(), newRenderLinks);
-	}
-	
-	public static List<ILinkable.IRenderCentre> setRenderLinks(UUID player, List<ILinkable.IRenderCentre> newRenderLinks) {
-		return renderLinks.put(player, newRenderLinks);
+	public static @Nullable PlayerLinkstore.RenderCentre getRenderCentre(UUID player) {
+		return renderCentres.get(player);
 	}
 	
 	public static PlayerLinkstore getLinkstore(ServerPlayer player) {
@@ -83,7 +77,7 @@ public class PlayerLinkstoreEventHandler {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
-		renderLinks.computeIfAbsent(event.getPlayer().getUUID(), k -> new ArrayList<>());
+		renderCentres.computeIfAbsent(event.getPlayer().getUUID(), k -> new PlayerLinkstore.RenderCentre(event.getPlayer()));
 	}
 	
 	/**
@@ -107,7 +101,7 @@ public class PlayerLinkstoreEventHandler {
 		if (event.getPlayer() == null)
 			return;
 		
-		renderLinks.remove(event.getPlayer().getUUID());
+		renderCentres.remove(event.getPlayer().getUUID());
 	}
 	
 	/**
@@ -132,19 +126,8 @@ public class PlayerLinkstoreEventHandler {
 		
 		// TODO: check if other players links on a server actually render, not sure if there is only a client player tick for your player.
 		
-		final var ownerRenderCentre = new PlayerLinkstore.RenderCentre(player);
-		final var theseLinks = getRenderLinks(player);
-		if (theseLinks == null)
-			return;
-		
-		final var iter = theseLinks.iterator();
-		
-		while (iter.hasNext()) {
-			var link = iter.next();
-			if (link.shouldRemove())
-				iter.remove();
-			else
-				RenderHelperKt.playLinkParticles(ownerRenderCentre, link, player.getRandom(), player.level);
-		}
+		final var renderCentre = getRenderCentre(player);
+		if (renderCentre != null)
+			renderCentre.renderLinks();
 	}
 }

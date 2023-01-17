@@ -55,6 +55,8 @@ public interface IXplatAbstractions {
     BaseCastingWisp getSeon(ServerPlayer caster);
 
     PlayerLinkstore getLinkstore(ServerPlayer player);
+
+    PlayerLinkstore.RenderCentre getPlayerRenderCentre(Player player);
     
     void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level);
 

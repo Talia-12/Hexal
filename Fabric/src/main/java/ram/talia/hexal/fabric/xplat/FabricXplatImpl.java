@@ -101,7 +101,12 @@ public class FabricXplatImpl implements IXplatAbstractions {
     public PlayerLinkstore getLinkstore (ServerPlayer player) {
         return HexalCardinalComponents.PLAYER_LINKSTORE.get(player).getLinkstore();
     }
-    
+
+    @Override
+    public PlayerLinkstore.RenderCentre getPlayerRenderCentre(Player player) {
+        return HexalCardinalComponents.PLAYER_LINKSTORE.get(player).getRenderCentre();
+    }
+
     @Override
     public void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
         // TODO Do render link syncing on fabric

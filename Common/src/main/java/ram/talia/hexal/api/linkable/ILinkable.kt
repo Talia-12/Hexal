@@ -112,7 +112,7 @@ interface ILinkable {
 		/**
 		 * Should be called every tick on the client to display the links.
 		 */
-		fun renderLinks() = clientLinkableHolder?.renderLinks()
+		fun renderLinks() = clientLinkableHolder?.renderLinks() ?: Unit
 
 		fun renderCentre(other: IRenderCentre, recursioning: Boolean = true): Vec3 // recursioning to stop a player linked to a player causing an infinite loop
 

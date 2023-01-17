@@ -67,7 +67,12 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	public PlayerLinkstore getLinkstore (ServerPlayer player) {
 		return PlayerLinkstoreEventHandler.getLinkstore(player);
 	}
-	
+
+	@Override
+	public PlayerLinkstore.RenderCentre getPlayerRenderCentre(Player player) {
+		return PlayerLinkstoreEventHandler.getRenderCentre(player);
+	}
+
 	@Override
 	public void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
 		var allPlayers = level.players();

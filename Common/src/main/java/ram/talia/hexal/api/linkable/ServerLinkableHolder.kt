@@ -21,6 +21,9 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
 
     private val lazyRenderLinks = LazyILinkableList(level)
 
+    // used to sync full list of render links only on first tick.
+    private var isFirstTick = true
+
     /**
      * Initialise to [SerialisedIotaList] (null)
      */
@@ -72,10 +75,19 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
 
     fun numLinked(): Int = linked.size
 
+    fun syncAll() {
+        IXplatAbstractions.INSTANCE.syncSetRenderLinks(thisLinkable, lazyRenderLinks.get(), level)
+    }
+
     /**
      * This should be called every tick to remove links that should be removed (i.e. the entity that is linked to has been removed)
      */
     fun checkLinks() {
+        if (isFirstTick) {
+            syncAll()
+            isFirstTick = false
+        }
+
         for (i in (linked.size - 1) downTo 0) {
             if (linked[i].shouldRemove() || !thisLinkable.isInRange(linked[i]))
                 unlink(linked[i])
@@ -119,7 +131,6 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
             null -> lazyRenderLinks.set(mutableListOf())
             else -> lazyRenderLinks.set(renderLinkedTag)
         }
-        IXplatAbstractions.INSTANCE.syncSetRenderLinks(thisLinkable, lazyRenderLinks.get(), level)
 
         serReceivedIotas.tag = tag.get(TAG_RECEIVED) as? ListTag
     }

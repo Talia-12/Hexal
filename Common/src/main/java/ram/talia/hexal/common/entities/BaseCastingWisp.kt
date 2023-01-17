@@ -105,6 +105,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			move()
 		}
 
+		// TODO: move all this into BaseWisp
 		if (level.isClientSide) {
 			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 			playWispParticles(colouriser)
@@ -272,6 +273,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	override fun getAddEntityPacket(): Packet<*> {
+		super.getAddEntityPacket() // called to call LinkableEntity.linkableHolder.syncAll()
 		return ClientboundAddEntityPacket(this, caster?.id ?: 0)
 	}
 

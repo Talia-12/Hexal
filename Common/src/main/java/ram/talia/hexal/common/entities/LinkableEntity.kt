@@ -5,6 +5,8 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
 import net.minecraft.nbt.NbtUtils
 import net.minecraft.nbt.Tag
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
@@ -29,8 +31,6 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun writeToSync(): Tag = IntTag.valueOf(id)
 
-
-	var isFirstTick = true
 	override fun tick() {
 		super.tick()
 
@@ -38,10 +38,6 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 			clientLinkableHolder!!.renderLinks()
 			return
 		}
-
-//		if (isFirstTick)
-//			syncRenderLinks()
-		isFirstTick = false
 
 		checkLinks()
 	}
@@ -54,6 +50,11 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		compound.put(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
+	}
+
+	override fun getAddEntityPacket(): Packet<*> {
+		linkableHolder!!.syncAll()
+		return ClientboundAddEntityPacket(this)
 	}
 
 	companion object {

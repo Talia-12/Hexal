@@ -5,8 +5,6 @@ import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -135,10 +133,6 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override fun defineSynchedData() {
 		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20 * MediaConstants.DUST_UNIT)
-	}
-
-	override fun getAddEntityPacket(): Packet<*> {
-		return ClientboundAddEntityPacket(this, 0)
 	}
 
 	companion object {

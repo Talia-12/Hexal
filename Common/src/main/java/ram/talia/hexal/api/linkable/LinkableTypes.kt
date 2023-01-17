@@ -39,7 +39,7 @@ object LinkableTypes {
 
 		override fun fromSync(tag: Tag, level: Level): PlayerLinkstore.RenderCentre? {
 			val player = level.getEntity(tag.asInt) as? AbstractClientPlayer ?: return null
-			return PlayerLinkstore.RenderCentre(player)
+			return IXplatAbstractions.INSTANCE.getPlayerRenderCentre(player)
 		}
 
 		override fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag) = (centre as PlayerLinkstore.RenderCentre).player.id == tag.asInt
