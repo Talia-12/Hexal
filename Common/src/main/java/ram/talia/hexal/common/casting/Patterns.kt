@@ -79,6 +79,8 @@ object Patterns {
 	val FALLING_BLOCK = make(HexPattern.fromAngles("wqwawqwqwqwqwqw", HexDir.EAST), modLoc("falling_block"), OpFallingBlock)
 	@JvmField
 	val PLACE_TYPE = make(HexPattern.fromAngles("eeeeedeeeee", HexDir.WEST), modLoc("place_type"), OpPlaceType)
+	@JvmField
+	val PARTICLES = make(HexPattern.fromAngles("eqqqqa", HexDir.NORTH_EAST), modLoc("particles"), OpParticles)
 
 	// =============================== Wisp Stuff =====================================
 	@JvmField

@@ -30,15 +30,18 @@ object FabricPacketHandler {
 	 */
 	fun initClientBound() {
 		// Everbook
-		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler((MsgSetEverbookAck)::deserialise, (MsgSetEverbookAck)::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler((MsgRemoveEverbookAck)::deserialise, (MsgRemoveEverbookAck)::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler((MsgToggleMacroAck)::deserialise, (MsgToggleMacroAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler(MsgSetEverbookAck::deserialise, MsgSetEverbookAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler(MsgRemoveEverbookAck::deserialise, MsgRemoveEverbookAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler(MsgToggleMacroAck::deserialise, MsgToggleMacroAck::handle))
 		// Cast Sound
-		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler((MsgWispCastSoundAck)::deserialise, (MsgWispCastSoundAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler(MsgWispCastSoundAck::deserialise, MsgWispCastSoundAck::handle))
 		// Render links
-		ClientPlayNetworking.registerGlobalReceiver(MsgAddRenderLinkAck.ID, makeClientBoundHandler((MsgAddRenderLinkAck)::deserialise, (MsgAddRenderLinkAck)::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveRenderLinkAck.ID, makeClientBoundHandler((MsgRemoveRenderLinkAck)::deserialise, (MsgRemoveRenderLinkAck)::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgSetRenderLinksAck.ID, makeClientBoundHandler((MsgSetRenderLinksAck)::deserialise, (MsgSetRenderLinksAck)::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgAddRenderLinkAck.ID, makeClientBoundHandler(MsgAddRenderLinkAck::deserialise, MsgAddRenderLinkAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveRenderLinkAck.ID, makeClientBoundHandler(MsgRemoveRenderLinkAck::deserialise, MsgRemoveRenderLinkAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgSetRenderLinksAck.ID, makeClientBoundHandler(MsgSetRenderLinksAck::deserialise, MsgSetRenderLinksAck::handle))
+		// Particles spell
+		ClientPlayNetworking.registerGlobalReceiver(MsgSingleParticleAck.ID, makeClientBoundHandler(MsgSingleParticleAck::deserialise, MsgSingleParticleAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgParticleLinesAck.ID, makeClientBoundHandler(MsgParticleLinesAck::deserialise, MsgParticleLinesAck::handle))
 	}
 
 	private fun <T> makeServerBoundHandler(decoder: Function<FriendlyByteBuf, T>, handle: TriConsumer<T, MinecraftServer, ServerPlayer>):

@@ -20,6 +20,7 @@
   "hexcasting.mishap.invalid_value.class.type.block.able": "an item type that has a block",
   "hexcasting.mishap.invalid_value.class.type.list.double": "a list of numbers",
   "hexal.mishap.invalid_value.vecitem": "a vector or item entity",
+  "hexal.mishap.invalid_value.veclist": "a vector or a list of vectors",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota Type",
@@ -49,6 +50,7 @@
   "hexcasting.spell.hexal:freeze": "Freeze",
   "hexcasting.spell.hexal:falling_block": "Falling Block",
   "hexcasting.spell.hexal:place_type": "Place Block II",
+  "hexcasting.spell.hexal:particles": "Particles",
 
   "hexcasting.spell.hexal:wisp/summon/projectile": "Summon Projectile Wisp",
   "hexcasting.spell.hexal:wisp/summon/ticking": "Summon Cyclic Wisp",
@@ -121,6 +123,7 @@
   "hexal.page.hexal_spell.freeze": "Freezes the block at a block location. For example, turns water into ice, and ice into packed ice. Costs three $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.hexal_spell.falling_block": "Remove a location from the stack, and force the block there to fall as if it were sand or gravel. Costs one and a half $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.hexal_spell.place_type": "Accepts a location and an item type, and attempts to place a block of that item type at that location. Costs an eighth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
+  "hexal.page.hexal_spell.particles": "Accepts a location or a list of locations, and either creates a particle at the location, or creates lines of particles between the locations in the list. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$ per location.",
 
   "hexal.entry.wisps": "Wisps",
   "hexal.page.wisps.0": "I have discovered a way to create constructs from the media itself, visible to others and able to move and act somewhat on their own. They are able to cast hexes in my place, similar to how a $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$ evaluates patterns. They do take some of my attention to operate this however, and if too many try and execute at once I will only be able to run some of them, leaving the rest for the next instant.",

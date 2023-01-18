@@ -56,6 +56,12 @@ public class ForgePacketHandler {
 				MsgRemoveRenderLinkAck::deserialise, makeClientBoundHandler(MsgRemoveRenderLinkAck::handle));
 		NETWORK.registerMessage(messageIdx++, MsgSetRenderLinksAck.class, MsgSetRenderLinksAck::serialize,
 				MsgSetRenderLinksAck::deserialise, makeClientBoundHandler(MsgSetRenderLinksAck::handle));
+
+		// Particles spell
+		NETWORK.registerMessage(messageIdx++, MsgSingleParticleAck.class, MsgSingleParticleAck::serialize,
+				MsgSingleParticleAck::deserialise, makeClientBoundHandler(MsgSingleParticleAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgParticleLinesAck.class, MsgParticleLinesAck::serialize,
+				MsgParticleLinesAck::deserialise, makeClientBoundHandler(MsgParticleLinesAck::handle));
 	}
 	
 	private static <T> BiConsumer<T, Supplier<NetworkEvent.Context>> makeServerBoundHandler(

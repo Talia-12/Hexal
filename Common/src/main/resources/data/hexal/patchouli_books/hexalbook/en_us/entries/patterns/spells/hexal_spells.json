@@ -41,6 +41,14 @@
       "input": "vec, itemtype",
       "output": "",
       "text": "hexal.page.hexal_spell.place_type"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:particles",
+      "anchor": "hexal:particles",
+      "input": "vec | [vec]",
+      "output": "",
+      "text": "hexal.page.hexal_spell.particles"
     }
   ]
 }

@@ -3,6 +3,8 @@ package ram.talia.hexal.api
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.IotaType
+import at.petrak.hexcasting.api.spell.iota.ListIota
+import at.petrak.hexcasting.api.spell.iota.Vec3Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import com.mojang.datafixers.util.Either
@@ -55,6 +57,25 @@ fun List<Iota>.getBaseCastingWisp(idx: Int, argc: Int = 0): BaseCastingWisp {
             return e
     }
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "entity.wisp.casting")
+}
+
+fun List<Iota>.getVec3OrListVec3(idx: Int, argc: Int = 0): Either<Vec3, List<Vec3>> {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is Vec3Iota) {
+        return Either.left(x.vec3)
+    } else if (x is ListIota) {
+        val out = mutableListOf<Vec3>()
+        for (v in x.list) {
+            if (v is Vec3Iota) {
+                out.add(v.vec3)
+            } else {
+                throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "veclist")
+            }
+        }
+        return Either.right(out)
+    } else {
+        throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "veclist")
+    }
 }
 
 fun List<Iota>.getItemType(idx: Int, argc: Int = 0): Item? {
