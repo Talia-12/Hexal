@@ -70,6 +70,7 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	override val normalCostPerTick =  2 * WISP_COST_PER_TICK_NORMAL
+	override val untriggeredCostPerTick =  2 * WISP_COST_PER_TICK_UNTRIGGERED
 
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")

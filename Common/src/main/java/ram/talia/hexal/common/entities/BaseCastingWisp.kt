@@ -121,7 +121,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	fun deductMedia() {
 		var cost = when(canScheduleCast()) {
 			true  -> normalCostPerTick
-			false -> WISP_COST_PER_TICK_UNTRIGGERED
+			false -> untriggeredCostPerTick
 		}
 		cost += COST_PER_LINK_PER_TICK * numLinked()
 		if (seon)
@@ -130,6 +130,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	open val normalCostPerTick = WISP_COST_PER_TICK_NORMAL
+	open val untriggeredCostPerTick = WISP_COST_PER_TICK_UNTRIGGERED
 
 
 	/**
