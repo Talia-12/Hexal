@@ -42,7 +42,11 @@ object Patterns {
 	@JvmField
 	val BREATH = make(HexPattern.fromAngles("aqawdwaqawd", HexDir.NORTH_WEST), modLoc("breath"), OpGetBreath)
 	@JvmField
-	val HEALTH =make(HexPattern.fromAngles("aqwawqa", HexDir.NORTH_WEST), modLoc("health"), OpGetHealth)
+	val HEALTH = make(HexPattern.fromAngles("aqwawqa", HexDir.NORTH_WEST), modLoc("health"), OpGetHealth)
+	@JvmField
+	val ARMOUR = make(HexPattern.fromAngles("wqqqqw", HexDir.NORTH_WEST), modLoc("armour"), OpGetArmour)
+	@JvmField
+	val TOUGHNESS = make(HexPattern.fromAngles("aeqqqqea", HexDir.EAST), modLoc("toughness"), OpGetToughness)
 	@JvmField
 	val LIGHT_LEVEL = make(HexPattern.fromAngles("qedqde", HexDir.NORTH_EAST), modLoc("light_level"), OpGetLightLevel)
 

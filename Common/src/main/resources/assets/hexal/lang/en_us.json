@@ -35,6 +35,8 @@
   "hexcasting.spell.hexal:remaining_evals": "Thanatos' Reflection",
   "hexcasting.spell.hexal:breath": "Diver's Purification",
   "hexcasting.spell.hexal:health": "Nurse's Purification",
+  "hexcasting.spell.hexal:armour": "Squire's Purification",
+  "hexcasting.spell.hexal:toughness": "Boxer's Purification",
   "hexcasting.spell.hexal:light_level": "Lamplighter's Purification",
 
   "hexcasting.spell.hexal:factorial": "Factorial Purification",
@@ -110,6 +112,8 @@
   "hexal.page.hexal_basics.remaining_evals": "Adds the number of evaluations a hex is still capable of to the stack. This is reduced by $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$ and $(l:patterns/meta#hexcasting:for_each)$(action)Thoth's Gambit/$.",
   "hexal.page.hexal_basics.breath": "Removes a Living entity from the stack and returns how much breath it has left (i.e., how close it is to drowning).",
   "hexal.page.hexal_basics.health": "Removes a Living entity from the stack and returns how much health it has left (i.e., how close it is to dying).",
+  "hexal.page.hexal_basics.armour": "Removes a Living entity from the stack and returns how much armour it has.",
+  "hexal.page.hexal_basics.toughness": "Removes a Living entity from the stack and returns how much toughness it has (another property of armour).",
   "hexal.page.hexal_basics.light_level": "Removes a position vector from the stack and returns the light level at that position.",
 
   "hexal.entry.hexal_maths": "Hexal Maths",

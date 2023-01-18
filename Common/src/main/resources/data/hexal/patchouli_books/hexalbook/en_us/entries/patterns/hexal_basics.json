@@ -40,6 +40,22 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:armour",
+      "anchor": "hexal:armour",
+      "input": "entity",
+      "output": "num",
+      "text": "hexal.page.hexal_basics.armour"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:toughness",
+      "anchor": "hexal:toughness",
+      "input": "entity",
+      "output": "num",
+      "text": "hexal.page.hexal_basics.toughness"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:light_level",
       "anchor": "hexal:light_level",
       "input": "vec",
