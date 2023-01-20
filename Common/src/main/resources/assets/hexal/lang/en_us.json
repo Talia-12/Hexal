@@ -163,8 +163,8 @@
   "hexal.entry.great_wisps": "Great Wisp Spells",
   "hexal.page.great_wisps.wisp/consume.0": "Remove a wisp from the stack, and disassemble the wisp. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
   "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
-  "hexal.page.great_wisps.wisp/seon/set": "Bind one of my wisps closer to me; I may only have one bound wisp at a time, but whichever wisp is bound costs significantly less upkeep.",
-  "hexal.page.great_wisps.wisp/seon/get": "Returns my currently bound wisp. (This is not a great spell, I have simply placed it here for convenience.)",
+  "hexal.page.great_wisps.wisp/seon/set": "Bind one of my wisps closer to me; I may only have one bound wisp at a time, but whichever wisp is bound costs significantly less upkeep and increased range.",
+  "hexal.page.great_wisps.wisp/seon/get": "Returns my currently bound wisp. A new wisp can only be bound when this returns null. (This is not a great spell, I have simply placed it here for convenience.)",
 
   "hexal.entry.types": "Types",
   "hexal.page.types.type/block": "Remove a location from the stack, and adds the type of the block at that location to the stack.",

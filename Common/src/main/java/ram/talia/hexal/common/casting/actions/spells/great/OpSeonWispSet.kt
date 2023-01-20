@@ -25,7 +25,9 @@ object OpSeonWispSet : SpellAction {
 
     private data class Spell(val wisp: BaseCastingWisp) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
-            IXplatAbstractions.INSTANCE.setSeon(ctx.caster, wisp)
+            // seon can only be changed once the previous seon has died.
+            if (IXplatAbstractions.INSTANCE.getSeon(ctx.caster) == null)
+                IXplatAbstractions.INSTANCE.setSeon(ctx.caster, wisp)
         }
     }
 }

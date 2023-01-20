@@ -1,5 +1,6 @@
 package ram.talia.hexal.common.entities
 
+import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
@@ -94,7 +95,8 @@ class TickingWisp : BaseCastingWisp {
 		setPos(position() + step)
 	}
 
-	override fun maxSqrCastingDistance() = CASTING_RADIUS * CASTING_RADIUS
+	// Seon wisps have the same max range as the caster.
+	override fun maxSqrCastingDistance() = if (seon) { Action.MAX_DISTANCE * Action.MAX_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
