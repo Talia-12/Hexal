@@ -9,6 +9,7 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapEvalTooDeep
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.addBounded
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
@@ -30,14 +31,14 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
         val spell = when (ticking) {
             true -> {
                 media = args.getPositiveDouble(2, argc)
-                cost = COST_SUMMON_WISP_TICKING + (media * MediaConstants.DUST_UNIT).toInt()
+                cost = COST_SUMMON_WISP_TICKING.addBounded ((media * MediaConstants.DUST_UNIT).toInt())
                 Spell(true, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt())
             }
             false -> {
                 val vel = args.getVec3(2, argc)
                 media = args.getPositiveDouble(3, argc)
-                cost = max((COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt(), COST_SUMMON_WISP_PROJECTILE_MIN) +
-                        (media * MediaConstants.DUST_UNIT).toInt()
+                cost = max((COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt(), COST_SUMMON_WISP_PROJECTILE_MIN)
+                            .addBounded((media * MediaConstants.DUST_UNIT).toInt())
                 Spell(false, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt(), vel)
             }
         }

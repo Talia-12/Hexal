@@ -25,6 +25,16 @@ operator fun Vec3.plus(vec3: Vec3): Vec3 = this.add(vec3)
 operator fun Vec3.minus(vec3: Vec3): Vec3 = this.subtract(vec3)
 operator fun Vec3.unaryMinus(): Vec3 = this.scale(-1.0)
 
+/**
+ * If the addition would overflow, instead bound it at MAX/MIN.
+ */
+fun Int.addBounded(int: Int): Int {
+    return if (int > 0)
+        if (this + int < this) Int.MAX_VALUE else this + int
+    else
+        if (this + int > this) Int.MIN_VALUE else this + int
+}
+
 fun <T, R> Iterable<T>.reductions(initial: R, operation: (acc: R, T) -> R) : Sequence<R> = sequence {
     var last = initial
     forEach {
