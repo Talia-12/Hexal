@@ -19,7 +19,6 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -193,7 +192,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	fun scheduleCastSound() {
 		if (level.isClientSide)
 			throw Exception("BaseWisp.scheduleCastSound should only be called on server.") // TODO
-		HexalAPI.LOGGER.info("scheduling casting sound, level is $level")
+//		HexalAPI.LOGGER.debug("scheduling casting sound, level is $level")
 		IXplatAbstractions.INSTANCE.sendPacketNear(position(), 32.0, level as ServerLevel, MsgWispCastSoundAck(this))
 	}
 
@@ -201,7 +200,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		if (!level.isClientSide)
 			throw Exception("BaseWisp.playCastSoundClient should only be called on client.") // TODO
 
-		HexalAPI.LOGGER.info("playing casting sound, level is $level")
+//		HexalAPI.LOGGER.debug("playing casting sound, level is $level")
 		if (soundInstance == null || soundInstance!!.isStopped) {
 			soundInstance = WispCastingSoundInstance(this)
 			Minecraft.getInstance().soundManager.play(soundInstance!!)
