@@ -12,6 +12,7 @@
     "hexcasting.mishap.no_links": "%s没有链接",
     "hexcasting.mishap.self_link": "试图将%s链接至其自身",
   
+    "hexcasting.mishap.invalid_value.class.linkable": "一个可链接的事物",
     "hexcasting.mishap.invalid_value.class.wisp": "一个咒灵",
     "hexcasting.mishap.invalid_value.class.consumable_entity": "一个可被拆解的实体",
     "hexcasting.mishap.invalid_value.class.wisp.casting": "一个施法者咒灵",
@@ -70,8 +71,8 @@
     "hexcasting.spell.hexal:zone_entity/wisp": "区域之馏化：咒灵",
     "hexcasting.spell.hexal:zone_entity/not_wisp": "区域之馏化：非咒灵",
   
-    "hexcasting.spell.hexal:link/link_entity": "链接至实体",
-    "hexcasting.spell.hexal:link/link_two_entities": "链接实体",
+    "hexcasting.spell.hexal:link": "链接至实体",
+    "hexcasting.spell.hexal:link/others": "链接实体",
     "hexcasting.spell.hexal:link/unlink": "解链接",
     "hexcasting.spell.hexal:link/get": "电话簿之纯化",
     "hexcasting.spell.hexal:link/get_index": "识别之纯化",
@@ -80,6 +81,7 @@
     "hexcasting.spell.hexal:link/comm/send": "发送Iota",
     "hexcasting.spell.hexal:link/comm/read": "朗诵之精思",
     "hexcasting.spell.hexal:link/comm/num": "邮政局长之精思",
+    "hexcasting.spell.hexal:link/comm/clear": "除塞之策略",
     "hexcasting.spell.hexal:link/comm/open_transmit": "开始发信",
     "hexcasting.spell.hexal:link/comm/close_transmit": "结束发信",
   
@@ -143,10 +145,10 @@
     "hexal.page.wisps.wisp/trigger/move": "咒灵将在其抵达其被$(l:hexal:patterns/spells/wisps#hexal:wisp/move/target/set)$(action)导向/$的位置后才进行下一次施法。",
   
     "hexal.entry.links": "链接",
-    "hexal.page.links.0": "这些图案大致构建了一套我发现可用于在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$之间以及咒灵和其他事物间传递信息的系统。有若干图案与创建用于传递信息的链接有关，也有些和图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时创建有任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
-    "hexal.page.links.1": "连至咒灵的链接被创建后，该咒灵会按创建顺序为这些链接分配一个编号，这种编号可用作图案的参数，用于指代不同的链接。除非在描述中声明，本章节所有图案必须由咒灵运行，我自己绘制则会产生些不那么令人愉快的后果。",
-    "hexal.page.links.link/link_entity": "将施法者咒灵（即运行此图案的咒灵）链接至栈顶实体，且实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
-    "hexal.page.links.link/link_two_entities": "可在任意施法器件上运行。将两个实体链接，且两实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
+    "hexal.page.links.0": "这些图案大致构建了一套我发现可用于在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$之间以及咒灵和其他事物间传递信息的系统。有若干图案与创建用于传递信息的链接有关，也有些和图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时维持任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
+    "hexal.page.links.1": "创建链接后，创建端会自动为这些链接分配编号，其数值等于该端已有链接的个数，这种编号可用作图案的参数，用于指代不同的链接。本章节大部分图案介绍中标记的可链接类型并不是其字面意思，而是代表所有可被转换为可链接事物的类型。（例如，entity -> linkable entities，vec -> linkable blocks等等）",
+    "hexal.page.links.link": "将施法者咒灵（即运行此图案的咒灵）链接至栈顶实体，且实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
+    "hexal.page.links.link/others": "可在任意施法器件上运行。将两个实体链接，且两实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
     "hexal.page.links.link/unlink": "断开施法者咒灵所有的编号为所给数的链接。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
     "hexal.page.links.link/get": "移除栈顶数，并返回对应编号的链接所连的实体。",
     "hexal.page.links.link/get_index": "移除栈顶实体，并返回自身与该实体相连的链接的编号。若施法者与其无链接则返回 -1。",
@@ -154,6 +156,7 @@
     "hexal.page.links.link/comm/send": "移除栈顶元素与数，而后向编号为该数的链接发送该元素。消耗 1/100 个$(l:items/amethyst)$(item)紫水晶粉/$。",
     "hexal.page.links.link/comm/read": "当接收到 iota 时其将被加至一个队列中。此图案会将该队列中的首个 iota 压入栈顶并移出队列。",
     "hexal.page.links.link/comm/num": "返回接收队列中未读 iota 的个数。",
+    "hexal.page.links.link/comm/clear": "移除施法者接收队列中所有未读 iota。",
     "hexal.page.links.link/comm/open_transmit": "与$(l:patterns/patterns_as_iotas#hexcasting:open_paren)$(action)内省/$类似。在绘制$(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)结束发信/$后，所有我绘制的图案会通过编号为栈顶数的链接发送出去。",
     "hexal.page.links.link/comm/close_transmit": "在$(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)开始发信/$之后绘制，意味着发信过程结束。如果$(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)开始发信/$或$(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)结束发信/$由中介施法者（如咒灵）运行，则会产生事故。",
   
