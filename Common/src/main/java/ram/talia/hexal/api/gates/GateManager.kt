@@ -12,7 +12,7 @@ import ram.talia.hexal.api.spell.iota.GateIota
 import java.util.UUID
 
 /**
- * Stores which gate index references which entities.
+ * Stores which gate index references which entities. On Forge data saved by [GateEventHandler], on Fabric by [].
  */
 object GateManager {
     private var currentGateNum = 0
