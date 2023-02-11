@@ -2,6 +2,7 @@ package ram.talia.hexal.mixin;
 
 import at.petrak.hexcasting.api.mod.HexConfig;
 import at.petrak.hexcasting.api.spell.casting.CastingContext;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.lang.Math.max;
 
 /**
@@ -23,6 +27,7 @@ public abstract class MixinCastingContext implements IMixinCastingContext {
 	private BaseCastingWisp wisp;
 
 	private int consumedMedia;
+	private final Map<BlockPos, Integer> numTimesTicked = new HashMap<>(); // stores how many times each blockpos has been ticked by OpTick (tick acceleration). Used to compute cost.
 
 	@Override
 	public int getConsumedMedia() {
@@ -32,6 +37,16 @@ public abstract class MixinCastingContext implements IMixinCastingContext {
 	@Override
 	public void setConsumedMedia(int media) {
 		consumedMedia = max(media, 0);
+	}
+
+	@Override
+	public int getTimesTicked(BlockPos pos) {
+		return numTimesTicked.getOrDefault(pos, 0);
+	}
+
+	@Override
+	public void incTimesTicked(BlockPos pos) {
+		numTimesTicked.merge(pos, 1, Integer::sum);
 	}
 	
 	@Shadow(remap = false) private int depth;

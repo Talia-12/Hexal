@@ -1,5 +1,6 @@
 package ram.talia.hexal.api.spell.casting;
 
+import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
@@ -14,4 +15,8 @@ public interface IMixinCastingContext {
 	int getConsumedMedia();
 
 	void setConsumedMedia(int media);
+
+	int getTimesTicked(BlockPos pos);
+
+	void incTimesTicked(BlockPos pos);
 }

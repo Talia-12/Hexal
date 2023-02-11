@@ -153,6 +153,7 @@ object Patterns {
 			                 modLoc("wisp/seon/set"),
 	                         OpSeonWispSet,
 			        true)
+	val TICK = make(HexPattern.fromAngles("wwwdwdwwwawqqeqwqqwqeqwqq", HexDir.SOUTH_EAST), modLoc("tick"), OpTick, true)
 
 	// =============================== Link Stuff =====================================
 	@JvmField
