@@ -2,7 +2,7 @@ package ram.talia.hexal.forge.eventhandlers;
 
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import ram.talia.hexal.forge.saveddata.GateSavedData;
+import ram.talia.hexal.api.gates.GateSavedData;
 
 /**
  * Responsible for saving and loading the [GateManager] data.

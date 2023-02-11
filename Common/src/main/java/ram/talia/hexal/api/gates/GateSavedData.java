@@ -1,9 +1,8 @@
-package ram.talia.hexal.forge.saveddata;
+package ram.talia.hexal.api.gates;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
-import ram.talia.hexal.api.gates.GateManager;
 
 public class GateSavedData extends SavedData {
     public GateSavedData() {  }

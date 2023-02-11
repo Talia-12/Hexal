@@ -1,15 +1,17 @@
 package ram.talia.hexal.fabric
 
-import ram.talia.hexal.api.HexalAPI
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.core.Registry
 import net.minecraft.data.BuiltinRegistries
-import ram.talia.hexal.common.casting.RegisterPatterns
 import net.minecraft.resources.ResourceLocation
+import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.gates.GateSavedData
 import ram.talia.hexal.client.LinkablePacketHolder
+import ram.talia.hexal.common.casting.RegisterPatterns
 import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
@@ -20,6 +22,8 @@ import ram.talia.hexal.fabric.network.FabricPacketHandler
 import java.util.function.BiConsumer
 
 object FabricHexalInitializer : ModInitializer {
+    const val FILE_GATE_MANAGER = "hexal_gate_manager"
+
     override fun onInitialize() {
         HexalAPI.LOGGER.info("Hello Fabric World!")
 
@@ -35,6 +39,11 @@ object FabricHexalInitializer : ModInitializer {
     private fun initListeners() {
         // reattempt link render packets that failed to apply properly once every 20 ticks.
         ClientTickEvents.START_CLIENT_TICK.register { LinkablePacketHolder.maybeRetry() }
+
+        ServerLifecycleEvents.SERVER_STARTED.register {
+            val savedData = it.overworld().dataStorage.computeIfAbsent(::GateSavedData, ::GateSavedData, FILE_GATE_MANAGER)
+            savedData.setDirty()
+        }
     }
 
     private fun initRegistries() {
