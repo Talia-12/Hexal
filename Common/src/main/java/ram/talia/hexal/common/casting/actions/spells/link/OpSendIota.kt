@@ -23,7 +23,7 @@ object OpSendIota : SpellAction {
 		return Triple(
 			Spell(other, iota),
 			COST_SEND_IOTA,
-			listOf(ParticleSpray.burst(other.getPosition(), 1.5))
+			listOf()
 		)
 	}
 
