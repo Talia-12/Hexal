@@ -8,8 +8,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +39,12 @@ public interface IXplatAbstractions {
 
     void sendPacketNear(Vec3 pos, double radius, ServerLevel dimension, IMessage packet);
 
+    void sendPacketTracking(Entity entity, IMessage packet);
+    void sendPacketTracking(BlockEntity blockEntity, IMessage packet);
+    void sendPacketTracking(BlockPos pos, ServerLevel dimension, IMessage packet);
+    void sendPacketTracking(ChunkPos pos, ServerLevel dimension, IMessage packet);
+
+
     // https://github.com/VazkiiMods/Botania/blob/13b7bcd9cbb6b1a418b0afe455662d29b46f1a7f/Xplat/src/main/java/vazkii/botania/xplat/IXplatAbstractions.java#L157
     Packet<?> toVanillaClientboundPacket(IMessage message);
 
@@ -58,11 +67,11 @@ public interface IXplatAbstractions {
 
     PlayerLinkstore.RenderCentre getPlayerRenderCentre(Player player);
     
-    void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level);
+    void syncAddRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level);
 
-    void syncRemoveRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level);
+    void syncRemoveRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level);
 
-    void syncSetRenderLinks(ILinkable thisLink, List<ILinkable> others, ServerLevel level);
+    void syncSetRenderLinks(ILinkable sourceLink, List<ILinkable> sinks, ServerLevel level);
 
     //region Transmission
     ILinkable getPlayerTransmittingTo (ServerPlayer player);

@@ -7,8 +7,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,7 +24,9 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
-import ram.talia.hexal.forge.cap.CapSyncers;
+import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
+import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;
+import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
@@ -43,7 +48,27 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 						pos.x, pos.y, pos.z, radius * radius, dimension.dimension()
 		)), packet);
 	}
-	
+
+	@Override
+	public void sendPacketTracking(Entity entity, IMessage packet) {
+		ForgePacketHandler.getNetwork().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), packet);
+	}
+
+	@Override
+	public void sendPacketTracking(BlockEntity blockEntity, IMessage packet) {
+		sendPacketTracking(blockEntity.getBlockPos(), (ServerLevel) blockEntity.getLevel(), packet);
+	}
+
+	@Override
+	public void sendPacketTracking(BlockPos pos, ServerLevel dimension, IMessage packet) {
+		ForgePacketHandler.getNetwork().send(PacketDistributor.TRACKING_CHUNK.with(() -> dimension.getChunkAt(pos)), packet);
+	}
+
+	@Override
+	public void sendPacketTracking(ChunkPos pos, ServerLevel dimension, IMessage packet) {
+		sendPacketTracking(pos.getWorldPosition(), dimension, packet);
+	}
+
 	@Override
 	public Packet<?> toVanillaClientboundPacket(IMessage message) {
 		return ForgePacketHandler.getNetwork().toVanillaPacket(message, NetworkDirection.PLAY_TO_CLIENT);
@@ -74,30 +99,18 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 
 	@Override
-	public void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
-		var allPlayers = level.players();
-		
-		for (var other : allPlayers) {
-			CapSyncers.syncAddRenderLink(other, thisLink, otherLink);
-		}
+	public void syncAddRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
+		sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgAddRenderLinkAck(sourceLink, sinkLink));
 	}
 	
 	@Override
-	public void syncRemoveRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
-		var allPlayers = level.players();
-		
-		for (var other : allPlayers) {
-			CapSyncers.syncRemoveRenderLink(other, thisLink, otherLink);
-		}
+	public void syncRemoveRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
+		sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgRemoveRenderLinkAck(sourceLink, sinkLink));
 	}
 
 	@Override
-	public void syncSetRenderLinks(ILinkable thisLink, List<ILinkable> others, ServerLevel level) {
-		var allPlayers = level.players();
-
-		for (var other : allPlayers) {
-			CapSyncers.syncSetRenderLinks(other, thisLink, others);
-		}
+	public void syncSetRenderLinks(ILinkable sourceLink, List<ILinkable> sinks, ServerLevel level) {
+		sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgSetRenderLinksAck(sourceLink, sinks));
 	}
 	
 	@Override

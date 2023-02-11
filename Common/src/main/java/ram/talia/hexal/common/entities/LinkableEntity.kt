@@ -53,6 +53,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun getAddEntityPacket(): Packet<*> {
+		// TODO: not very efficient, sends all players tracking the entity a new packet every time someone else starts tracking it; would be better to only send to the one new tracker.
 		linkableHolder!!.syncAll()
 		return ClientboundAddEntityPacket(this)
 	}

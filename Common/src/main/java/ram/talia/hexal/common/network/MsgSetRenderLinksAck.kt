@@ -8,10 +8,17 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.nbt.toIRenderCentreList
+import ram.talia.hexal.api.nbt.toSyncTag
 
 class MsgSetRenderLinksAck(val sourceLinkTag: CompoundTag, val sinksTag: ListTag) : IMessage {
+
+    constructor(sourceLink: ILinkable, sinks: List<ILinkable>)
+            : this(LinkableRegistry.wrapSync(sourceLink), sinks.toSyncTag())
+
+
     override fun getFabricId() = ID
 
     override fun serialize(buf: FriendlyByteBuf) {

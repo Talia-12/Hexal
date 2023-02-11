@@ -7,9 +7,12 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 
 class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: CompoundTag) : IMessage {
+
+    constructor(sourceLink: ILinkable, sinkLink: ILinkable) : this(LinkableRegistry.wrapSync(sourceLink), LinkableRegistry.wrapSync(sinkLink))
 
     override fun getFabricId() = ID
 

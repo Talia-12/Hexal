@@ -10,8 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +23,15 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.spell.casting.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
+import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
+import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;
+import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
 import ram.talia.hexal.common.network.MsgToggleMacroAck;
 import ram.talia.hexal.fabric.cc.CCWispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+import java.util.Collection;
 import java.util.List;
 
 public class FabricXplatImpl implements IXplatAbstractions {
@@ -65,9 +72,32 @@ public class FabricXplatImpl implements IXplatAbstractions {
 
     @Override
     public void sendPacketNear(Vec3 pos, double radius, ServerLevel dimension, IMessage packet) {
+        sendPacketToPlayers(PlayerLookup.around(dimension, pos, radius), packet);
+    }
+
+    @Override
+    public void sendPacketTracking(Entity entity, IMessage packet) {
+        sendPacketToPlayers(PlayerLookup.tracking(entity), packet);
+    }
+
+    @Override
+    public void sendPacketTracking(BlockEntity blockEntity, IMessage packet) {
+        sendPacketToPlayers(PlayerLookup.tracking(blockEntity), packet);
+    }
+
+    @Override
+    public void sendPacketTracking(BlockPos pos, ServerLevel dimension, IMessage packet) {
+        sendPacketToPlayers(PlayerLookup.tracking(dimension, pos), packet);
+    }
+
+    @Override
+    public void sendPacketTracking(ChunkPos pos, ServerLevel dimension, IMessage packet) {
+        sendPacketToPlayers(PlayerLookup.tracking(dimension, pos), packet);
+    }
+
+    private void sendPacketToPlayers(Collection<ServerPlayer> players, IMessage packet) {
         var pkt = ServerPlayNetworking.createS2CPacket(packet.getFabricId(), packet.toBuf());
-        var nears = PlayerLookup.around(dimension, pos, radius);
-        for (var p : nears) {
+        for (var p : players) {
             p.connection.send(pkt);
         }
     }
@@ -108,21 +138,18 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
 
     @Override
-    public void syncAddRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
-        // TODO Do render link syncing on fabric
-//        HexalCardinalComponents.PLAYER_LINKSTORE.get(player).addRenderLink(link);
+    public void syncAddRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
+        sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgAddRenderLinkAck(sourceLink, sinkLink));
     }
     
     @Override
-    public void syncRemoveRenderLink(ILinkable thisLink, ILinkable otherLink, ServerLevel level) {
-        // TODO
-//        var cc = HexalCardinalComponents.PLAYER_LINKSTORE.get(player);
-//        cc.removeRenderLink(link);
+    public void syncRemoveRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
+        sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgRemoveRenderLinkAck(sourceLink, sinkLink));
     }
 
     @Override
-    public void syncSetRenderLinks(ILinkable thisLink, List<ILinkable> others, ServerLevel level) {
-        // TODO
+    public void syncSetRenderLinks(ILinkable sourceLink, List<ILinkable> sinks, ServerLevel level) {
+        sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgSetRenderLinksAck(sourceLink, sinks));
     }
 
     //region Transmitting
