@@ -14,6 +14,9 @@ import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes
 import ram.talia.hexal.common.casting.actions.*
 import ram.talia.hexal.common.casting.actions.everbook.*
 import ram.talia.hexal.common.casting.actions.spells.*
+import ram.talia.hexal.common.casting.actions.spells.gates.OpCloseGate
+import ram.talia.hexal.common.casting.actions.spells.gates.OpMakeGate
+import ram.talia.hexal.common.casting.actions.spells.gates.OpMarkGate
 import ram.talia.hexal.common.casting.actions.spells.great.*
 import ram.talia.hexal.common.casting.actions.spells.link.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
@@ -143,18 +146,6 @@ object Patterns {
 			modLoc("wisp/seon/get"),
 			OpSeonWispGet)
 
-	// Great
-	@JvmField
-	val CONSUME_WISP = make(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
-						              modLoc("wisp/consume"),
-						              OpConsumeWisp,
-						              true)
-	val WISP_SEON_SET = make(HexPattern.fromAngles("aqweewqaeaqweewqaqwww", HexDir.SOUTH_WEST),
-			                 modLoc("wisp/seon/set"),
-	                         OpSeonWispSet,
-			        true)
-	val TICK = make(HexPattern.fromAngles("wwwdwdwwwawqqeqwqqwqeqwqq", HexDir.SOUTH_EAST), modLoc("tick"), OpTick, true)
-
 	// =============================== Link Stuff =====================================
 	@JvmField
 	val LINK = make(HexPattern.fromAngles("eaqaaeqqqqqaweaqaaw", HexDir.EAST), modLoc("link"), OpLink)
@@ -180,6 +171,29 @@ object Patterns {
 	val LINK_COMM_OPEN_TRANSMIT = make(HexPattern.fromAngles("qwdedwq", HexDir.WEST), modLoc("link/comm/open_transmit"), OpOpenTransmit)
 	@JvmField
 	val LINK_COMM_CLOSE_TRANSMIT = make(HexPattern.fromAngles("ewaqawe", HexDir.EAST), modLoc("link/comm/close_transmit"), OpCloseTransmit)
+
+	// =============================== Gate Stuff =====================================
+	@JvmField
+	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.EAST), modLoc("gate/mark"), OpMarkGate)
+	@JvmField
+	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.EAST), modLoc("gate/close"), OpCloseGate)
+
+
+	// ============================== Great Stuff =====================================
+	@JvmField
+	val CONSUME_WISP = make(HexPattern.fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", HexDir.NORTH_WEST),
+			modLoc("wisp/consume"),
+			OpConsumeWisp,
+			true)
+	@JvmField
+	val WISP_SEON_SET = make(HexPattern.fromAngles("aqweewqaeaqweewqaqwww", HexDir.SOUTH_WEST),
+			modLoc("wisp/seon/set"),
+			OpSeonWispSet,
+			true)
+	@JvmField
+	val TICK = make(HexPattern.fromAngles("wwwdwdwwwawqqeqwqqwqeqwqq", HexDir.SOUTH_EAST), modLoc("tick"), OpTick, true)
+	@JvmField
+	val GATE_MAKE = make(HexPattern.fromAngles("qwqwqwqwqwqqeaeaeaeaeae", HexDir.WEST), modLoc("gate/make"), OpMakeGate, true)
 
 	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): PatternIota {
 		val triple = Triple(pattern, location, operator)

@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
+import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
 import ram.talia.hexal.api.spell.iota.ItemTypeIota
 import ram.talia.hexal.common.entities.BaseCastingWisp
@@ -110,4 +111,12 @@ fun List<Iota>.getItemBlockType(idx: Int, argc: Int = 0): Either<Item, Block> {
         return x.either
     }
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.block")
+}
+
+fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is GateIota)
+        return x
+
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "gate")
 }

@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
+import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
 import ram.talia.hexal.api.spell.iota.ItemTypeIota
 import java.util.function.BiConsumer
@@ -30,6 +31,8 @@ object HexalIotaTypes {
     val ENTITY_TYPE: IotaType<EntityTypeIota> = type("entity_type", EntityTypeIota.TYPE)
     @JvmField
     val ITEM_TYPE: IotaType<ItemTypeIota> = type("item_type", ItemTypeIota.TYPE)
+    @JvmField
+    val GATE_TYPE: IotaType<GateIota> = type("gate", GateIota.TYPE)
 
     private fun <U : Iota, T : IotaType<U>> type(name: String, type: T): T {
         val old = TYPES.put(modLoc(name), type)

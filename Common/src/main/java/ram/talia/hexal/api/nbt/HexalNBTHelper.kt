@@ -79,6 +79,24 @@ fun List<Int>.toNbtList(): ListTag {
 	return listTag
 }
 
+@JvmName("toNbtListUUID")
+
+fun List<UUID>.toNbtList(): ListTag {
+	val listTag = ListTag()
+
+	this.forEach { listTag.add(NbtUtils.createUUID(it)) }
+
+	return listTag
+}
+
+fun ListTag.toUUIDList(): MutableList<UUID> {
+	val uuids = mutableListOf<UUID>()
+
+	this.forEach { uuids.add(NbtUtils.loadUUID(it)) }
+
+	return uuids
+}
+
 @JvmName("toNbtListTag")
 fun List<Tag>.toNbtList(): ListTag {
 	val listTag = ListTag()
