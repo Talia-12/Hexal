@@ -14,9 +14,7 @@ import ram.talia.hexal.api.gates.GateManager;
 import ram.talia.hexal.common.lib.HexalIotaTypes;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GateIota extends Iota {
 
@@ -31,7 +29,13 @@ public class GateIota extends Iota {
     public Set<Entity> getMarked(ServerLevel level) {
         var marked = GateManager.allMarked.getOrDefault(this.getGateIndex(), new HashSet<>());
 
-        return marked.stream().map(level::getEntity).filter(Objects::isNull).collect(Collectors.toSet());
+        var out = new HashSet<Entity>();
+        for (var mark : marked) {
+            var markEntity = level.getEntity(mark);
+            if (markEntity != null)
+                out.add(markEntity);
+        }
+        return out;
     }
 
     public void mark(Entity entity) {
