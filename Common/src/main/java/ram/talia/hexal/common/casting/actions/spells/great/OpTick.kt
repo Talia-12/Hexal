@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
  * Tick Acceleration!
  */
 object OpTick : SpellAction {
-    const val COST_FOR_FIRST = MediaConstants.DUST_UNIT / 2
+    const val COST_FOR_FIRST = MediaConstants.DUST_UNIT / 10
     const val FACTOR_PER_TICKED = 1.1
 
     override val argc = 1

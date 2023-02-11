@@ -30,6 +30,11 @@ object GateManager {
         allMarked[gate]!!.add(entity)
     }
 
+    @JvmStatic
+    fun clearMarked(gate: Int) {
+        allMarked.remove(gate)
+    }
+
     /**
      * This creates a new gate iota with a new index; any gate iota created any other way
      * will be a reference to a previously made gate.

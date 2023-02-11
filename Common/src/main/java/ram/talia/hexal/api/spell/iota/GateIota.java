@@ -38,6 +38,10 @@ public class GateIota extends Iota {
         GateManager.mark(this.getGateIndex(), entity);
     }
 
+    public void clearMarked() {
+        GateManager.clearMarked(this.getGateIndex());
+    }
+
     @Override
     protected boolean toleratesOther(Iota that) {
         return typesMatch(this, that) &&

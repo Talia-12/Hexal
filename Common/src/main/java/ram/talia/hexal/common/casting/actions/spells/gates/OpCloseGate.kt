@@ -19,7 +19,7 @@ import ram.talia.hexal.api.getGate
 import ram.talia.hexal.api.minus
 
 object OpCloseGate : SpellAction {
-    const val COST = MediaConstants.SHARD_UNIT
+    const val COST = MediaConstants.SHARD_UNIT / 2
 
     override val argc = 2
 
@@ -32,6 +32,7 @@ object OpCloseGate : SpellAction {
             throw MishapLocationTooFarAway(targetPos, "too_close_to_out")
 
         val gatees = gate.getMarked(ctx.world)
+        gate.clearMarked()
 
         // make particle effects at every teleported entity.
         var meanEyeHeight = 0.0
