@@ -25,7 +25,7 @@ object OpCloseGate : SpellAction {
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val gate = args.getGate(0, argc)
-        val targetPos = args.getVec3(0, argc)
+        val targetPos = args.getVec3(1, argc)
 
         ctx.assertVecInRange(targetPos)
         if (!ctx.isVecInWorld(targetPos.subtract(0.0, 1.0, 0.0)))
@@ -47,7 +47,7 @@ object OpCloseGate : SpellAction {
         )
     }
 
-    private data class Spell(val gatees: List<Entity>, val targetPos: Vec3) : RenderedSpell {
+    private data class Spell(val gatees: Set<Entity>, val targetPos: Vec3) : RenderedSpell {
         // stole all this from the default teleport; sadge that it isn't accessible.
 
         override fun cast(ctx: CastingContext) {

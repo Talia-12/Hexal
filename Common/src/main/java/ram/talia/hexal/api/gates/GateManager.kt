@@ -18,14 +18,14 @@ object GateManager {
     private var currentGateNum = 0
 
     @JvmField
-    val allMarked: MutableMap<Int, MutableList<UUID>> = mutableMapOf()
+    val allMarked: MutableMap<Int, MutableSet<UUID>> = mutableMapOf()
 
     @JvmStatic
     fun mark(gate: Int, entity: Entity) = mark(gate, entity.uuid)
 
     @JvmStatic
     fun mark(gate: Int, entity: UUID) {
-        allMarked.putIfAbsent(gate, mutableListOf())
+        allMarked.putIfAbsent(gate, mutableSetOf())
 
         allMarked[gate]!!.add(entity)
     }
@@ -55,7 +55,7 @@ object GateManager {
             val markedTag = tag.getCompound(TAG_MARKED)
 
             for (gateStr in markedTag.allKeys) {
-                allMarked[gateStr.toInt()] = markedTag.getList(gateStr, Tag.TAG_INT_ARRAY).toUUIDList()
+                allMarked[gateStr.toInt()] = markedTag.getList(gateStr, Tag.TAG_INT_ARRAY).toUUIDList().toMutableSet()
             }
         }
     }
@@ -67,7 +67,7 @@ object GateManager {
         val markedTag = CompoundTag()
 
         for ((gate, marked) in allMarked) {
-            markedTag.putList(gate.toString(), marked.toNbtList())
+            markedTag.putList(gate.toString(), marked.toList().toNbtList())
         }
 
         tag.putCompound(TAG_MARKED, markedTag)

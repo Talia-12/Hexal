@@ -16,7 +16,7 @@ object OpMarkGate : ConstMediaAction {
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
         val gate = args.getGate(0, argc)
-        val entity = args.getEntity(0, argc)
+        val entity = args.getEntity(1, argc)
         ctx.assertEntityInRange(entity)
 
         if (!entity.canChangeDimensions() || entity.type.`is`(HexEntityTags.CANNOT_TELEPORT))

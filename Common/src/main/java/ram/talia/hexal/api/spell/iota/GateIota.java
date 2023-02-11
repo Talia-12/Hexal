@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import ram.talia.hexal.api.gates.GateManager;
 import ram.talia.hexal.common.lib.HexalIotaTypes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GateIota extends Iota {
@@ -28,10 +28,10 @@ public class GateIota extends Iota {
         return (int) this.payload;
     }
 
-    public List<Entity> getMarked(ServerLevel level) {
-        var marked = GateManager.allMarked.getOrDefault(this.getGateIndex(), new ArrayList<>());
+    public Set<Entity> getMarked(ServerLevel level) {
+        var marked = GateManager.allMarked.getOrDefault(this.getGateIndex(), new HashSet<>());
 
-        return marked.stream().map(level::getEntity).filter(Objects::isNull).collect(Collectors.toList());
+        return marked.stream().map(level::getEntity).filter(Objects::isNull).collect(Collectors.toSet());
     }
 
     public void mark(Entity entity) {

@@ -15,6 +15,7 @@ import ram.talia.hexal.common.casting.actions.*
 import ram.talia.hexal.common.casting.actions.everbook.*
 import ram.talia.hexal.common.casting.actions.spells.*
 import ram.talia.hexal.common.casting.actions.spells.gates.OpCloseGate
+import ram.talia.hexal.common.casting.actions.spells.gates.OpGetMarkedGate
 import ram.talia.hexal.common.casting.actions.spells.gates.OpMakeGate
 import ram.talia.hexal.common.casting.actions.spells.gates.OpMarkGate
 import ram.talia.hexal.common.casting.actions.spells.great.*
@@ -174,9 +175,11 @@ object Patterns {
 
 	// =============================== Gate Stuff =====================================
 	@JvmField
-	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.EAST), modLoc("gate/mark"), OpMarkGate)
+	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.WEST), modLoc("gate/mark"), OpMarkGate)
 	@JvmField
-	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.EAST), modLoc("gate/close"), OpCloseGate)
+	val GATE_MARKED_GET = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/marked/get"), OpGetMarkedGate)
+	@JvmField
+	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.WEST), modLoc("gate/close"), OpCloseGate)
 
 
 	// ============================== Great Stuff =====================================
