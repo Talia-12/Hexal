@@ -4,20 +4,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.GenericEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.common.casting.RegisterPatterns;
@@ -27,10 +17,10 @@ import ram.talia.hexal.common.lib.feature.HexalFeatures;
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
 import ram.talia.hexal.common.recipe.HexalRecipeTypes;
-import ram.talia.hexal.forge.cap.CapSyncers;
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
+import ram.talia.hexal.forge.eventhandlers.RenderLinkEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import thedarkcolour.kotlinforforge.KotlinModLoadingContext;
@@ -92,11 +82,11 @@ public class ForgeHexalInitializer {
 //		});
 		
 		modBus.register(HexalForgeDataGenerators.class);
-		
-		evBus.register(WispCastingMangerEventHandler.class);
-		evBus.register(CapSyncers.class);
-		evBus.register(PlayerLinkstoreEventHandler.class);
+
 		evBus.register(EverbookEventHandler.class);
+		evBus.register(PlayerLinkstoreEventHandler.class);
+		evBus.register(RenderLinkEventHandler.class); // client only, might move into ForgeHexalClientInitializer if possible?
+		evBus.register(WispCastingMangerEventHandler.class);
 	}
 	
 	// https://github.com/VazkiiMods/Botania/blob/1.18.x/Forge/src/main/java/vazkii/botania/forge/ForgeCommonInitializer.java

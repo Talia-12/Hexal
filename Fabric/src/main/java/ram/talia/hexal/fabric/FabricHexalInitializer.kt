@@ -4,10 +4,12 @@ import ram.talia.hexal.api.HexalAPI
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.core.Registry
 import net.minecraft.data.BuiltinRegistries
 import ram.talia.hexal.common.casting.RegisterPatterns
 import net.minecraft.resources.ResourceLocation
+import ram.talia.hexal.client.LinkablePacketHolder
 import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
@@ -31,7 +33,8 @@ object FabricHexalInitializer : ModInitializer {
     }
 
     private fun initListeners() {
-
+        // reattempt link render packets that failed to apply properly once every 20 ticks.
+        ClientTickEvents.START_CLIENT_TICK.register { LinkablePacketHolder.maybeRetry() }
     }
 
     private fun initRegistries() {
@@ -53,7 +56,7 @@ object FabricHexalInitializer : ModInitializer {
         HexalRecipeSerializers.registerSerializers(bind(Registry.RECIPE_SERIALIZER))
         HexalRecipeTypes.registerTypes(bind(Registry.RECIPE_TYPE))
 
-        HexalIotaTypes.registerTypes();
+        HexalIotaTypes.registerTypes()
     }
 
 

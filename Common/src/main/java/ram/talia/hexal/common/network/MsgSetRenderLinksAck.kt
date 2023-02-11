@@ -12,6 +12,7 @@ import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.nbt.toIRenderCentreList
 import ram.talia.hexal.api.nbt.toSyncTag
+import ram.talia.hexal.client.LinkablePacketHolder
 
 class MsgSetRenderLinksAck(val sourceLinkTag: CompoundTag, val sinksTag: ListTag) : IMessage {
 
@@ -58,8 +59,8 @@ class MsgSetRenderLinksAck(val sourceLinkTag: CompoundTag, val sinksTag: ListTag
 
                 val sinks = self.sinksTag.toIRenderCentreList(mc.level!!)
 
-                // add the sink to the source's list of IRenderCentres only if both are non-null.
-                LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.setRenderLinks(sinks)
+                // if the source is null, schedule the packet to retry.
+                LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.setRenderLinks(sinks) ?: LinkablePacketHolder.schedule(self)
             }
         }
     }
