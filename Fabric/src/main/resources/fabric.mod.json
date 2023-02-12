@@ -30,7 +30,7 @@
     "cardinal-components": [
       "ram.talia.hexal.fabric.cc.HexalCardinalComponents"
     ],
-    "rei_plugins_v0": [
+    "rei_client": [
       "ram.talia.hexal.fabric.interop.rei.HexalREIPlugin"
     ],
     "emi": [
