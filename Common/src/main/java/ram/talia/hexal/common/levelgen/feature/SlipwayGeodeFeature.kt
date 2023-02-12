@@ -140,7 +140,7 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 							// put a slipway in the middle of the geode, this is the only change I've made to the generation
 							centre /= innerCount.toDouble()
 
-							HexalAPI.LOGGER.info("making a slipway at ${BlockPos(centre)}, origin is $origin")
+							HexalAPI.LOGGER.debug("making a slipway at ${BlockPos(centre)}, origin is $origin")
 							safeSetBlock(level, BlockPos(centre), HexalBlocks.SLIPWAY.defaultBlockState(), { true })
 
 							return true
