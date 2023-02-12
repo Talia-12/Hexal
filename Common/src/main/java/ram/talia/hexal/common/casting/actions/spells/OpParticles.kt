@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.SpellAction
@@ -9,13 +8,12 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import com.mojang.datafixers.util.Either
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.*
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.common.network.MsgParticleLinesAck
 import ram.talia.hexal.common.network.MsgSingleParticleAck
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpParticles : SpellAction {
-    const val COST_PER_VEC = MediaConstants.DUST_UNIT / 10
-
     override val argc = 1
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -26,7 +24,7 @@ object OpParticles : SpellAction {
 
         return Triple(
                 Spell(loc),
-                loc.map({ COST_PER_VEC }, { it.size * COST_PER_VEC }),
+                loc.map({ HexalConfig.server.particlesCost }, { it.size * HexalConfig.server.particlesCost }),
                 listOf()
         )
     }

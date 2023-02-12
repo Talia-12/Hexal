@@ -1,15 +1,13 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 
 object OpUnlink : SpellAction {
-	const val UNLINK_COST = 2 * MediaConstants.DUST_UNIT
-
 	override val argc = 1
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -20,7 +18,7 @@ object OpUnlink : SpellAction {
 
 		return Triple(
 			Spell(linkThis, other),
-			UNLINK_COST,
+			HexalConfig.server.unlinkCost,
 			listOf(ParticleSpray.burst(other.getPosition(), 1.5))
 		)
 	}

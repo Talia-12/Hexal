@@ -17,6 +17,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
@@ -69,8 +70,7 @@ class TickingWisp : BaseCastingWisp {
 		return serStack.get(level as ServerLevel).map(Iota::display)
 	}
 
-	override val normalCostPerTick =  2 * WISP_COST_PER_TICK_NORMAL
-	override val untriggeredCostPerTick =  2 * WISP_COST_PER_TICK_UNTRIGGERED
+	override val normalCostPerTick =  HexalConfig.server.tickingWispUpkeepPerTick
 
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")

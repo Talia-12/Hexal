@@ -10,6 +10,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapEvalTooDeep
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.addBounded
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
@@ -31,13 +32,13 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
         val spell = when (ticking) {
             true -> {
                 media = args.getPositiveDouble(2, argc)
-                cost = COST_SUMMON_WISP_TICKING.addBounded ((media * MediaConstants.DUST_UNIT).toInt())
+                cost = HexalConfig.server.summonTickingWispCost.addBounded ((media * MediaConstants.DUST_UNIT).toInt())
                 Spell(true, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt())
             }
             false -> {
                 val vel = args.getVec3(2, argc)
                 media = args.getPositiveDouble(3, argc)
-                cost = max((COST_SUMMON_WISP_PROJECTILE * vel.lengthSqr()).toInt(), COST_SUMMON_WISP_PROJECTILE_MIN)
+                cost = max((HexalConfig.server.summonProjectileWispCost * vel.lengthSqr()).toInt(), HexalConfig.server.summonProjectileWispMinCost)
                             .addBounded((media * MediaConstants.DUST_UNIT).toInt())
                 Spell(false, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt(), vel)
             }
@@ -68,11 +69,5 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
             wisp.serHex.set(hex)
             ctx.world.addFreshEntity(wisp)
         }
-    }
-
-    companion object {
-        private const val COST_SUMMON_WISP_TICKING = 3 * MediaConstants.DUST_UNIT
-        private const val COST_SUMMON_WISP_PROJECTILE = 3/1.75 * MediaConstants.DUST_UNIT
-        private const val COST_SUMMON_WISP_PROJECTILE_MIN = MediaConstants.DUST_UNIT / 2
     }
 }

@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.SpellAction
@@ -15,12 +14,11 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getGate
 import ram.talia.hexal.api.minus
 
 object OpCloseGate : SpellAction {
-    const val COST = MediaConstants.SHARD_UNIT / 2
-
     override val argc = 2
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -42,7 +40,7 @@ object OpCloseGate : SpellAction {
 
         return Triple(
                 Spell(gatees, targetPos),
-                COST,
+                HexalConfig.server.closeGateCost,
                 burst
         )
     }

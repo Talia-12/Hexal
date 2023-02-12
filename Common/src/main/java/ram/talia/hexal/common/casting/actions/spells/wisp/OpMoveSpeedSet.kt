@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
@@ -11,8 +11,6 @@ import kotlin.math.ln
 import kotlin.math.min
 
 object OpMoveSpeedSet : SpellAction {
-    const val BASE_COST = MediaConstants.DUST_UNIT
-
     override val argc = 1
 
     @Suppress("CAST_NEVER_SUCCEEDS")
@@ -29,11 +27,11 @@ object OpMoveSpeedSet : SpellAction {
         val oldMax = tWisp.maximumMoveMultiplier
 
         // cost scales quadratically with newMult, but as with Impulse a player can reduce the cost requirement with
-        // many small increases to the max (limited to a minimum cost of BASE_COST if the maximum is being updated at
+        // many small increases to the max (limited to a minimum cost of moveSpeedSetCost if the maximum is being updated at
         // all to not incentivise very laggy stuff). If the newMult is older than the old max, there is no cost;
         // reducing speed is not penalised.
         val cost = if (newMult > oldMax) {
-            (BASE_COST * min(1.0, (newMult - oldMax) * (newMult - oldMax))).toInt()
+            (HexalConfig.server.moveSpeedSetCost * min(1.0, (newMult - oldMax) * (newMult - oldMax))).toInt()
         } else 0
 
         return Triple(

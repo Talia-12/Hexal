@@ -1,15 +1,14 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 
 object OpSendIota : SpellAction {
-	private const val COST_SEND_IOTA = MediaConstants.DUST_UNIT / 100
 	override val argc = 2
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -22,7 +21,7 @@ object OpSendIota : SpellAction {
 
 		return Triple(
 			Spell(other, iota),
-			COST_SEND_IOTA,
+			HexalConfig.server.sendIotaCost,
 			listOf()
 		)
 	}

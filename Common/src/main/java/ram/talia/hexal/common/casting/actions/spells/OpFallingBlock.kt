@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.mod.HexConfig
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
@@ -21,22 +20,21 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.FallingBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import kotlin.math.min
 
 // https://github.com/VazkiiMods/Botania/blob/1.19.x/Xplat/src/main/java/vazkii/botania/common/item/lens/LensWeight.java
 object OpFallingBlock : SpellAction {
-	private const val COST = (MediaConstants.DUST_UNIT * 1.5).toInt()
-
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val pos = args.getVec3(0, argc)
 		ctx.assertVecInRange(pos)
 
 		val centered = Vec3.atCenterOf(BlockPos(pos))
 		return Triple(
 			Spell(pos),
-			COST,
+			HexalConfig.server.fallingBlockCost,
 			listOf(ParticleSpray.burst(centered, 1.0))
 		)
 	}

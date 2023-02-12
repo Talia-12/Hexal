@@ -1,7 +1,6 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
@@ -19,6 +18,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -122,14 +122,14 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			true  -> normalCostPerTick
 			false -> untriggeredCostPerTick
 		}
-		cost += COST_PER_LINK_PER_TICK * numLinked()
+		cost += HexalConfig.server.linkUpkeepPerTick * numLinked()
 		if (seon)
-			cost /= SEON_DISCOUNT_FACTOR
+			cost = (cost / HexalConfig.server.seonDiscountFactor).toInt()
 		media -= cost
 	}
 
-	open val normalCostPerTick = WISP_COST_PER_TICK_NORMAL
-	open val untriggeredCostPerTick = WISP_COST_PER_TICK_UNTRIGGERED
+	open val normalCostPerTick = HexalConfig.server.projectileWispUpkeepPerTick
+	open val untriggeredCostPerTick = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
 
 
 	/**
@@ -296,11 +296,6 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		const val TAG_HEX = "hex"
 		const val TAG_ACTIVE_TRIGGER = "active_trigger"
 		const val TAG_SEON = "seon"
-
-		const val WISP_COST_PER_TICK_NORMAL      = (0.325 * MediaConstants.DUST_UNIT / 20.0).toInt()
-		const val WISP_COST_PER_TICK_UNTRIGGERED = (0.25  * MediaConstants.DUST_UNIT / 20.0).toInt()
-		const val COST_PER_LINK_PER_TICK = (0.01 * MediaConstants.DUST_UNIT / 20.0).toInt()
-		const val SEON_DISCOUNT_FACTOR = 20
 	}
 }
 

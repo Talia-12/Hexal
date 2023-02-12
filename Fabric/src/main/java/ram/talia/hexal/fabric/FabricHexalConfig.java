@@ -110,6 +110,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
             @ConfigEntry.Gui.Tooltip
             int linkUpkeepPerTick = DEFAULT_LINK_UPKEEP_PER_TICK;
+            @ConfigEntry.Gui.Tooltip
+            double seonDiscountFactor = DEFAULT_SEON_DISCOUNT_FACTOR;
         }
 
 
@@ -166,6 +168,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
             @ConfigEntry.Gui.Tooltip
             int tickCostPerTicked = DEFAULT_TICK_COST_PER_TICKED;
+            @ConfigEntry.BoundedDiscrete(min = MIN_TICK_RANDOM_TICK_I_PROB, max = MAX_TICK_RANDOM_TICK_I_PROB)
+            @ConfigEntry.Gui.Tooltip
+            int tickRandomTickIProb = DEFAULT_TICK_RANDOM_TICK_I_PROB;
         }
 
 
@@ -190,6 +195,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.wispUpkeep.projectileWispUpkeepPerTick = bound(this.wispUpkeep.projectileWispUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
             this.wispUpkeep.untriggeredWispUpkeepDiscount = bound(this.wispUpkeep.untriggeredWispUpkeepDiscount, MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT, MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT);
             this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispUpkeep.seonDiscountFactor = bound(this.wispUpkeep.seonDiscountFactor, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
 
             // costs of link spells
             this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -207,6 +213,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.greatSpells.seonWispSetCost = bound(this.greatSpells.seonWispSetCost, DEF_MIN_COST, DEF_MAX_COST);
             this.greatSpells.tickConstantCost = bound(this.greatSpells.tickConstantCost, DEF_MIN_COST, DEF_MAX_COST);
             this.greatSpells.tickCostPerTicked = bound(this.greatSpells.tickCostPerTicked, DEF_MIN_COST, DEF_MAX_COST);
+
+            this.greatSpells.tickRandomTickIProb = bound(this.greatSpells.tickRandomTickIProb, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
         }
 
         private int bound(int toBind, int lower, int upper) {
@@ -289,6 +297,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
+        public double getSeonDiscountFactor() {
+            return wispUpkeep.seonDiscountFactor;
+        }
+
+        @Override
         public int getLinkCost() {
             return linkSpells.linkCost;
         }
@@ -341,6 +354,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getTickCostPerTicked() {
             return greatSpells.tickCostPerTicked;
+        }
+
+        @Override
+        public int getTickRandomTickIProb() {
+            return greatSpells.tickRandomTickIProb;
         }
         //endregion
     }

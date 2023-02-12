@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.SpellAction
@@ -21,11 +20,10 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBlockType
 
 object OpPlaceType : SpellAction {
-    const val COST = MediaConstants.DUST_UNIT / 8
-
     override val argc = 2
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -48,7 +46,7 @@ object OpPlaceType : SpellAction {
 
         return Triple(
                 Spell(pos, block),
-                COST,
+                HexalConfig.server.placeTypeCost,
                 listOf(ParticleSpray.cloud(Vec3.atCenterOf(pos), 1.0))
         )
     }

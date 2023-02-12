@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.EntityIota
@@ -18,19 +17,18 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.util.*
 
 object OpSmelt : SpellAction {
-    const val COST_PER_SMELT = (0.75 * MediaConstants.DUST_UNIT).toInt()
-
     override val argc = 1
 
     fun numToSmelt(toSmelt: Either<Vec3, ItemEntity>): Int {
         return toSmelt.map({ 1 }, { item -> item.item.count })
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val toSmelt = when (val toSmeltIota = args[0]) {
             is Vec3Iota -> Either.left(Vec3.atCenterOf(BlockPos(toSmeltIota.vec3)))
             is EntityIota -> Either.right(toSmeltIota.entity as? ItemEntity ?: // throws an error if the entity isn't an item.
@@ -43,7 +41,7 @@ object OpSmelt : SpellAction {
 
         return Triple(
             Spell(toSmelt),
-            COST_PER_SMELT * numToSmelt(toSmelt),
+            HexalConfig.server.smeltCost * numToSmelt(toSmelt),
             listOf(ParticleSpray.burst(pos, 1.0))
         )
     }

@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
@@ -10,22 +9,21 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.LiquidBlock
 import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.common.recipe.CopyProperties
 import ram.talia.hexal.common.recipe.HexalRecipeTypes
 
 object OpFreeze : SpellAction {
-	const val FREEZE_COST = 3 * MediaConstants.DUST_UNIT
-
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val toFreeze = Vec3.atCenterOf(BlockPos(args.getVec3(0, argc)))
 
 		ctx.assertVecInRange(toFreeze)
 
 		return Triple(
 			Spell(toFreeze),
-			FREEZE_COST,
+			HexalConfig.server.freezeCost,
 			listOf(ParticleSpray.burst(toFreeze, 1.0))
 		)
 	}

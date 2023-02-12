@@ -1,18 +1,16 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
 
 object OpLink : SpellAction {
-	const val LINK_COST = MediaConstants.SHARD_UNIT
-
 	override val argc = 1
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -31,7 +29,7 @@ object OpLink : SpellAction {
 
 		return Triple(
 			Spell(linkThis, linkOther),
-			LINK_COST,
+			HexalConfig.server.linkCost,
 			listOf(ParticleSpray.burst(linkOther.getPosition(), 1.5))
 		)
 	}

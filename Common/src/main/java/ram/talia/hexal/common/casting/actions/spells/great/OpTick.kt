@@ -2,7 +2,6 @@
 
 package ram.talia.hexal.common.casting.actions.spells.great
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.SpellAction
@@ -14,19 +13,17 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 
 /**
  * Tick Acceleration!
  */
 object OpTick : SpellAction {
-    const val CONSTANT_COST = MediaConstants.DUST_UNIT / 10
-    const val FACTOR_PER_TICKED = (0.001 * MediaConstants.DUST_UNIT).toInt()
-
     override val argc = 1
 
     fun costFromTimesTicked(timesTicked: Int): Int {
-        return CONSTANT_COST + FACTOR_PER_TICKED * timesTicked
+        return HexalConfig.server.tickConstantCost + HexalConfig.server.tickCostPerTicked * timesTicked
     }
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -61,7 +58,7 @@ object OpTick : SpellAction {
 
             } else if (blockState.isRandomlyTicking) {
                 // if is random ticket block (grass block, sugar cane, wheat or sapling, ...)
-                if (level.random.nextInt(1365) == 0) { // TODO: no magic constants, get config setup
+                if (level.random.nextInt(HexalConfig.server.tickRandomTickIProb) == 0) {
                     blockState.randomTick(level, pos, level.random)
                 }
             }

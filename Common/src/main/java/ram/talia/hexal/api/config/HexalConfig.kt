@@ -30,6 +30,7 @@ object HexalConfig {
         val projectileWispUpkeepPerTick: Int
         val untriggeredWispUpkeepDiscount: Double
         val linkUpkeepPerTick: Int
+        val seonDiscountFactor: Double
 
         // costs of link spells
         val linkCost: Int
@@ -47,6 +48,9 @@ object HexalConfig {
         val seonWispSetCost: Int
         val tickConstantCost: Int
         val tickCostPerTicked: Int
+
+        // inverse probability of OpTick random ticking a block.
+        val tickRandomTickIProb: Int
 
 
         companion object {
@@ -73,9 +77,13 @@ object HexalConfig {
             const val DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.325 / 20.0).toInt()
             const val DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0.25 / 0.325
             const val DEFAULT_LINK_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.01 / 20.0).toInt()
+            const val DEFAULT_SEON_DISCOUNT_FACTOR = 20.0
 
             const val MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0
             const val MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 1
+
+            const val MIN_SEON_DISCOUNT_FACTOR = 2.0
+            const val MAX_SEON_DISCOUNT_FACTOR = 200.0
 
 
             // default costs of link spells
@@ -98,6 +106,10 @@ object HexalConfig {
 
             const val MIN_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 1.0
             const val MAX_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 20.0
+
+            const val DEFAULT_TICK_RANDOM_TICK_I_PROB = 1365
+            const val MIN_TICK_RANDOM_TICK_I_PROB = 600
+            const val MAX_TICK_RANDOM_TICK_I_PROB = 2100
         }
     }
 
@@ -149,6 +161,8 @@ object HexalConfig {
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val linkUpkeepPerTick: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val seonDiscountFactor: Double
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val linkCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val sendIotaCost: Int
@@ -170,6 +184,8 @@ object HexalConfig {
         override val tickConstantCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val tickCostPerTicked: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val tickRandomTickIProb: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
     }
 

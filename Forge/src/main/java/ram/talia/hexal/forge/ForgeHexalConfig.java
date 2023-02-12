@@ -36,6 +36,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.IntValue projectileWispUpkeepPerTick;
         private static ForgeConfigSpec.DoubleValue untriggeredWispUpkeepDiscount;
         private static ForgeConfigSpec.IntValue linkUpkeepPerTick;
+        private static ForgeConfigSpec.DoubleValue seonDiscountFactor;
 
         // costs of link spells
         private static ForgeConfigSpec.IntValue linkCost;
@@ -53,6 +54,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.IntValue seonWispSetCost;
         private static ForgeConfigSpec.IntValue tickConstantCost;
         private static ForgeConfigSpec.IntValue tickCostPerTicked;
+        private static ForgeConfigSpec.IntValue tickRandomTickIProb;
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("Misc Spells");
@@ -87,6 +89,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("untriggeredWispUpkeepDiscount", DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT, MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT, MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT);
             linkUpkeepPerTick = builder.comment("")
                     .defineInRange("linkUpkeepPerTick", DEFAULT_LINK_UPKEEP_PER_TICK, DEF_MIN_COST, DEF_MAX_COST);
+            seonDiscountFactor = builder.comment("")
+                    .defineInRange("seonDiscountFactor", DEFAULT_SEON_DISCOUNT_FACTOR, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
 
             // costs of link spells
             linkCost = builder.comment("")
@@ -115,6 +119,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("tickConstantCost", DEFAULT_TICK_CONSTANT_COST, DEF_MIN_COST, DEF_MAX_COST);
             tickCostPerTicked = builder.comment("")
                     .defineInRange("tickCostPerTicked", DEFAULT_TICK_COST_PER_TICKED, DEF_MIN_COST, DEF_MAX_COST);
+            tickRandomTickIProb = builder.comment("")
+                    .defineInRange("tickRandomTickIProb", DEFAULT_TICK_RANDOM_TICK_I_PROB, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
 
             builder.push("Terrain Generation");
             generateSlipwayGeodes = builder.comment("Should Slipway geodes be generated?")
@@ -193,6 +199,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
+        public double getSeonDiscountFactor() {
+            return seonDiscountFactor.get();
+        }
+
+        @Override
         public int getLinkCost() {
             return linkCost.get();
         }
@@ -245,6 +256,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getTickCostPerTicked() {
             return tickCostPerTicked.get();
+        }
+
+        @Override
+        public int getTickRandomTickIProb() {
+            return tickRandomTickIProb.get();
         }
         //endregion
     }
