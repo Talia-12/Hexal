@@ -16,25 +16,25 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
     }
 
     public static class Server implements HexalConfig.ServerConfigAccess {
-        private static ForgeConfigSpec.IntValue maxMatrixSize;
-        private static ForgeConfigSpec.IntValue maxStringLength;
+        private static ForgeConfigSpec.BooleanValue generateSlipwayGeodes;
+//        private static ForgeConfigSpec.IntValue maxMatrixSize;
+//        private static ForgeConfigSpec.IntValue maxStringLength;
 
         public Server(ForgeConfigSpec.Builder builder) {
-            builder.push("Spells");
-            maxMatrixSize = builder.comment("How large can matrices be")
-                    .defineInRange("maxMatrixSize", DEFAULT_MAX_MATRIX_SIZE, MIN_MAX_MATRIX_SIZE, MAX_MAX_MATRIX_SIZE);
-            maxStringLength = builder.comment("How long can strings be")
-                    .defineInRange("maxStringLength", DEFAULT_MAX_STRING_LENGTH, MIN_MAX_STRING_LENGTH, MAX_MAX_STRING_LENGTH);
-        }
+//            builder.push("Spells");
+//            maxMatrixSize = builder.comment("How large can matrices be")
+//                    .defineInRange("maxMatrixSize", DEFAULT_MAX_MATRIX_SIZE, MIN_MAX_MATRIX_SIZE, MAX_MAX_MATRIX_SIZE);
+//            maxStringLength = builder.comment("How long can strings be")
+//                    .defineInRange("maxStringLength", DEFAULT_MAX_STRING_LENGTH, MIN_MAX_STRING_LENGTH, MAX_MAX_STRING_LENGTH);
 
-            @Override
-        public int getMaxMatrixSize() {
-            return maxMatrixSize.get();
+            builder.push("Terrain Generation");
+            generateSlipwayGeodes = builder.comment("Should Slipway geodes be generated?")
+                    .define("generateSlipwayGeodes", DEFAULT_GENERATE_SLIPWAY_GEODES);
         }
 
         @Override
-        public int getMaxStringLength() {
-            return maxStringLength.get();
+        public boolean getGenerateSlipwayGeodes() {
+            return generateSlipwayGeodes.get();
         }
     }
 }

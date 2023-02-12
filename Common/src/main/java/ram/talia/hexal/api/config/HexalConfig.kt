@@ -9,16 +9,9 @@ object HexalConfig {
     interface ClientConfigAccess { }
 
     interface ServerConfigAccess {
-        val maxMatrixSize: Int
-        val maxStringLength: Int
-
+        val generateSlipwayGeodes: Boolean
         companion object {
-            const val DEFAULT_MAX_MATRIX_SIZE: Int = 144
-            const val MIN_MAX_MATRIX_SIZE: Int = 3
-            const val MAX_MAX_MATRIX_SIZE: Int = 512
-            const val DEFAULT_MAX_STRING_LENGTH: Int = 1728
-            const val MIN_MAX_STRING_LENGTH: Int = 1
-            const val MAX_MAX_STRING_LENGTH: Int = 32768
+            const val DEFAULT_GENERATE_SLIPWAY_GEODES: Boolean = true
         }
     }
 
@@ -39,19 +32,17 @@ object HexalConfig {
         return !anyMatch(keys, key)
     }
 
-    private class DummyCommon : CommonConfigAccess {  }
-    private class DummyClient : ClientConfigAccess {  }
-    private class DummyServer : ServerConfigAccess {
-        override val maxMatrixSize: Int
-            get() = TODO("Not yet implemented")
-        override val maxStringLength: Int
-            get() = TODO("Not yet implemented")
+    private object DummyCommon : CommonConfigAccess {  }
+    private object DummyClient : ClientConfigAccess {  }
+    private object DummyServer : ServerConfigAccess {
+        override val generateSlipwayGeodes: Boolean
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
     }
 
     @JvmStatic
-    var common: CommonConfigAccess = DummyCommon()
+    var common: CommonConfigAccess = DummyCommon
         set(access) {
-            if (field !is DummyCommon) {
+            if (field != DummyCommon) {
                 HexAPI.LOGGER.warn("CommonConfigAccess was replaced! Old {} New {}",
                         field.javaClass.name, access.javaClass.name)
             }
@@ -59,9 +50,9 @@ object HexalConfig {
         }
 
     @JvmStatic
-    var client: ClientConfigAccess = DummyClient()
+    var client: ClientConfigAccess = DummyClient
         set(access) {
-            if (field !is DummyClient) {
+            if (field != DummyClient) {
                 HexAPI.LOGGER.warn("ClientConfigAccess was replaced! Old {} New {}",
                         field.javaClass.name, access.javaClass.name)
             }
@@ -69,9 +60,9 @@ object HexalConfig {
         }
 
     @JvmStatic
-    var server: ServerConfigAccess = DummyServer()
+    var server: ServerConfigAccess = DummyServer
         set(access) {
-            if (field !is DummyServer) {
+            if (field != DummyServer) {
                 HexAPI.LOGGER.warn("ServerConfigAccess was replaced! Old {} New {}",
                         field.javaClass.name, access.javaClass.name)
             }

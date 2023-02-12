@@ -17,10 +17,10 @@ import net.minecraft.world.level.levelgen.LegacyRandomSource
 import net.minecraft.world.level.levelgen.WorldgenRandom
 import net.minecraft.world.level.levelgen.feature.Feature
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext
-import net.minecraft.world.level.levelgen.feature.configurations.GeodeConfiguration
 import net.minecraft.world.level.levelgen.synth.NormalNoise
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.div
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalBlocks
@@ -30,6 +30,10 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 	private val DIRECTIONS = Direction.values()
 
 	override fun place(ctx: FeaturePlaceContext<SlipwayGeodeConfiguration>): Boolean {
+		// TODO: SUPER HACKY. figure out a better way to do this
+		if (!HexalConfig.server.generateSlipwayGeodes)
+			return false
+
 		val config = ctx.config() as SlipwayGeodeConfiguration
 		val random = ctx.random()
 		val origin = ctx.origin()
