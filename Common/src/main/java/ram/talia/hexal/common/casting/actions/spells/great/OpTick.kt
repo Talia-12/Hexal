@@ -15,20 +15,18 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import kotlin.math.pow
-import kotlin.math.roundToInt
 
 /**
  * Tick Acceleration!
  */
 object OpTick : SpellAction {
-    const val COST_FOR_FIRST = MediaConstants.DUST_UNIT / 10
-    const val FACTOR_PER_TICKED = 1.1
+    const val CONSTANT_COST = MediaConstants.DUST_UNIT / 10
+    const val FACTOR_PER_TICKED = (0.025 * MediaConstants.DUST_UNIT).toInt()
 
     override val argc = 1
 
     fun costFromTimesTicked(timesTicked: Int): Int {
-        return (COST_FOR_FIRST * FACTOR_PER_TICKED.pow(timesTicked)).roundToInt()
+        return CONSTANT_COST + FACTOR_PER_TICKED * timesTicked
     }
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
