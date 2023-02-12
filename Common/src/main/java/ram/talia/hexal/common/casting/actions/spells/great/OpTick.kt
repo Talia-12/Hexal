@@ -21,7 +21,7 @@ import ram.talia.hexal.api.spell.casting.IMixinCastingContext
  */
 object OpTick : SpellAction {
     const val CONSTANT_COST = MediaConstants.DUST_UNIT / 10
-    const val FACTOR_PER_TICKED = (0.025 * MediaConstants.DUST_UNIT).toInt()
+    const val FACTOR_PER_TICKED = (0.001 * MediaConstants.DUST_UNIT).toInt()
 
     override val argc = 1
 
