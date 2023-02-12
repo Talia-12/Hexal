@@ -52,79 +52,54 @@ object HexalConfig {
         companion object {
             const val DEFAULT_GENERATE_SLIPWAY_GEODES: Boolean = true
 
-            // default costs of misc spells
-            val DEFAULT_FALLING_BLOCK_COST = BoundedConfig.dustCost(1.5)
-            val DEFAULT_FREEZE_COST = BoundedConfig.dustCost(3)
-            val DEFAULT_PARTICLES_COST = BoundedConfig.dustCost(0.1)
-            val DEFAULT_PLACE_TYPE_COST = BoundedConfig.dustCost(0.125)
-            val DEFAULT_SMELT_COST = BoundedConfig.dustCost(0.75)
-
-            // default costs of wisp spells
-            val DEFAULT_MOVE_SPEED_SET_COST = BoundedConfig.dustCost(1)
-            val DEFAULT_SUMMON_TICKING_WISP_COST = BoundedConfig.dustCost(3)
-            val DEFAULT_SUMMON_PROJECTILE_WISP_COST = BoundedConfig.dustCost(3.0/1.75)
-            val DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST = BoundedConfig.dustCost(0.5)
-
-            // default costs of wisp upkeep
-            val DEFAULT_TICKING_WISP_UPKEEP_PER_TICK = BoundedConfig.dustCost(0.65/20.0)
-            val DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK = BoundedConfig.dustCost(0.325 / 20.0)
-            val DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = BoundedConfig(0.25 / 0.325, 0.0, 1.0)
-            val DEFAULT_LINK_UPKEEP_PER_TICK = BoundedConfig.dustCost(0.01 / 20.0)
-
-            // default costs of link spells
-            val DEFAULT_LINK_COST = BoundedConfig.shardCost(1)
-            val DEFAULT_SEND_IOTA_COST = BoundedConfig.dustCost(0.01)
-            val DEFAULT_UNLINK_CCOST = BoundedConfig.dustCost(2)
-
-            // default costs of gate spells
-            val DEFAULT_MAKE_GATE_COST = BoundedConfig.chargedCost(32)
-            val DEFAULT_MARK_GATE_COST = BoundedConfig.dustCost(0.05)
-            val DEFAULT_CLOSE_GATE_COST = BoundedConfig.shardCost(0.5)
-
-
-            // default costs of great spells
-            val DEFAULT_CONSUME_WISP_OWN_COST = BoundedConfig.shardCost(1)
-            val DEFAULT_CONSUME_WISP_OTHERS_COST_PER_MEDIA = BoundedConfig(1.5, 1.0, 20.0)
-            val DEFAULT_SEON_WISP_SET_COST = BoundedConfig.chargedCost(5)
-            val DEFAULT_TICK_CONSTANT_COST = BoundedConfig.dustCost(0.1)
-            val DEFAULT_TICK_COST_PER_TICKED = BoundedConfig.dustCost(0.001)
-        }
-    }
-
-    data class BoundedConfig<T>(val default: T, val min: T?, val max: T?) {
-        companion object {
             const val DEF_MIN_COST = (0.0001 * MediaConstants.DUST_UNIT).toInt()
             const val DEF_MAX_COST = 10_000 * MediaConstants.DUST_UNIT
 
-            fun dustCost(default: Int): BoundedConfig<Int>
-                    = BoundedConfig(default * MediaConstants.DUST_UNIT, DEF_MIN_COST, DEF_MAX_COST)
-            fun dustCost(default: Double): BoundedConfig<Int>
-                    = BoundedConfig((default * MediaConstants.DUST_UNIT).toInt(), DEF_MIN_COST, DEF_MAX_COST)
-            fun dustCost(default: Int, min: Int?, max: Int?): BoundedConfig<Int>
-                = BoundedConfig(default * MediaConstants.DUST_UNIT, min?.let { it * MediaConstants.DUST_UNIT }, max?.let { it * MediaConstants.DUST_UNIT })
-            fun dustCost(default: Double, min: Double?, max: Double?): BoundedConfig<Int>
-                    = BoundedConfig((default * MediaConstants.DUST_UNIT).toInt(), min?.let { (it * MediaConstants.DUST_UNIT).toInt() }, max?.let { (it * MediaConstants.DUST_UNIT).toInt() })
+            // default costs of misc spells
+            const val DEFAULT_FALLING_BLOCK_COST = MediaConstants.DUST_UNIT * 3 / 2
+            const val DEFAULT_FREEZE_COST = MediaConstants.DUST_UNIT
+            const val DEFAULT_PARTICLES_COST = MediaConstants.DUST_UNIT / 100
+            const val DEFAULT_PLACE_TYPE_COST = MediaConstants.DUST_UNIT / 8
+            const val DEFAULT_SMELT_COST = MediaConstants.DUST_UNIT * 3 / 4
 
-            fun shardCost(default: Int): BoundedConfig<Int>
-                    = BoundedConfig(default * MediaConstants.SHARD_UNIT, DEF_MIN_COST, DEF_MAX_COST)
-            fun shardCost(default: Double): BoundedConfig<Int>
-                    = BoundedConfig((default * MediaConstants.SHARD_UNIT).toInt(), DEF_MIN_COST, DEF_MAX_COST)
-            fun shardCost(default: Int, min: Int?, max: Int?): BoundedConfig<Int>
-                    = BoundedConfig(default * MediaConstants.SHARD_UNIT, min?.let { it * MediaConstants.SHARD_UNIT }, max?.let { it * MediaConstants.SHARD_UNIT })
-            fun shardCost(default: Double, min: Double?, max: Double?): BoundedConfig<Int>
-                    = BoundedConfig((default * MediaConstants.SHARD_UNIT).toInt(), min?.let { (it * MediaConstants.SHARD_UNIT).toInt() }, max?.let { (it * MediaConstants.SHARD_UNIT).toInt() })
+            // default costs of wisp spells
+            const val DEFAULT_MOVE_SPEED_SET_COST =MediaConstants.DUST_UNIT
+            const val DEFAULT_SUMMON_TICKING_WISP_COST = MediaConstants.DUST_UNIT * 3
+            const val DEFAULT_SUMMON_PROJECTILE_WISP_COST = (MediaConstants.DUST_UNIT * 3 / 1.75).toInt()
+            const val DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST = MediaConstants.DUST_UNIT / 2
 
-            fun chargedCost(default: Int): BoundedConfig<Int>
-                    = BoundedConfig(default * MediaConstants.CRYSTAL_UNIT, DEF_MIN_COST, DEF_MAX_COST)
-            fun chargedCost(default: Double): BoundedConfig<Int>
-                    = BoundedConfig((default * MediaConstants.CRYSTAL_UNIT).toInt(), DEF_MIN_COST, DEF_MAX_COST)
-            fun chargedCost(default: Int, min: Int?, max: Int?): BoundedConfig<Int>
-                    = BoundedConfig(default * MediaConstants.CRYSTAL_UNIT, min?.let { it * MediaConstants.CRYSTAL_UNIT }, max?.let { it * MediaConstants.CRYSTAL_UNIT })
-            fun chargedCost(default: Double, min: Double?, max: Double?): BoundedConfig<Int>
-                    = BoundedConfig((default * MediaConstants.CRYSTAL_UNIT).toInt(), min?.let { (it * MediaConstants.CRYSTAL_UNIT).toInt() }, max?.let { (it * MediaConstants.CRYSTAL_UNIT).toInt() })
-            }
+            // default costs of wisp upkeep
+            const val DEFAULT_TICKING_WISP_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.65/20.0).toInt()
+            const val DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.325 / 20.0).toInt()
+            const val DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0.25 / 0.325
+            const val DEFAULT_LINK_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.01 / 20.0).toInt()
+
+            const val MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0
+            const val MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 1
+
+
+            // default costs of link spells
+            const val DEFAULT_LINK_COST = MediaConstants.SHARD_UNIT * 1
+            const val DEFAULT_SEND_IOTA_COST = MediaConstants.DUST_UNIT / 100
+            const val DEFAULT_UNLINK_COST = MediaConstants.DUST_UNIT * 2
+
+            // default costs of gate spells
+            const val DEFAULT_MAKE_GATE_COST = MediaConstants.CRYSTAL_UNIT * 32
+            const val DEFAULT_MARK_GATE_COST = MediaConstants.DUST_UNIT / 20
+            const val DEFAULT_CLOSE_GATE_COST = MediaConstants.SHARD_UNIT / 2
+
+
+            // default costs of great spells
+            const val DEFAULT_CONSUME_WISP_OWN_COST = MediaConstants.SHARD_UNIT
+            const val DEFAULT_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 1.5
+            const val DEFAULT_SEON_WISP_SET_COST = MediaConstants.CRYSTAL_UNIT * 5
+            const val DEFAULT_TICK_CONSTANT_COST = MediaConstants.DUST_UNIT / 10
+            const val DEFAULT_TICK_COST_PER_TICKED = MediaConstants.DUST_UNIT / 1000
+
+            const val MIN_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 1.0
+            const val MAX_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 20.0
         }
-
+    }
 
     // Simple extensions for resource location configs
     fun anyMatch(keys: List<String>, key: ResourceLocation): Boolean {
