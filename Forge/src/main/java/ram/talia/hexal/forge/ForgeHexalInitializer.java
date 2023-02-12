@@ -4,12 +4,17 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegisterEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import ram.talia.hexal.api.HexalAPI;
+import ram.talia.hexal.api.config.HexalConfig;
 import ram.talia.hexal.common.casting.RegisterPatterns;
 import ram.talia.hexal.common.lib.*;
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
@@ -39,7 +44,16 @@ public class ForgeHexalInitializer {
 	}
 	
 	private static void initConfig () {
-	
+		Pair<ForgeHexalConfig, ForgeConfigSpec> config = (new ForgeConfigSpec.Builder()).configure(ForgeHexalConfig::new);
+		Pair<ForgeHexalConfig.Client, ForgeConfigSpec> clientConfig = (new ForgeConfigSpec.Builder()).configure(ForgeHexalConfig.Client::new);
+		Pair<ForgeHexalConfig.Server, ForgeConfigSpec> serverConfig = (new ForgeConfigSpec.Builder()).configure(ForgeHexalConfig.Server::new);
+		HexalConfig.setCommon(config.getLeft());
+		HexalConfig.setClient(clientConfig.getLeft());
+		HexalConfig.setServer(serverConfig.getLeft());
+		ModLoadingContext mlc = ModLoadingContext.get();
+		mlc.registerConfig(ModConfig.Type.COMMON, config.getRight());
+		mlc.registerConfig(ModConfig.Type.CLIENT, clientConfig.getRight());
+		mlc.registerConfig(ModConfig.Type.SERVER, serverConfig.getRight());
 	}
 	
 	private static void initRegistry () {

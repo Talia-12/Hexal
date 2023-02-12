@@ -14,8 +14,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +38,12 @@ import ram.talia.hexal.xplat.IXplatAbstractions;
 import java.util.List;
 
 public class ForgeXplatImpl implements IXplatAbstractions {
-	
+
+	@Override
+	public boolean isPhysicalClient() {
+		return FMLLoader.getDist() == Dist.CLIENT;
+	}
+
 	@Override
 	public void sendPacketToPlayer(ServerPlayer target, IMessage packet) {
 		ForgePacketHandler.getNetwork().send(PacketDistributor.PLAYER.with(() -> target), packet);

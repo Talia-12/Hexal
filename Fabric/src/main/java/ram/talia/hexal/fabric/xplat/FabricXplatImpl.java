@@ -3,9 +3,11 @@ package ram.talia.hexal.fabric.xplat;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -40,10 +42,10 @@ public class FabricXplatImpl implements IXplatAbstractions {
 //        return Platform.FABRIC;
 //    }
 
-//    @Override
-//    public boolean isPhysicalClient() {
-//        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
-//    }
+    @Override
+    public boolean isPhysicalClient() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+    }
 //
 //    @Override
 //    public boolean isModPresent(String id) {

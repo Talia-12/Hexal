@@ -30,8 +30,8 @@ public interface IXplatAbstractions {
 //    Platform platform();
 //
 //    boolean isModPresent(String id);
-//
-//    boolean isPhysicalClient();
+
+    boolean isPhysicalClient();
 //
 //    void initPlatformSpecific();
 

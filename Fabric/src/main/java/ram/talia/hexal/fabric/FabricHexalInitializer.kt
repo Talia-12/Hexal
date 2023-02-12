@@ -27,6 +27,7 @@ object FabricHexalInitializer : ModInitializer {
     override fun onInitialize() {
         HexalAPI.LOGGER.info("Hello Fabric World!")
 
+        FabricHexalConfig.setup()
         FabricPacketHandler.initServerBound()
 
         initListeners()
