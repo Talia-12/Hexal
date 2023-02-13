@@ -26,6 +26,11 @@
   "hexcasting.iota.hexal:iota_type": "Iota Type",
   "hexcasting.iota.hexal:entity_type": "Entity Type",
   "hexcasting.iota.hexal:item_type": "Item Type",
+  "hexcasting.iota.hexal:gate": "Gate",
+
+  "hexal.spelldata.entity_type": "Type",
+  "hexal.spelldata.gate": "Gate %d",
+
 
   "hexcasting.spell.hexal:type/block": "Surveyor's Purification",
   "hexcasting.spell.hexal:type/entity": "Physician's Purification",
@@ -88,6 +93,10 @@
   "hexcasting.spell.hexal:link/comm/clear": "Unclogging Gambit",
   "hexcasting.spell.hexal:link/comm/open_transmit": "Open Transmit",
   "hexcasting.spell.hexal:link/comm/close_transmit": "Close Transmit",
+
+  "hexcasting.spell.hexal:gate/make": "Gate's Reflection",
+  "hexcasting.spell.hexal:gate/mark": "Gate's Opening",
+  "hexcasting.spell.hexal:gate/close": "Gate's Closing",
 
   "hexcasting.spell.hexal:tick": "Accelerate",
 
@@ -170,11 +179,17 @@
   "hexal.page.links.link/comm/close_transmit": "When drawn after $(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)Open Transmit/$ I stop transmitting drawn patterns. If either $(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)Open Transmit/$ or $(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)Close Transmit/$ are executed by an intermediary caster such as a wisp, they will mishap.",
 
   "hexal.entry.misc_great": "Miscellaneous Great Spells",
-  "hexal.page.misc_great.tick": "Causes the block at the passed vector to perform its normal actions faster in the instant that this spell is cast. Casting it costs half an $(l:items/amethyst)$(item)Amethyst Dust/$ the first time it is cast on that block in that hex, however each time it is cast again on that block the cost increases by a factor of 1.1.",
+  "hexal.page.misc_great.tick": "Causes the block at the passed vector to perform its normal actions faster in the instant that this spell is cast. Casting it costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$, plus a thousandth of an $(l:items/amethyst)$(item)Amethyst Dust/$ for each time it has previously been cast on that block in this hex.",
+
+  "hexal.entry.gates": "Gates",
+  "hexal.page.gates.gate/make": "Adds a new gate iota to the stack. Any copy of this iota will point to the same numbered gate. Costs 32 $(l:items/amethyst)$(item)Charged Amethyst/$.",
+  "hexal.page.gates.gate/mark": "Consumes a gate iota and an entity. Marks that entity to be teleported the next time that gate is closed. Costs one twentieth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
+  "hexal.page.gates.gate/mark/get": "Consumes a gate iota, returns a list of entities marked by that gate.",
+  "hexal.page.gates.gate/close": "Consumes a gate iota and a position. Transports all the entities marked with that gate to the given position. Costs half an $(l:items/amethyst)$(item)Amethyst Shard/$.",
 
   "hexal.entry.great_wisps": "Great Wisp Spells",
   "hexal.page.great_wisps.wisp/consume.0": "Remove a wisp from the stack, and disassemble the wisp. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
-  "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Crystal/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
+  "hexal.page.great_wisps.wisp/consume.1": "Costs either an $(l:items/amethyst)$(item)Amethyst Shard/$ if the wisp is owned by you, or half again as much media as the consumed wisp contains if the wisp is owned by another. Repurposing the media is not completely efficient, losing one twentieth of the consumed wisp's reserve in transfer.",
   "hexal.page.great_wisps.wisp/seon/set": "Bind one of my wisps closer to me; I may only have one bound wisp at a time, but whichever wisp is bound costs significantly less upkeep and increased range.",
   "hexal.page.great_wisps.wisp/seon/get": "Returns my currently bound wisp. A new wisp can only be bound when this returns null. (This is not a great spell, I have simply placed it here for convenience.)",
 

@@ -177,7 +177,7 @@ object Patterns {
 	@JvmField
 	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.WEST), modLoc("gate/mark"), OpMarkGate)
 	@JvmField
-	val GATE_MARKED_GET = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/marked/get"), OpGetMarkedGate)
+	val GATE_MARK_GET = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/mark/get"), OpGetMarkedGate)
 	@JvmField
 	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.WEST), modLoc("gate/close"), OpCloseGate)
 
