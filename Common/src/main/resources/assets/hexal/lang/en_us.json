@@ -208,6 +208,7 @@
   "text.autoconfig.hexal.category.client": "Client",
   "text.autoconfig.hexal.category.server": "Server",
 
+  "text.autoconfig.hexal.option.server.terrainGeneration": "Terrain Generation",
   "text.autoconfig.hexal.option.server.generateSlipwayGeodes": "Should generate Slipway Geodes?",
 
   "text.autoconfig.hexal.option.server.miscSpells": "Miscellaneous Spells",
@@ -253,12 +254,12 @@
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia": "Consume Other's Wisp Cost per Media",
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[0]": "Cost to consume a wisp that fights back, this number is multiplied by",
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[1]": "the media possessed by the wisp you are attempting to consume.",
-  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[2]": " Bounded from 1.0 to 20.0.",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[2]": "Bounded from 1.0 to 20.0.",
   "text.autoconfig.hexal.option.server.greatSpells.seonWispSetCost": "Bind Wisp Cost",
   "text.autoconfig.hexal.option.server.greatSpells.tickConstantCost": "Tick Constant Cost",
   "text.autoconfig.hexal.option.server.greatSpells.tickConstantCost.@Tooltip": "Constant cost to tick a block. Always applies.",
   "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked": "Tick Cost per Time Ticked",
-  "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked.@Tooltip[0]": "Cost to tick a block per time that block has already been ticked. ",
+  "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked.@Tooltip[0]": "Cost to tick a block per time that block has already been ticked.",
   "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked.@Tooltip[1]": "Added to the constant cost above.",
   "text.autoconfig.hexal.option.server.greatSpells.tickRandomTickIProb": "Tick Inverse Probability of Random Ticking",
   "text.autoconfig.hexal.option.server.greatSpells.tickRandomTickIProb.@Tooltip[0]": "The inverse probability of tick randomly ticking a block.",

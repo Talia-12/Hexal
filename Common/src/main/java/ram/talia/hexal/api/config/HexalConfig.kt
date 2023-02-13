@@ -1,7 +1,6 @@
 package ram.talia.hexal.api.config
 
 import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.api.misc.MediaConstants
 import net.minecraft.resources.ResourceLocation
 
 object HexalConfig {
@@ -56,10 +55,8 @@ object HexalConfig {
         companion object {
             const val DEFAULT_GENERATE_SLIPWAY_GEODES: Boolean = true
 
-            const val DEF_MIN_COST_DUB = 0.0001
-            const val DEF_MAX_COST_DUB = 10_000.0
-            const val DEF_MIN_COST = (DEF_MIN_COST_DUB * MediaConstants.DUST_UNIT).toInt()
-            const val DEF_MAX_COST = (DEF_MAX_COST_DUB * MediaConstants.DUST_UNIT).toInt()
+            const val DEF_MIN_COST = 0.0001
+            const val DEF_MAX_COST = 10_000.0
 
             // default costs of misc spells (in dust)
             const val DEFAULT_FALLING_BLOCK_COST = 1.5

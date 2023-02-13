@@ -139,41 +139,41 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public void validatePostLoad() throws ValidationException {
             // costs of misc spells
-            this.miscSpells.fallingBlockCost = bound(this.miscSpells.fallingBlockCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.miscSpells.freezeCost = bound(this.miscSpells.freezeCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.miscSpells.particlesCost = bound(this.miscSpells.particlesCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.miscSpells.placeTypeCost = bound(this.miscSpells.placeTypeCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.miscSpells.smeltCost = bound(this.miscSpells.smeltCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.miscSpells.fallingBlockCost = bound(this.miscSpells.fallingBlockCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.miscSpells.freezeCost = bound(this.miscSpells.freezeCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.miscSpells.particlesCost = bound(this.miscSpells.particlesCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.miscSpells.placeTypeCost = bound(this.miscSpells.placeTypeCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.miscSpells.smeltCost = bound(this.miscSpells.smeltCost, DEF_MIN_COST, DEF_MAX_COST);
 
             // costs of wisp spells
-            this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.wispSpells.summonTickingWispCost = bound(this.wispSpells.summonTickingWispCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.wispSpells.summonProjectileWispCost = bound(this.wispSpells.summonProjectileWispCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.wispSpells.summonProjectileWispMinCost = bound(this.wispSpells.summonProjectileWispMinCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispSpells.summonTickingWispCost = bound(this.wispSpells.summonTickingWispCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispSpells.summonProjectileWispCost = bound(this.wispSpells.summonProjectileWispCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispSpells.summonProjectileWispMinCost = bound(this.wispSpells.summonProjectileWispMinCost, DEF_MIN_COST, DEF_MAX_COST);
 
             // costs of wisp upkeep
-            this.wispUpkeep.tickingWispUpkeepPerTick = bound(this.wispUpkeep.tickingWispUpkeepPerTick, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.wispUpkeep.projectileWispUpkeepPerTick = bound(this.wispUpkeep.projectileWispUpkeepPerTick, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispUpkeep.tickingWispUpkeepPerTick = bound(this.wispUpkeep.tickingWispUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispUpkeep.projectileWispUpkeepPerTick = bound(this.wispUpkeep.projectileWispUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
             this.wispUpkeep.untriggeredWispUpkeepDiscount = bound(this.wispUpkeep.untriggeredWispUpkeepDiscount, MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT, MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT);
-            this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
             this.wispUpkeep.seonDiscountFactor = bound(this.wispUpkeep.seonDiscountFactor, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
 
             // costs of link spells
-            this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.linkSpells.sendIotaCost = bound(this.linkSpells.sendIotaCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.linkSpells.unlinkCost = bound(this.linkSpells.unlinkCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.linkSpells.sendIotaCost = bound(this.linkSpells.sendIotaCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.linkSpells.unlinkCost = bound(this.linkSpells.unlinkCost, DEF_MIN_COST, DEF_MAX_COST);
 
             // costs of gate spells
-            this.gateSpells.makeGateCost = bound(this.gateSpells.makeGateCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.gateSpells.markGateCost = bound(this.gateSpells.markGateCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.gateSpells.closeGateCost = bound(this.gateSpells.closeGateCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.gateSpells.makeGateCost = bound(this.gateSpells.makeGateCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.gateSpells.markGateCost = bound(this.gateSpells.markGateCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.gateSpells.closeGateCost = bound(this.gateSpells.closeGateCost, DEF_MIN_COST, DEF_MAX_COST);
 
             // costs of great spells
-            this.greatSpells.consumeWispOwnCost = bound(this.greatSpells.consumeWispOwnCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.greatSpells.consumeWispOwnCost = bound(this.greatSpells.consumeWispOwnCost, DEF_MIN_COST, DEF_MAX_COST);
             this.greatSpells.consumeWispOthersCostPerMedia = bound(this.greatSpells.consumeWispOthersCostPerMedia, MIN_CONSUME_WISP_OTHERS_COST_PER_MEDIA, MAX_CONSUME_WISP_OTHERS_COST_PER_MEDIA);
-            this.greatSpells.seonWispSetCost = bound(this.greatSpells.seonWispSetCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.greatSpells.tickConstantCost = bound(this.greatSpells.tickConstantCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
-            this.greatSpells.tickCostPerTicked = bound(this.greatSpells.tickCostPerTicked, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.greatSpells.seonWispSetCost = bound(this.greatSpells.seonWispSetCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.greatSpells.tickConstantCost = bound(this.greatSpells.tickConstantCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.greatSpells.tickCostPerTicked = bound(this.greatSpells.tickCostPerTicked, DEF_MIN_COST, DEF_MAX_COST);
 
             this.greatSpells.tickRandomTickIProb = bound(this.greatSpells.tickRandomTickIProb, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
         }
