@@ -1,5 +1,6 @@
 package ram.talia.hexal.fabric;
 
+import at.petrak.hexcasting.api.misc.MediaConstants;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -10,6 +11,7 @@ import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.config.HexalConfig;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
+@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 @Config(name = HexalAPI.MOD_ID)
 @Config.Gui.Background("minecraft:textures/block/calcite.png")
 public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
@@ -50,7 +52,6 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
     @Config(name = "server")
     private static class Server implements ConfigData, HexalConfig.ServerConfigAccess {
 
-        @ConfigEntry.Gui.Tooltip
         private boolean generateSlipwayGeodes = DEFAULT_GENERATE_SLIPWAY_GEODES;
 
         @ConfigEntry.Gui.CollapsibleObject
@@ -58,21 +59,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class MiscSpells {
             // costs of misc spells
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int fallingBlockCost = DEFAULT_FALLING_BLOCK_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int freezeCost = DEFAULT_FREEZE_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int particlesCost = DEFAULT_PARTICLES_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int placeTypeCost = DEFAULT_PLACE_TYPE_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int smeltCost = DEFAULT_SMELT_COST;
+            double fallingBlockCost = DEFAULT_FALLING_BLOCK_COST;
+            double freezeCost = DEFAULT_FREEZE_COST;
+            double particlesCost = DEFAULT_PARTICLES_COST;
+            double placeTypeCost = DEFAULT_PLACE_TYPE_COST;
+            double smeltCost = DEFAULT_SMELT_COST;
         }
 
         @ConfigEntry.Gui.CollapsibleObject
@@ -80,18 +71,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class WispSpells {
             // costs of wisp spells
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int moveSpeedSetCost = DEFAULT_MOVE_SPEED_SET_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int summonTickingWispCost = DEFAULT_SUMMON_TICKING_WISP_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int summonProjectileWispCost = DEFAULT_SUMMON_PROJECTILE_WISP_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int summonProjectileWispMinCost = DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST;
+            @ConfigEntry.Gui.Tooltip(count = 2)
+            double moveSpeedSetCost = DEFAULT_MOVE_SPEED_SET_COST;
+            double summonTickingWispCost = DEFAULT_SUMMON_TICKING_WISP_COST;
+            double summonProjectileWispCost = DEFAULT_SUMMON_PROJECTILE_WISP_COST;
+            double summonProjectileWispMinCost = DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST;
         }
 
         @ConfigEntry.Gui.CollapsibleObject
@@ -99,18 +83,12 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class WispUpkeep {
             // costs of wisp upkeep
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int tickingWispUpkeepPerTick = DEFAULT_TICKING_WISP_UPKEEP_PER_TICK;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int projectileWispUpkeepPerTick = DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK;
-            @ConfigEntry.Gui.Tooltip
+            double tickingWispUpkeepPerTick = DEFAULT_TICKING_WISP_UPKEEP_PER_TICK;
+            double projectileWispUpkeepPerTick = DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK;
+            @ConfigEntry.Gui.Tooltip(count = 2)
             double untriggeredWispUpkeepDiscount = DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int linkUpkeepPerTick = DEFAULT_LINK_UPKEEP_PER_TICK;
-            @ConfigEntry.Gui.Tooltip
+            double linkUpkeepPerTick = DEFAULT_LINK_UPKEEP_PER_TICK;
+            @ConfigEntry.Gui.Tooltip(count = 2)
             double seonDiscountFactor = DEFAULT_SEON_DISCOUNT_FACTOR;
         }
 
@@ -120,15 +98,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class LinkSpells {
             // costs of link spells
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int linkCost = DEFAULT_LINK_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int sendIotaCost = DEFAULT_SEND_IOTA_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int unlinkCost = DEFAULT_UNLINK_COST;
+            double linkCost = DEFAULT_LINK_COST;
+            double sendIotaCost = DEFAULT_SEND_IOTA_COST;
+            double unlinkCost = DEFAULT_UNLINK_COST;
         }
 
 
@@ -137,15 +109,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class GateSpells {
             // costs of gate spells
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int makeGateCost = DEFAULT_MAKE_GATE_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int markGateCost = DEFAULT_MARK_GATE_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int closeGateCost = DEFAULT_CLOSE_GATE_COST;
+            double makeGateCost = DEFAULT_MAKE_GATE_COST;
+            double markGateCost = DEFAULT_MARK_GATE_COST;
+            double closeGateCost = DEFAULT_CLOSE_GATE_COST;
         }
 
 
@@ -154,22 +120,17 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class GreatSpells {
             // costs of great spells
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int consumeWispOwnCost = DEFAULT_CONSUME_WISP_OWN_COST;
-            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.Tooltip(count = 2)
+            double consumeWispOwnCost = DEFAULT_CONSUME_WISP_OWN_COST;
+            @ConfigEntry.Gui.Tooltip(count = 3)
             double consumeWispOthersCostPerMedia = DEFAULT_CONSUME_WISP_OTHERS_COST_PER_MEDIA;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
+            double seonWispSetCost = DEFAULT_SEON_WISP_SET_COST;
             @ConfigEntry.Gui.Tooltip
-            int seonWispSetCost = DEFAULT_SEON_WISP_SET_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int tickConstantCost = DEFAULT_TICK_CONSTANT_COST;
-            @ConfigEntry.BoundedDiscrete(min = DEF_MIN_COST, max = DEF_MAX_COST)
-            @ConfigEntry.Gui.Tooltip
-            int tickCostPerTicked = DEFAULT_TICK_COST_PER_TICKED;
+            double tickConstantCost = DEFAULT_TICK_CONSTANT_COST;
+            @ConfigEntry.Gui.Tooltip(count = 2)
+            double tickCostPerTicked = DEFAULT_TICK_COST_PER_TICKED;
             @ConfigEntry.BoundedDiscrete(min = MIN_TICK_RANDOM_TICK_I_PROB, max = MAX_TICK_RANDOM_TICK_I_PROB)
-            @ConfigEntry.Gui.Tooltip
+            @ConfigEntry.Gui.Tooltip(count = 3)
             int tickRandomTickIProb = DEFAULT_TICK_RANDOM_TICK_I_PROB;
         }
 
@@ -178,41 +139,41 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public void validatePostLoad() throws ValidationException {
             // costs of misc spells
-            this.miscSpells.fallingBlockCost = bound(this.miscSpells.fallingBlockCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.miscSpells.freezeCost = bound(this.miscSpells.freezeCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.miscSpells.particlesCost = bound(this.miscSpells.particlesCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.miscSpells.placeTypeCost = bound(this.miscSpells.placeTypeCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.miscSpells.smeltCost = bound(this.miscSpells.smeltCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.miscSpells.fallingBlockCost = bound(this.miscSpells.fallingBlockCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.miscSpells.freezeCost = bound(this.miscSpells.freezeCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.miscSpells.particlesCost = bound(this.miscSpells.particlesCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.miscSpells.placeTypeCost = bound(this.miscSpells.placeTypeCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.miscSpells.smeltCost = bound(this.miscSpells.smeltCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
 
             // costs of wisp spells
-            this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.wispSpells.summonTickingWispCost = bound(this.wispSpells.summonTickingWispCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.wispSpells.summonProjectileWispCost = bound(this.wispSpells.summonProjectileWispCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.wispSpells.summonProjectileWispMinCost = bound(this.wispSpells.summonProjectileWispMinCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispSpells.summonTickingWispCost = bound(this.wispSpells.summonTickingWispCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispSpells.summonProjectileWispCost = bound(this.wispSpells.summonProjectileWispCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispSpells.summonProjectileWispMinCost = bound(this.wispSpells.summonProjectileWispMinCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
 
             // costs of wisp upkeep
-            this.wispUpkeep.tickingWispUpkeepPerTick = bound(this.wispUpkeep.tickingWispUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
-            this.wispUpkeep.projectileWispUpkeepPerTick = bound(this.wispUpkeep.projectileWispUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispUpkeep.tickingWispUpkeepPerTick = bound(this.wispUpkeep.tickingWispUpkeepPerTick, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.wispUpkeep.projectileWispUpkeepPerTick = bound(this.wispUpkeep.projectileWispUpkeepPerTick, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
             this.wispUpkeep.untriggeredWispUpkeepDiscount = bound(this.wispUpkeep.untriggeredWispUpkeepDiscount, MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT, MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT);
-            this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
             this.wispUpkeep.seonDiscountFactor = bound(this.wispUpkeep.seonDiscountFactor, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
 
             // costs of link spells
-            this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.linkSpells.sendIotaCost = bound(this.linkSpells.sendIotaCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.linkSpells.unlinkCost = bound(this.linkSpells.unlinkCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.linkSpells.sendIotaCost = bound(this.linkSpells.sendIotaCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.linkSpells.unlinkCost = bound(this.linkSpells.unlinkCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
 
             // costs of gate spells
-            this.gateSpells.makeGateCost = bound(this.gateSpells.makeGateCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.gateSpells.markGateCost = bound(this.gateSpells.markGateCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.gateSpells.closeGateCost = bound(this.gateSpells.closeGateCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.gateSpells.makeGateCost = bound(this.gateSpells.makeGateCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.gateSpells.markGateCost = bound(this.gateSpells.markGateCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.gateSpells.closeGateCost = bound(this.gateSpells.closeGateCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
 
             // costs of great spells
-            this.greatSpells.consumeWispOwnCost = bound(this.greatSpells.consumeWispOwnCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.greatSpells.consumeWispOwnCost = bound(this.greatSpells.consumeWispOwnCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
             this.greatSpells.consumeWispOthersCostPerMedia = bound(this.greatSpells.consumeWispOthersCostPerMedia, MIN_CONSUME_WISP_OTHERS_COST_PER_MEDIA, MAX_CONSUME_WISP_OTHERS_COST_PER_MEDIA);
-            this.greatSpells.seonWispSetCost = bound(this.greatSpells.seonWispSetCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.greatSpells.tickConstantCost = bound(this.greatSpells.tickConstantCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.greatSpells.tickCostPerTicked = bound(this.greatSpells.tickCostPerTicked, DEF_MIN_COST, DEF_MAX_COST);
+            this.greatSpells.seonWispSetCost = bound(this.greatSpells.seonWispSetCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.greatSpells.tickConstantCost = bound(this.greatSpells.tickConstantCost, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
+            this.greatSpells.tickCostPerTicked = bound(this.greatSpells.tickCostPerTicked, DEF_MIN_COST_DUB, DEF_MAX_COST_DUB);
 
             this.greatSpells.tickRandomTickIProb = bound(this.greatSpells.tickRandomTickIProb, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
         }
@@ -233,57 +194,57 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         @Override
         public int getFallingBlockCost() {
-            return miscSpells.fallingBlockCost;
+            return (int) (miscSpells.fallingBlockCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getFreezeCost() {
-            return miscSpells.freezeCost;
+            return (int) (miscSpells.freezeCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getParticlesCost() {
-            return miscSpells.particlesCost;
+            return (int) (miscSpells.particlesCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getPlaceTypeCost() {
-            return miscSpells.placeTypeCost;
+            return (int) (miscSpells.placeTypeCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getSmeltCost() {
-            return miscSpells.smeltCost;
+            return (int) (miscSpells.smeltCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getMoveSpeedSetCost() {
-            return wispSpells.moveSpeedSetCost;
+            return (int) (wispSpells.moveSpeedSetCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getSummonTickingWispCost() {
-            return wispSpells.summonTickingWispCost;
+            return (int) (wispSpells.summonTickingWispCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getSummonProjectileWispCost() {
-            return wispSpells.summonProjectileWispCost;
+            return (int) (wispSpells.summonProjectileWispCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getSummonProjectileWispMinCost() {
-            return wispSpells.summonProjectileWispMinCost;
+            return (int) (wispSpells.summonProjectileWispMinCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getTickingWispUpkeepPerTick() {
-            return wispUpkeep.tickingWispUpkeepPerTick;
+            return (int) (wispUpkeep.tickingWispUpkeepPerTick * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getProjectileWispUpkeepPerTick() {
-            return wispUpkeep.projectileWispUpkeepPerTick;
+            return (int) (wispUpkeep.projectileWispUpkeepPerTick * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -293,7 +254,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         @Override
         public int getLinkUpkeepPerTick() {
-            return wispUpkeep.linkUpkeepPerTick;
+            return (int) (wispUpkeep.linkUpkeepPerTick * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -303,37 +264,37 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         @Override
         public int getLinkCost() {
-            return linkSpells.linkCost;
+            return (int) (linkSpells.linkCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getSendIotaCost() {
-            return linkSpells.sendIotaCost;
+            return (int) (linkSpells.sendIotaCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getUnlinkCost() {
-            return linkSpells.unlinkCost;
+            return (int) (linkSpells.unlinkCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getMakeGateCost() {
-            return gateSpells.makeGateCost;
+            return (int) (gateSpells.makeGateCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getMarkGateCost() {
-            return gateSpells.markGateCost;
+            return (int) (gateSpells.markGateCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getCloseGateCost() {
-            return gateSpells.closeGateCost;
+            return (int) (gateSpells.closeGateCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getConsumeWispOwnCost() {
-            return greatSpells.consumeWispOwnCost;
+            return (int) (greatSpells.consumeWispOwnCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -343,17 +304,17 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         @Override
         public int getSeonWispSetCost() {
-            return greatSpells.seonWispSetCost;
+            return (int) (greatSpells.seonWispSetCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getTickConstantCost() {
-            return greatSpells.tickConstantCost;
+            return (int) (greatSpells.tickConstantCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
         public int getTickCostPerTicked() {
-            return greatSpells.tickCostPerTicked;
+            return (int) (greatSpells.tickCostPerTicked * MediaConstants.DUST_UNIT);
         }
 
         @Override

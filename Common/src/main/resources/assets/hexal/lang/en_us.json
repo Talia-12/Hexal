@@ -198,5 +198,70 @@
   "hexal.page.everbook_entries.0": "Every page in this entry displays the pattern key for one of the entries of your $(l:hexal:patterns/everbook)$(action)Everbook/$.",
 
   "hexal.everbook_pattern_entry.header": "Stored Key: %d",
-  "hexal.everbook_pattern_entry.macro_header": "Macro Key: %d"
+  "hexal.everbook_pattern_entry.macro_header": "Macro Key: %d",
+
+
+
+  "_comment": "Config Entries",
+  "text.autoconfig.hexal.title": "Hexal Configs",
+  "text.autoconfig.hexal.category.common": "Common",
+  "text.autoconfig.hexal.category.client": "Client",
+  "text.autoconfig.hexal.category.server": "Server",
+
+  "text.autoconfig.hexal.option.server.generateSlipwayGeodes": "Should generate Slipway Geodes?",
+
+  "text.autoconfig.hexal.option.server.miscSpells": "Miscellaneous Spells",
+  "text.autoconfig.hexal.option.server.miscSpells.fallingBlockCost": "Falling Block Cost",
+  "text.autoconfig.hexal.option.server.miscSpells.freezeCost": "Freeze Cost",
+  "text.autoconfig.hexal.option.server.miscSpells.particlesCost": "Particles Cost per Vector",
+  "text.autoconfig.hexal.option.server.miscSpells.placeTypeCost": "Place Type Cost",
+  "text.autoconfig.hexal.option.server.miscSpells.smeltCost": "Smelt Cost per Item",
+
+  "text.autoconfig.hexal.option.server.wispSpells": "Wisp Spells",
+  "text.autoconfig.hexal.option.server.wispSpells.moveSpeedSetCost": "Move Speed Set Base Cost",
+  "text.autoconfig.hexal.option.server.wispSpells.moveSpeedSetCost.@Tooltip[0]": "Cost to increase the movement speed of a wisp by 1.",
+  "text.autoconfig.hexal.option.server.wispSpells.moveSpeedSetCost.@Tooltip[1]": "This is the base cost, with greater increases being quadratically based on this.",
+  "text.autoconfig.hexal.option.server.wispSpells.summonTickingWispCost": "Summon Cyclic Wisp Cost",
+  "text.autoconfig.hexal.option.server.wispSpells.summonProjectileWispCost": "Summon Projectile Wisp Cost per Velocity Squared",
+  "text.autoconfig.hexal.option.server.wispSpells.summonProjectileWispMinCost": "Summon Cyclic Wisp Minimum Cost",
+
+  "text.autoconfig.hexal.option.server.wispUpkeep": "Wisp Upkeep",
+  "text.autoconfig.hexal.option.server.wispUpkeep.tickingWispUpkeepPerTick": "Cyclic Wisp Upkeep per Tick",
+  "text.autoconfig.hexal.option.server.wispUpkeep.projectileWispUpkeepPerTick": "Projectile Wisp Upkeep per Tick",
+  "text.autoconfig.hexal.option.server.wispUpkeep.untriggeredWispUpkeepDiscount": "Untriggered Wisp Upkeep Discount",
+  "text.autoconfig.hexal.option.server.wispUpkeep.untriggeredWispUpkeepDiscount.@Tooltip[0]": "The upkeep cost of untriggered cyclic wisps is multiplied by this number.",
+  "text.autoconfig.hexal.option.server.wispUpkeep.untriggeredWispUpkeepDiscount.@Tooltip[1]": "Bounded from 0.0 to 1.0.",
+  "text.autoconfig.hexal.option.server.wispUpkeep.linkUpkeepPerTick": "Link Upkeep per Tick",
+  "text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor": "Bound Wisp Discount Factor",
+  "text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor.@Tooltip[0]": "The upkeep cost of bound wisps is divided by this number.",
+  "text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor.@Tooltip[1]": "Bounded from 2.0 to 200.0.",
+
+  "text.autoconfig.hexal.option.server.linkSpells": "Link Spells",
+  "text.autoconfig.hexal.option.server.linkSpells.linkCost": "Link Cost",
+  "text.autoconfig.hexal.option.server.linkSpells.sendIotaCost": "Send Iota Cost",
+  "text.autoconfig.hexal.option.server.linkSpells.unlinkCost": "Unlink Cost",
+
+  "text.autoconfig.hexal.option.server.gateSpells": "Gate Spells",
+  "text.autoconfig.hexal.option.server.gateSpells.makeGateCost": "Make Gate Cost",
+  "text.autoconfig.hexal.option.server.gateSpells.markGateCost": "Mark Gate Cost",
+  "text.autoconfig.hexal.option.server.gateSpells.closeGateCost": "Close Gate Cost",
+
+  "text.autoconfig.hexal.option.server.greatSpells": "Great Spells",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost": "Consume Own Wisp Cost",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost.@Tooltip[0]": "Cost to consume a wisp you own,",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost.@Tooltip[1]": "or that doesn't fight back for some other reason.",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia": "Consume Other's Wisp Cost per Media",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[0]": "Cost to consume a wisp that fights back, this number is multiplied by",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[1]": "the media possessed by the wisp you are attempting to consume.",
+  "text.autoconfig.hexal.option.server.greatSpells.consumeWispOthersCostPerMedia.@Tooltip[2]": " Bounded from 1.0 to 20.0.",
+  "text.autoconfig.hexal.option.server.greatSpells.seonWispSetCost": "Bind Wisp Cost",
+  "text.autoconfig.hexal.option.server.greatSpells.tickConstantCost": "Tick Constant Cost",
+  "text.autoconfig.hexal.option.server.greatSpells.tickConstantCost.@Tooltip": "Constant cost to tick a block. Always applies.",
+  "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked": "Tick Cost per Time Ticked",
+  "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked.@Tooltip[0]": "Cost to tick a block per time that block has already been ticked. ",
+  "text.autoconfig.hexal.option.server.greatSpells.tickCostPerTicked.@Tooltip[1]": "Added to the constant cost above.",
+  "text.autoconfig.hexal.option.server.greatSpells.tickRandomTickIProb": "Tick Inverse Probability of Random Ticking",
+  "text.autoconfig.hexal.option.server.greatSpells.tickRandomTickIProb.@Tooltip[0]": "The inverse probability of tick randomly ticking a block.",
+  "text.autoconfig.hexal.option.server.greatSpells.tickRandomTickIProb.@Tooltip[1]": "Higher numbers make random ticks less likely, lower numbers make them more likely.",
+  "text.autoconfig.hexal.option.server.greatSpells.tickRandomTickIProb.@Tooltip[2]": "Bound from 600 to 2100."
 }

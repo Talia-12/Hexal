@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
@@ -29,7 +30,7 @@ object OpLinkOthers : SpellAction {
 
 		return Triple(
 			Spell(linkThis, linkOther),
-			OpLink.LINK_COST,
+			HexalConfig.server.linkCost,
 			listOf(ParticleSpray.burst(linkThis.getPosition(), 1.5), ParticleSpray.burst(linkOther.getPosition(), 1.5))
 		)
 	}

@@ -35,6 +35,9 @@
     ],
     "emi": [
       "ram.talia.hexal.fabric.interop.emi.HexalEMIPlugin"
+    ],
+    "modmenu": [
+      "ram.talia.hexal.fabric.interop.ModMenuInterop"
     ]
   },
   "mixins": [

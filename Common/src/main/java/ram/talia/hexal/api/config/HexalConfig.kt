@@ -56,53 +56,55 @@ object HexalConfig {
         companion object {
             const val DEFAULT_GENERATE_SLIPWAY_GEODES: Boolean = true
 
-            const val DEF_MIN_COST = (0.0001 * MediaConstants.DUST_UNIT).toInt()
-            const val DEF_MAX_COST = 10_000 * MediaConstants.DUST_UNIT
+            const val DEF_MIN_COST_DUB = 0.0001
+            const val DEF_MAX_COST_DUB = 10_000.0
+            const val DEF_MIN_COST = (DEF_MIN_COST_DUB * MediaConstants.DUST_UNIT).toInt()
+            const val DEF_MAX_COST = (DEF_MAX_COST_DUB * MediaConstants.DUST_UNIT).toInt()
 
-            // default costs of misc spells
-            const val DEFAULT_FALLING_BLOCK_COST = MediaConstants.DUST_UNIT * 3 / 2
-            const val DEFAULT_FREEZE_COST = MediaConstants.DUST_UNIT
-            const val DEFAULT_PARTICLES_COST = MediaConstants.DUST_UNIT / 100
-            const val DEFAULT_PLACE_TYPE_COST = MediaConstants.DUST_UNIT / 8
-            const val DEFAULT_SMELT_COST = MediaConstants.DUST_UNIT * 3 / 4
+            // default costs of misc spells (in dust)
+            const val DEFAULT_FALLING_BLOCK_COST = 1.5
+            const val DEFAULT_FREEZE_COST = 1.0
+            const val DEFAULT_PARTICLES_COST = 0.01
+            const val DEFAULT_PLACE_TYPE_COST = 0.125
+            const val DEFAULT_SMELT_COST = 0.75
 
             // default costs of wisp spells
-            const val DEFAULT_MOVE_SPEED_SET_COST =MediaConstants.DUST_UNIT
-            const val DEFAULT_SUMMON_TICKING_WISP_COST = MediaConstants.DUST_UNIT * 3
-            const val DEFAULT_SUMMON_PROJECTILE_WISP_COST = (MediaConstants.DUST_UNIT * 3 / 1.75).toInt()
-            const val DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST = MediaConstants.DUST_UNIT / 2
+            const val DEFAULT_MOVE_SPEED_SET_COST =1.0
+            const val DEFAULT_SUMMON_TICKING_WISP_COST = 3.0
+            const val DEFAULT_SUMMON_PROJECTILE_WISP_COST = 1.7
+            const val DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST = 0.5
 
             // default costs of wisp upkeep
-            const val DEFAULT_TICKING_WISP_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.65/20.0).toInt()
-            const val DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.325 / 20.0).toInt()
-            const val DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0.25 / 0.325
-            const val DEFAULT_LINK_UPKEEP_PER_TICK = (MediaConstants.DUST_UNIT * 0.01 / 20.0).toInt()
+            const val DEFAULT_TICKING_WISP_UPKEEP_PER_TICK = 0.65 / 20.0
+            const val DEFAULT_PROJECTILE_WISP_UPKEEP_PER_TICK =  0.325 / 20.0
+            const val DEFAULT_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0.77
+            const val DEFAULT_LINK_UPKEEP_PER_TICK = 0.01 / 20.0
             const val DEFAULT_SEON_DISCOUNT_FACTOR = 20.0
 
-            const val MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0
-            const val MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 1
+            const val MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0.0
+            const val MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 1.0
 
             const val MIN_SEON_DISCOUNT_FACTOR = 2.0
             const val MAX_SEON_DISCOUNT_FACTOR = 200.0
 
 
             // default costs of link spells
-            const val DEFAULT_LINK_COST = MediaConstants.SHARD_UNIT * 1
-            const val DEFAULT_SEND_IOTA_COST = MediaConstants.DUST_UNIT / 100
-            const val DEFAULT_UNLINK_COST = MediaConstants.DUST_UNIT * 2
+            const val DEFAULT_LINK_COST = 5.0
+            const val DEFAULT_SEND_IOTA_COST = 0.01
+            const val DEFAULT_UNLINK_COST = 2.0
 
             // default costs of gate spells
-            const val DEFAULT_MAKE_GATE_COST = MediaConstants.CRYSTAL_UNIT * 32
-            const val DEFAULT_MARK_GATE_COST = MediaConstants.DUST_UNIT / 20
-            const val DEFAULT_CLOSE_GATE_COST = MediaConstants.SHARD_UNIT / 2
+            const val DEFAULT_MAKE_GATE_COST = 320.0
+            const val DEFAULT_MARK_GATE_COST = 0.05
+            const val DEFAULT_CLOSE_GATE_COST = 2.5
 
 
             // default costs of great spells
-            const val DEFAULT_CONSUME_WISP_OWN_COST = MediaConstants.SHARD_UNIT
+            const val DEFAULT_CONSUME_WISP_OWN_COST = 5.0
             const val DEFAULT_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 1.5
-            const val DEFAULT_SEON_WISP_SET_COST = MediaConstants.CRYSTAL_UNIT * 5
-            const val DEFAULT_TICK_CONSTANT_COST = MediaConstants.DUST_UNIT / 10
-            const val DEFAULT_TICK_COST_PER_TICKED = MediaConstants.DUST_UNIT / 1000
+            const val DEFAULT_SEON_WISP_SET_COST = 50.0
+            const val DEFAULT_TICK_CONSTANT_COST = 0.1
+            const val DEFAULT_TICK_COST_PER_TICKED = 0.001
 
             const val MIN_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 1.0
             const val MAX_CONSUME_WISP_OTHERS_COST_PER_MEDIA = 20.0
