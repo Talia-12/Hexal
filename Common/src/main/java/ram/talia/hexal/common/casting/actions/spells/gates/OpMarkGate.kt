@@ -12,7 +12,8 @@ import ram.talia.hexal.api.getGate
 object OpMarkGate : ConstMediaAction {
     override val argc = 2
 
-    override val mediaCost = HexalConfig.server.markGateCost
+    override val mediaCost: Int
+        get() = HexalConfig.server.markGateCost
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
         val gate = args.getGate(0, argc)

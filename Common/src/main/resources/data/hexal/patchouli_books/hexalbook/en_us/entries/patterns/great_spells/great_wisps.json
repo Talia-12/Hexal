@@ -2,7 +2,7 @@
   "name": "hexal.entry.great_wisps",
   "category": "hexcasting:patterns/great_spells",
   "icon": "minecraft:nether_star",
-  "sortnum": 14,
+  "sortnum": 15,
   "advancement": "hexcasting:root",
   "read_by_default": true,
   "pages": [

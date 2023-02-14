@@ -1,0 +1,34 @@
+{
+  "name": "hexal.entry.gates",
+  "category": "hexcasting:patterns/great_spells",
+  "icon": "minecraft:end_portal_frame",
+  "sortnum": 16,
+  "advancement": "hexcasting:root",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:gate/make",
+      "anchor": "hexal:gate/make",
+      "input": "",
+      "output": "gate",
+      "text": "hexal.page.gates.gate/make"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:gate/mark",
+      "anchor": "hexal:gate/mark",
+      "input": "gate, entity",
+      "output": "",
+      "text": "hexal.page.gates.gate/mark"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:gate/close",
+      "anchor": "hexal:gate/close",
+      "input": "gate, vec",
+      "output": "",
+      "text": "hexal.page.gates.gate/close"
+    }
+  ]
+}

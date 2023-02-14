@@ -9,7 +9,8 @@ import ram.talia.hexal.api.gates.GateManager
 object OpMakeGate : ConstMediaAction {
     override val argc = 0
 
-    override val mediaCost = HexalConfig.server.makeGateCost
+    override val mediaCost: Int
+        get() = HexalConfig.server.makeGateCost
 
     override fun execute(args: List<Iota>, ctx: CastingContext) = listOf(GateManager.makeGate())
 }
