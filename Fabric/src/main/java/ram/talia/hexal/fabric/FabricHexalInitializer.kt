@@ -38,9 +38,6 @@ object FabricHexalInitializer : ModInitializer {
     }
 
     private fun initListeners() {
-        // reattempt link render packets that failed to apply properly once every 20 ticks.
-        ClientTickEvents.START_CLIENT_TICK.register { LinkablePacketHolder.maybeRetry() }
-
         ServerLifecycleEvents.SERVER_STARTED.register {
             val savedData = it.overworld().dataStorage.computeIfAbsent(::GateSavedData, ::GateSavedData, FILE_GATE_MANAGER)
             savedData.setDirty()
