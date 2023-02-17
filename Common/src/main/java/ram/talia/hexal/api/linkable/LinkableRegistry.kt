@@ -7,7 +7,6 @@ import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
-import java.util.*
 
 object LinkableRegistry {
 	const val TAG_TYPE = "type"
@@ -15,10 +14,10 @@ object LinkableRegistry {
 
 	// TODO: Refactor to use Minecraft Registry class
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*, *>> = mutableMapOf()
-	private val castingContextExtractionQueue: PriorityQueue<LinkableType<*, *>>
-		= PriorityQueue { type0, type1 -> type1.castingContextPriority - type0.castingContextPriority }
-	private val iotaExtractionQueue: PriorityQueue<LinkableType<*, *>>
-			= PriorityQueue { type0, type1 -> type1.iotaPriority - type0.iotaPriority }
+	private val castingContextExtractionQueue: MutableList<LinkableType<*, *>> = mutableListOf()
+//			= PriorityQueue { type0, type1 -> type1.castingContextPriority - type0.castingContextPriority }
+	private val iotaExtractionQueue: MutableList<LinkableType<*, *>> = mutableListOf()
+//			= PriorityQueue { type0, type1 -> type1.iotaPriority - type0.iotaPriority }
 
 	class RegisterLinkableTypeException(msg: String) : Exception(msg)
 	class InvalidLinkableTypeException(msg: String) : Exception(msg)
@@ -34,10 +33,19 @@ object LinkableRegistry {
 			throw RegisterLinkableTypeException("LinkableRegistry already contains resource id ${type.id}")
 
 		if (type.canCast)
-			castingContextExtractionQueue.add(type)
-		iotaExtractionQueue.add(type)
+			addSorted(castingContextExtractionQueue, type) { type0, type1 -> type1.castingContextPriority - type0.castingContextPriority }
+		addSorted(iotaExtractionQueue, type) { type0, type1 -> type1.iotaPriority - type0.iotaPriority }
 
 		linkableTypes[type.id] = type
+	}
+
+	private fun<T> addSorted(list: MutableList<T>, toAdd: T, order: (T, T) -> Int) {
+		var i = 0
+
+		while (i < list.size && order(list[i], toAdd) >= 0)
+			i += 1
+
+		list.add(i, toAdd)
 	}
 
 	abstract class LinkableType<T : ILinkable, U : ILinkable.IRenderCentre>(val id: ResourceLocation) {

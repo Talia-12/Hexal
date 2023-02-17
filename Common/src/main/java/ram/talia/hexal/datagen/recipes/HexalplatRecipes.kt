@@ -1,11 +1,8 @@
 package ram.talia.hexal.datagen.recipes
 
-import at.petrak.hexcasting.api.advancements.OvercastTrigger
-import at.petrak.hexcasting.api.mod.HexItemTags
+import at.petrak.hexcasting.api.mod.HexTags
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
 import at.petrak.paucal.api.datagen.PaucalRecipeProvider
-import net.minecraft.advancements.critereon.EntityPredicate
-import net.minecraft.advancements.critereon.MinMaxBounds
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.world.level.block.Blocks
@@ -18,13 +15,13 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 
 	override fun makeRecipes(recipes: Consumer<FinishedRecipe>) {
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.ICE), Blocks.PACKED_ICE.defaultBlockState())
-			.unlockedBy("has_item", hasItem(HexItemTags.STAVES))
+			.unlockedBy("has_item", hasItem(HexTags.Items.STAVES))
 			.save(recipes, modLoc("freeze/packed_ice"))
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.PACKED_ICE), Blocks.BLUE_ICE.defaultBlockState())
-			.unlockedBy("has_item", hasItem(HexItemTags.STAVES))
+			.unlockedBy("has_item", hasItem(HexTags.Items.STAVES))
 			.save(recipes, modLoc("freeze/blue_ice"))
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.WATER_CAULDRON), Blocks.POWDER_SNOW_CAULDRON.defaultBlockState())
-			.unlockedBy("has_item", hasItem(HexItemTags.STAVES))
+			.unlockedBy("has_item", hasItem(HexTags.Items.STAVES))
 			.save(recipes, modLoc("freeze/powder_snow_cauldron"))
 
 //		val enlightenment = OvercastTrigger.Instance(

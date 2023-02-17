@@ -1,5 +1,6 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
+import at.petrak.hexcasting.api.mod.HexTags
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.SpellAction
@@ -7,7 +8,6 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getVec3
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
-import at.petrak.hexcasting.common.lib.HexEntityTags
 import at.petrak.hexcasting.common.network.MsgBlinkAck
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.server.level.ServerPlayer
@@ -101,8 +101,8 @@ object OpCloseGate : SpellAction {
         val playersToUpdate = mutableListOf<ServerPlayer>()
         val indirect = base.indirectPassengers
 
-        val sticky = indirect.any { it.type.`is`(HexEntityTags.STICKY_TELEPORTERS) }
-        val cannotSticky = indirect.none { it.type.`is`(HexEntityTags.CANNOT_TELEPORT) }
+        val sticky = indirect.any { it.type.`is`(HexTags.Entities.STICKY_TELEPORTERS) }
+        val cannotSticky = indirect.none { it.type.`is`(HexTags.Entities.CANNOT_TELEPORT) }
         if (sticky && cannotSticky)
             return
 

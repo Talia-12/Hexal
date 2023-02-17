@@ -67,7 +67,7 @@
       "op_id": "hexal:wisp/owner",
       "anchor": "hexal:wisp/owner",
       "input": "entity, entity",
-      "output": "0/1",
+      "output": "bool",
       "text": "hexal.page.wisps.wisp/owner"
     },
     {
