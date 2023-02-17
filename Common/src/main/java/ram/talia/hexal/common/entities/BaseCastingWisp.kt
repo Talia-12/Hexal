@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
@@ -123,9 +124,21 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			false -> untriggeredCostPerTick
 		}
 		cost += HexalConfig.server.linkUpkeepPerTick * numLinked()
+		if (wispContainsPlayer())
+			cost = (cost * HexalConfig.server.storingPlayerCostScaleFactor).toInt()
 		if (seon)
 			cost = (cost / HexalConfig.server.seonDiscountFactor).toInt()
 		media -= cost
+	}
+
+	open fun wispContainsPlayer(): Boolean {
+		for (iota in allReceivedIotas()) {
+			val trueName = MishapOthersName.getTrueNameFromDatum(iota, caster)
+			if (trueName != null)
+				return true
+		}
+
+		return false
 	}
 
 	open val normalCostPerTick = HexalConfig.server.projectileWispUpkeepPerTick

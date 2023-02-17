@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
+import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import at.petrak.hexcasting.api.utils.hasByte
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
@@ -68,6 +69,23 @@ class TickingWisp : BaseCastingWisp {
 		if (level.isClientSide)
 			throw Exception("TickingWisp.transmittingTargetReturnDisplay should only be called on server.") // TODO
 		return serStack.get(level as ServerLevel).map(Iota::display)
+	}
+
+	override fun wispContainsPlayer(): Boolean {
+		if (level.isClientSide)
+			throw Exception("TickingWisp.wispContainsPlayer should only be called on server.") // TODO
+
+		for (iota in serStack.get(level as ServerLevel)) {
+			val trueName = MishapOthersName.getTrueNameFromDatum(iota, caster)
+			if (trueName != null)
+				return true
+		}
+
+		val trueName = serRavenmind.get(level as ServerLevel)?.let { MishapOthersName.getTrueNameFromDatum(it, caster) }
+		if (trueName != null)
+			return true
+
+		return super.wispContainsPlayer()
 	}
 
 	override val normalCostPerTick =  HexalConfig.server.tickingWispUpkeepPerTick

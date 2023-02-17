@@ -252,6 +252,9 @@
   "text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor": "Bound Wisp Discount Factor",
   "text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor.@Tooltip[0]": "The upkeep cost of bound wisps is divided by this number.",
   "text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor.@Tooltip[1]": "Bounded from 2.0 to 200.0.",
+  "text.autoconfig.hexal.option.server.wispUpkeep.storingPlayerCostScaleFactor": "Storing Player Cost Scale Factor",
+  "text.autoconfig.hexal.option.server.wispUpkeep.storingPlayerCostScaleFactor.@Tooltip[0]": "The multiplicative cost increase of wisps containing an iota of another player.",
+  "text.autoconfig.hexal.option.server.wispUpkeep.storingPlayerCostScaleFactor.@Tooltip[1]": "Bounded from 1.0 to 200.0.",
 
   "text.autoconfig.hexal.option.server.linkSpells": "Link Spells",
   "text.autoconfig.hexal.option.server.linkSpells.linkCost": "Link Cost",

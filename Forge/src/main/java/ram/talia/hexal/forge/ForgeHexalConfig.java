@@ -38,6 +38,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue untriggeredWispUpkeepDiscount;
         private static ForgeConfigSpec.DoubleValue linkUpkeepPerTick;
         private static ForgeConfigSpec.DoubleValue seonDiscountFactor;
+        private static ForgeConfigSpec.DoubleValue storingPlayerCostScaleFactor;
 
         // costs of link spells
         private static ForgeConfigSpec.DoubleValue linkCost;
@@ -112,6 +113,9 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
             seonDiscountFactor = builder.translation("text.autoconfig.hexal.option.server.wispUpkeep.seonDiscountFactor")
                     .comment("The upkeep cost of bound wisps is divided by this number.")
                     .defineInRange("seonDiscountFactor", DEFAULT_SEON_DISCOUNT_FACTOR, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
+            storingPlayerCostScaleFactor = builder.translation("text.autoconfig.hexal.option.server.wispUpkeep.storingPlayerCostScaleFactor")
+                    .comment("The multiplicative cost increase of wisps containing an iota of another player.")
+                    .defineInRange("storingPlayerCostScaleFactor", DEFAULT_STORING_PLAYER_COST_SCALE_FACTOR, MIN_STORING_PLAYER_COST_SCALE_FACTOR, MAX_STORING_PLAYER_COST_SCALE_FACTOR);
 
             builder.pop();
 
@@ -249,6 +253,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public double getSeonDiscountFactor() {
             return seonDiscountFactor.get();
+        }
+
+        @Override
+        public double getStoringPlayerCostScaleFactor() {
+            return storingPlayerCostScaleFactor.get();
         }
 
         @Override

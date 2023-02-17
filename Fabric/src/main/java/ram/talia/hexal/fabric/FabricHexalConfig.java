@@ -90,6 +90,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             double linkUpkeepPerTick = DEFAULT_LINK_UPKEEP_PER_TICK;
             @ConfigEntry.Gui.Tooltip(count = 2)
             double seonDiscountFactor = DEFAULT_SEON_DISCOUNT_FACTOR;
+            @ConfigEntry.Gui.Tooltip(count = 2)
+            public double storingPlayerCostScaleFactor;
         }
 
 
@@ -157,6 +159,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.wispUpkeep.untriggeredWispUpkeepDiscount = bound(this.wispUpkeep.untriggeredWispUpkeepDiscount, MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT, MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT);
             this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
             this.wispUpkeep.seonDiscountFactor = bound(this.wispUpkeep.seonDiscountFactor, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
+            this.wispUpkeep.storingPlayerCostScaleFactor = bound(this.wispUpkeep.storingPlayerCostScaleFactor, MIN_STORING_PLAYER_COST_SCALE_FACTOR, MAX_STORING_PLAYER_COST_SCALE_FACTOR);
 
             // costs of link spells
             this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -260,6 +263,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public double getSeonDiscountFactor() {
             return wispUpkeep.seonDiscountFactor;
+        }
+
+        @Override
+        public double getStoringPlayerCostScaleFactor() {
+            return wispUpkeep.storingPlayerCostScaleFactor;
         }
 
         @Override

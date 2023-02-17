@@ -96,6 +96,10 @@ interface ILinkable {
 		linkableHolder!!.clearReceivedIotas()
 	}
 
+	fun allReceivedIotas(): List<Iota> {
+		return linkableHolder?.allReceivedIotas() ?: throw Exception("ILinkable.allReceivedIotas should only be accessed on server.")  // TODO
+	}
+
 
 	/**
 	 * Called when the player is transmitting to this [ILinkable], should return what should be displayed instead of the stack.

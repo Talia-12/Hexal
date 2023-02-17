@@ -107,6 +107,10 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         serReceivedIotas.tag = ListTag()
     }
 
+    fun allReceivedIotas(): List<Iota> {
+        return serReceivedIotas.get(level)
+    }
+
     /**
      * Call this when the ILinkable is being serialised, and save the resulting tag.
      */
