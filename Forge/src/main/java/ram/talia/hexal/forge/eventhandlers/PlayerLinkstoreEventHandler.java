@@ -24,7 +24,8 @@ public class PlayerLinkstoreEventHandler {
 	
 	private static final Map<UUID, PlayerLinkstore> linkstores = new HashMap<>();
 
-	@OnlyIn(Dist.CLIENT)
+	// can't mark this as OnlyIn client, pretty sure it's since the = new HashMap<>() still tries to run regardless, and
+	// breaks horribly.
 	private static final Map<UUID, PlayerLinkstore.RenderCentre> renderCentres = new HashMap<>();
 	
 	public static @Nullable PlayerLinkstore.RenderCentre getRenderCentre(Player player) {
@@ -74,7 +75,7 @@ public class PlayerLinkstoreEventHandler {
 		linkstores.put(player.getUUID(), loadLinkstore(player));
 	}
 	
-	@OnlyIn(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT) // TODO: Remove apparently? https://docs.minecraftforge.net/en/latest/concepts/sides/#fmlenvironmentdist-and-onlyin
 	@SubscribeEvent
 	public static void clientPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
 		renderCentres.computeIfAbsent(event.getPlayer().getUUID(), k -> new PlayerLinkstore.RenderCentre(event.getPlayer()));
