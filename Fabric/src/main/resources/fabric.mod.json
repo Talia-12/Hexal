@@ -55,7 +55,7 @@
     "cardinal-components": ">=5.0.2",
     "patchouli": ">=1.19.2-77",
     "paucal": "0.5.x",
-    "hexcasting": ">=0.10.1"
+    "hexcasting": ">=0.10.3"
   },
   "suggests": {
     "gravitychanger": "0.7.21+fabric",
