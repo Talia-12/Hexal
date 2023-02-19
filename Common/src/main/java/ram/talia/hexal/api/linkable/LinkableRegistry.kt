@@ -42,7 +42,7 @@ object LinkableRegistry {
 	private fun<T> addSorted(list: MutableList<T>, toAdd: T, order: (T, T) -> Int) {
 		var i = 0
 
-		while (i < list.size && order(list[i], toAdd) >= 0)
+		while (i < list.size && order(list[i], toAdd) < 0)
 			i += 1
 
 		list.add(i, toAdd)
