@@ -136,7 +136,7 @@ def loadProperties = { filename ->
 
 modrinth {
     token = loadProperties("keys.properties").MODRINTH_TOKEN
-    projectId = "hexal" // This can be the project ID or the slug. Either will work!
+    projectId = "$modID" // This can be the project ID or the slug. Either will work!
     versionNumber = "$modVersion" // You don't need to set this manually. Will fail if Modrinth has this version already
     versionName = "$modVersion-fabric"
     changelog = rootProject.file("changelog.md").text

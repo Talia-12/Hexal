@@ -14,7 +14,7 @@ public interface HexalAPI
 	
 	Supplier<HexalAPI> INSTANCE = Suppliers.memoize(() -> {
 		try {
-			return (HexalAPI) Class.forName("com.talia.hexal.common.impl.HexalAPIImpl")
+			return (HexalAPI) Class.forName("ram.talia.hexal.common.impl.HexalAPIImpl")
 								 .getDeclaredConstructor().newInstance();
 		} catch (ReflectiveOperationException e) {
 			LogManager.getLogger().warn("Unable to find HexalAPIImpl, using a dummy");
