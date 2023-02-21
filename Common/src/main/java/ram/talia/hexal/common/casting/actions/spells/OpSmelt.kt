@@ -2,69 +2,58 @@ package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.Vec3Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import at.petrak.hexcasting.api.utils.asTranslatedComponent
-import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.getBlockPosOrItemEntityOrItem
+import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.toIntCapped
+import ram.talia.hexal.api.util.Anyone
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.util.*
 
 object OpSmelt : SpellAction {
     override val argc = 1
 
-    fun numToSmelt(toSmelt: Either<Vec3, ItemEntity>): Int {
-        return toSmelt.map({ 1 }, { item -> item.item.count })
+    fun numToSmelt(toSmelt: Anyone<BlockPos, ItemEntity, ItemIota>): Int {
+        return toSmelt.flatMap({ 1 }, { item -> item.item.count }, { item -> item.count.toIntCapped() })
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-        val toSmelt = when (val toSmeltIota = args[0]) {
-            is Vec3Iota -> Either.left(Vec3.atCenterOf(BlockPos(toSmeltIota.vec3)))
-            is EntityIota -> Either.right(toSmeltIota.entity as? ItemEntity ?: // throws an error if the entity isn't an item.
-                throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent))
-            else -> throw MishapInvalidIota(args[0], 0, "hexal.mishap.invalid_value.vecitem".asTranslatedComponent)
-        }
+    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+        val toSmelt = args.getBlockPosOrItemEntityOrItem(0, argc) ?: return null
 
-        val pos = toSmelt.map({ vec -> vec }, { item -> item.position() })
-        ctx.assertVecInRange(pos)
+        val pos = toSmelt.flatMap({ blockPos -> Vec3.atCenterOf(blockPos) }, { item -> item.position() }, { null })
+        pos?.let { ctx.assertVecInRange(it) }
+
+        val particles = mutableListOf<ParticleSpray>()
+
+        if (pos != null)
+            particles.add(ParticleSpray.burst(pos, 1.0))
 
         return Triple(
             Spell(toSmelt),
             HexalConfig.server.smeltCost * numToSmelt(toSmelt),
-            listOf(ParticleSpray.burst(pos, 1.0))
+            particles
         )
     }
 
-    private data class Spell(val vOrI: Either<Vec3, ItemEntity>) : RenderedSpell {
+    private data class Spell(val vOrIeOrI: Anyone<BlockPos, ItemEntity, ItemIota>) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
-            vOrI.map({vec -> // runs this code if the player passed a BlockPos
-                val pos = BlockPos(vec)
+            vOrIeOrI.map({ pos -> // runs this code if the player passed a BlockPos
                  if (!ctx.canEditBlockAt(pos)) return@map
                 val blockState = ctx.world.getBlockState(pos)
                  if (!IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockState, ctx.caster)) return@map
 
-                // Stealing code from Ars Nouveau
-                val optional: Optional<SmeltingRecipe> = ctx.world.recipeManager.getRecipeFor(
-                    RecipeType.SMELTING, SimpleContainer(ItemStack(blockState.block.asItem(), 1)),
-                    ctx.world
-                )
-
-                if (!optional.isPresent) return@map
-
-                val itemStack = optional.get().resultItem
-
-                if (itemStack.isEmpty) return@map
+                val itemStack = smeltResult(blockState.block.asItem(), ctx) ?: return@map
 
                 if (itemStack.item is BlockItem) {
                     ctx.world.setBlockAndUpdate(pos, (itemStack.item as BlockItem).block.defaultBlockState())
@@ -77,22 +66,32 @@ object OpSmelt : SpellAction {
                 }
 
             }, {itemEntity -> // runs this code if the player passed an ItemEntity
-                val optional: Optional<SmeltingRecipe> = ctx.world.recipeManager.getRecipeFor(
-                    RecipeType.SMELTING, SimpleContainer(ItemStack(itemEntity.item.item, 1)),   // cursed .item.item to map from ItemEntity to ItemLike to ItemStack
-                    ctx.world
-                )
-
-                if (!optional.isPresent) return@map
-
-                val result = optional.get().resultItem.copy()
-
-                if (result.isEmpty) return@map
+                val result = smeltResult(itemEntity.item.item, ctx) ?: return@map // cursed .item.item to map from ItemEntity to ItemLike to ItemStack
 
                 result.count = itemEntity.item.count
 
-                itemEntity.remove(Entity.RemovalReason.DISCARDED)
                 ctx.world.addFreshEntity(ItemEntity(ctx.world, itemEntity.x, itemEntity.y, itemEntity.z, result.copy()))
+                itemEntity.remove(Entity.RemovalReason.DISCARDED)
+            }, {item ->
+                val result = smeltResult(item.item, ctx) ?: return@map
+
+                item.templateOff(result)
             })
+        }
+
+        fun smeltResult(item: Item, ctx: CastingContext): ItemStack? {
+            val optional: Optional<SmeltingRecipe> = ctx.world.recipeManager.getRecipeFor(
+                    RecipeType.SMELTING, SimpleContainer(ItemStack(item, 1)),
+                    ctx.world
+            )
+
+            if (!optional.isPresent) return null
+
+            val result = optional.get().resultItem.copy()
+
+            if (result.isEmpty) return null
+
+            return result
         }
     }
 }

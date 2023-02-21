@@ -7,6 +7,7 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getItem
+import ram.talia.hexal.api.getStrictlyPositiveInt
 import ram.talia.hexal.api.spell.iota.ItemIota
 
 /**
@@ -17,7 +18,7 @@ object OpReturnItem : SpellAction {
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val item = args.getItem(0, argc) ?: return null
-        val numToReturn = args.getInt(1, argc)
+        val numToReturn = args.getStrictlyPositiveInt(1, argc)
         val pos = args.getVec3(2, argc)
 
         ctx.assertVecInRange(pos)

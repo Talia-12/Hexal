@@ -2,6 +2,7 @@ package ram.talia.hexal.api.spell.iota;
 
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.iota.IotaType;
+import at.petrak.hexcasting.api.spell.iota.NullIota;
 import at.petrak.hexcasting.api.utils.HexUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -45,6 +46,10 @@ public class ItemIota extends Iota {
         return null;
     }
 
+    public boolean isEmpty() {
+        return !MediafiedItemManager.contains(this.getItemIndex());
+    }
+
     public int getItemIndex() {
         return (int) payload;
     }
@@ -65,15 +70,35 @@ public class ItemIota extends Iota {
         MediafiedItemManager.merge(this.getItemIndex(), other.getItemIndex());
     }
 
+    public @Nullable ItemIota splitOff(int amount) {
+        var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount);
+        if (newIndex == null)
+            return null;
+
+        return new ItemIota(newIndex);
+    }
+
     public List<ItemStack> getStacksToDrop(int count) {
         return MediafiedItemManager.getStacksToDrop(this.getItemIndex(), count);
     }
 
+    /**
+     * Takes a template ItemStack and sets the item and tag of the referenced ItemRecord to that item and tag, while leaving the count the same.
+     */
+    public void templateOff(@NotNull ItemStack template) {
+        MediafiedItemManager.templateOff(this.getItemIndex(), template);
+    }
+
+    public ItemIota copy() {
+        return new ItemIota(this.getItemIndex());
+    }
+
     @Override
     protected boolean toleratesOther(Iota that) {
-        return typesMatch(this, that) &&
+        return (typesMatch(this, that) &&
                 that instanceof ItemIota ithat &&
-                this.getItemIndex() == ithat.getItemIndex();
+                this.getItemIndex() == ithat.getItemIndex())
+                || (this.isEmpty() && that instanceof NullIota);
     }
 
     @Override
