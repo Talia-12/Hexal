@@ -45,6 +45,7 @@ object HexalConfig {
         // costs of item spells
         val makeItemCost: Int
         val returnItemCost: Int
+        val maxItemsReturned: Int
 
         // costs of great spells
         val consumeWispOwnCost: Int
@@ -107,6 +108,11 @@ object HexalConfig {
             // default costs of item spells
             const val DEFAULT_MAKE_ITEM_COST = 0.1
             const val DEFAULT_RETURN_ITEM_COST = 0.1
+
+            const val DEFAULT_MAX_ITEMS_RETURNED = 32000
+
+            const val MIN_MAX_ITEMS_RETURNED = 640
+            const val MAX_MAX_ITEMS_RETURNED = 64000
 
 
             // default costs of great spells
@@ -192,6 +198,8 @@ object HexalConfig {
         override val makeItemCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val returnItemCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val maxItemsReturned: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val consumeWispOwnCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

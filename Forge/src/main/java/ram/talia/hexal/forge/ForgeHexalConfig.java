@@ -53,6 +53,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         // costs of item spells
         private static ForgeConfigSpec.DoubleValue makeItemCost;
         private static ForgeConfigSpec.DoubleValue returnItemCost;
+        private static ForgeConfigSpec.IntValue maxItemsReturned;
 
 
         // costs of great spells
@@ -155,6 +156,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("makeItemCost", DEFAULT_MAKE_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
             returnItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.returnItemCost")
                     .defineInRange("returnItemCost", DEFAULT_RETURN_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
+            maxItemsReturned = builder.translation("text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned")
+                    .defineInRange("maxItemsReturned", DEFAULT_MAX_ITEMS_RETURNED, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
 
             builder.pop();
 
@@ -313,6 +316,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getReturnItemCost() {
             return (int) (returnItemCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getMaxItemsReturned() {
+            return maxItemsReturned.get();
         }
 
         @Override

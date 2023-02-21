@@ -10,7 +10,7 @@ import ram.talia.hexal.api.config.HexalConfig
 /**
  * Mediafy an ItemEntity.
  */
-object OpMakeItem : ConstMediaAction {
+object OpMakeItem : ConstMediaAction { // TODO: Convert to SpellAction or just Action so that I can do particle effects.
     override val argc = 1
 
     override val mediaCost: Int

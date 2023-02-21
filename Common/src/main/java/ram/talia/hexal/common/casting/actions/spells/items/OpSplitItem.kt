@@ -12,7 +12,7 @@ object OpSplitItem : ConstMediaAction {
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
         val item = args.getItem(0, argc) ?: return listOf(NullIota())
-        val toSplitOff = args.getStrictlyPositiveInt(0, argc)
+        val toSplitOff = args.getStrictlyPositiveInt(1, argc)
 
         val split = item.splitOff(toSplitOff) ?: return listOf(item.copy(), NullIota())
         return listOf(item.copy(), split.copy())

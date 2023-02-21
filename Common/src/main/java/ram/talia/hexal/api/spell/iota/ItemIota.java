@@ -149,12 +149,12 @@ public class ItemIota extends Iota {
                 return Component.translatable("hexcasting.spelldata.unknown");
             }
 
-            return Component.translatable("hexal.spelldata.item", ctag.getString(TAG_DISPLAY_NAME), ctag.getLong(TAG_COUNT)).withStyle(ChatFormatting.AQUA);
+            return Component.translatable("hexal.spelldata.item", ctag.getString(TAG_DISPLAY_NAME), ctag.getLong(TAG_COUNT)).withStyle(ChatFormatting.YELLOW);
         }
 
         @Override
         public int color() {
-            return 0xff_55ffff;
+            return 0xff_ffff55;
         }
     };
 }

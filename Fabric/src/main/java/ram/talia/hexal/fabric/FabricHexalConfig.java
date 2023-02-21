@@ -124,6 +124,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             // costs of item spells
             double makeItemCost = DEFAULT_MAKE_ITEM_COST;
             double returnItemCost = DEFAULT_RETURN_ITEM_COST;
+            int maxItemsReturned = DEFAULT_MAX_ITEMS_RETURNED;
         }
 
         @ConfigEntry.Gui.CollapsibleObject
@@ -183,6 +184,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             // costs of item spells
             this.itemSpells.makeItemCost = bound(this.itemSpells.makeItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.returnItemCost = bound(this.itemSpells.returnItemCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.itemSpells.maxItemsReturned = bound(this.itemSpells.maxItemsReturned, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
 
             // costs of great spells
             this.greatSpells.consumeWispOwnCost = bound(this.greatSpells.consumeWispOwnCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -321,6 +323,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getReturnItemCost() {
             return (int) (itemSpells.returnItemCost * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getMaxItemsReturned() {
+            return itemSpells.maxItemsReturned;
         }
 
         @Override
