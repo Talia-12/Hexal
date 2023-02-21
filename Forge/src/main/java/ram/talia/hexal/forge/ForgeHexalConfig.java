@@ -50,6 +50,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue markGateCost;
         private static ForgeConfigSpec.DoubleValue closeGateCost;
 
+        // costs of item spells
+        private static ForgeConfigSpec.DoubleValue makeItemCost;
+        private static ForgeConfigSpec.DoubleValue returnItemCost;
+
+
         // costs of great spells
         private static ForgeConfigSpec.DoubleValue consumeWispOwnCost;
         private static ForgeConfigSpec.DoubleValue consumeWispOthersCostPerMedia;
@@ -140,6 +145,16 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("markGateCost", DEFAULT_MARK_GATE_COST, DEF_MIN_COST, DEF_MAX_COST);
             closeGateCost = builder.translation("text.autoconfig.hexal.option.server.gateSpells.closeGateCost")
                     .defineInRange("closeGateCost", DEFAULT_CLOSE_GATE_COST, DEF_MIN_COST, DEF_MAX_COST);
+
+            builder.pop();
+
+
+            // costs of item spells
+            builder.translation("text.autoconfig.hexal.option.server.itemSpells").push("itemSpells");
+            makeItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.makeItemCost")
+                    .defineInRange("makeItemCost", DEFAULT_MAKE_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
+            returnItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.returnItemCost")
+                    .defineInRange("returnItemCost", DEFAULT_RETURN_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
 
             builder.pop();
 
@@ -288,6 +303,16 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getCloseGateCost() {
             return (int) (closeGateCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getMakeItemCost() {
+            return (int) (makeItemCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getReturnItemCost() {
+            return (int) (returnItemCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override

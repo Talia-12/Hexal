@@ -47,7 +47,7 @@ object Patterns {
 
 	// ============================ Type Comparison ===================================
 	@JvmField
-	val TYPE_BLOCK = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block"), OpTypeBlockItem)
+	val TYPE_BLOCK_ITEM = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block_item"), OpTypeBlockItem)
 	@JvmField
 	val TYPE_ENTITY = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("type/entity"), OpTypeEntity)
 	@JvmField

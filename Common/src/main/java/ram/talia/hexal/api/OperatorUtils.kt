@@ -11,6 +11,7 @@ import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
@@ -38,6 +39,16 @@ fun Int.addBounded(int: Int): Int {
         if (this + int > this) Int.MIN_VALUE else this + int
 }
 
+/**
+ * If the addition would overflow, instead bound it at MAX/MIN.
+ */
+fun Long.addBounded(long: Long): Long {
+    return if (long > 0)
+        if (this + long < this) Long.MAX_VALUE else this + long
+    else
+        if (this + long > this) Long.MIN_VALUE else this + long
+}
+
 fun <T, R> Iterable<T>.reductions(initial: R, operation: (acc: R, T) -> R) : Sequence<R> = sequence {
     var last = initial
     forEach {
@@ -51,6 +62,7 @@ inline val Block.asActionResult get() = listOf(ItemTypeIota(this))
 inline val EntityType<*>.asActionResult get() = listOf(EntityTypeIota(this))
 inline val Item.asActionResult get() = listOf(ItemTypeIota(this))
 
+inline val ItemStack.asActionResult get() = listOf(ItemIota(this))
 
 fun List<Iota>.getBaseWisp(idx: Int, argc: Int = 0): BaseWisp {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
@@ -123,20 +135,20 @@ fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "gate")
 }
 
-fun List<Iota>.getItem(idx: Int, argc: Int = 0): ItemIota {
+fun List<Iota>.getItem(idx: Int, argc: Int = 0): ItemIota? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is ItemIota)
-        return x
+        return x.selfOrNull()
 
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "item")
 }
 
-fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, ItemIota> {
+fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, ItemIota?> {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
 
     return when (x) {
         is Vec3Iota -> Either.left(BlockPos(x.vec3))
-        is ItemIota -> Either.right(x)
+        is ItemIota -> Either.right(x.selfOrNull())
         else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "vecitem")
     }
 }
