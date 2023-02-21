@@ -27,9 +27,11 @@
   "hexcasting.iota.hexal:entity_type": "Entity Type",
   "hexcasting.iota.hexal:item_type": "Item Type",
   "hexcasting.iota.hexal:gate": "Gate",
+  "hexcasting.iota.hexal:item": "Item",
 
   "hexal.spelldata.entity_type": "Type",
   "hexal.spelldata.gate": "Gate %d",
+  "hexal.spelldata.item": "%s x%d",
 
 
   "hexcasting.spell.hexal:type/block": "Surveyor's Purification",

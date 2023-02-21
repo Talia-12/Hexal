@@ -2,6 +2,7 @@
 
 package ram.talia.hexal.common.casting
 
+import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.DoubleIota
 import at.petrak.hexcasting.api.spell.iota.PatternIota
@@ -30,9 +31,23 @@ object Patterns {
 	@JvmField
 	var PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()
 
+	@JvmStatic
+	fun registerPatterns() {
+		try {
+			for ((pattern, location, action) in PATTERNS) {
+				PatternRegistry.mapPattern(pattern, location, action)
+			}
+			for ((pattern, location, action) in PER_WORLD_PATTERNS) {
+				PatternRegistry.mapPattern(pattern, location, action, true)
+			}
+		} catch (e: PatternRegistry.RegisterPatternException) {
+			e.printStackTrace()
+		}
+	}
+
 	// ============================ Type Comparison ===================================
 	@JvmField
-	val TYPE_BLOCK = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block"), OpTypeBlock)
+	val TYPE_BLOCK = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block"), OpTypeBlockItem)
 	@JvmField
 	val TYPE_ENTITY = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("type/entity"), OpTypeEntity)
 	@JvmField

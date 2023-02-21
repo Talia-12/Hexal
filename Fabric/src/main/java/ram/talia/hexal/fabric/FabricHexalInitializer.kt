@@ -10,8 +10,7 @@ import net.minecraft.data.BuiltinRegistries
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.gates.GateSavedData
-import ram.talia.hexal.client.LinkablePacketHolder
-import ram.talia.hexal.common.casting.RegisterPatterns
+import ram.talia.hexal.common.casting.Patterns
 import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
@@ -34,7 +33,7 @@ object FabricHexalInitializer : ModInitializer {
 
         initRegistries()
 
-        RegisterPatterns.registerPatterns()
+        Patterns.registerPatterns()
     }
 
     private fun initListeners() {

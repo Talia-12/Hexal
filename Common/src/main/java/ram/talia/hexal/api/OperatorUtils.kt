@@ -8,6 +8,7 @@ import at.petrak.hexcasting.api.spell.iota.Vec3Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import com.mojang.datafixers.util.Either
+import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
@@ -15,6 +16,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
 import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
+import ram.talia.hexal.api.spell.iota.ItemIota
 import ram.talia.hexal.api.spell.iota.ItemTypeIota
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.BaseWisp
@@ -72,20 +74,20 @@ fun List<Iota>.getBaseCastingWisp(idx: Int, argc: Int = 0): BaseCastingWisp {
 
 fun List<Iota>.getVec3OrListVec3(idx: Int, argc: Int = 0): Either<Vec3, List<Vec3>> {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
-    if (x is Vec3Iota) {
-        return Either.left(x.vec3)
-    } else if (x is ListIota) {
-        val out = mutableListOf<Vec3>()
-        for (v in x.list) {
-            if (v is Vec3Iota) {
-                out.add(v.vec3)
-            } else {
-                throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "veclist")
+    return when (x) {
+        is Vec3Iota -> Either.left(x.vec3)
+        is ListIota -> {
+            val out = mutableListOf<Vec3>()
+            for (v in x.list) {
+                if (v is Vec3Iota) {
+                    out.add(v.vec3)
+                } else {
+                    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "veclist")
+                }
             }
+            Either.right(out)
         }
-        return Either.right(out)
-    } else {
-        throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "veclist")
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "veclist")
     }
 }
 
@@ -119,4 +121,22 @@ fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
         return x
 
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "gate")
+}
+
+fun List<Iota>.getItem(idx: Int, argc: Int = 0): ItemIota {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is ItemIota)
+        return x
+
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "item")
+}
+
+fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, ItemIota> {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+
+    return when (x) {
+        is Vec3Iota -> Either.left(BlockPos(x.vec3))
+        is ItemIota -> Either.right(x)
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "vecitem")
+    }
 }

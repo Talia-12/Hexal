@@ -19,7 +19,7 @@ import java.util.Set;
 public class GateIota extends Iota {
 
     public GateIota(int payload) {
-        super(HexalIotaTypes.GATE_TYPE, payload);
+        super(HexalIotaTypes.GATE, payload);
     }
 
     public int getGateIndex() {
