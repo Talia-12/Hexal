@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation
 import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect
 import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.config.HexalConfig
@@ -32,11 +33,12 @@ object OpMakeItem : Action {
 
         val itemStack = iEntity.item
         val storage = MediafiedItemManager.getBoundStorage(ctx.caster) ?: throw MishapNoBoundStorage(iEntity.position())
+        val itemIota = itemStack.asActionResult(storage)[0]
 
-        iEntity.discard()
+        if (itemIota !is NullIota)
+            iEntity.discard()
 
-        val newData = itemStack.asActionResult(storage)
-        stack.addAll(newData)
+        stack.add(itemIota)
 
         val sideEffects = mutableListOf(
                 OperatorSideEffect.ConsumeMedia(this.mediaCost),

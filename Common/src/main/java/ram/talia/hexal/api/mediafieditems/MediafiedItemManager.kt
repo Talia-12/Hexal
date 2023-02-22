@@ -1,7 +1,6 @@
 package ram.talia.hexal.api.mediafieditems
 
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -11,7 +10,13 @@ import java.lang.ref.WeakReference
 import java.util.UUID
 
 object MediafiedItemManager {
-    private val allItems: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf()
+    private val allItems: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf() // TODO: clean this of nullified weak references at some point.
+    @JvmStatic
+    fun addStorage(id: UUID, storage: BlockEntityMediafiedStorage) = allItems.set(id, WeakReference(storage))
+
+    @JvmStatic
+    fun removeStorage(id: UUID) = allItems.remove(id)
+
     @JvmStatic
     fun getBoundStorage(player: ServerPlayer): UUID? = IXplatAbstractions.INSTANCE.getBoundStorage(player)
 

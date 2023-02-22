@@ -19,10 +19,7 @@ import ram.talia.hexal.common.casting.actions.spells.gates.OpCloseGate
 import ram.talia.hexal.common.casting.actions.spells.gates.OpMakeGate
 import ram.talia.hexal.common.casting.actions.spells.gates.OpMarkGate
 import ram.talia.hexal.common.casting.actions.spells.great.*
-import ram.talia.hexal.common.casting.actions.spells.items.OpCombineItems
-import ram.talia.hexal.common.casting.actions.spells.items.OpMakeItem
-import ram.talia.hexal.common.casting.actions.spells.items.OpReturnItem
-import ram.talia.hexal.common.casting.actions.spells.items.OpSplitItem
+import ram.talia.hexal.common.casting.actions.spells.items.*
 import ram.talia.hexal.common.casting.actions.spells.link.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
 import ram.talia.hexal.common.entities.BaseWisp
@@ -200,6 +197,8 @@ object Patterns {
 	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.WEST), modLoc("gate/close"), OpCloseGate)
 
 	// =============================== Gate Stuff =====================================
+	@JvmField
+	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/bind_storage"), OpBindStorage)
 	@JvmField
 	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
 	@JvmField

@@ -14,6 +14,10 @@ import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.UUID
 
 class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
+    init {
+        if (level?.isClientSide == false)
+            MediafiedItemManager.addStorage(uuid, this)
+    }
 
     val uuid: UUID get() = id
     private var id = UUID.randomUUID()
@@ -48,8 +52,14 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     override fun loadModData(tag: CompoundTag) {
-        if (tag.contains(TAG_UUID))
+        if (tag.contains(TAG_UUID)) {
+            if (level?.isClientSide == false) { // TODO: this doesn't work; need to find some way of only running this code on the server, before the level is set.
+                MediafiedItemManager.removeStorage(id)
+                MediafiedItemManager.addStorage(tag.getUUID(TAG_UUID), this)
+            }
+
             id = tag.getUUID(TAG_UUID)
+        }
         if (tag.contains(TAG_INDEX))
             currentItemIndex = tag.getInt(TAG_INDEX)
 
@@ -63,6 +73,8 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
                     storedItems[cEntry.getInt(TAG_ID)] = record
             }
         }
+
+
     }
 
     companion object {
