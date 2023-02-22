@@ -24,6 +24,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public interface IXplatAbstractions {
@@ -90,6 +91,11 @@ public interface IXplatAbstractions {
     List<Iota> getEverbookMacro (ServerPlayer player, HexPattern key);
     
     void toggleEverbookMacro (ServerPlayer player, HexPattern key);
+
+    @Nullable UUID getBoundStorage(ServerPlayer player);
+
+    void setBoundStorage(ServerPlayer player, @Nullable UUID storage);
+
     //endregion
 
     // Blocks

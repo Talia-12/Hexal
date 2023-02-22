@@ -122,6 +122,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class ItemSpells {
             // costs of item spells
+            double bindStorageCost = DEFAULT_BIND_STORAGE_COST;
             double makeItemCost = DEFAULT_MAKE_ITEM_COST;
             double returnItemCost = DEFAULT_RETURN_ITEM_COST;
             int maxItemsReturned = DEFAULT_MAX_ITEMS_RETURNED;
@@ -182,6 +183,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.gateSpells.closeGateCost = bound(this.gateSpells.closeGateCost, DEF_MIN_COST, DEF_MAX_COST);
 
             // costs of item spells
+            this.itemSpells.bindStorageCost = bound(this.itemSpells.bindStorageCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.makeItemCost = bound(this.itemSpells.makeItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.returnItemCost = bound(this.itemSpells.returnItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.maxItemsReturned = bound(this.itemSpells.maxItemsReturned, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
@@ -313,6 +315,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getCloseGateCost() {
             return (int) (gateSpells.closeGateCost * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getBindStorageCost() {
+            return (int) (itemSpells.bindStorageCost * MediaConstants.DUST_UNIT);
         }
 
         @Override

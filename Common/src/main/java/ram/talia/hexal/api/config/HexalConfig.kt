@@ -43,6 +43,7 @@ object HexalConfig {
         val closeGateCost: Int
 
         // costs of item spells
+        val bindStorageCost: Int
         val makeItemCost: Int
         val returnItemCost: Int
         val maxItemsReturned: Int
@@ -106,6 +107,7 @@ object HexalConfig {
             const val DEFAULT_CLOSE_GATE_COST = 2.5
 
             // default costs of item spells
+            const val DEFAULT_BIND_STORAGE_COST = 32.0
             const val DEFAULT_MAKE_ITEM_COST = 0.1
             const val DEFAULT_RETURN_ITEM_COST = 0.1
 
@@ -194,6 +196,8 @@ object HexalConfig {
         override val markGateCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val closeGateCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val bindStorageCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val makeItemCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

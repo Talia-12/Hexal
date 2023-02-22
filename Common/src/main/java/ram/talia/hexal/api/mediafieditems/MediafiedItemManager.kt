@@ -6,17 +6,17 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
+import ram.talia.hexal.xplat.IXplatAbstractions
 import java.lang.ref.WeakReference
 import java.util.UUID
 
 object MediafiedItemManager {
     private val allItems: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf()
-
-    // Map from Player's UUID to the storage's UUID.
-    private val claimedStorage: MutableMap<UUID, UUID> = mutableMapOf()
+    @JvmStatic
+    fun getBoundStorage(player: ServerPlayer): UUID? = IXplatAbstractions.INSTANCE.getBoundStorage(player)
 
     @JvmStatic
-    fun getClaimedStorage(player: ServerPlayer): UUID? = claimedStorage[player.uuid]
+    fun setBoundStorage(player: ServerPlayer, storage: UUID?) = IXplatAbstractions.INSTANCE.setBoundStorage(player, storage)
 
     @JvmStatic
     fun assignItem(stack: ItemStack, uuid: UUID): Index? = allItems[uuid]?.get()?.assignItem(ItemRecord(stack.copy())) // copied just in case
@@ -44,9 +44,6 @@ object MediafiedItemManager {
 
     @JvmStatic
     fun getCount(index: Index): Long? = access(index)?.count
-
-    @JvmStatic
-    fun getDisplayName(index: Index): Component? = access(index)?.getDisplayName()
 
     @JvmStatic
     fun getStacksToDrop(index: Index, count: Long): List<ItemStack>? {

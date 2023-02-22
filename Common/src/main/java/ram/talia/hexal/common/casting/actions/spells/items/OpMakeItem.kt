@@ -9,7 +9,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.mishaps.MishapNoClaimedStorage
+import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
 /**
  * Mediafy an ItemEntity. This is an [Action] rather than a [ConstMediaAction] or a [SpellAction] so that it can both
@@ -31,7 +31,7 @@ object OpMakeItem : Action {
         ctx.assertEntityInRange(iEntity)
 
         val itemStack = iEntity.item
-        val storage = MediafiedItemManager.getClaimedStorage(ctx.caster) ?: throw MishapNoClaimedStorage(iEntity.position())
+        val storage = MediafiedItemManager.getBoundStorage(ctx.caster) ?: throw MishapNoBoundStorage(iEntity.position())
 
         iEntity.discard()
 
