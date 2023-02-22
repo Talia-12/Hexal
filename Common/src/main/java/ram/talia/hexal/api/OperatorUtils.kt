@@ -19,6 +19,7 @@ import ram.talia.hexal.api.spell.iota.ItemTypeIota
 import ram.talia.hexal.api.util.Anyone
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.BaseWisp
+import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -72,7 +73,7 @@ inline val Block.asActionResult get() = listOf(ItemTypeIota(this))
 inline val EntityType<*>.asActionResult get() = listOf(EntityTypeIota(this))
 inline val Item.asActionResult get() = listOf(ItemTypeIota(this))
 
-inline val ItemStack.asActionResult get() = listOf(ItemIota(this))
+fun ItemStack.asActionResult(storageUUID: UUID) = listOf(ItemIota.makeIfStorageLoaded(this, storageUUID) ?: NullIota())
 
 fun List<Iota>.getBaseWisp(idx: Int, argc: Int = 0): BaseWisp {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }

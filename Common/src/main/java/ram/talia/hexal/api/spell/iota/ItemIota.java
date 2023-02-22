@@ -13,27 +13,33 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ram.talia.hexal.api.mediafieditems.ItemRecord;
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager;
 import ram.talia.hexal.common.lib.HexalIotaTypes;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Similar to GateIotas, stores a reference to an item stored in the
  * media. When the item is used up, all references to it become null.
  */
 public class ItemIota extends Iota {
-    static final String TAG_INDEX = "index";
     static final String TAG_DISPLAY_NAME = "name";
     static final String TAG_COUNT = "count";
 
-    public ItemIota(int payload) {
+    public ItemIota(MediafiedItemManager.Index payload) {
         super(HexalIotaTypes.ITEM, payload);
     }
 
-    public ItemIota(ItemStack stack) {
-        super(HexalIotaTypes.ITEM, MediafiedItemManager.assignItem(stack));
+    public static @Nullable ItemIota makeIfStorageLoaded(ItemStack stack, UUID storageUUID) {
+        var index = MediafiedItemManager.assignItem(stack, storageUUID);
+
+        if (index != null)
+            return new ItemIota(index);
+        else
+            return null;
     }
 
     /**
@@ -50,8 +56,8 @@ public class ItemIota extends Iota {
         return !MediafiedItemManager.contains(this.getItemIndex());
     }
 
-    public int getItemIndex() {
-        return (int) payload;
+    public MediafiedItemManager.Index getItemIndex() {
+        return (MediafiedItemManager.Index) payload;
     }
 
     public Item getItem() {
@@ -114,11 +120,11 @@ public class ItemIota extends Iota {
         // to display.
 
         var tag = new CompoundTag();
-        tag.putInt(TAG_INDEX, this.getItemIndex());
+        this.getItemIndex().writeToNbt(tag);
 
         var record = MediafiedItemManager.getRecord(this.getItemIndex());
 
-        MediafiedItemManager.ItemRecord rec;
+        ItemRecord rec;
 
         if (record == null || (rec = record.get()) == null)
             return tag;
@@ -135,7 +141,7 @@ public class ItemIota extends Iota {
         public ItemIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
             var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
 
-            int index = ctag.getInt(TAG_INDEX);
+            var index = MediafiedItemManager.Index.readFromNbt(ctag);
 
             if (!MediafiedItemManager.contains(index))
                 return null;

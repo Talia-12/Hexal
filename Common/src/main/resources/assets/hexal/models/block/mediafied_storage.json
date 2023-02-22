@@ -1,0 +1,6 @@
+{
+  "parent": "block",
+  "textures": {
+    "all": "hexal:block/mythril_block"
+  }
+}
