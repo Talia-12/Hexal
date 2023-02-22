@@ -3,53 +3,33 @@ package ram.talia.hexal.api.mediafieditems
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
+import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 import java.lang.ref.WeakReference
+import java.util.UUID
 
 object MediafiedItemManager {
     private var currentItemNum = 0
 
-    private val allItems: MutableMap<Int, ItemRecord> = mutableMapOf()
+    private val allItems: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf()
 
     @JvmStatic
-    fun contains(index: Int): Boolean = allItems.contains(index)
+    fun contains(index: Index): Boolean
+        = allItems.contains(index.storage) && allItems[index.storage]?.get()?.contains(index.index) ?: false
 
     @JvmStatic
-    fun getRecord(index: Int): WeakReference<ItemRecord>? = allItems[index]?.let { WeakReference(it) }
+    fun getRecord(index: Index): WeakReference<ItemRecord>? = allItems[index]?.let { WeakReference(it) }
 
     @JvmStatic
-    fun getItem(index: Int): Item? = allItems[index]?.item
+    fun getItem(index: Index): Item? = allItems[index]?.item
 
     @JvmStatic
-    fun getTag(index: Int): CompoundTag? = allItems[index]?.tag
+    fun getTag(index: Index): CompoundTag? = allItems[index]?.tag
 
     @JvmStatic
-    fun getCount(index: Int): Int? = allItems[index]?.count
+    fun getCount(index: Index): Int? = allItems[index]?.count
 
     @JvmStatic
-    fun getDisplayName(index: Int): Component? = allItems[index]?.getDisplayName()
+    fun getDisplayName(index: Index): Component? = allItems[index]?.getDisplayName()
 
-    data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Int) {
-        fun typeMatches(other: ItemRecord): Boolean {
-            return item == other.item && tag == other.tag
-        }
-
-        /**
-         * Absorb the contents of another [ItemRecord] that matches this one,
-         * increasing this record's count by the other's. Doesn't set the other's
-         * count to 0 or remove it.
-         */
-        fun absorb(other: ItemRecord) {
-            if (!typeMatches(other))
-                return
-
-            count += other.count
-        }
-
-        fun getDisplayName(): Component {
-            val itemStack = ItemStack(item)
-            itemStack.tag = tag // don't need to copy tag since stack isn't used for anything.
-            return itemStack.hoverName
-        }
-    }
+    data class Index(val storage: UUID, val index: Int)
 }

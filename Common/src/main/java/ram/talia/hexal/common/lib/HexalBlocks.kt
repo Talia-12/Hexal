@@ -11,6 +11,7 @@ import net.minecraft.world.level.material.Material
 import net.minecraft.world.level.material.MaterialColor
 import net.minecraft.world.level.material.PushReaction
 import ram.talia.hexal.api.HexalAPI.modLoc
+import ram.talia.hexal.common.blocks.BlockMediafiedStorage
 import ram.talia.hexal.common.blocks.BlockSlipway
 import java.util.function.BiConsumer
 
@@ -43,6 +44,11 @@ class HexalBlocks {
 				.strength(-1.0f, 3600000.0f)
 				.noCollission()
 				.noOcclusion()
+		))
+
+		@JvmField
+		val MEDIAFIED_STORAGE = blockItem("mediafied_storage", BlockMediafiedStorage(
+				BlockBehaviour.Properties.of(Material.AMETHYST)
 		))
 
 		private fun <T : Block> blockNoItem(name: String, block: T): T {
