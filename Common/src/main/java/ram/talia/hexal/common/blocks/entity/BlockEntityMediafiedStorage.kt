@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.state.BlockState
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
@@ -30,6 +31,18 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         storedItems[index] = itemRecord
         currentItemIndex += 1
         return MediafiedItemManager.Index(uuid, index)
+    }
+
+    fun getAllContainedItemTypes(): Set<Item> {
+        return storedItems.values.map { it.item }.toHashSet()
+    }
+
+    fun getItemRecordsMatching(item: Item): Map<Int, ItemRecord> {
+        return storedItems.filter { (_, record) -> record.item == item }
+    }
+
+    fun getItemRecordsMatching(itemRecord: ItemRecord): Map<Int, ItemRecord> {
+        return storedItems.filter { (index, record) -> record.item == itemRecord.item && record.tag == itemRecord.tag }
     }
 
     fun serverTick() {

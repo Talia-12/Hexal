@@ -60,6 +60,13 @@ public class ItemIota extends Iota {
         return (MediafiedItemManager.Index) payload;
     }
 
+    public @Nullable ItemRecord getRecord() {
+        var record = MediafiedItemManager.getRecord(this.getItemIndex());
+        if (record == null)
+            return null;
+        return record.get();
+    }
+
     public Item getItem() {
         return Objects.requireNonNull(MediafiedItemManager.getItem(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
     }

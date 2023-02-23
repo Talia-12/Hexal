@@ -1,5 +1,6 @@
 package ram.talia.hexal.api
 
+import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.iota.*
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
@@ -11,6 +12,8 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.mediafieditems.ItemRecord
+import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
 import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
@@ -72,6 +75,8 @@ inline val IotaType<*>.asActionResult get() = listOf(IotaTypeIota(this))
 inline val Block.asActionResult get() = listOf(ItemTypeIota(this))
 inline val EntityType<*>.asActionResult get() = listOf(EntityTypeIota(this))
 inline val Item.asActionResult get() = listOf(ItemTypeIota(this))
+inline val List<Item>.asActionResult get() = this.map { ItemTypeIota(it) }.asActionResult
+inline val Map<MediafiedItemManager.Index, ItemRecord>.asActionResult get() = this.map { (index, _) -> ItemIota(index) }.asActionResult
 
 fun ItemStack.asActionResult(storageUUID: UUID) = listOf(ItemIota.makeIfStorageLoaded(this, storageUUID) ?: NullIota())
 
@@ -173,6 +178,18 @@ fun List<Iota>.getItem(idx: Int, argc: Int = 0): ItemIota? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is ItemIota)
         return x.selfOrNull()
+    if (x is NullIota)
+        return null
+
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "item")
+}
+
+fun List<Iota>.getItemOrItemType(idx: Int, argc: Int = 0): Either<ItemIota, Item>? {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is ItemIota)
+        return x.selfOrNull()?.let { Either.left(it) }
+    if (x is ItemTypeIota)
+        return Either.right(x.item)
     if (x is NullIota)
         return null
 

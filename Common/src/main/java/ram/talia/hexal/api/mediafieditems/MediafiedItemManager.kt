@@ -24,6 +24,36 @@ object MediafiedItemManager {
     fun setBoundStorage(player: ServerPlayer, storage: UUID?) = IXplatAbstractions.INSTANCE.setBoundStorage(player, storage)
 
     @JvmStatic
+    fun getAllContainedItemTypes(player: ServerPlayer): Set<Item>? {
+        val storageId = getBoundStorage(player) ?: return null
+        return getAllContainedItemTypes(storageId)
+    }
+
+    @JvmStatic
+    fun getAllContainedItemTypes(storageId: UUID): Set<Item>? = allItems[storageId]?.get()?.getAllContainedItemTypes()
+
+    @JvmStatic
+    fun getItemRecordsMatching(player: ServerPlayer, item: Item): Map<Index, ItemRecord>? {
+        val storageId = getBoundStorage(player) ?: return null
+        return getItemRecordsMatching(storageId, item)
+    }
+
+    @JvmStatic
+    fun getItemRecordsMatching(storageId: UUID, item: Item): Map<Index, ItemRecord>? = allItems[storageId]?.get()?.getItemRecordsMatching(item)?.mapKeys { Index(storageId, it.key) }
+
+    @JvmStatic
+    fun getItemRecordsMatching(player: ServerPlayer, itemRecord: ItemRecord): Map<Index, ItemRecord>? {
+        val storageId = getBoundStorage(player) ?: return null
+        return getItemRecordsMatching(storageId, itemRecord)
+    }
+
+    @JvmStatic
+    fun getItemRecordsMatching(storageId: UUID, itemRecord: ItemRecord): Map<Index, ItemRecord>?
+        = allItems[storageId]?.get()?.getItemRecordsMatching(itemRecord)?.mapKeys { Index(storageId, it.key) }
+
+
+
+    @JvmStatic
     fun assignItem(stack: ItemStack, uuid: UUID): Index? = allItems[uuid]?.get()?.assignItem(ItemRecord(stack.copy())) // copied just in case
     @JvmStatic
     fun assignItem(record: ItemRecord, uuid: UUID): Index? = allItems[uuid]?.get()?.assignItem(record)
