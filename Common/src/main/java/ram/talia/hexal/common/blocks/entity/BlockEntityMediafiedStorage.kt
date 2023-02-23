@@ -14,15 +14,12 @@ import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.UUID
 
 class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
-    init {
-        if (level?.isClientSide == false)
-            MediafiedItemManager.addStorage(uuid, this)
-    }
-
     val uuid: UUID get() = id
     private var id = UUID.randomUUID()
 
     private var currentItemIndex = 0
+
+    private var hasRegisteredToMediafiedItemManager: Boolean = false
 
     val storedItems: MutableMap<Int, ItemRecord> = mutableMapOf()
 
@@ -33,6 +30,14 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         storedItems[index] = itemRecord
         currentItemIndex += 1
         return MediafiedItemManager.Index(uuid, index)
+    }
+
+    fun serverTick() {
+        if (!hasRegisteredToMediafiedItemManager) {
+            MediafiedItemManager.addStorage(uuid, this)
+
+            hasRegisteredToMediafiedItemManager = true
+        }
     }
 
     override fun saveModData(tag: CompoundTag) {
@@ -52,14 +57,9 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     override fun loadModData(tag: CompoundTag) {
-        if (tag.contains(TAG_UUID)) {
-            if (level?.isClientSide == false) { // TODO: this doesn't work; need to find some way of only running this code on the server, before the level is set.
-                MediafiedItemManager.removeStorage(id)
-                MediafiedItemManager.addStorage(tag.getUUID(TAG_UUID), this)
-            }
-
+        if (tag.contains(TAG_UUID))
             id = tag.getUUID(TAG_UUID)
-        }
+
         if (tag.contains(TAG_INDEX))
             currentItemIndex = tag.getInt(TAG_INDEX)
 
