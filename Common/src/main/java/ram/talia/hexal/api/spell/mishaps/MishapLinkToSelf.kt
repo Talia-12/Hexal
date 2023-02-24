@@ -13,8 +13,7 @@ class MishapLinkToSelf(val linkable: ILinkable) : Mishap() {
     override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer =
             dyeColor(DyeColor.YELLOW)
 
-    override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component =
-            error("self_link", linkable.toString())
+    override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = error("self_link", linkable.toString())
 
     override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
         val pos = linkable.getPosition()

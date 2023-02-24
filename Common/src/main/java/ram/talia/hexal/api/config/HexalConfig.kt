@@ -42,6 +42,12 @@ object HexalConfig {
         val markGateCost: Int
         val closeGateCost: Int
 
+        // costs of item spells
+        val bindStorageCost: Int
+        val makeItemCost: Int
+        val returnItemCost: Int
+        val maxItemsReturned: Int
+
         // costs of great spells
         val consumeWispOwnCost: Int
         val consumeWispOthersCostPerMedia: Double
@@ -99,6 +105,16 @@ object HexalConfig {
             const val DEFAULT_MAKE_GATE_COST = 320.0
             const val DEFAULT_MARK_GATE_COST = 0.05
             const val DEFAULT_CLOSE_GATE_COST = 2.5
+
+            // default costs of item spells
+            const val DEFAULT_BIND_STORAGE_COST = 32.0
+            const val DEFAULT_MAKE_ITEM_COST = 0.1
+            const val DEFAULT_RETURN_ITEM_COST = 0.1
+
+            const val DEFAULT_MAX_ITEMS_RETURNED = 32000
+
+            const val MIN_MAX_ITEMS_RETURNED = 640
+            const val MAX_MAX_ITEMS_RETURNED = 64000
 
 
             // default costs of great spells
@@ -180,6 +196,14 @@ object HexalConfig {
         override val markGateCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val closeGateCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val bindStorageCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val makeItemCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val returnItemCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val maxItemsReturned: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val consumeWispOwnCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

@@ -21,7 +21,7 @@ object OpTypeBlockItem : ConstMediaAction {
                 blockState.block.asActionResult
             }
         }, {
-            it.item.asActionResult
+            it?.item?.asActionResult
         })
     }
 }

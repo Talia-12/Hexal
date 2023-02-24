@@ -8,6 +8,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNoAkashicRecord
 import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import at.petrak.hexcasting.common.blocks.akashic.BlockAkashicRecord
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpEverbookWrite : ConstMediaAction {
@@ -33,6 +34,9 @@ object OpEverbookWrite : ConstMediaAction {
 		val trueName = MishapOthersName.getTrueNameFromDatum(iota, ctx.caster)
 		if (trueName != null)
 			throw MishapOthersName(trueName)
+		val illegalInterworldIota = MishapIllegalInterworldIota.getFromNestedIota(iota)
+		if (illegalInterworldIota != null)
+			throw MishapIllegalInterworldIota(illegalInterworldIota)
 
 		IXplatAbstractions.INSTANCE.setEverbookIota(ctx.caster, key, iota)
 

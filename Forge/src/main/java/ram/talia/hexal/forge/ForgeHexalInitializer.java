@@ -23,10 +23,7 @@ import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
 import ram.talia.hexal.common.recipe.HexalRecipeTypes;
 import ram.talia.hexal.forge.datagen.HexalForgeDataGenerators;
-import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
-import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
-import ram.talia.hexal.forge.eventhandlers.RenderLinkEventHandler;
-import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
+import ram.talia.hexal.forge.eventhandlers.*;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import thedarkcolour.kotlinforforge.KotlinModLoadingContext;
 
@@ -97,6 +94,7 @@ public class ForgeHexalInitializer {
 		
 		modBus.register(HexalForgeDataGenerators.class);
 
+		evBus.register(BoundStorageEventHandler.class);
 		evBus.register(EverbookEventHandler.class);
 		evBus.register(PlayerLinkstoreEventHandler.class);
 		evBus.register(RenderLinkEventHandler.class); // client only, might move into ForgeHexalClientInitializer if possible?

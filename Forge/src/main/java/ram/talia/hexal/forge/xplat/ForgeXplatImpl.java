@@ -29,6 +29,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
 import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;
 import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
+import ram.talia.hexal.forge.eventhandlers.BoundStorageEventHandler;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
@@ -36,6 +37,7 @@ import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ForgeXplatImpl implements IXplatAbstractions {
 
@@ -164,7 +166,17 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
 		EverbookEventHandler.toggleMacro(player, key);
 	}
-	
+
+	@Override
+	public @Nullable UUID getBoundStorage(ServerPlayer player) {
+		return BoundStorageEventHandler.getBoundStorage(player);
+	}
+
+	@Override
+	public void setBoundStorage(ServerPlayer player, @Nullable UUID storage) {
+		BoundStorageEventHandler.setBoundStorage(player, storage);
+	}
+
 	@Override
 	public boolean isBreakingAllowed (Level level, BlockPos pos, BlockState state, Player player) {
 		return !MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, player));

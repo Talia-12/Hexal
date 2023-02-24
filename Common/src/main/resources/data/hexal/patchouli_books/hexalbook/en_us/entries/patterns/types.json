@@ -8,11 +8,11 @@
   "pages": [
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:type/block",
-      "anchor": "hexal:type/block",
-      "input": "vec",
+      "op_id": "hexal:type/block_item",
+      "anchor": "hexal:type/block_item",
+      "input": "vec | item",
       "output": "itemtype",
-      "text": "hexal.page.types.type/block"
+      "text": "hexal.page.types.type/block_item"
     },
     {
       "type": "hexcasting:pattern",

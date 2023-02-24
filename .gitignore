@@ -22,6 +22,7 @@ changelog.md
 # other
 eclipse
 run
+/Common/logs/latest.log
 
 # Files from Forge MDK
 forge*changelog.txt

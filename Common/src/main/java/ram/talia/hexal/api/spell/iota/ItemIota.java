@@ -2,44 +2,116 @@ package ram.talia.hexal.api.spell.iota;
 
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.iota.IotaType;
+import at.petrak.hexcasting.api.spell.iota.NullIota;
 import at.petrak.hexcasting.api.utils.HexUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import ram.talia.hexal.api.mediafieditems.ItemRecord;
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager;
 import ram.talia.hexal.common.lib.HexalIotaTypes;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Similar to GateIotas, stores a reference to an item stored in the
  * media. When the item is used up, all references to it become null.
  */
 public class ItemIota extends Iota {
-    static final String TAG_INDEX = "index";
     static final String TAG_DISPLAY_NAME = "name";
     static final String TAG_COUNT = "count";
 
-    public ItemIota(int payload) {
+    public ItemIota(MediafiedItemManager.Index payload) {
         super(HexalIotaTypes.ITEM, payload);
     }
 
-    public int getItemIndex() {
-        return (int) payload;
+    public static @Nullable ItemIota makeIfStorageLoaded(ItemStack stack, UUID storageUUID) {
+        var index = MediafiedItemManager.assignItem(stack, storageUUID);
+
+        if (index != null)
+            return new ItemIota(index);
+        else
+            return null;
+    }
+
+    /**
+     * Returns the ItemIota if its item still exists, or null otherwise. SHOULD ALWAYS
+     * BE CALLED BEFORE MAKING USE OF AN ITEM IOTA (built into List<Iota>.getItem).
+     */
+    public @Nullable ItemIota selfOrNull() {
+        if (MediafiedItemManager.contains(this.getItemIndex()))
+            return this;
+        return null;
+    }
+
+    public boolean isEmpty() {
+        return !MediafiedItemManager.contains(this.getItemIndex());
+    }
+
+    public MediafiedItemManager.Index getItemIndex() {
+        return (MediafiedItemManager.Index) payload;
+    }
+
+    public @Nullable ItemRecord getRecord() {
+        var record = MediafiedItemManager.getRecord(this.getItemIndex());
+        if (record == null)
+            return null;
+        return record.get();
     }
 
     public Item getItem() {
-        return MediafiedItemManager.getItem(this.getItemIndex());
+        return Objects.requireNonNull(MediafiedItemManager.getItem(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
+    }
+
+    public CompoundTag getTag() {
+        return Objects.requireNonNull(MediafiedItemManager.getTag(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
+    }
+
+    public long getCount() {
+        return Objects.requireNonNull(MediafiedItemManager.getCount(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
+    }
+
+    public void absorb(ItemIota other) {
+        MediafiedItemManager.merge(this.getItemIndex(), other.getItemIndex());
+    }
+
+    public @Nullable ItemIota splitOff(int amount) {
+        var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount);
+        if (newIndex == null)
+            return null;
+
+        return new ItemIota(newIndex);
+    }
+
+    public List<ItemStack> getStacksToDrop(int count) {
+        return MediafiedItemManager.getStacksToDrop(this.getItemIndex(), count);
+    }
+
+    /**
+     * Takes a template ItemStack and sets the item and tag of the referenced ItemRecord to that item and tag, while leaving the count the same.
+     */
+    public void templateOff(@NotNull ItemStack template) {
+        MediafiedItemManager.templateOff(this.getItemIndex(), template);
+    }
+
+    public ItemIota copy() {
+        return new ItemIota(this.getItemIndex());
     }
 
     @Override
     protected boolean toleratesOther(Iota that) {
-        return typesMatch(this, that) &&
+        return (typesMatch(this, that) &&
                 that instanceof ItemIota ithat &&
-                this.getItemIndex() == ithat.getItemIndex();
+                this.getItemIndex() == ithat.getItemIndex())
+                || (this.isEmpty() && that instanceof NullIota);
     }
 
     @Override
@@ -55,18 +127,18 @@ public class ItemIota extends Iota {
         // to display.
 
         var tag = new CompoundTag();
-        tag.putInt(TAG_INDEX, this.getItemIndex());
+        this.getItemIndex().writeToNbt(tag);
 
         var record = MediafiedItemManager.getRecord(this.getItemIndex());
 
-        MediafiedItemManager.ItemRecord rec;
+        ItemRecord rec;
 
         if (record == null || (rec = record.get()) == null)
             return tag;
 
 
         tag.putString(TAG_DISPLAY_NAME, rec.getDisplayName().getString());
-        tag.putInt(TAG_COUNT, rec.getCount());
+        tag.putLong(TAG_COUNT, rec.getCount());
 
         return tag;
     }
@@ -76,7 +148,7 @@ public class ItemIota extends Iota {
         public ItemIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
             var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
 
-            int index = ctag.getInt(TAG_INDEX);
+            var index = MediafiedItemManager.Index.readFromNbt(ctag);
 
             if (!MediafiedItemManager.contains(index))
                 return null;
@@ -90,12 +162,12 @@ public class ItemIota extends Iota {
                 return Component.translatable("hexcasting.spelldata.unknown");
             }
 
-            return Component.translatable("hexal.spelldata.item", ctag.getString(TAG_DISPLAY_NAME), ctag.getInt(TAG_COUNT)).withStyle(ChatFormatting.AQUA);
+            return Component.translatable("hexal.spelldata.item", ctag.getString(TAG_DISPLAY_NAME), ctag.getLong(TAG_COUNT)).withStyle(ChatFormatting.YELLOW);
         }
 
         @Override
         public int color() {
-            return 0xff_55ffff;
+            return 0xff_ffff55;
         }
     };
 }

@@ -16,10 +16,10 @@ import ram.talia.hexal.common.casting.actions.*
 import ram.talia.hexal.common.casting.actions.everbook.*
 import ram.talia.hexal.common.casting.actions.spells.*
 import ram.talia.hexal.common.casting.actions.spells.gates.OpCloseGate
-import ram.talia.hexal.common.casting.actions.spells.gates.OpGetMarkedGate
 import ram.talia.hexal.common.casting.actions.spells.gates.OpMakeGate
 import ram.talia.hexal.common.casting.actions.spells.gates.OpMarkGate
 import ram.talia.hexal.common.casting.actions.spells.great.*
+import ram.talia.hexal.common.casting.actions.spells.items.*
 import ram.talia.hexal.common.casting.actions.spells.link.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
 import ram.talia.hexal.common.entities.BaseWisp
@@ -47,7 +47,7 @@ object Patterns {
 
 	// ============================ Type Comparison ===================================
 	@JvmField
-	val TYPE_BLOCK = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block"), OpTypeBlockItem)
+	val TYPE_BLOCK_ITEM = make(HexPattern.fromAngles("qaqqaea", HexDir.EAST), modLoc("type/block_item"), OpTypeBlockItem)
 	@JvmField
 	val TYPE_ENTITY = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("type/entity"), OpTypeEntity)
 	@JvmField
@@ -191,10 +191,22 @@ object Patterns {
 	// =============================== Gate Stuff =====================================
 	@JvmField
 	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.WEST), modLoc("gate/mark"), OpMarkGate)
-	@JvmField
-	val GATE_MARK_GET = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/mark/get"), OpGetMarkedGate)
+//	@JvmField removed cause it lets you get access to player names too easily.
+//	val GATE_MARK_GET = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/mark/get"), OpGetMarkedGate)
 	@JvmField
 	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.WEST), modLoc("gate/close"), OpCloseGate)
+
+	// =============================== Gate Stuff =====================================
+	@JvmField
+	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/bind_storage"), OpBindStorage)
+	@JvmField
+	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
+	@JvmField
+	val ITEM_RETURN = make(HexPattern.fromAngles("qded", HexDir.EAST), modLoc("item/return"), OpReturnItem)
+	@JvmField
+	val ITEM_COMBINE = make(HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), modLoc("item/combine"), OpCombineItems)
+	@JvmField
+	val ITEM_SPLIT = make(HexPattern.fromAngles("eaqaaw", HexDir.EAST), modLoc("item/split"), OpSplitItem)
 
 
 	// ============================== Great Stuff =====================================

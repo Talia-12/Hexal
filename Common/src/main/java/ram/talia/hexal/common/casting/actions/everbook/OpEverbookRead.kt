@@ -11,6 +11,7 @@ import at.petrak.hexcasting.common.lib.HexSounds
 import net.minecraft.core.BlockPos
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpEverbookRead : SpellAction {
@@ -36,6 +37,9 @@ object OpEverbookRead : SpellAction {
 		val trueName = MishapOthersName.getTrueNameFromDatum(iota, ctx.caster)
 		if (trueName != null)
 			throw MishapOthersName(trueName)
+		val illegalInterworldIota = MishapIllegalInterworldIota.getFromNestedIota(iota)
+		if (illegalInterworldIota != null)
+			throw MishapIllegalInterworldIota(illegalInterworldIota)
 
 		return Triple(
 			Spell(record, pos, key, iota),

@@ -35,6 +35,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class FabricXplatImpl implements IXplatAbstractions {
 //    @Override
@@ -201,7 +202,17 @@ public class FabricXplatImpl implements IXplatAbstractions {
         HexalCardinalComponents.EVERBOOK.get(player).toggleMacro(key);
         IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroAck(key));
     }
-    
+
+    @Override
+    public @Nullable UUID getBoundStorage(ServerPlayer player) {
+        return HexalCardinalComponents.BOUND_STORAGE.get(player).getStorage();
+    }
+
+    @Override
+    public void setBoundStorage(ServerPlayer player, @Nullable UUID storage) {
+        HexalCardinalComponents.BOUND_STORAGE.get(player).setStorage(storage);
+    }
+
     @Override
     public boolean isBreakingAllowed (Level level, BlockPos pos, BlockState state, Player player) {
         return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
