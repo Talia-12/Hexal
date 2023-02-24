@@ -34,7 +34,7 @@
   "hexal.spelldata.item": "%s x%d",
 
 
-  "hexcasting.spell.hexal:type/block": "勘测员之纯化",
+  "hexcasting.spell.hexal:type/block_item": "分拣员之纯化",
   "hexcasting.spell.hexal:type/entity": "内科医师之纯化",
   "hexcasting.spell.hexal:type/iota": "分类学家之纯化",
   
@@ -197,7 +197,7 @@
   "hexal.page.great_wisps.wisp/seon/get": "返回我当前绑定的咒灵。（这并不是卓越法术，记载于此是为了方便查找。）",
   
   "hexal.entry.types": "类型",
-  "hexal.page.types.type/block": "移除栈顶位置向量，并返回该处方块的类型。",
+  "hexal.page.types.type/block_item": "移除栈顶位置向量或物品实体。若是向量，则返回该处方块的类型；若是物品实体，则返回对应物品类型。（如草方块、石头、木棍等。）",
   "hexal.page.types.type/entity": "移除栈顶实体，并返回该实体的类型（若是物品实体则返回对应物品类型）。",
   "hexal.page.types.type/iota": "移除栈顶元素，并返回该 iota 的类型。",
   
