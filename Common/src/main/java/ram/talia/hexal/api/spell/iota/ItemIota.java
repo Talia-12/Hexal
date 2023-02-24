@@ -162,6 +162,9 @@ public class ItemIota extends Iota {
                 return Component.translatable("hexcasting.spelldata.unknown");
             }
 
+            if (!ctag.contains(TAG_DISPLAY_NAME) || !ctag.contains(TAG_COUNT))
+                return Component.translatable("hexcasting.tooltip.null_iota").withStyle(ChatFormatting.GRAY);
+
             return Component.translatable("hexal.spelldata.item", ctag.getString(TAG_DISPLAY_NAME), ctag.getLong(TAG_COUNT)).withStyle(ChatFormatting.YELLOW);
         }
 
