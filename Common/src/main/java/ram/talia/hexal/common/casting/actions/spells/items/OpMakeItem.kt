@@ -9,7 +9,7 @@ import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
 /**
@@ -21,6 +21,7 @@ object OpMakeItem : Action {
     private val mediaCost: Int
         get() = HexalConfig.server.makeItemCost
 
+    @Suppress("CAST_NEVER_SUCCEEDS")
     override fun operate(continuation: SpellContinuation, stack: MutableList<Iota>, ravenmind: Iota?, ctx: CastingContext): OperationResult {
         if (this.argc > stack.size)
             throw MishapNotEnoughArgs(this.argc, stack.size)
@@ -32,7 +33,7 @@ object OpMakeItem : Action {
         ctx.assertEntityInRange(iEntity)
 
         val itemStack = iEntity.item
-        val storage = MediafiedItemManager.getBoundStorage(ctx.caster) ?: throw MishapNoBoundStorage(iEntity.position())
+        val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
         val itemIota = itemStack.asActionResult(storage)[0]
 
         if (itemIota !is NullIota)

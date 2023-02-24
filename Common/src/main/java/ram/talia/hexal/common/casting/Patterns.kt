@@ -198,7 +198,9 @@ object Patterns {
 
 	// =============================== Gate Stuff =====================================
 	@JvmField
-	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/bind_storage"), OpBindStorage)
+	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/bind_storage"), OpBindStorage(false))
+	@JvmField
+	val BIND_STORAGE_TEMP = make(HexPattern.fromAngles("edewedewede", HexDir.NORTH_EAST), modLoc("item/bind_storage/temp"), OpBindStorage(true))
 	@JvmField
 	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
 	@JvmField

@@ -13,9 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
+import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.lang.Math.max;
 
@@ -24,10 +26,26 @@ import static java.lang.Math.max;
  */
 @Mixin(CastingContext.class)
 public abstract class MixinCastingContext implements IMixinCastingContext {
+	private final CastingContext self = (CastingContext) (Object) this;
+
 	private BaseCastingWisp wisp;
 
 	private int consumedMedia;
 	private final Map<BlockPos, Integer> numTimesTicked = new HashMap<>(); // stores how many times each blockpos has been ticked by OpTick (tick acceleration). Used to compute cost.
+
+	private @Nullable UUID temporaryStorage; // UUID of the temporary Mediafied Item Storage that is being used by this ctx, if it exists.
+
+	@Override
+	public @Nullable UUID getBoundStorage() {
+		if (temporaryStorage != null)
+			return temporaryStorage;
+		return IXplatAbstractions.INSTANCE.getBoundStorage(self.getCaster());
+	}
+
+	@Override
+	public void setTemporaryBoundStorage(@Nullable UUID temporaryStorage) {
+		this.temporaryStorage = temporaryStorage;
+	}
 
 	@Override
 	public int getConsumedMedia() {

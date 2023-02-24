@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
+import java.util.UUID;
+
 public interface IMixinCastingContext {
 	@Nullable BaseCastingWisp getWisp();
 	@Nullable BaseCastingWisp setWisp(@Nullable BaseCastingWisp wisp);
@@ -19,4 +21,8 @@ public interface IMixinCastingContext {
 	int getTimesTicked(BlockPos pos);
 
 	void incTimesTicked(BlockPos pos);
+
+	@Nullable UUID getBoundStorage();
+
+	void setTemporaryBoundStorage(@Nullable UUID temporaryStorage);
 }

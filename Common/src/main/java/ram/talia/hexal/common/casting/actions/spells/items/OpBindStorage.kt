@@ -10,10 +10,11 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
+import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 
-object OpBindStorage : SpellAction {
+class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
     override val argc = 1
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
@@ -24,13 +25,14 @@ object OpBindStorage : SpellAction {
         val storage = ctx.world.getBlockState(pos).block
 
         return Triple(
-            Spell(if (storage is BlockMediafiedStorage) pos else null),
+            Spell(if (storage is BlockMediafiedStorage) pos else null, isTemporaryBinding),
             HexalConfig.server.bindStorageCost,
             listOf(ParticleSpray.burst(Vec3.atCenterOf(pos), 1.5))
         )
     }
 
-    private data class Spell(val pos: BlockPos?) : RenderedSpell {
+    @Suppress("CAST_NEVER_SUCCEEDS")
+    private data class Spell(val pos: BlockPos?, val isTemporaryBinding: Boolean) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             if (pos == null) {
                 MediafiedItemManager.setBoundStorage(ctx.caster, null)
@@ -39,7 +41,10 @@ object OpBindStorage : SpellAction {
 
             val storage = ctx.world.getBlockEntity(pos) as? BlockEntityMediafiedStorage ?: return
 
-            MediafiedItemManager.setBoundStorage(ctx.caster, storage.uuid)
+            if (isTemporaryBinding)
+                (ctx as IMixinCastingContext).setTemporaryBoundStorage(storage.uuid)
+            else
+                MediafiedItemManager.setBoundStorage(ctx.caster, storage.uuid)
         }
     }
 }
