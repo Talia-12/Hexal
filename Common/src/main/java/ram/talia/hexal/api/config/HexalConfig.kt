@@ -48,6 +48,8 @@ object HexalConfig {
         val returnItemCost: Int
         val maxItemsReturned: Int
 
+        val maxRecordsInMediafiedStorage: Int
+
         // costs of great spells
         val consumeWispOwnCost: Int
         val consumeWispOthersCostPerMedia: Double
@@ -115,6 +117,11 @@ object HexalConfig {
 
             const val MIN_MAX_ITEMS_RETURNED = 640
             const val MAX_MAX_ITEMS_RETURNED = 64000
+
+            const val DEFAULT_MAX_RECORDS_IN_MEDIAFIED_STORAGE = 1023
+
+            const val MIN_MAX_RECORDS_IN_MEDIAFIED_STORAGE = 128
+            const val MAX_MAX_RECORDS_IN_MEDIAFIED_STORAGE = 16384
 
 
             // default costs of great spells
@@ -204,6 +211,8 @@ object HexalConfig {
         override val returnItemCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val maxItemsReturned: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val maxRecordsInMediafiedStorage: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val consumeWispOwnCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

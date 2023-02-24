@@ -55,6 +55,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue makeItemCost;
         private static ForgeConfigSpec.DoubleValue returnItemCost;
         private static ForgeConfigSpec.IntValue maxItemsReturned;
+        private static ForgeConfigSpec.IntValue maxRecordsInMediafiedStorage;
 
 
         // costs of great spells
@@ -160,7 +161,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
             returnItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.returnItemCost")
                     .defineInRange("returnItemCost", DEFAULT_RETURN_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
             maxItemsReturned = builder.translation("text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned")
+                    .comment("Maximum number of items that can be returned to the world as item entities in a single OpReturnItem call.")
                     .defineInRange("maxItemsReturned", DEFAULT_MAX_ITEMS_RETURNED, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
+            maxRecordsInMediafiedStorage = builder.translation("text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage")
+                    .comment("Maximum number of Item Records (the things Item Iotas point at) that can be stored in a Mediafied Storage block.")
+                    .defineInRange("maxRecordsInMediafiedStorage", DEFAULT_MAX_RECORDS_IN_MEDIAFIED_STORAGE, MIN_MAX_RECORDS_IN_MEDIAFIED_STORAGE, MAX_MAX_RECORDS_IN_MEDIAFIED_STORAGE);
 
             builder.pop();
 
@@ -329,6 +334,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getMaxItemsReturned() {
             return maxItemsReturned.get();
+        }
+
+        @Override
+        public int getMaxRecordsInMediafiedStorage() {
+            return maxRecordsInMediafiedStorage.get();
         }
 
         @Override

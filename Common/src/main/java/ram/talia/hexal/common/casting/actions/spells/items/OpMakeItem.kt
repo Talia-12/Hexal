@@ -9,8 +9,10 @@ import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
 
 /**
  * Mediafy an ItemEntity. This is an [Action] rather than a [ConstMediaAction] or a [SpellAction] so that it can both
@@ -34,6 +36,9 @@ object OpMakeItem : Action {
 
         val itemStack = iEntity.item
         val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
+        if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
+            throw MishapStorageFull(iEntity.position())
+
         val itemIota = itemStack.asActionResult(storage)[0]
 
         if (itemIota !is NullIota)

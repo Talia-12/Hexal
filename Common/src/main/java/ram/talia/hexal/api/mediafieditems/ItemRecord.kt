@@ -1,7 +1,10 @@
 package ram.talia.hexal.api.mediafieditems
 
+import at.petrak.hexcasting.api.utils.putCompound
+import net.minecraft.core.Registry
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import ram.talia.hexal.api.HexalAPI
@@ -85,25 +88,29 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
     }
 
     fun writeToTag(tag: CompoundTag) {
-        // TODO
+        tag.putString(TAG_ITEM_ID, Registry.ITEM.getKey(this.item).toString())
+        this.tag?.let { tag.putCompound(TAG_NBT, it) }
+        tag.putLong(TAG_COUNT, count)
     }
 
     companion object {
+        const val TAG_ITEM_ID = "id"
+        const val TAG_NBT = "nbt"
+        const val TAG_COUNT = "count"
+
         /**
          * Taken from https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/9ff272a869508125daf5727746c9d9b8b00248bd/src/main/java/appeng/api/stacks/AEItemKey.java#L130
          */
         fun readFromTag(tag: CompoundTag): ItemRecord? {
-            return null
-            // TODO
-//                return try {
-//                    val item = Registries.ITEM.getOptional(ResourceLocation(tag.getString("id"))).orElseThrow { IllegalArgumentException("Unknown item id.") }
-//                    val extraTag = if (tag.contains("tag")) tag.getCompound("tag") else null
-//                    val extraCaps = if (tag.contains("caps")) tag.getCompound("caps") else null
-//                    of(item, extraTag, extraCaps)
-//                } catch (e: Exception) {
-//                    AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e)
-//                    null
-//                }
+            return try {
+                val item = Registry.ITEM.getOptional(ResourceLocation(tag.getString(TAG_ITEM_ID))).orElseThrow { IllegalArgumentException("Unknown item id.") }
+                val extraTag = if (tag.contains(TAG_NBT)) tag.getCompound("tag") else null
+                val count = tag.getLong(TAG_COUNT)
+                ItemRecord(item, extraTag, count)
+            } catch (e: Exception) {
+                HexalAPI.LOGGER.debug("Tried to load an invalid item key from NBT: $tag, $e")
+                null
+            }
         }
     }
 }

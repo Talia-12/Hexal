@@ -10,12 +10,18 @@ import java.lang.ref.WeakReference
 import java.util.UUID
 
 object MediafiedItemManager {
-    private val allItems: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf() // TODO: clean this of nullified weak references at some point.
+    private val allStorages: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf() // TODO: clean this of nullified weak references at some point.
     @JvmStatic
-    fun addStorage(id: UUID, storage: BlockEntityMediafiedStorage) = allItems.set(id, WeakReference(storage))
+    fun addStorage(id: UUID, storage: BlockEntityMediafiedStorage) = allStorages.set(id, WeakReference(storage))
 
     @JvmStatic
-    fun removeStorage(id: UUID) = allItems.remove(id)
+    fun removeStorage(id: UUID) = allStorages.remove(id)
+
+    @JvmStatic
+    fun getStorage(id: UUID) = allStorages[id]
+
+    @JvmStatic
+    fun isStorageFull(id: UUID) = allStorages[id]?.get()?.isFull()
 
     @JvmStatic
     fun getBoundStorage(player: ServerPlayer): UUID? = IXplatAbstractions.INSTANCE.getBoundStorage(player)
@@ -24,13 +30,18 @@ object MediafiedItemManager {
     fun setBoundStorage(player: ServerPlayer, storage: UUID?) = IXplatAbstractions.INSTANCE.setBoundStorage(player, storage)
 
     @JvmStatic
+    fun getAllRecords(storageId: UUID): Map<Index, ItemRecord>? {
+        return allStorages[storageId]?.get()?.storedItems?.mapKeys { Index(storageId, it.key) }
+    }
+
+    @JvmStatic
     fun getAllContainedItemTypes(player: ServerPlayer): Set<Item>? {
         val storageId = getBoundStorage(player) ?: return null
         return getAllContainedItemTypes(storageId)
     }
 
     @JvmStatic
-    fun getAllContainedItemTypes(storageId: UUID): Set<Item>? = allItems[storageId]?.get()?.getAllContainedItemTypes()
+    fun getAllContainedItemTypes(storageId: UUID): Set<Item>? = allStorages[storageId]?.get()?.getAllContainedItemTypes()
 
     @JvmStatic
     fun getItemRecordsMatching(player: ServerPlayer, item: Item): Map<Index, ItemRecord>? {
@@ -39,7 +50,7 @@ object MediafiedItemManager {
     }
 
     @JvmStatic
-    fun getItemRecordsMatching(storageId: UUID, item: Item): Map<Index, ItemRecord>? = allItems[storageId]?.get()?.getItemRecordsMatching(item)?.mapKeys { Index(storageId, it.key) }
+    fun getItemRecordsMatching(storageId: UUID, item: Item): Map<Index, ItemRecord>? = allStorages[storageId]?.get()?.getItemRecordsMatching(item)?.mapKeys { Index(storageId, it.key) }
 
     @JvmStatic
     fun getItemRecordsMatching(player: ServerPlayer, itemRecord: ItemRecord): Map<Index, ItemRecord>? {
@@ -49,23 +60,24 @@ object MediafiedItemManager {
 
     @JvmStatic
     fun getItemRecordsMatching(storageId: UUID, itemRecord: ItemRecord): Map<Index, ItemRecord>?
-        = allItems[storageId]?.get()?.getItemRecordsMatching(itemRecord)?.mapKeys { Index(storageId, it.key) }
+        = allStorages[storageId]?.get()?.getItemRecordsMatching(itemRecord)?.mapKeys { Index(storageId, it.key) }
 
 
 
     @JvmStatic
-    fun assignItem(stack: ItemStack, uuid: UUID): Index? = allItems[uuid]?.get()?.assignItem(ItemRecord(stack.copy())) // copied just in case
+    fun assignItem(stack: ItemStack, uuid: UUID): Index? = allStorages[uuid]?.get()?.assignItem(ItemRecord(stack.copy())) // copied just in case
     @JvmStatic
-    fun assignItem(record: ItemRecord, uuid: UUID): Index? = allItems[uuid]?.get()?.assignItem(record)
+    fun assignItem(record: ItemRecord, uuid: UUID): Index? = allStorages[uuid]?.get()?.assignItem(record)
 
     @JvmStatic
     fun contains(index: Index): Boolean
-        = allItems.contains(index.storage) && allItems[index.storage]?.get()?.contains(index.index) ?: false
+        = allStorages.contains(index.storage) && allStorages[index.storage]?.get()?.contains(index.index) ?: false
 
-    private fun access(index: Index): ItemRecord? = allItems[index.storage]?.get()?.storedItems?.get(index.index)
+    private fun access(index: Index): ItemRecord? = allStorages[index.storage]?.get()?.storedItems?.get(index.index)
 
-    private fun remove(index: Index) {
-        allItems[index.storage]?.get()?.storedItems?.remove(index.index)
+    @JvmStatic
+    fun removeRecord(index: Index) {
+        allStorages[index.storage]?.get()?.storedItems?.remove(index.index)
     }
 
     @JvmStatic
@@ -90,7 +102,7 @@ object MediafiedItemManager {
 
         // if the stack is empty, remove it from the record.
         if (record.count <= 0)
-            remove(index)
+            removeRecord(index)
 
         return drops
     }
@@ -101,11 +113,11 @@ object MediafiedItemManager {
         val absorbee = access(absorbeeIndex) ?: return
 
         if (absorber.absorb(absorbee) && absorbee.count <= 0)
-            remove(absorbeeIndex)
+            removeRecord(absorbeeIndex)
     }
 
     @JvmStatic
-    fun splitOff(splitterIndex: Index, amount: Long): Index? {
+    fun splitOff(splitterIndex: Index, amount: Long, storage: UUID?): Index? {
         if (amount <= 0)
             return null
 
@@ -114,9 +126,10 @@ object MediafiedItemManager {
         val splittee = splitter.split(amount)
 
         if (splitter.count <= 0)
-            remove(splitterIndex)
+            removeRecord(splitterIndex)
 
-        return assignItem(splittee, splitterIndex.storage)
+        // if passed a non-null storage, try to use that. If not passed a storage, or if it didn't work, use the splitter's storage.
+        return assignItem(splittee, storage ?: splitterIndex.storage) ?: assignItem(splittee, splitterIndex.storage)
     }
 
     @JvmStatic

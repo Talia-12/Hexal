@@ -83,8 +83,8 @@ public class ItemIota extends Iota {
         MediafiedItemManager.merge(this.getItemIndex(), other.getItemIndex());
     }
 
-    public @Nullable ItemIota splitOff(int amount) {
-        var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount);
+    public @Nullable ItemIota splitOff(int amount, @Nullable UUID storage) {
+        var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount, storage);
         if (newIndex == null)
             return null;
 
@@ -104,6 +104,20 @@ public class ItemIota extends Iota {
 
     public ItemIota copy() {
         return new ItemIota(this.getItemIndex());
+    }
+
+    public @Nullable ItemIota setStorage(@NotNull UUID uuid) {
+        var storageFull = MediafiedItemManager.isStorageFull(uuid);
+        if (storageFull == null || storageFull) // isStorageFull can return null
+            return null;
+
+        var record = getRecord();
+        MediafiedItemManager.removeRecord(this.getItemIndex());
+        if (record == null)
+            return null;
+
+        var newIndex = MediafiedItemManager.assignItem(record, uuid);
+        return new ItemIota(newIndex);
     }
 
     @Override

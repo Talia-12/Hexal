@@ -9,6 +9,7 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.state.BlockState
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.common.lib.HexalBlockEntities
@@ -26,6 +27,8 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     fun contains(index: Int) = storedItems.contains(index)
 
+    fun isFull(): Boolean = storedItems.size < HexalConfig.server.maxRecordsInMediafiedStorage
+
     fun assignItem(itemRecord: ItemRecord): MediafiedItemManager.Index {
         val index = currentItemIndex
         storedItems[index] = itemRecord
@@ -42,7 +45,7 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     fun getItemRecordsMatching(itemRecord: ItemRecord): Map<Int, ItemRecord> {
-        return storedItems.filter { (index, record) -> record.item == itemRecord.item && record.tag == itemRecord.tag }
+        return storedItems.filter { (_, record) -> record.item == itemRecord.item && record.tag == itemRecord.tag }
     }
 
     fun serverTick() {
