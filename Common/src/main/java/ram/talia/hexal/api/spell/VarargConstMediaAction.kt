@@ -15,9 +15,15 @@ interface VarargConstMediaAction : Action {
     val mediaCost: Int
         get() = 0
 
+    /**
+     * The number of arguments that should be accepted from the stack, given the current state of the stack.
+     * If there are not enough args for it to be possible, return the smallest number that could be acceptable.
+     * [stack] is the reversed stack, so at index 0 is what's on top of the stack, at index 1 is second from the top,
+     * etc.
+     */
     fun argc(stack: List<Iota>): Int
 
-    fun execute(args: List<Iota>, ctx: CastingContext): List<Iota>
+    fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota>
 
     override fun operate(
             continuation: SpellContinuation,
@@ -30,7 +36,7 @@ interface VarargConstMediaAction : Action {
             throw MishapNotEnoughArgs(argc, stack.size)
         val args = stack.takeLast(argc)
         repeat(argc) { stack.removeLast() }
-        val newData = this.execute(args, ctx)
+        val newData = this.execute(args, argc, ctx)
         stack.addAll(newData)
 
         val sideEffects = mutableListOf<OperatorSideEffect>(OperatorSideEffect.ConsumeMedia(this.mediaCost))
