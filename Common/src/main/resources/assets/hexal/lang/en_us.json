@@ -106,11 +106,16 @@
   "hexcasting.spell.hexal:gate/mark": "Gate's Opening",
   "hexcasting.spell.hexal:gate/close": "Gate's Closing",
 
-  "hexcasting.spell.hexal:item/bind_storage": "Bind Storage",
+  "hexcasting.spell.hexal:item/storage/bind": "Bind Storage",
+  "hexcasting.spell.hexal:item/storage/bind/temp": "Bind Storage - Temporary",
   "hexcasting.spell.hexal:item/make": "Mediafy Item",
   "hexcasting.spell.hexal:item/return": "Return Item",
   "hexcasting.spell.hexal:item/combine": "Stacking Distillation",
   "hexcasting.spell.hexal:item/split": "Splitting Gambit",
+  "hexcasting.spell.hexal:item/craft": "Craft",
+  "hexcasting.spell.hexal:item/villager/level/get": "Seniority Purification",
+  "hexcasting.spell.hexal:item/trade/get": "Offering Purification",
+  "hexcasting.spell.hexal:item/trade": "Trade",
 
   "hexcasting.spell.hexal:tick": "Accelerate",
 
@@ -125,6 +130,7 @@
   "hexcasting.spell.book.hexal:zone_entity/wisp": "Zone Dstl.: Wisp",
   "hexcasting.spell.book.hexal:zone_entity/not_wisp": "Zone Dstl.: Non-Wisp",
 
+  "hexcasting.spell.book.hexal:item/storage/bind/temp": "Bind Storage - Temp.",
 
 
 
