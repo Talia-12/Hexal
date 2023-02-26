@@ -87,7 +87,7 @@ fun List<Iota>.getBaseWisp(idx: Int, argc: Int = 0): BaseWisp {
         if (e is BaseWisp)
             return e
     }
-    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "entity.wisp")
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "wisp")
 }
 
 fun List<Iota>.getBaseCastingWisp(idx: Int, argc: Int = 0): BaseCastingWisp {
@@ -97,7 +97,7 @@ fun List<Iota>.getBaseCastingWisp(idx: Int, argc: Int = 0): BaseCastingWisp {
         if (e is BaseCastingWisp)
             return e
     }
-    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "entity.wisp.casting")
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "wisp.casting")
 }
 
 fun List<Iota>.getVec3OrListVec3(idx: Int, argc: Int = 0): Either<Vec3, List<Vec3>> {
@@ -135,10 +135,10 @@ fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<Bl
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     return when (x) {
         is Vec3Iota -> Anyone.first(BlockPos(x.vec3))
-        is EntityIota -> (x.entity as? ItemEntity)?.let { Anyone.second(it) } ?: throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
+        is EntityIota -> (x.entity as? ItemEntity)?.let { Anyone.second(it) } ?: throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
         is ItemIota -> x.selfOrNull()?.let { Anyone.third(it) }
         is NullIota -> null
-        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
+        else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
     }
 }
 
@@ -163,7 +163,7 @@ fun List<Iota>.getItemBlockType(idx: Int, argc: Int = 0): Either<Item, Block> {
     if (x is ItemTypeIota) {
         return x.either
     }
-    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.block")
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.item")
 }
 
 fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
@@ -193,7 +193,7 @@ fun List<Iota>.getItemOrItemType(idx: Int, argc: Int = 0): Either<ItemIota, Item
     if (x is NullIota)
         return null
 
-    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "item")
+    throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "itemitemtype")
 }
 
 fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, ItemIota?> {
@@ -203,6 +203,6 @@ fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, Item
         is Vec3Iota -> Either.left(BlockPos(x.vec3))
         is ItemIota -> Either.right(x.selfOrNull())
         is NullIota -> Either.right(null)
-        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "vecitem")
+        else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "vecitem")
     }
 }

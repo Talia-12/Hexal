@@ -3,7 +3,7 @@ package ram.talia.hexal.common.casting.actions.spells.items
 import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
+import at.petrak.hexcasting.api.spell.asActionResult
 import ram.talia.hexal.api.getItem
 
 object OpCombineItems : ConstMediaAction {
@@ -13,13 +13,14 @@ object OpCombineItems : ConstMediaAction {
         val absorber = args.getItem(0, argc)
         val absorbee = args.getItem(0, argc)
 
-        if (absorber == null || absorbee == null)
-            return listOf(absorber?.copy() ?: NullIota(), absorbee?.copy() ?: NullIota())
+        if (absorber == null || absorbee == null) {
+            // ensure always 1 iota returned to the stack.
+            val toReturn = listOfNotNull(absorber?.copy(), absorbee?.copy())
+            return toReturn.ifEmpty { null.asActionResult }
+        }
 
         absorber.absorb(absorbee)
 
-        // in the rare rare case where the contents of the absorbee didn't completely
-        // fit into the absorber, return the absorbee back to the stack.
-        return listOfNotNull(absorber.copy(), absorbee.copy().selfOrNull())
+        return listOf(absorber.copy())
     }
 }
