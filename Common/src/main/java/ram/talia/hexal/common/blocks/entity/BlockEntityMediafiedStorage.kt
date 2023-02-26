@@ -27,7 +27,7 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     fun contains(index: Int) = storedItems.contains(index)
 
-    fun isFull(): Boolean = storedItems.size < HexalConfig.server.maxRecordsInMediafiedStorage
+    fun isFull(): Boolean = storedItems.size >= HexalConfig.server.maxRecordsInMediafiedStorage
 
     fun assignItem(itemRecord: ItemRecord): MediafiedItemManager.Index {
         val index = currentItemIndex
@@ -54,6 +54,8 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
             hasRegisteredToMediafiedItemManager = true
         }
+
+        this.setChanged() // tracking when records get changed sounds horrible! we're just gonna always request to be saved!
     }
 
     override fun saveModData(tag: CompoundTag) {

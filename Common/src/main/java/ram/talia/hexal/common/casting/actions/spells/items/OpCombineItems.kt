@@ -11,15 +11,15 @@ object OpCombineItems : ConstMediaAction {
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
         val absorber = args.getItem(0, argc)
-        val absorbee = args.getItem(0, argc)
+        val absorbee = args.getItem(1, argc)
 
         if (absorber == null || absorbee == null)
             return listOf(absorber?.copy() ?: NullIota(), absorbee?.copy() ?: NullIota())
+        if (absorber.itemIndex == absorbee.itemIndex)
+            return listOf(absorber.copy())
 
         absorber.absorb(absorbee)
 
-        // in the rare rare case where the contents of the absorbee didn't completely
-        // fit into the absorber, return the absorbee back to the stack.
-        return listOfNotNull(absorber.copy(), absorbee.copy().selfOrNull())
+        return listOfNotNull(absorber.copy())
     }
 }

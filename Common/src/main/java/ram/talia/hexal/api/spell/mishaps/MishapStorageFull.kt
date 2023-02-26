@@ -24,7 +24,7 @@ class MishapStorageFull(val position: Vec3) : Mishap() {
         // get a random record from in the storage
         val storage = (ctx as IMixinCastingContext).boundStorage ?: return // somehow got mishap storage full with no storage, wild
         val allRecords = MediafiedItemManager.getAllRecords(storage) ?: return
-        val index = allRecords.keys.random()
+        val index = allRecords.keys.randomOrNull() ?: return
         val iota = ItemIota(index)
         val toDrop = iota.getStacksToDrop(iota.item.maxStackSize) // the stack to drop.
 
