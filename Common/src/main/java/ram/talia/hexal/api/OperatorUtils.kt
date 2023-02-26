@@ -206,6 +206,26 @@ fun List<Iota>.getItemOrItemType(idx: Int, argc: Int = 0): Either<ItemIota, Item
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "item")
 }
 
+fun List<Iota>.getItemOrItemList(idx: Int, argc: Int = 0): Either<ItemIota, List<ItemIota>>? {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    return when (x) {
+        is ItemIota -> Either.left(x)
+        is NullIota -> null
+        is ListIota -> {
+            val out = mutableListOf<ItemIota>()
+            for (i in x.list) {
+                when (i) {
+                    is ItemIota -> out.add(i)
+                    is NullIota -> continue
+                    else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlist")
+                }
+            }
+            Either.right(out)
+        }
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlist")
+    }
+}
+
 fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, ItemIota?> {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
 

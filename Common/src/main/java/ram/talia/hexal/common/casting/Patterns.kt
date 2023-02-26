@@ -198,9 +198,15 @@ object Patterns {
 
 	// =============================== Gate Stuff =====================================
 	@JvmField
-	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/bind_storage"), OpBindStorage(false))
+	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/storage/bind"), OpBindStorage(false))
 	@JvmField
-	val BIND_STORAGE_TEMP = make(HexPattern.fromAngles("edewedewede", HexDir.NORTH_EAST), modLoc("item/bind_storage/temp"), OpBindStorage(true))
+	val BIND_STORAGE_TEMP = make(HexPattern.fromAngles("edewedewede", HexDir.NORTH_EAST), modLoc("item/storage/bind/temp"), OpBindStorage(true))
+	@JvmField
+	val ITEM_CONTAINED_GET = make(HexPattern.fromAngles("aweeeeewaaww", HexDir.SOUTH_EAST), modLoc("item/contained/get"), OpGetContainedItems)
+	@JvmField
+	val ITEM_CONTAINED_TYPE_GET = make(HexPattern.fromAngles("dwqqqqqwddww", HexDir.NORTH_EAST), modLoc("item/contained_type/get"), OpGetContainedItemTypes)
+	@JvmField
+	val ITEM_STORAGE_REMAINING_CAPACITY_GET = make(HexPattern.fromAngles("awedqdewa", HexDir.SOUTH_EAST), modLoc("item/storage/remaining_capacity/get"), OpGetStorageRemainingCapacity)
 	@JvmField
 	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
 	@JvmField
@@ -209,6 +215,16 @@ object Patterns {
 	val ITEM_COMBINE = make(HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), modLoc("item/combine"), OpCombineItems)
 	@JvmField
 	val ITEM_SPLIT = make(HexPattern.fromAngles("eaqaaw", HexDir.EAST), modLoc("item/split"), OpSplitItem)
+	@JvmField
+	val ITEM_STORAGE_GET = make(HexPattern.fromAngles("qqqqqaw", HexDir.SOUTH_WEST), modLoc("item/storage/get"), OpGetItemStorage)
+	@JvmField
+	val ITEM_STORAGE_SET = make(HexPattern.fromAngles("eeeeedw", HexDir.SOUTH_EAST), modLoc("item/storage/set"), OpSetItemStorage)
+	@JvmField
+	val ITEM_CRAFT = make(HexPattern.fromAngles("wwawdedwawdewwdwaqawdwwedwawdedwaww", HexDir.SOUTH_EAST), modLoc("item/craft"), OpCraftItem)
+	@JvmField
+	val ITEM_TRADE = make(HexPattern.fromAngles("awdedwaeqded", HexDir.NORTH_WEST), modLoc("item/trade"), OpTradeItem)
+	@JvmField
+	val ITEM_TRADE_GET = make(HexPattern.fromAngles("awdedwaawwqded", HexDir.SOUTH_EAST), modLoc("item/trade/get"), OpGetItemTrades)
 
 
 	// ============================== Great Stuff =====================================

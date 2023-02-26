@@ -7,13 +7,14 @@ import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBlockPosOrNull
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 
-object OpGetStorageCurrentFill : ConstMediaAction {
+object OpGetStorageRemainingCapacity : ConstMediaAction {
     override val argc = 1
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
@@ -27,6 +28,6 @@ object OpGetStorageCurrentFill : ConstMediaAction {
             ctx.world.getBlockEntity(pos) as? BlockEntityMediafiedStorage ?: throw MishapInvalidIota.ofType(args[1], 0, "mediafied_storage")
         }
 
-        return storage.storedItems.size.asActionResult
+        return (HexalConfig.server.maxRecordsInMediafiedStorage - storage.storedItems.size).asActionResult
     }
 }

@@ -35,7 +35,8 @@ import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
  */
 object OpCraftItem : ConstMediaAction {
     override val argc = 1
-    override val mediaCost get() = HexalConfig.server.craftItemCost
+    override val mediaCost: Int
+        get() = HexalConfig.server.craftItemCost
 
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
@@ -53,14 +54,14 @@ object OpCraftItem : ConstMediaAction {
 
         val recman = ctx.world.recipeManager
         val recipes = recman.getAllRecipesFor(RecipeType.CRAFTING)
-        val recipe = recipes.find { it.matches(container, ctx.world) } ?: return listOf<Iota>().asActionResult
+        val recipe = recipes.find { it.matches(container, ctx.world) } ?: return emptyList<Iota>().asActionResult
 
         val itemResult = recipe.assemble(container)
         val remainingItems = recipe.getRemainingItems(container)
 
         val timesToCraft = getMinCount(griddedIotas)
 
-        val itemIotaResult = ItemIota.makeIfStorageLoaded(ItemRecord(itemResult.item, itemResult.tag, timesToCraft), storage) ?: return listOf<Iota>().asActionResult
+        val itemIotaResult = ItemIota.makeIfStorageLoaded(ItemRecord(itemResult.item, itemResult.tag, timesToCraft), storage) ?: return emptyList<Iota>().asActionResult
         val remainingItemIotas = remainingItems.map { ItemIota.makeIfStorageLoaded(ItemRecord(it.item, it.tag, timesToCraft), storage)!! }.toMutableList()
 
         for (item in griddedIotas) item?.removeItems(timesToCraft)

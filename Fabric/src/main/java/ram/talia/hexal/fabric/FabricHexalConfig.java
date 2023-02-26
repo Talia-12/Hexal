@@ -125,6 +125,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             double bindStorageCost = DEFAULT_BIND_STORAGE_COST;
             double makeItemCost = DEFAULT_MAKE_ITEM_COST;
             double returnItemCost = DEFAULT_RETURN_ITEM_COST;
+            double craftItemCost = DEFAULT_CRAFT_ITEM_COST;
+            double tradeItemCost = DEFAULT_TRADE_ITEM_COST;
             int maxItemsReturned = DEFAULT_MAX_ITEMS_RETURNED;
             int maxRecordsInMediafiedStorage = DEFAULT_MAX_RECORDS_IN_MEDIAFIED_STORAGE;
         }
@@ -187,6 +189,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.itemSpells.bindStorageCost = bound(this.itemSpells.bindStorageCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.makeItemCost = bound(this.itemSpells.makeItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.returnItemCost = bound(this.itemSpells.returnItemCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.itemSpells.craftItemCost = bound(this.itemSpells.craftItemCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.itemSpells.tradeItemCost = bound(this.itemSpells.tradeItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.maxItemsReturned = bound(this.itemSpells.maxItemsReturned, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
             this.itemSpells.maxRecordsInMediafiedStorage = bound(this.itemSpells.maxRecordsInMediafiedStorage, MIN_MAX_RECORDS_IN_MEDIAFIED_STORAGE, MAX_MAX_RECORDS_IN_MEDIAFIED_STORAGE);
 
@@ -332,6 +336,16 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getReturnItemCost() {
             return (int) (itemSpells.returnItemCost * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getCraftItemCost() {
+            return (int) (itemSpells.craftItemCost * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getTradeItemCost() {
+            return (int) (itemSpells.tradeItemCost * MediaConstants.DUST_UNIT);
         }
 
         @Override

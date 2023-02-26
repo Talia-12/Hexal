@@ -54,6 +54,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue bindStorageCost;
         private static ForgeConfigSpec.DoubleValue makeItemCost;
         private static ForgeConfigSpec.DoubleValue returnItemCost;
+        private static ForgeConfigSpec.DoubleValue craftItemCost;
+        private static ForgeConfigSpec.DoubleValue tradeItemCost;
         private static ForgeConfigSpec.IntValue maxItemsReturned;
         private static ForgeConfigSpec.IntValue maxRecordsInMediafiedStorage;
 
@@ -160,6 +162,10 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("makeItemCost", DEFAULT_MAKE_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
             returnItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.returnItemCost")
                     .defineInRange("returnItemCost", DEFAULT_RETURN_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
+            craftItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.craftItemCost")
+                    .defineInRange("craftItemCost", DEFAULT_CRAFT_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
+            tradeItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.tradeItemCost")
+                    .defineInRange("tradeItemCost", DEFAULT_TRADE_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
             maxItemsReturned = builder.translation("text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned")
                     .comment("Maximum number of items that can be returned to the world as item entities in a single OpReturnItem call.")
                     .defineInRange("maxItemsReturned", DEFAULT_MAX_ITEMS_RETURNED, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
@@ -329,6 +335,16 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getReturnItemCost() {
             return (int) (returnItemCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getCraftItemCost() {
+            return (int) (craftItemCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getTradeItemCost() {
+            return (int) (tradeItemCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override

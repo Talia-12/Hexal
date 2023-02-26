@@ -104,6 +104,10 @@ public class ItemIota extends Iota {
         return MediafiedItemManager.getStacksToDrop(this.getItemIndex(), count);
     }
 
+    public long removeItems(int count) {
+        return removeItems((long) count);
+    }
+
     public long removeItems(long count) {
         return MediafiedItemManager.removeItems(this.getItemIndex(), count);
     }
