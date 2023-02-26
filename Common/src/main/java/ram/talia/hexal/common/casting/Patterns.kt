@@ -222,6 +222,8 @@ object Patterns {
 	@JvmField
 	val ITEM_CRAFT = make(HexPattern.fromAngles("wwawdedwawdewwdwaqawdwwedwawdedwaww", HexDir.SOUTH_EAST), modLoc("item/craft"), OpCraftItem)
 	@JvmField
+	val ITEM_VILLAGER_LEVEL_GET = make(HexPattern.fromAngles("qqwdedwqqaww", HexDir.NORTH_WEST), modLoc("item/villager/level/get"), OpGetVillagerLevel)
+	@JvmField
 	val ITEM_TRADE_GET = make(HexPattern.fromAngles("awdedwaawwqded", HexDir.SOUTH_EAST), modLoc("item/trade/get"), OpGetItemTrades)
 	@JvmField
 	val ITEM_TRADE = make(HexPattern.fromAngles("awdedwaeqded", HexDir.NORTH_WEST), modLoc("item/trade"), OpTradeItem)
