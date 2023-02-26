@@ -8,6 +8,7 @@ import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.lang.ref.WeakReference
 import java.util.UUID
+import kotlin.math.max
 
 object MediafiedItemManager {
     private val allStorages: MutableMap<UUID, WeakReference<BlockEntityMediafiedStorage>> = mutableMapOf() // TODO: clean this of nullified weak references at some point.
@@ -137,6 +138,17 @@ object MediafiedItemManager {
         val record = access(index) ?: return
         record.item = stack.item
         record.tag = stack.tag?.copy()
+    }
+
+    @JvmStatic
+    fun removeItems(index: Index, count: Long): Long {
+        val record = access(index) ?: return 0
+        val startingCount = record.count
+        record.count = max(record.count - count, 0)
+        val numRemoved = startingCount - record.count
+        if (record.count <= 0)
+            removeRecord(index)
+        return numRemoved
     }
 
 

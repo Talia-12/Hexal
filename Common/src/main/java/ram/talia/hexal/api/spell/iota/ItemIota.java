@@ -42,6 +42,15 @@ public class ItemIota extends Iota {
             return null;
     }
 
+    public static @Nullable ItemIota makeIfStorageLoaded(ItemRecord record, UUID storageUUID) {
+        var index = MediafiedItemManager.assignItem(record, storageUUID);
+
+        if (index != null)
+            return new ItemIota(index);
+        else
+            return null;
+    }
+
     /**
      * Returns the ItemIota if its item still exists, or null otherwise. SHOULD ALWAYS
      * BE CALLED BEFORE MAKING USE OF AN ITEM IOTA (built into List<Iota>.getItem).
@@ -93,6 +102,10 @@ public class ItemIota extends Iota {
 
     public List<ItemStack> getStacksToDrop(int count) {
         return MediafiedItemManager.getStacksToDrop(this.getItemIndex(), count);
+    }
+
+    public long removeItems(long count) {
+        return MediafiedItemManager.removeItems(this.getItemIndex(), count);
     }
 
     /**

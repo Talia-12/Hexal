@@ -46,6 +46,9 @@ object HexalConfig {
         val bindStorageCost: Int
         val makeItemCost: Int
         val returnItemCost: Int
+        val craftItemCost: Int
+        val tradeItemCost: Int
+
         val maxItemsReturned: Int
 
         val maxRecordsInMediafiedStorage: Int
@@ -112,6 +115,8 @@ object HexalConfig {
             const val DEFAULT_BIND_STORAGE_COST = 32.0
             const val DEFAULT_MAKE_ITEM_COST = 0.1
             const val DEFAULT_RETURN_ITEM_COST = 0.1
+            const val DEFAULT_CRAFT_ITEM_COST = 0.1
+            const val DEFAULT_TRADE_ITEM_COST = 0.1
 
             const val DEFAULT_MAX_ITEMS_RETURNED = 32000
 
@@ -209,6 +214,10 @@ object HexalConfig {
         override val makeItemCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val returnItemCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val craftItemCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val tradeItemCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val maxItemsReturned: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
