@@ -83,6 +83,29 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) :
         currentAnimation.progress = min(currentAnimation.progress + 1, ANIMATION_LENGTH)
     }
 
+    /**
+     * When sending a sync packet to the client, only include this boolean rather than all the save data.
+     */
+    override fun getUpdateTag() = CompoundTag().also { it.putBoolean(TAG_HAS_ITEMS, _storedItems.isNotEmpty()) }
+
+    /**
+     * When loading a packet, if it contains [TAG_HAS_ITEMS] then it came from the server and this is the client;
+     * should only do the animation related stuff. If it doesn't contain [TAG_HAS_ITEMS] then this is the server
+     * and should load as normal.
+     */
+    override fun load(tag: CompoundTag) {
+        if (TAG_HAS_ITEMS in tag) {
+            if (tag.getBoolean(TAG_HAS_ITEMS)) {
+                if (currentAnimation is AnimationState.Opening)
+                    currentAnimation = AnimationState.Closing(0)
+            } else {
+                if (currentAnimation is AnimationState.Closing)
+                    currentAnimation = AnimationState.Opening(0)
+            }
+        } else
+            super.load(tag)
+    }
+
     override fun saveModData(tag: CompoundTag) {
         tag.putUUID(TAG_UUID, uuid)
         tag.putInt(TAG_INDEX, currentItemIndex)
@@ -117,16 +140,6 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) :
                     _storedItems[cEntry.getInt(TAG_ID)] = record
             }
         }
-
-        if (_storedItems.isEmpty()) {
-            if (currentAnimation is AnimationState.Opening) {
-                currentAnimation = AnimationState.Closing(0)
-            }
-        } else {
-            if (currentAnimation is AnimationState.Closing) {
-                currentAnimation = AnimationState.Opening(0)
-            }
-        }
     }
 
     companion object {
@@ -135,6 +148,8 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) :
         const val TAG_STORED = "hexal:stored"
 
         const val TAG_ID = "hexal:storage_id"
+
+        const val TAG_HAS_ITEMS = "hexal:has_items"
 
         const val ANIMATION_LENGTH = 20
     }
