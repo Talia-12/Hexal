@@ -1,6 +1,5 @@
 {
-  "parent": "block/cube_all",
   "textures": {
-    "all": "hexal:block/mythril_block"
+    "particle": "hexcasting:block/edified_planks"
   }
 }

@@ -13,17 +13,32 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.common.lib.HexalBlockEntities
-import java.util.UUID
+import java.util.*
+import kotlin.math.min
 
-class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
-    val uuid: UUID get() = id
-    private var id = UUID.randomUUID()
+class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) :
+    HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
+    var uuid: UUID = UUID.randomUUID()
+        private set
+
+    //begins fully closed
+    var currentAnimation: AnimationState = AnimationState.Closing(ANIMATION_LENGTH)
 
     private var currentItemIndex = 0
 
     private var hasRegisteredToMediafiedItemManager: Boolean = false
 
-    val storedItems: MutableMap<Int, ItemRecord> = mutableMapOf()
+    val _storedItems: MutableMap<Int, ItemRecord> = mutableMapOf()
+    val storedItems: Map<Int, ItemRecord>
+        get() = _storedItems
+
+    fun removeStoredItem(index: Int) {
+        _storedItems.remove(index)
+
+        if (_storedItems.isEmpty()) {
+            sync()
+        }
+    }
 
     fun contains(index: Int) = storedItems.contains(index)
 
@@ -31,8 +46,14 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     fun assignItem(itemRecord: ItemRecord): MediafiedItemManager.Index {
         val index = currentItemIndex
-        storedItems[index] = itemRecord
+        val isEmpty = _storedItems.isEmpty()
+        _storedItems[index] = itemRecord
         currentItemIndex += 1
+
+        if (isEmpty) {
+            sync()
+        }
+
         return MediafiedItemManager.Index(uuid, index)
     }
 
@@ -58,6 +79,10 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         this.setChanged() // tracking when records get changed sounds horrible! we're just gonna always request to be saved!
     }
 
+    fun clientTick() {
+        currentAnimation.progress = min(currentAnimation.progress + 1, ANIMATION_LENGTH)
+    }
+
     override fun saveModData(tag: CompoundTag) {
         tag.putUUID(TAG_UUID, uuid)
         tag.putInt(TAG_INDEX, currentItemIndex)
@@ -76,11 +101,12 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     override fun loadModData(tag: CompoundTag) {
         if (tag.contains(TAG_UUID))
-            id = tag.getUUID(TAG_UUID)
+            uuid = tag.getUUID(TAG_UUID)
 
         if (tag.contains(TAG_INDEX))
             currentItemIndex = tag.getInt(TAG_INDEX)
 
+        _storedItems.clear()
         if (tag.contains(TAG_STORED)) {
             val stored = tag.getList(TAG_STORED, Tag.TAG_COMPOUND)
 
@@ -88,11 +114,19 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
                 val cEntry = entry as CompoundTag
                 val record = ItemRecord.readFromTag(cEntry)
                 if (record != null)
-                    storedItems[cEntry.getInt(TAG_ID)] = record
+                    _storedItems[cEntry.getInt(TAG_ID)] = record
             }
         }
 
-
+        if (_storedItems.isEmpty()) {
+            if (currentAnimation is AnimationState.Opening) {
+                currentAnimation = AnimationState.Closing(0)
+            }
+        } else {
+            if (currentAnimation is AnimationState.Closing) {
+                currentAnimation = AnimationState.Opening(0)
+            }
+        }
     }
 
     companion object {
@@ -101,5 +135,12 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         const val TAG_STORED = "hexal:stored"
 
         const val TAG_ID = "hexal:storage_id"
+
+        const val ANIMATION_LENGTH = 20
+    }
+
+    sealed class AnimationState(var progress: Int) {
+        class Closing(progress: Int) : AnimationState(progress)
+        class Opening(progress: Int) : AnimationState(progress)
     }
 }
