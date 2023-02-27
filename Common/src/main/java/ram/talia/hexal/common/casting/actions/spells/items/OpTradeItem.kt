@@ -9,6 +9,8 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import net.minecraft.stats.Stats
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.trading.MerchantOffer
+import net.minecraft.world.item.trading.MerchantOffers
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getItemOrItemList
@@ -34,7 +36,7 @@ object OpTradeItem : VarargConstMediaAction {
     override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota> {
         val villager = args.getVillager(0, argc)
         val toTradeItemIotas = args.getItemOrItemList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
-        val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else 0
+        val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
 
         if (toTradeItemIotas.isEmpty())
             throw MishapInvalidIota.of(args[1], 0, "villager_trade")
@@ -62,7 +64,9 @@ object OpTradeItem : VarargConstMediaAction {
             val toTrade1 = toTradeItemStacks.getOrElse(1) { ItemStack.EMPTY } ?: ItemStack.EMPTY
             val offers = villager.offers
             // have to try this both ways around apparently.
-            val merchantoffer = offers.getRecipeFor(toTrade0, toTrade1, tradeIndex) ?: offers.getRecipeFor(toTrade0, toTrade1, tradeIndex) ?: break
+            val merchantoffer = if (tradeIndex != null)
+                    offers.getRecipeFor(toTrade0, toTrade1, tradeIndex) ?: offers.getRecipeFor(toTrade0, toTrade1, tradeIndex) ?: break
+                else getFirstMatchingInStockOffer(offers, toTrade0, toTrade1) ?: break
             if (merchantoffer.isOutOfStock)
                 break
 
@@ -88,5 +92,14 @@ object OpTradeItem : VarargConstMediaAction {
         villager.stopTrading()
 
         return outRecord?.let { record -> ItemIota.makeIfStorageLoaded(record, storage)?.let{ listOf(it) } } ?: null.asActionResult
+    }
+
+    fun getFirstMatchingInStockOffer(offers: MerchantOffers, toTrade0: ItemStack, toTrade1: ItemStack): MerchantOffer? {
+        for (index in 0 until offers.size) {
+            val offer = offers.getRecipeFor(toTrade0, toTrade1, index) ?: offers.getRecipeFor(toTrade1, toTrade0, index) ?: continue
+            if (!offer.isOutOfStock)
+                return offer
+        }
+        return null
     }
 }

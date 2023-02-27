@@ -26,7 +26,7 @@ class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
 
         return Triple(
             Spell(if (storage is BlockMediafiedStorage) pos else null, isTemporaryBinding),
-            HexalConfig.server.bindStorageCost,
+            if (isTemporaryBinding) HexalConfig.server.bindTemporaryStorageCost else HexalConfig.server.bindStorageCost,
             listOf(ParticleSpray.burst(Vec3.atCenterOf(pos), 1.5))
         )
     }

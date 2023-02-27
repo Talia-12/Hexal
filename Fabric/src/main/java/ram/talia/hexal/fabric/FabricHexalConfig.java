@@ -123,6 +123,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         static class ItemSpells {
             // costs of item spells
             double bindStorageCost = DEFAULT_BIND_STORAGE_COST;
+            double bindTemporaryStorageCost = DEFAULT_BIND_TEMPORARY_STORAGE_COST;
             double makeItemCost = DEFAULT_MAKE_ITEM_COST;
             double returnItemCost = DEFAULT_RETURN_ITEM_COST;
             double craftItemCost = DEFAULT_CRAFT_ITEM_COST;
@@ -187,6 +188,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
             // costs of item spells
             this.itemSpells.bindStorageCost = bound(this.itemSpells.bindStorageCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.itemSpells.bindTemporaryStorageCost = bound(this.itemSpells.bindTemporaryStorageCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.makeItemCost = bound(this.itemSpells.makeItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.returnItemCost = bound(this.itemSpells.returnItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.craftItemCost = bound(this.itemSpells.craftItemCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -326,6 +328,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getBindStorageCost() {
             return (int) (itemSpells.bindStorageCost * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getBindTemporaryStorageCost() {
+            return (int) (itemSpells.bindTemporaryStorageCost * MediaConstants.DUST_UNIT);
         }
 
         @Override

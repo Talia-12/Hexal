@@ -33,7 +33,7 @@ class HexalBlocks {
 		}
 
 		private val BLOCKS: MutableMap<ResourceLocation, Block> = LinkedHashMap()
-		private val BLOCK_ITEMS: MutableMap<ResourceLocation, Pair<Block, Item.Properties>> = java.util.LinkedHashMap()
+		private val BLOCK_ITEMS: MutableMap<ResourceLocation, Pair<Block, Item.Properties>> = LinkedHashMap()
 
 		@JvmField
 		val SLIPWAY = blockNoItem("slipway", BlockSlipway(

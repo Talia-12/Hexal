@@ -52,6 +52,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
 
         // costs of item spells
         private static ForgeConfigSpec.DoubleValue bindStorageCost;
+        private static ForgeConfigSpec.DoubleValue bindTemporaryStorageCost;
         private static ForgeConfigSpec.DoubleValue makeItemCost;
         private static ForgeConfigSpec.DoubleValue returnItemCost;
         private static ForgeConfigSpec.DoubleValue craftItemCost;
@@ -158,6 +159,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
             builder.translation("text.autoconfig.hexal.option.server.itemSpells").push("itemSpells");
             bindStorageCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.bindStorageCost")
                     .defineInRange("bindStorageCost", DEFAULT_BIND_STORAGE_COST, DEF_MIN_COST, DEF_MAX_COST);
+            bindTemporaryStorageCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.bindTemporaryStorageCost")
+                    .defineInRange("bindTemporaryStorageCost", DEFAULT_BIND_TEMPORARY_STORAGE_COST, DEF_MIN_COST, DEF_MAX_COST);
             makeItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.makeItemCost")
                     .defineInRange("makeItemCost", DEFAULT_MAKE_ITEM_COST, DEF_MIN_COST, DEF_MAX_COST);
             returnItemCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.returnItemCost")
@@ -325,6 +328,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getBindStorageCost() {
             return (int) (bindStorageCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getBindTemporaryStorageCost() {
+            return (int) (bindTemporaryStorageCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
