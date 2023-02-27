@@ -25,7 +25,7 @@ object MediafiedItemManager {
     fun isStorageFull(id: UUID) = allStorages[id]?.get()?.isFull()
 
     @JvmStatic
-    fun getBoundStorage(player: ServerPlayer): UUID? = IXplatAbstractions.INSTANCE.getBoundStorage(player)
+    fun getBoundStorage(player: ServerPlayer): UUID? = IXplatAbstractions.INSTANCE.getBoundStorage(player).takeIf { it in allStorages }
 
     @JvmStatic
     fun setBoundStorage(player: ServerPlayer, storage: UUID?) = IXplatAbstractions.INSTANCE.setBoundStorage(player, storage)
@@ -78,7 +78,7 @@ object MediafiedItemManager {
 
     @JvmStatic
     fun removeRecord(index: Index) {
-        allStorages[index.storage]?.get()?.storedItems?.remove(index.index)
+        allStorages[index.storage]?.get()?.removeStoredItem(index.index)
     }
 
     @JvmStatic
