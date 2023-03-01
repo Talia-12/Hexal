@@ -68,13 +68,13 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			itr.remove()
 
 			// if the wisp isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
-			if (cast.wisp == null) {
-				cast.wisp = (caster.level as ServerLevel).getEntity(cast.wispUUID) as? BaseCastingWisp
+			val wisp = cast.wisp ?: (caster.level as ServerLevel).getEntity(cast.wispUUID) as? BaseCastingWisp ?: continue
+			cast.wisp = wisp
 
-				if (cast.wisp == null) continue
-			}
+			if (wisp.isRemoved)
+				continue
 
-			if (cast.wisp!!.isRemoved)
+			if (wisp.level.dimension() != wisp.caster?.level?.dimension())
 				continue
 
 			results += cast(cast)
