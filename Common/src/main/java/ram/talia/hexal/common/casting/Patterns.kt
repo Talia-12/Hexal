@@ -30,16 +30,18 @@ object Patterns {
 	var PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()
 	@JvmField
 	var PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()
+	@JvmField
+	val SPECIAL_HANDLERS: MutableList<Pair<ResourceLocation, PatternRegistry.SpecialHandler>> = ArrayList()
 
 	@JvmStatic
 	fun registerPatterns() {
 		try {
-			for ((pattern, location, action) in PATTERNS) {
+			for ((pattern, location, action) in PATTERNS)
 				PatternRegistry.mapPattern(pattern, location, action)
-			}
-			for ((pattern, location, action) in PER_WORLD_PATTERNS) {
+			for ((pattern, location, action) in PER_WORLD_PATTERNS)
 				PatternRegistry.mapPattern(pattern, location, action, true)
-			}
+			for ((location, handler) in SPECIAL_HANDLERS)
+				PatternRegistry.addSpecialHandler(location, handler)
 		} catch (e: PatternRegistry.RegisterPatternException) {
 			e.printStackTrace()
 		}
@@ -245,6 +247,12 @@ object Patterns {
 	@JvmField
 	val GATE_MAKE = make(HexPattern.fromAngles("qwqwqwqwqwqqeaeaeaeaeae", HexDir.WEST), modLoc("gate/make"), OpMakeGate, true)
 
+	// ================================ Special Handlers =======================================
+//	@JvmField
+//	val EXAMPLE_HANDLER = make(modLoc("example_handler")) {pat ->
+//		return@make Action.makeConstantOp(StringIota("example! $pat"))
+//	}
+
 	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): PatternIota {
 		val triple = Triple(pattern, location, operator)
 		if (isPerWorld)
@@ -252,5 +260,11 @@ object Patterns {
 		else
 			PATTERNS.add(triple)
 		return PatternIota(pattern)
+	}
+
+	private fun make (location: ResourceLocation, specialHandler: PatternRegistry.SpecialHandler): Pair<ResourceLocation, PatternRegistry.SpecialHandler> {
+		val pair = location to specialHandler
+		SPECIAL_HANDLERS.add(pair)
+		return pair
 	}
 }
