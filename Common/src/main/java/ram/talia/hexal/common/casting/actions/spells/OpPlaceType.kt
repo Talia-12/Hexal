@@ -1,5 +1,6 @@
 package ram.talia.hexal.common.casting.actions.spells
 
+import at.petrak.hexcasting.api.misc.DiscoveryHandlers
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.SpellAction
@@ -15,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.block.Block
@@ -22,6 +24,7 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBlockType
+import java.util.function.Predicate
 
 object OpPlaceType : SpellAction {
     override val argc = 2
@@ -61,51 +64,60 @@ object OpPlaceType : SpellAction {
             )
 
             val bstate = ctx.world.getBlockState(pos)
-            val placeeStack =
-                    ctx.getOperativeSlot{ it.item is BlockItem && (it.item as BlockItem).block == block }?.copy()
-            if (placeeStack != null) {
-                if (!IXplatAbstractions.INSTANCE.isPlacingAllowed(ctx.world, pos, placeeStack, ctx.caster))
-                    return
+            val placeeStack = getItemSlot(ctx) { it.item is BlockItem && (it.item as BlockItem).block == block }?.copy() ?: return
 
-                if (!placeeStack.isEmpty) {
-                    // https://github.com/VazkiiMods/Psi/blob/master/src/main/java/vazkii/psi/common/spell/trick/block/PieceTrickPlaceBlock.java#L143
-                    val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
-                    val spoofedStack = placeeStack.copy()
+            if (!IXplatAbstractions.INSTANCE.isPlacingAllowed(ctx.world, pos, placeeStack, ctx.caster))
+                return
 
-                    // we temporarily give the player the stack, place it using mc code, then give them the old stack back.
-                    spoofedStack.count = 1
-                    ctx.caster.setItemInHand(ctx.castingHand, spoofedStack)
+            if (!placeeStack.isEmpty) {
+                // https://github.com/VazkiiMods/Psi/blob/master/src/main/java/vazkii/psi/common/spell/trick/block/PieceTrickPlaceBlock.java#L143
+                val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
+                val spoofedStack = placeeStack.copy()
 
-                    val itemUseCtx = UseOnContext(ctx.caster, ctx.castingHand, blockHit)
-                    val placeContext = BlockPlaceContext(itemUseCtx)
-                    if (bstate.canBeReplaced(placeContext)) {
-                        if (ctx.withdrawItem(placeeStack, 1, false)) {
-                            val res = spoofedStack.useOn(placeContext)
+                // we temporarily give the player the stack, place it using mc code, then give them the old stack back.
+                spoofedStack.count = 1
+                ctx.caster.setItemInHand(ctx.castingHand, spoofedStack)
 
-                            ctx.caster.setItemInHand(ctx.castingHand, oldStack)
-                            if (res != InteractionResult.FAIL) {
-                                ctx.withdrawItem(placeeStack, 1, true)
+                val itemUseCtx = UseOnContext(ctx.caster, ctx.castingHand, blockHit)
+                val placeContext = BlockPlaceContext(itemUseCtx)
+                if (bstate.canBeReplaced(placeContext)) {
+                    if (ctx.withdrawItem(placeeStack, 1, false)) {
+                        val res = spoofedStack.useOn(placeContext)
 
-                                ctx.world.playSound(
-                                        ctx.caster,
-                                        pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
-                                        bstate.soundType.placeSound, SoundSource.BLOCKS, 1.0f,
-                                        1.0f + (Math.random() * 0.5 - 0.25).toFloat()
-                                )
-                                val particle = BlockParticleOption(ParticleTypes.BLOCK, bstate)
-                                ctx.world.sendParticles(
-                                        particle, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
-                                        4, 0.1, 0.2, 0.1, 0.1
-                                )
-                            }
-                        } else {
-                            ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                        ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                        if (res != InteractionResult.FAIL) {
+                            ctx.withdrawItem(placeeStack, 1, true)
+
+                            ctx.world.playSound(
+                                    ctx.caster,
+                                    pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
+                                    bstate.soundType.placeSound, SoundSource.BLOCKS, 1.0f,
+                                    1.0f + (Math.random() * 0.5 - 0.25).toFloat()
+                            )
+                            val particle = BlockParticleOption(ParticleTypes.BLOCK, bstate)
+                            ctx.world.sendParticles(
+                                    particle, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
+                                    4, 0.1, 0.2, 0.1, 0.1
+                            )
                         }
                     } else {
                         ctx.caster.setItemInHand(ctx.castingHand, oldStack)
                     }
+                } else {
+                    ctx.caster.setItemInHand(ctx.castingHand, oldStack)
                 }
             }
+        }
+
+        fun getItemSlot(ctx: CastingContext, stackOK: Predicate<ItemStack>): ItemStack? {
+            val items = DiscoveryHandlers.collectItemSlots(ctx)
+
+            for (stack in items) {
+                if (stackOK.test(stack)) {
+                    return stack
+                }
+            }
+            return null
         }
     }
 }
