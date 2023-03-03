@@ -10,6 +10,7 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.mishaps.MishapBadBlock
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
+import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.BlockParticleOption
 import net.minecraft.core.particles.ParticleTypes
@@ -23,14 +24,15 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.getBlockType
+import ram.talia.hexal.api.getBlockTypeOrBlockItem
+import ram.talia.hexal.api.spell.iota.ItemIota
 import java.util.function.Predicate
 
 object OpPlaceType : SpellAction {
     override val argc = 2
 
     override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-        val block = args.getBlockType(0, argc) ?:
+        val block = args.getBlockTypeOrBlockItem(0, argc) ?:
             throw MishapInvalidIota.ofType(args[0], 1, "type.block.able")
         val pos = args.getBlockPos(1, argc)
 
@@ -54,7 +56,7 @@ object OpPlaceType : SpellAction {
         )
     }
 
-    private data class Spell(val pos: BlockPos, val block: Block) : RenderedSpell {
+    private data class Spell(val pos: BlockPos, val blockOrItemIota: Either<Block, ItemIota>) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             if (!ctx.canEditBlockAt(pos))
                 return
@@ -64,7 +66,10 @@ object OpPlaceType : SpellAction {
             )
 
             val bstate = ctx.world.getBlockState(pos)
-            val placeeStack = getItemSlot(ctx) { it.item is BlockItem && (it.item as BlockItem).block == block }?.copy() ?: return
+            val placeeStack = blockOrItemIota.map(
+                    { block -> getItemSlot(ctx) { it.item is BlockItem && (it.item as BlockItem).block == block }?.copy() },
+                    { itemIota -> if (itemIota.item is BlockItem) itemIota.record?.toStack()?.takeUnless { it.isEmpty } else null }
+            )  ?: return
 
             if (!IXplatAbstractions.INSTANCE.isPlacingAllowed(ctx.world, pos, placeeStack, ctx.caster))
                 return
@@ -81,12 +86,15 @@ object OpPlaceType : SpellAction {
                 val itemUseCtx = UseOnContext(ctx.caster, ctx.castingHand, blockHit)
                 val placeContext = BlockPlaceContext(itemUseCtx)
                 if (bstate.canBeReplaced(placeContext)) {
-                    if (ctx.withdrawItem(placeeStack, 1, false)) {
+                    if (blockOrItemIota.right().isPresent || ctx.withdrawItem(placeeStack, 1, false)) {
                         val res = spoofedStack.useOn(placeContext)
 
                         ctx.caster.setItemInHand(ctx.castingHand, oldStack)
                         if (res != InteractionResult.FAIL) {
-                            ctx.withdrawItem(placeeStack, 1, true)
+                            blockOrItemIota.map(
+                                { ctx.withdrawItem(placeeStack, 1, true) }, // if we're placing based on a block type, remove from the caster's inventory
+                                { itemIota -> itemIota.removeItems(1) } // if we're placing from an item iota, remove from the iota.
+                            )
 
                             ctx.world.playSound(
                                     ctx.caster,
