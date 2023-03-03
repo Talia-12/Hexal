@@ -85,35 +85,40 @@ object OpPlaceType : SpellAction {
 
                 val itemUseCtx = UseOnContext(ctx.caster, ctx.castingHand, blockHit)
                 val placeContext = BlockPlaceContext(itemUseCtx)
-                if (bstate.canBeReplaced(placeContext)) {
-                    if (blockOrItemIota.right().isPresent || ctx.withdrawItem(placeeStack, 1, false)) {
-                        val res = spoofedStack.useOn(placeContext)
 
-                        ctx.caster.setItemInHand(ctx.castingHand, oldStack)
-                        if (res != InteractionResult.FAIL) {
-                            blockOrItemIota.map(
-                                { ctx.withdrawItem(placeeStack, 1, true) }, // if we're placing based on a block type, remove from the caster's inventory
-                                { itemIota -> itemIota.removeItems(1) } // if we're placing from an item iota, remove from the iota.
-                            )
-
-                            ctx.world.playSound(
-                                    ctx.caster,
-                                    pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
-                                    bstate.soundType.placeSound, SoundSource.BLOCKS, 1.0f,
-                                    1.0f + (Math.random() * 0.5 - 0.25).toFloat()
-                            )
-                            val particle = BlockParticleOption(ParticleTypes.BLOCK, bstate)
-                            ctx.world.sendParticles(
-                                    particle, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
-                                    4, 0.1, 0.2, 0.1, 0.1
-                            )
-                        }
-                    } else {
-                        ctx.caster.setItemInHand(ctx.castingHand, oldStack)
-                    }
-                } else {
+                if (!bstate.canBeReplaced(placeContext)) {
                     ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                    return
                 }
+
+                if (blockOrItemIota.left().isPresent && !ctx.withdrawItem(placeeStack, 1, false)) {
+                    ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                    return
+                }
+
+                val res = spoofedStack.useOn(placeContext)
+
+                ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+
+                if (res == InteractionResult.FAIL)
+                    return
+
+                blockOrItemIota.map(
+                        { ctx.withdrawItem(placeeStack, 1, true) }, // if we're placing based on a block type, remove from the caster's inventory
+                        { itemIota -> itemIota.removeItems(1) } // if we're placing from an item iota, remove from the iota.
+                )
+
+                ctx.world.playSound(
+                        ctx.caster,
+                        pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
+                        bstate.soundType.placeSound, SoundSource.BLOCKS, 1.0f,
+                        1.0f + (Math.random() * 0.5 - 0.25).toFloat()
+                )
+                val particle = BlockParticleOption(ParticleTypes.BLOCK, bstate)
+                ctx.world.sendParticles(
+                        particle, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
+                        4, 0.1, 0.2, 0.1, 0.1
+                )
             }
         }
 
