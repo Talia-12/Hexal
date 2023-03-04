@@ -6,11 +6,14 @@ import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.DoubleIota
 import at.petrak.hexcasting.api.spell.iota.PatternIota
+import at.petrak.hexcasting.api.spell.iota.Vec3Iota
 import at.petrak.hexcasting.api.spell.math.HexDir
 import at.petrak.hexcasting.api.spell.math.HexPattern
 import at.petrak.hexcasting.common.casting.operators.selectors.*
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI.modLoc
+import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes
 import ram.talia.hexal.common.casting.actions.*
 import ram.talia.hexal.common.casting.actions.everbook.*
@@ -75,14 +78,20 @@ object Patterns {
 	@JvmField
 	val FACTORIAL = make(HexPattern.fromAngles("wawdedwaw", HexDir.SOUTH_EAST), modLoc("factorial"), OpFactorial)
 	@JvmField
-	val RUNNING_SUM = make(HexPattern.fromAngles("aea", HexDir.WEST), modLoc("running/sum"), OpRunningOp (0.0)
+	val RUNNING_SUM = make(HexPattern.fromAngles("aea", HexDir.WEST), modLoc("running/sum"), OpRunningOp ({ if (it is Vec3Iota) Vec3Iota(Vec3.ZERO) else DoubleIota(0.0) })
 	{ running, iota ->
-		running + ((iota as? DoubleIota)?.double ?: throw OpRunningOp.InvalidIotaException("list.double"))
+		when (running) {
+			is DoubleIota -> DoubleIota(running.double + ((iota as? DoubleIota)?.double ?: throw OpRunningOp.InvalidIotaException("list.double")))
+			is Vec3Iota -> Vec3Iota(running.vec3 + ((iota as? Vec3Iota)?.vec3 ?: throw OpRunningOp.InvalidIotaException("list.vec")))
+			else -> throw OpRunningOp.InvalidIotaException("list.doublevec")
+		}
 	})
 	@JvmField
-	val RUNNING_MUL = make(HexPattern.fromAngles("qaawaaq", HexDir.NORTH_EAST), modLoc("running/mul"), OpRunningOp (1.0)
+	val RUNNING_MUL = make(HexPattern.fromAngles("qaawaaq", HexDir.NORTH_EAST), modLoc("running/mul"), OpRunningOp ({ DoubleIota(1.0) })
 	{ running, iota ->
-		running * ((iota as? DoubleIota)?.double ?: throw OpRunningOp.InvalidIotaException("list.double"))
+		if (running !is DoubleIota)
+			throw OpRunningOp.InvalidIotaException("list.double")
+		DoubleIota(running.double * ((iota as? DoubleIota)?.double ?: throw OpRunningOp.InvalidIotaException("list.double")))
 	})
 
 	// ================================ Everbook ======================================
