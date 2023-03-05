@@ -8,6 +8,7 @@ import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
@@ -174,6 +175,15 @@ fun List<Iota>.getItemBlockType(idx: Int, argc: Int = 0): Either<Item, Block> {
         return x.either
     }
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.item")
+}
+
+fun List<Iota>.getBlockTypeOrBlockItem(idx: Int, argc: Int = 0): Either<Block, ItemIota>? {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is ItemTypeIota)
+        return x.block ?.let { Either.left(it) }
+    if (x is ItemIota)
+        return x.selfOrNull()?.let { if (it.item is BlockItem) Either.right(it) else null }
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.block")
 }
 
 fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
