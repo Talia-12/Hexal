@@ -115,13 +115,14 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     fun insertItemToContainer(stack: ItemStack) {
-        val record = getItemRecordsMatching(ItemRecord(stack)).entries.sortedBy { (_, record) -> record.count }.firstOrNull()
+        // gets the largest record that matches the passed stack
+        val record = getItemRecordsMatching(ItemRecord(stack)).entries.sortedBy { (_, record) -> -record.count }.firstOrNull()
         if (record == null) {
             assignItem(ItemRecord(stack))
             return
         }
 
-        record.value.count += stack.count
+        record.value.addCount(stack.count.toLong())
     }
 
     /**

@@ -23,6 +23,10 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
         return item == other.item && tag == other.tag
     }
 
+    fun addCount(toAdd: Long) {
+        count = count.addBounded(toAdd)
+    }
+
     /**
      * Absorb the contents of another [ItemRecord] that matches this one,
      * increasing this record's count by the other's. Doesn't set the other's
@@ -34,8 +38,8 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
 
         // protection against overflow errors (really shouldn't happen but ya know why not
         val oldCount = count
-        count = count.addBounded(other.count)
-        other.count -= (count - oldCount)
+        addCount(other.count)
+        other.addCount(oldCount - count) // reduce the other's count by the amount moved to this' count.
 
         return true
     }
