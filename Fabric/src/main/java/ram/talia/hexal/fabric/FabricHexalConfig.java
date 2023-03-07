@@ -128,7 +128,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             double returnItemCost = DEFAULT_RETURN_ITEM_COST;
             double craftItemCost = DEFAULT_CRAFT_ITEM_COST;
             double tradeItemCost = DEFAULT_TRADE_ITEM_COST;
+            @ConfigEntry.BoundedDiscrete(min = MIN_MAX_ITEMS_RETURNED, max = MAX_MAX_ITEMS_RETURNED)
+            @ConfigEntry.Gui.Tooltip(count = 2)
             int maxItemsReturned = DEFAULT_MAX_ITEMS_RETURNED;
+            @ConfigEntry.BoundedDiscrete(min = MIN_MAX_RECORDS_IN_MEDIAFIED_STORAGE, max = MAX_MAX_RECORDS_IN_MEDIAFIED_STORAGE)
+            @ConfigEntry.Gui.Tooltip(count = 2)
             int maxRecordsInMediafiedStorage = DEFAULT_MAX_RECORDS_IN_MEDIAFIED_STORAGE;
         }
 

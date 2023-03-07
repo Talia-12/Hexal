@@ -1,3 +1,6 @@
 {
-  "parent": "hexal:block/mediafied_storage"
+  "parent": "item/generated",
+  "textures": {
+    "all": "hexal:block/mediafied_storage"
+  }
 }

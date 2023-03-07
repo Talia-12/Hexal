@@ -316,6 +316,21 @@
   "text.autoconfig.hexal.option.server.gateSpells.markGateCost": "Mark Gate Cost",
   "text.autoconfig.hexal.option.server.gateSpells.closeGateCost": "Close Gate Cost",
 
+  "text.autoconfig.hexal.option.server.itemSpells": "Item Spells",
+  "text.autoconfig.hexal.option.server.itemSpells.bindStorageCost": "Bind Storage Cost",
+  "text.autoconfig.hexal.option.server.itemSpells.bindTemporaryStorageCost": "Bind Temporary Storage Cost",
+  "text.autoconfig.hexal.option.server.itemSpells.makeItemCost": "Make Item Cost",
+  "text.autoconfig.hexal.option.server.itemSpells.returnItemCost": "Return Item Cost",
+  "text.autoconfig.hexal.option.server.itemSpells.craftItemCost": "Craft Item Cost",
+  "text.autoconfig.hexal.option.server.itemSpells.tradeItemCost": "Trade Item Cost",
+  "text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned": "Maximum Items Returned",
+  "text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned.@Tooltip[0]": "Maximum number of items that can be returned by Return Item.",
+  "text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned.@Tooltip[1]": "Bounded from 640 to 64,000.",
+  "text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage": "Maximum Num. Records in Mote Nexus",
+  "text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage.@Tooltip[0]": "Maximum number of records that can be stored in a Mote Nexus.",
+  "text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage.@Tooltip[1]": "Bounded from 128 to 16,384.",
+
+
   "text.autoconfig.hexal.option.server.greatSpells": "Great Spells",
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost": "Consume Own Wisp Cost",
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost.@Tooltip[0]": "Cost to consume a wisp you own,",
