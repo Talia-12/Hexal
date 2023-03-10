@@ -316,6 +316,21 @@
   "text.autoconfig.hexal.option.server.gateSpells.markGateCost": "“开启门径”媒质消耗",
   "text.autoconfig.hexal.option.server.gateSpells.closeGateCost": "“关闭门径”媒质消耗",
 
+  "text.autoconfig.hexal.option.server.itemSpells": "物品法术",
+  "text.autoconfig.hexal.option.server.itemSpells.bindStorageCost": "“绑定储库”媒质消耗",
+  "text.autoconfig.hexal.option.server.itemSpells.bindTemporaryStorageCost": "“绑定储库，临时型”媒质消耗",
+  "text.autoconfig.hexal.option.server.itemSpells.makeItemCost": "“媒质化物品”媒质消耗",
+  "text.autoconfig.hexal.option.server.itemSpells.returnItemCost": "“返还物品”媒质消耗",
+  "text.autoconfig.hexal.option.server.itemSpells.craftItemCost": "“合成”媒质消耗",
+  "text.autoconfig.hexal.option.server.itemSpells.tradeItemCost": "“交易”媒质消耗",
+  "text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned": "最大返还物品数",
+  "text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned.@Tooltip[0]": "“返还物品”单次最多能返还的物品数量。",
+  "text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned.@Tooltip[1]": "取值范围为640到64,000。",
+  "text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage": "物元枢纽最大记录条数",
+  "text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage.@Tooltip[0]": "单个物元枢纽中最多能存储的物元记录条数。",
+  "text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage.@Tooltip[1]": "取值范围为128到16,384。",
+
+
   "text.autoconfig.hexal.option.server.greatSpells": "卓越法术",
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost": "拆解自己的咒灵的媒质消耗",
   "text.autoconfig.hexal.option.server.greatSpells.consumeWispOwnCost.@Tooltip[0]": "拆解咒灵（咒灵的所有者是自己）的媒质消耗，",
