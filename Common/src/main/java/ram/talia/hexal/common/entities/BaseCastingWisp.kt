@@ -141,8 +141,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		return false
 	}
 
-	open val normalCostPerTick = HexalConfig.server.projectileWispUpkeepPerTick
-	open val untriggeredCostPerTick = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
+	open val normalCostPerTick: Int get() = HexalConfig.server.projectileWispUpkeepPerTick
+	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
 
 
 	/**
