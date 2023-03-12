@@ -120,12 +120,12 @@ fun List<ILinkable>.toSyncTag(): ListTag {
 	return listTag
 }
 
-fun ListTag.toIRenderCentreList(level: ClientLevel): List<ILinkable.IRenderCentre> {
-	val out = mutableListOf<ILinkable.IRenderCentre>()
+fun ListTag.toIRenderCentreMap(level: ClientLevel): Map<CompoundTag, ILinkable.IRenderCentre> {
+	val out = mutableMapOf<CompoundTag, ILinkable.IRenderCentre>()
 
 	this.forEach { centreTag ->
 		val centre = LinkableRegistry.fromSync(centreTag as CompoundTag, level)
-		if (centre != null) out.add(centre)
+		if (centre != null) out[centreTag] = centre
 	}
 
 	return out

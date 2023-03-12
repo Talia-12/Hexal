@@ -52,7 +52,7 @@ class MsgAddRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: Compo
 
                 // add the sink to the source's list of IRenderCentres only if both are non-null.
                 LinkableRegistry.fromSync(self.sinkLinkTag, mc.level!!)?.let {
-                    LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.addRenderLink(it)
+                    LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.addRenderLink(self.sinkLinkTag, it)
                 }
             }
         }

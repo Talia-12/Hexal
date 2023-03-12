@@ -35,8 +35,9 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
     }
 
     private fun removeRenderLink(other: ILinkable) {
-        lazyRenderLinks.get().remove(other)
-        IXplatAbstractions.INSTANCE.syncRemoveRenderLink(thisLinkable, other, level)
+        // only send a packet if something was actually removed.
+        if (lazyRenderLinks.get().remove(other))
+            IXplatAbstractions.INSTANCE.syncRemoveRenderLink(thisLinkable, other, level)
     }
 
     fun link(other: ILinkable, linkOther: Boolean = true) {

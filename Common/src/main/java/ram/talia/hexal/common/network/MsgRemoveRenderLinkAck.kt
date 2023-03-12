@@ -51,10 +51,8 @@ class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: Co
                 if (mc.level == null)
                     return@execute
 
-                // add the sink to the source's list of IRenderCentres only if both are non-null.
-                LinkableRegistry.fromSync(self.sinkLinkTag, mc.level!!)?.let {
-                    LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.removeRenderLink(it)
-                }
+                // remove the sink from the source's list of IRenderCentres only if both are non-null.
+                LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.removeRenderLink(self.sinkLinkTag)
             }
         }
     }
