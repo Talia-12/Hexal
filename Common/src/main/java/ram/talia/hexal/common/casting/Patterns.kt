@@ -18,9 +18,7 @@ import ram.talia.hexal.api.spell.casting.triggers.WispTriggerTypes
 import ram.talia.hexal.common.casting.actions.*
 import ram.talia.hexal.common.casting.actions.everbook.*
 import ram.talia.hexal.common.casting.actions.spells.*
-import ram.talia.hexal.common.casting.actions.spells.gates.OpCloseGate
-import ram.talia.hexal.common.casting.actions.spells.gates.OpMakeGate
-import ram.talia.hexal.common.casting.actions.spells.gates.OpMarkGate
+import ram.talia.hexal.common.casting.actions.spells.gates.*
 import ram.talia.hexal.common.casting.actions.spells.great.*
 import ram.talia.hexal.common.casting.actions.spells.items.*
 import ram.talia.hexal.common.casting.actions.spells.link.*
@@ -202,8 +200,10 @@ object Patterns {
 	// =============================== Gate Stuff =====================================
 	@JvmField
 	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.WEST), modLoc("gate/mark"), OpMarkGate)
-//	@JvmField removed cause it lets you get access to player names too easily.
-//	val GATE_MARK_GET = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/mark/get"), OpGetMarkedGate)
+	@JvmField
+	val GATE_MARK_GET = make(HexPattern.fromAngles("edwwdeeede", HexDir.EAST), modLoc("gate/mark/get"), OpGetMarkedGate)
+	@JvmField
+	val GATE_MARK_NUM_GET = make(HexPattern.fromAngles("qawwaqqqaq", HexDir.WEST), modLoc("gate/mark/num/get"), OpGetNumMarkedGate)
 	@JvmField
 	val GATE_CLOSE = make(HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.WEST), modLoc("gate/close"), OpCloseGate)
 

@@ -184,7 +184,7 @@
   "hexal.page.wisps.get_entity/wisp": "Transform the position on the stack into the wisp at that location (or $(l:casting/influences)$(thing)Null/$ if there isn't one).",
   "hexal.page.wisps.zone_entity/wisp": "Take a position and maximum distance on the stack, and combine them into a list of wisps near the position.",
   "hexal.page.wisps.zone_entity/not_wisp": "Take a position and maximum distance on the stack, and combine them into a list of non-wisp entities near the position.",
-  "hexal.page.wisps.wisp/trigger/tick": "Removes an integer from the stack, then delays the wisp's next cast until at least that many twentieth's of a second have passed.",
+  "hexal.page.wisps.wisp/trigger/tick": "Removes an integer from the stack, then delays the wisp's next cast until at least that many twentieth's of a second have passed. This and other triggers like it will halve the wisp's upkeep cost while it isn't casting.",
   "hexal.page.wisps.wisp/trigger/comm": "The wisp's next cast will not occur until it has received at least one $(l:hexal:patterns/spells/links#hexal:link/comm/send)$(action)communication/$.",
   "hexal.page.wisps.wisp/trigger/move": "The wisp's next cast will not occur until it has reached the position it is $(l:hexal:patterns/spells/wisps#hexal:wisp/move/target/set)$(action)navigating/$ towards.",
 

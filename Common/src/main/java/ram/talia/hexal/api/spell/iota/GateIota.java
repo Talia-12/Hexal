@@ -38,6 +38,15 @@ public class GateIota extends Iota {
         return out;
     }
 
+    public boolean isMarked(Entity entity) {
+        var marked = GateManager.allMarked.getOrDefault(this.getGateIndex(), new HashSet<>());
+        return marked.contains(entity.getUUID());
+    }
+
+    public int getNumMarked() {
+        return GateManager.allMarked.getOrDefault(this.getGateIndex(), new HashSet<>()).size();
+    }
+
     public void mark(Entity entity) {
         GateManager.mark(this.getGateIndex(), entity);
     }
@@ -85,5 +94,4 @@ public class GateIota extends Iota {
             return 0xff_ff55ff;
         }
     };
-
 }
