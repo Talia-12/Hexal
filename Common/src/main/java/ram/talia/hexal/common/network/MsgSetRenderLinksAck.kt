@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
-import ram.talia.hexal.api.nbt.toIRenderCentreList
+import ram.talia.hexal.api.nbt.toIRenderCentreMap
 import ram.talia.hexal.api.nbt.toSyncTag
 import ram.talia.hexal.client.LinkablePacketHolder
 
@@ -57,7 +57,7 @@ class MsgSetRenderLinksAck(val sourceLinkTag: CompoundTag, val sinksTag: ListTag
                 if (mc.level == null)
                     return@execute
 
-                val sinks = self.sinksTag.toIRenderCentreList(mc.level!!)
+                val sinks = self.sinksTag.toIRenderCentreMap(mc.level!!)
 
                 // if the source is null, schedule the packet to retry.
                 LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.setRenderLinks(sinks) ?: LinkablePacketHolder.schedule(self)
