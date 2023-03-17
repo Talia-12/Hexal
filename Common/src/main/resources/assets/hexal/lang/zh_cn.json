@@ -184,7 +184,7 @@
   "hexal.page.wisps.get_entity/wisp": "将栈顶位置向量变为该处咒灵（若无则返回 $(l:casting/influences)$(thing)Null/$）。",
   "hexal.page.wisps.zone_entity/wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有咒灵的列表。",
   "hexal.page.wisps.zone_entity/not_wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有非咒灵实体的列表。",
-  "hexal.page.wisps.wisp/trigger/tick": "移除栈顶数，然后将咒灵下一次施法时刻延迟所给数个 1/20 秒。",
+  "hexal.page.wisps.wisp/trigger/tick": "移除栈顶数，然后将咒灵下一次施法时刻延迟所给数个 1/20 秒。所有可用于延迟咒灵施法的操作均能使咒灵的常态消耗减半，直到下一次施法为止。",
   "hexal.page.wisps.wisp/trigger/comm": "咒灵将在其收到至少一次$(l:hexal:patterns/spells/links#hexal:link/comm/send)$(action)通信/$后才进行下一次施法。",
   "hexal.page.wisps.wisp/trigger/move": "咒灵将在其抵达其被$(l:hexal:patterns/spells/wisps#hexal:wisp/move/target/set)$(action)导向/$的位置后才进行下一次施法。",
   
