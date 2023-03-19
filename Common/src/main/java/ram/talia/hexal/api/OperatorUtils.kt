@@ -186,6 +186,15 @@ fun List<Iota>.getBlockTypeOrBlockItem(idx: Int, argc: Int = 0): Either<Block, I
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.block")
 }
 
+fun List<Iota>.getEntityType(idx: Int, argc: Int = 0): EntityType<*> {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is EntityTypeIota)
+        return x.entityType
+    if (x is EntityIota)
+        return x.entity.type
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.entity")
+}
+
 fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is GateIota)

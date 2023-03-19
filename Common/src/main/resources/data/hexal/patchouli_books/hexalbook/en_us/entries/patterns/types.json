@@ -29,6 +29,30 @@
       "input": "any",
       "output": "iotatype",
       "text": "hexal.page.types.type/iota"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:get_entity/type",
+      "anchor": "hexal:get_entity/type",
+      "input": "entitytype, pos",
+      "output": "entity | null",
+      "text": "hexal.page.types.get_entity/type"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:zone_entity/type",
+      "anchor": "hexal:zone_entity/type",
+      "input": "entitytype, pos, num",
+      "output": "[entity]",
+      "text": "hexal.page.types.zone_entity/type"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:zone_entity/not_type",
+      "anchor": "hexal:zone_entity/not_type",
+      "input": "entitytype, pos, num",
+      "output": "[entity]",
+      "text": "hexal.page.types.zone_entity/not_type"
     }
   ]
 }

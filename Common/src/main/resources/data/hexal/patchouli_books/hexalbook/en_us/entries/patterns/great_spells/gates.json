@@ -24,6 +24,22 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:gate/mark/num/get",
+      "anchor": "hexal:gate/mark/num/get",
+      "input": "gate",
+      "output": "num",
+      "text": "hexal.page.gates.gate/mark/num/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:gate/mark/get",
+      "anchor": "hexal:gate/mark/get",
+      "input": "gate, entity",
+      "output": "bool",
+      "text": "hexal.page.gates.gate/mark/get"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:gate/close",
       "anchor": "hexal:gate/close",
       "input": "gate, vec",

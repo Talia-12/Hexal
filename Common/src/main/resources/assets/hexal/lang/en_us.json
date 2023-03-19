@@ -45,6 +45,10 @@
   "hexcasting.spell.hexal:type/entity": "Physician's Purification",
   "hexcasting.spell.hexal:type/iota": "Classifier's Purification",
 
+  "hexcasting.spell.hexal:get_entity/type": "Entity Distillation: Type",
+  "hexcasting.spell.hexal:zone_entity/type": "Zone Exaltation: Type",
+  "hexcasting.spell.hexal:zone_entity/not_type": "Zone Exaltation: Type",
+
   "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
   "hexcasting.spell.hexal:remaining_evals": "Thanatos' Reflection",
   "hexcasting.spell.hexal:breath": "Diver's Purification",
@@ -105,6 +109,8 @@
 
   "hexcasting.spell.hexal:gate/make": "Gate's Reflection",
   "hexcasting.spell.hexal:gate/mark": "Gate's Opening",
+  "hexcasting.spell.hexal:gate/mark/num/get": "Marked Purification",
+  "hexcasting.spell.hexal:gate/mark/get": "Marked Distillation",
   "hexcasting.spell.hexal:gate/close": "Gate's Closing",
 
   "hexcasting.spell.hexal:item/storage/bind": "Bind Storage",
@@ -211,7 +217,8 @@
   "hexal.entry.gates": "Gates",
   "hexal.page.gates.gate/make": "Adds a new gate iota to the stack. Any copy of this iota will point to the same numbered gate. Costs 32 $(l:items/amethyst)$(item)Charged Amethyst/$.",
   "hexal.page.gates.gate/mark": "Consumes a gate iota and an entity. Marks that entity to be teleported the next time that gate is closed. Costs one twentieth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
-  "hexal.page.gates.gate/mark/get": "Consumes a gate iota, returns a list of entities marked by that gate.",
+  "hexal.page.gates.gate/mark/num/get": "Consumes a gate iota, returns how many entities are marked by that gate.",
+  "hexal.page.gates.gate/mark/get": "Consumes a gate iota and an entity, returns whether that entity is marked by that gate.",
   "hexal.page.gates.gate/close": "Consumes a gate iota and a position. Transports all the entities marked with that gate to the given position. Costs half an $(l:items/amethyst)$(item)Amethyst Shard/$.",
 
   "hexal.entry.items": "Items",
@@ -249,7 +256,9 @@
   "hexal.page.types.type/entity": "Remove an entity from the stack, and adds the type of the entity at that location to the stack (with item entities adding their item type).",
   "hexal.page.types.type/iota": "Remove an iota from the stack, and adds the type of that iota to the stack.",
 
-
+  "hexal.page.types.get_entity/type": "Remove an entity type and a position from the stack, and returns an entity of that type at that position if one exists.",
+  "hexal.page.types.zone_entity/type": "Remove an entity type, a position, and a radius from the stack, and returns a list of all entities of that type within that radius of that position.",
+  "hexal.page.types.zone_entity/not_type": "Remove an entity type, a position, and a radius from the stack, and returns a list of all entities not of that type within that radius of that position",
 
 
   "hexal.entry.everbook": "Everbook",
