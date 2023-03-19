@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nextColour
@@ -17,7 +18,7 @@ import ram.talia.hexal.common.entities.WanderingWisp
 import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
 
-class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.SLIPWAY, pos, state) {
+class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(HexalBlockEntities.SLIPWAY, pos, state) {
 
 	private val random = RandomSource.create()
 
@@ -25,23 +26,21 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 
 	private var nextSpawnTick: Long = 0
 
-	fun tick() {
-		if (level == null)
-			return
-		if (level!!.isClientSide)
-			clientTick()
+	fun tick(level: Level, blockPos: BlockPos, blockState: BlockState) {
+		if (level.isClientSide)
+			clientTick(level, blockPos, blockState)
 		else
-			serverTick()
+			serverTick(level, blockPos, blockState)
 	}
 
-	private fun clientTick() {
-		val vec = Vec3.atCenterOf(pos)
+	private fun clientTick(level: Level, blockPos: BlockPos, blockState: BlockState) {
+		val vec = Vec3.atCenterOf(blockPos)
 
 		for (colouriser in HexItems.DYE_COLORIZERS.values) {
 			val frozenColouriser = FrozenColorizer(ItemStack(colouriser), Util.NIL_UUID)
 			val colour: Int = frozenColouriser.nextColour(random)
 
-			level!!.addParticle(
+			level.addParticle(
 					ConjureParticleOptions(colour, true),
 					(vec.x + RENDER_RADIUS * random.nextGaussian()),
 					(vec.y + RENDER_RADIUS * random.nextGaussian()),
@@ -53,9 +52,9 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 		}
 	}
 
-	private fun serverTick() {
+	private fun serverTick(level: Level, blockPos: BlockPos, blockState: BlockState) {
 		if (!isActive) {
-			if (level!!.hasNearbyAlivePlayer(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), ACTIVE_RANGE)) {
+			if (level.hasNearbyAlivePlayer(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(), ACTIVE_RANGE)) {
 				isActive = true
 				sync()
 			}
@@ -63,16 +62,16 @@ class BlockEntitySlipway(val pos: BlockPos, val state: BlockState) : HexBlockEnt
 			return
 		}
 
-		val tick = level!!.gameTime
+		val tick = level.gameTime
 
 		if (tick >= nextSpawnTick) {
 			nextSpawnTick = tick + random.nextGaussian(SPAWN_INTERVAL_MU.toDouble(), SPAWN_INTERVAL_SIG.toDouble()).toLong()
 
 			val colouriser = getRandomColouriser()
 
-			val wisp = WanderingWisp(level!!, Vec3.atCenterOf(pos))
+			val wisp = WanderingWisp(level, Vec3.atCenterOf(blockPos))
 			wisp.setColouriser(colouriser)
-			level!!.addFreshEntity(wisp)
+			level.addFreshEntity(wisp)
 
 			sync()
 		}

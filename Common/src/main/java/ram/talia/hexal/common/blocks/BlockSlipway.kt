@@ -37,7 +37,7 @@ class BlockSlipway(properties: Properties) : Block(properties), EntityBlock, IFo
 	companion object {
 		private fun <T : BlockEntity> tick(level: Level, blockPos: BlockPos, blockState: BlockState, t: T) {
 			if (t is BlockEntitySlipway) {
-				t.tick()
+				t.tick(level, blockPos, blockState)
 			}
 		}
 	}
