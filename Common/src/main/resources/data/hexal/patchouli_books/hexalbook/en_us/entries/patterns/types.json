@@ -8,27 +8,35 @@
   "pages": [
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:type/block_item",
-      "anchor": "hexal:type/block_item",
-      "input": "vec | item",
-      "output": "itemtype",
-      "text": "hexal.page.types.type/block_item"
+      "op_id": "hexal:type/iota",
+      "anchor": "hexal:type/iota",
+      "input": "any",
+      "output": "iotatype",
+      "text": "hexal.page.types.type/iota"
     },
     {
       "type": "hexcasting:pattern",
       "op_id": "hexal:type/entity",
       "anchor": "hexal:type/entity",
       "input": "entity",
-      "output": "entitytype | itemtype",
+      "output": "entitytype",
       "text": "hexal.page.types.type/entity"
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:type/iota",
-      "anchor": "hexal:type/iota",
-      "input": "any",
-      "output": "iotatype",
-      "text": "hexal.page.types.type/iota"
+      "op_id": "hexal:type/block_item",
+      "anchor": "hexal:type/block_item",
+      "input": "vec | mote | item entity",
+      "output": "itemtype",
+      "text": "hexal.page.types.type/block_item"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:type/item_held",
+      "anchor": "hexal:type/item_held",
+      "input": "",
+      "output": "itemtype",
+      "text": "hexal.page.types.type/item_held"
     },
     {
       "type": "hexcasting:pattern",

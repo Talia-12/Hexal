@@ -245,13 +245,18 @@ fun List<Iota>.getItemOrItemList(idx: Int, argc: Int = 0): Either<ItemIota, List
     }
 }
 
-fun List<Iota>.getBlockPosOrItem(idx: Int, argc: Int = 0): Either<BlockPos, ItemIota?> {
+fun List<Iota>.getBlockPosOrItemOrItemEntity(idx: Int, argc: Int = 0): Anyone<BlockPos, ItemIota?, ItemEntity> {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
 
     return when (x) {
-        is Vec3Iota -> Either.left(BlockPos(x.vec3))
-        is ItemIota -> Either.right(x.selfOrNull())
-        is NullIota -> Either.right(null)
-        else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "vecitem")
+        is Vec3Iota -> Anyone.first(BlockPos(x.vec3))
+        is ItemIota -> Anyone.second(x.selfOrNull())
+        is NullIota -> Anyone.second(null)
+        is EntityIota -> if (x.entity is ItemEntity) {
+            Anyone.third(x.entity as ItemEntity)
+        } else {
+            throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "vecitemitementity")
+        }
+        else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "vecitemitementity")
     }
 }

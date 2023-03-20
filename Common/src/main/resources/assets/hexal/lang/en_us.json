@@ -41,9 +41,10 @@
   "hexal.spelldata.item": "%s x%d",
 
 
-  "hexcasting.spell.hexal:type/block_item": "Sorter's Purification",
-  "hexcasting.spell.hexal:type/entity": "Physician's Purification",
   "hexcasting.spell.hexal:type/iota": "Classifier's Purification",
+  "hexcasting.spell.hexal:type/entity": "Physician's Purification",
+  "hexcasting.spell.hexal:type/block_item": "Sorter's Purification",
+  "hexcasting.spell.hexal:type/item_held": "Sorter's Reflection",
 
   "hexcasting.spell.hexal:get_entity/type": "Entity Distillation: Type",
   "hexcasting.spell.hexal:zone_entity/type": "Zone Exaltation: Type",
@@ -252,9 +253,10 @@
   "hexal.page.great_wisps.wisp/seon/get": "Returns my currently bound wisp. A new wisp can only be bound when this returns null. (This is not a great spell, I have simply placed it here for convenience.)",
 
   "hexal.entry.types": "Types",
-  "hexal.page.types.type/block_item": "Remove a location or item from the stack, and adds the type of the block at that location, or type of that item, to the stack (e.g. Grass, Stone, Stick, etc.).",
-  "hexal.page.types.type/entity": "Remove an entity from the stack, and adds the type of the entity at that location to the stack (with item entities adding their item type).",
   "hexal.page.types.type/iota": "Remove an iota from the stack, and adds the type of that iota to the stack.",
+  "hexal.page.types.type/entity": "Remove an entity from the stack, and adds the type of the entity at that location to the stack.",
+  "hexal.page.types.type/block_item": "Remove a location, $(l:hexal:hexal.entry.items)$(item)mote/$, or item entity from the stack, and adds the type of the block at that location, or type of that item, to the stack (e.g. Grass, Stone, Stick, etc.).",
+  "hexal.page.types.type/item_held": "Adds the type of the item in the caster's offhand to the stack.",
 
   "hexal.page.types.get_entity/type": "Remove an entity type and a position from the stack, and returns an entity of that type at that position if one exists.",
   "hexal.page.types.zone_entity/type": "Remove an entity type, a position, and a radius from the stack, and returns a list of all entities of that type within that radius of that position.",

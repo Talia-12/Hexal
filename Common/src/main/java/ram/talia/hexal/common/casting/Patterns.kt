@@ -55,6 +55,8 @@ object Patterns {
 	val TYPE_ENTITY = make(HexPattern.fromAngles("qawde", HexDir.SOUTH_WEST), modLoc("type/entity"), OpTypeEntity)
 	@JvmField
 	val TYPE_IOTA = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("type/iota"), OpTypeIota)
+	@JvmField
+	val TYPE_ITEM_HELD = make(HexPattern.fromAngles("edeedqd", HexDir.SOUTH_WEST), modLoc("type/item_held"), OpTypeItemHeld)
 
 	@JvmField
 	val GET_ENTITY_TYPE = make(HexPattern.fromAngles("dadqqqqqdad", HexDir.NORTH_EAST), modLoc("get_entity/type"), OpGetEntityAtDyn)
