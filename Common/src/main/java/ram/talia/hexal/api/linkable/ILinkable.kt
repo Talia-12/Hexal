@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyLoad
 import ram.talia.hexal.api.nbt.toNbtList
-import kotlin.math.max
+import kotlin.math.sqrt
 
 interface ILinkable {
 	val asActionResult: List<Iota>
@@ -28,7 +28,7 @@ interface ILinkable {
 
 	fun maxSqrLinkRange(): Double
 
-	fun isInRange(other: ILinkable) = (this.getPosition() - other.getPosition()).lengthSqr() <= max(this.maxSqrLinkRange(), other.maxSqrLinkRange())
+	fun isInRange(other: ILinkable) = (this.getPosition() - other.getPosition()).length() <= 2 * (sqrt(this.maxSqrLinkRange()) +  sqrt(other.maxSqrLinkRange()))
 
 	/**
 	 * Set to true if the link should be removed, e.g. the [ILinkable] has been discarded.
