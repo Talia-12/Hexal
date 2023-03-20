@@ -86,15 +86,15 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         currentAnimation.progress = min(currentAnimation.progress + 1, ANIMATION_LENGTH)
     }
 
-    private val SLOTS = intArrayOf(0)
+    private val SLOTS = intArrayOf(1)
 
     override fun getSlotsForFace(dir: Direction) = SLOTS
 
-    override fun canPlaceItemThroughFace(index: Int, stack: ItemStack, dir: Direction?) = canPlaceItem(index, stack)
+    override fun canPlaceItemThroughFace(slotIndex: Int, stack: ItemStack, dir: Direction?) = canPlaceItem(slotIndex, stack)
 
-    override fun canPlaceItem(index: Int, stack: ItemStack) = !isFull() || getItemRecordsMatching(ItemRecord(stack)).isNotEmpty()
+    override fun canPlaceItem(slotIndex: Int, stack: ItemStack) = !isFull() || getItemRecordsMatching(ItemRecord(stack)).isNotEmpty()
 
-    override fun canTakeItemThroughFace(var1: Int, var2: ItemStack, var3: Direction) = false
+    override fun canTakeItemThroughFace(slotIndex: Int, stack: ItemStack, dir: Direction) = false
 
     override fun getContainerSize() = 1
 
@@ -130,24 +130,6 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
      */
     override fun getUpdateTag() = CompoundTag().also { it.putBoolean(TAG_HAS_ITEMS, _storedItems.isNotEmpty()) }
 
-    /**
-     * When loading a packet, if it contains [TAG_HAS_ITEMS] then it came from the server and this is the client;
-     * should only do the animation related stuff. If it doesn't contain [TAG_HAS_ITEMS] then this is the server
-     * and should load as normal.
-     */
-    override fun load(tag: CompoundTag) {
-        if (TAG_HAS_ITEMS in tag) {
-            if (tag.getBoolean(TAG_HAS_ITEMS)) {
-                if (currentAnimation is AnimationState.Opening)
-                    currentAnimation = AnimationState.Closing(0)
-            } else {
-                if (currentAnimation is AnimationState.Closing)
-                    currentAnimation = AnimationState.Opening(0)
-            }
-        } else
-            super.load(tag)
-    }
-
     override fun saveModData(tag: CompoundTag) {
         tag.putUUID(TAG_UUID, uuid)
         tag.putInt(TAG_INDEX, currentItemIndex)
@@ -162,6 +144,8 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         }
 
         tag.putList(TAG_STORED, stored)
+
+        tag.putBoolean(TAG_HAS_ITEMS, _storedItems.isNotEmpty())
     }
 
     override fun loadModData(tag: CompoundTag) {
@@ -180,6 +164,16 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
                 val record = ItemRecord.readFromTag(cEntry)
                 if (record != null)
                     _storedItems[cEntry.getInt(TAG_ID)] = record
+            }
+        }
+
+        if (TAG_HAS_ITEMS in tag) {
+            if (tag.getBoolean(TAG_HAS_ITEMS)) {
+                if (currentAnimation is AnimationState.Opening)
+                    currentAnimation = AnimationState.Closing(0)
+            } else {
+                if (currentAnimation is AnimationState.Closing)
+                    currentAnimation = AnimationState.Opening(0)
             }
         }
     }
