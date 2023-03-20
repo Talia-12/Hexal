@@ -149,14 +149,14 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     override fun loadModData(tag: CompoundTag) {
-        if (tag.contains(TAG_UUID))
+        if (TAG_UUID in tag)
             uuid = tag.getUUID(TAG_UUID)
 
-        if (tag.contains(TAG_INDEX))
+        if (TAG_INDEX in tag)
             currentItemIndex = tag.getInt(TAG_INDEX)
 
         _storedItems.clear()
-        if (tag.contains(TAG_STORED)) {
+        if (TAG_STORED in tag) {
             val stored = tag.getList(TAG_STORED, Tag.TAG_COMPOUND)
 
             for (entry in stored) {
