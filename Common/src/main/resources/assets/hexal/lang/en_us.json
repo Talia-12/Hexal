@@ -232,7 +232,7 @@
   "hexal.page.items.item/storage/remaining_capacity/get": "Gets the remaining capacity of the currently bound Mote Nexus.",
   "hexal.page.items.item/make": "Convert an item entity in the world into a mote on your stack. Mediafying an item costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.items.item/return": "Returns all the items from a mote to the world at the location of your choosing. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
-  "hexal.page.items.item/combine": "Combines two motes into one, merging the mote records they point to. This can make motes holding many more items than I could carry in a stack naturally!",
+  "hexal.page.items.item/combine": "Combines two motes into one, merging the mote records they point to. Any pointers to the second mote will become null, any pointers to the first will remain. This can make motes holding many more items than I could carry in a stack naturally!",
   "hexal.page.items.item/split": "Splits the specified number of items off of the passed mote, creating a new mote pointing to a new mote record.",
   "hexal.page.items.item/storage/get": "Get the position of the Mote Nexus that contains the passed mote.",
   "hexal.page.items.item/storage/set": "Move the record referenced by the passed mote to the Mote Nexus at the passed position. This returns a new mote pointing to that record, and invalidates all previous motes pointing to that record.",
