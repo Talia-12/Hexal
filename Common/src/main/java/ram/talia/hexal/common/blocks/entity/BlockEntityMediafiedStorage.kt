@@ -49,11 +49,11 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     fun assignItem(itemRecord: ItemRecord): MediafiedItemManager.Index {
         val index = currentItemIndex
-        val isEmpty = _storedItems.isEmpty()
+        val wasEmpty = _storedItems.isEmpty()
         _storedItems[index] = itemRecord
         currentItemIndex += 1
 
-        if (isEmpty) {
+        if (wasEmpty) {
             sync()
         }
 
@@ -169,11 +169,11 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
         if (TAG_HAS_ITEMS in tag) {
             if (tag.getBoolean(TAG_HAS_ITEMS)) {
-                if (currentAnimation is AnimationState.Opening)
-                    currentAnimation = AnimationState.Closing(0)
-            } else {
                 if (currentAnimation is AnimationState.Closing)
                     currentAnimation = AnimationState.Opening(0)
+            } else {
+                if (currentAnimation is AnimationState.Opening)
+                    currentAnimation = AnimationState.Closing(0)
             }
         }
     }

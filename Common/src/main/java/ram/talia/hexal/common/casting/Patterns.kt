@@ -57,9 +57,9 @@ object Patterns {
 	val TYPE_IOTA = make(HexPattern.fromAngles("awd", HexDir.SOUTH_WEST), modLoc("type/iota"), OpTypeIota)
 
 	@JvmField
-	val GET_ENTITY_TYPE = make(HexPattern.fromAngles("", HexDir.SOUTH_EAST), modLoc("get_entity/type"), OpGetEntityAtDyn)
+	val GET_ENTITY_TYPE = make(HexPattern.fromAngles("dadqqqqqdad", HexDir.NORTH_EAST), modLoc("get_entity/type"), OpGetEntityAtDyn)
 	@JvmField
-	val ZONE_ENTITY_TYPE = make(HexPattern.fromAngles("", HexDir.SOUTH_EAST), modLoc("zone_entity/type"), OpGetEntitiesByDyn(false))
+	val ZONE_ENTITY_TYPE = make(HexPattern.fromAngles("waweeeeewaw", HexDir.SOUTH_EAST), modLoc("zone_entity/type"), OpGetEntitiesByDyn(false))
 	@JvmField
 	val ZONE_ENTITY_NOT_TYPE = make(HexPattern.fromAngles("wdwqqqqqwdw", HexDir.NORTH_EAST), modLoc("zone_entity/not_type"), OpGetEntitiesByDyn(true))
 

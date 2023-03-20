@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import ram.talia.hexal.api.mediafieditems.MediafiedItemManager;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
-import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public abstract class MixinCastingContext implements IMixinCastingContext {
 	public @Nullable UUID getBoundStorage() {
 		if (temporaryStorage != null)
 			return temporaryStorage;
-		return IXplatAbstractions.INSTANCE.getBoundStorage(self.getCaster());
+		return MediafiedItemManager.getBoundStorage(self.getCaster());
 	}
 
 	@Override
