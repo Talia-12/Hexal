@@ -4,18 +4,22 @@ import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.NetworkDirection;
@@ -82,6 +86,13 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	public Packet<?> toVanillaClientboundPacket(IMessage message) {
 		return ForgePacketHandler.getNetwork().toVanillaPacket(message, NetworkDirection.PLAY_TO_CLIENT);
 	}
+
+	@Override
+	public boolean isInteractingAllowed(Level level, BlockPos pos, Direction direction, InteractionHand hand, Player player) {
+
+		return !MinecraftForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickBlock(player, hand, pos, new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, true)));
+	}
+
 	@Override
 	public WispCastingManager getWispCastingManager (ServerPlayer caster) {
 		return WispCastingMangerEventHandler.getCastingManager(caster);

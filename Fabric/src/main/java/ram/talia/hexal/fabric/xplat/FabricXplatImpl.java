@@ -3,15 +3,18 @@ package ram.talia.hexal.fabric.xplat;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
+import dev.architectury.event.events.common.InteractionEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -109,7 +112,13 @@ public class FabricXplatImpl implements IXplatAbstractions {
     public Packet<?> toVanillaClientboundPacket(IMessage message) {
         return ServerPlayNetworking.createS2CPacket(message.getFabricId(), message.toBuf());
     }
-    
+
+    @Override
+    public boolean isInteractingAllowed(Level level, BlockPos pos, Direction direction, InteractionHand hand, Player player) {
+        var result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(player, hand, pos, direction);
+        return result.isEmpty() || result.isTrue();
+    }
+
     @Override
     public WispCastingManager getWispCastingManager (ServerPlayer caster) {
         return HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster).getManager();

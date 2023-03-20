@@ -5,9 +5,11 @@ import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -52,6 +54,8 @@ public interface IXplatAbstractions {
 //    double getReachDistance(Player player);
 
     // Things that used to be caps
+
+    boolean isInteractingAllowed(Level level, BlockPos pos, Direction direction, InteractionHand hand, Player player);
 
     WispCastingManager getWispCastingManager(ServerPlayer caster);
 

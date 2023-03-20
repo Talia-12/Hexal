@@ -7,12 +7,14 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getBlockPos
 import at.petrak.hexcasting.api.spell.iota.Iota
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
     override val argc = 1
@@ -38,6 +40,9 @@ class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
                 MediafiedItemManager.setBoundStorage(ctx.caster, null)
                 return
             }
+
+            if (!ctx.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isInteractingAllowed(ctx.world, pos, Direction.UP, ctx.castingHand, ctx.caster))
+                return
 
             val storage = ctx.world.getBlockEntity(pos) as? BlockEntityMediafiedStorage ?: return
 
