@@ -49,8 +49,8 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/contained/get",
       "anchor": "hexal:item/contained/get",
-      "input": "item | itemtype",
-      "output": "[item]",
+      "input": "mote | itemtype",
+      "output": "[mote]",
       "text": "hexal.page.items.item/contained/get"
     },
     {
@@ -66,14 +66,14 @@
       "op_id": "hexal:item/make",
       "anchor": "hexal:item/make",
       "input": "item entity",
-      "output": "item",
+      "output": "mote",
       "text": "hexal.page.items.item/make"
     },
     {
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/return",
       "anchor": "hexal:item/return",
-      "input": "item, vec",
+      "input": "mote, vec",
       "output": "",
       "text": "hexal.page.items.item/return"
     },
@@ -81,23 +81,23 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/combine",
       "anchor": "hexal:item/combine",
-      "input": "item, item",
-      "output": "item",
+      "input": "mote, mote",
+      "output": "mote",
       "text": "hexal.page.items.item/combine"
     },
     {
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/split",
       "anchor": "hexal:item/split",
-      "input": "item, int",
-      "output": "item, item",
+      "input": "mote, int",
+      "output": "mote, mote",
       "text": "hexal.page.items.item/split"
     },
     {
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/storage/get",
       "anchor": "hexal:item/storage/get",
-      "input": "item",
+      "input": "mote",
       "output": "vec",
       "text": "hexal.page.items.item/storage/get"
     },
@@ -105,16 +105,16 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/storage/set",
       "anchor": "hexal:item/storage/set",
-      "input": "item, vec",
-      "output": "item",
+      "input": "mote, vec",
+      "output": "mote",
       "text": "hexal.page.items.item/storage/set"
     },
     {
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/craft",
       "anchor": "hexal:item/craft",
-      "input": "item | [item] | [[item]]",
-      "output": "[item]",
+      "input": "mote | [mote] | [[mote]]",
+      "output": "[mote]",
       "text": "hexal.page.items.item/craft.0"
     },
     {
@@ -137,7 +137,7 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/trade",
       "anchor": "hexal:item/trade",
-      "input": "villager, [item] | villager, [item], int",
+      "input": "villager, [mote] | villager, [mote], int",
       "output": "item",
       "text": "hexal.page.items.item/trade.0"
     },
