@@ -43,13 +43,20 @@ public class WispCastingMangerEventHandler {
 
 	@Nullable
 	public static BaseCastingWisp getSeon(ServerPlayer player) {
-		return seons.get(player.getUUID()).get();
+		var ref = seons.get(player.getUUID());
+		if (ref == null)
+			return null;
+
+		return ref.get();
 	}
 
 	public static void setSeon(ServerPlayer player, BaseCastingWisp wisp) {
-		var old = seons.get(player.getUUID()).get();
-		if (old != null)
-			old.setSeon(false);
+		var oldRef = seons.get(player.getUUID());
+		if (oldRef != null) {
+			var oldSeon = oldRef.get();
+			if (oldSeon != null)
+				oldSeon.setSeon(false);
+		}
 		wisp.setSeon(true);
 		seons.put(player.getUUID(), new WeakReference<>(wisp));
 	}
@@ -92,10 +99,14 @@ public class WispCastingMangerEventHandler {
 		getCastingManager(player).writeToNbt(tag);
 		
 		player.getPersistentData().put(TAG_CASTING_MANAGER, tag);
-		var seon = seons.get(player.getUUID()).get();
-		if (seon != null)
-			player.getPersistentData().putUUID(TAG_SEON, seon.getUUID());
-		
+		var ref = seons.get(player.getUUID());
+		if (ref != null) {
+			var seon = ref.get();
+			if (seon != null) {
+				player.getPersistentData().putUUID(TAG_SEON, seon.getUUID());
+			}
+		}
+
 		castingManagers.remove(player.getUUID());
 		seons.remove(player.getUUID());
 	}
