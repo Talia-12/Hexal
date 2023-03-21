@@ -1,12 +1,19 @@
 package ram.talia.hexal.datagen.recipes
 
+import at.petrak.hexcasting.api.advancements.OvercastTrigger
 import at.petrak.hexcasting.api.mod.HexTags
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
+import at.petrak.hexcasting.common.recipe.ingredient.VillagerIngredient
+import at.petrak.hexcasting.datagen.recipe.builders.BrainsweepRecipeBuilder
 import at.petrak.paucal.api.datagen.PaucalRecipeProvider
+import net.minecraft.advancements.critereon.EntityPredicate
+import net.minecraft.advancements.critereon.MinMaxBounds
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Blocks
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.common.lib.HexalBlocks
 import ram.talia.hexal.datagen.recipes.builders.FreezeRecipeBuilder
 import java.util.function.Consumer
 
@@ -24,11 +31,17 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 			.unlockedBy("has_item", hasItem(HexTags.Items.STAVES))
 			.save(recipes, modLoc("freeze/powder_snow_cauldron"))
 
-//		val enlightenment = OvercastTrigger.Instance(
-//			EntityPredicate.Composite.ANY,
-//			MinMaxBounds.Ints.ANY,  // add a little bit of slop here
-//			MinMaxBounds.Doubles.atLeast(0.8),
-//			MinMaxBounds.Doubles.between(0.1, 2.05)
-//		)
+		val enlightenment = OvercastTrigger.Instance(
+			EntityPredicate.Composite.ANY,
+			MinMaxBounds.Ints.ANY,  // add a little bit of slop here
+			MinMaxBounds.Doubles.atLeast(0.8),
+			MinMaxBounds.Doubles.between(0.1, 2.05)
+		)
+
+		BrainsweepRecipeBuilder(StateIngredientHelper.of(Blocks.SHULKER_BOX),
+				VillagerIngredient(ResourceLocation("cartopgrapher"), null, 2),
+				HexalBlocks.MEDIAFIED_STORAGE.defaultBlockState())
+				.unlockedBy("enlightenment", enlightenment)
+				.save(recipes, modLoc("brainsweep/mediafied_storage"))
 	}
 }
