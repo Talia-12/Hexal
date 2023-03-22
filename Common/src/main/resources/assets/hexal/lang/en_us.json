@@ -48,7 +48,7 @@
 
   "hexcasting.spell.hexal:get_entity/type": "Entity Distillation: Type",
   "hexcasting.spell.hexal:zone_entity/type": "Zone Exaltation: Type",
-  "hexcasting.spell.hexal:zone_entity/not_type": "Zone Exaltation: Type",
+  "hexcasting.spell.hexal:zone_entity/not_type": "Zone Exaltation: Not-Type",
 
   "hexcasting.spell.hexal:current_tick": "Timekeeper's Reflection",
   "hexcasting.spell.hexal:remaining_evals": "Thanatos' Reflection",
@@ -170,7 +170,7 @@
   "hexal.page.hexal_spell.smelt.1": "Costs three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ per item smelted (i.e. three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ for smelting a block, 6 $(l:items/amethyst)$(item)Amethyst Dust/$ to smelt a stack of 8 items.)",
   "hexal.page.hexal_spell.freeze": "Freezes the block at a block location. For example, turns water into ice, and ice into packed ice. Costs three $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.hexal_spell.falling_block": "Remove a location from the stack, and force the block there to fall as if it were sand or gravel. Costs one and a half $(l:items/amethyst)$(item)Amethyst Dust/$.",
-  "hexal.page.hexal_spell.place_type": "Accepts a location and an item type, and attempts to place a block of that item type at that location. Costs an eighth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
+  "hexal.page.hexal_spell.place_type": "Accepts a location and an item type or mote, and attempts to place a block of that item type at that location. If a mote was passed it will instead place from the record referenced by that mote. Costs an eighth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.hexal_spell.particles": "Accepts a location or a list of locations, and either creates a particle at the location, or creates lines of particles between the locations in the list. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$ per location.",
 
   "hexal.entry.wisps": "Wisps",
