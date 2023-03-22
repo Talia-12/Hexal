@@ -2,8 +2,9 @@
   "name": "hexal.entry.items",
   "category": "hexcasting:patterns/spells",
   "icon": "minecraft:chest",
-  "sortnum": 12,
+  "sortnum": 20,
   "advancement": "hexcasting:enlightenment",
+  "entry_color": "54398a",
   "read_by_default": true,
   "pages": [
     {
@@ -19,7 +20,9 @@
       "text": "hexal.page.items.explanation.2"
     },
     {
-      "type": "patchouli:empty"
+      "type": "hexcasting:brainsweep",
+      "recipe": "hexal:brainsweep/mediafied_storage",
+      "text": "hexal.page.items.mediafed_storage_recipe"
     },
     {
       "type": "hexcasting:pattern",
@@ -57,7 +60,7 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/storage/remaining_capacity/get",
       "anchor": "hexal:item/storage/remaining_capacity/get",
-      "input": "",
+      "input": "vec | null",
       "output": "int",
       "text": "hexal.page.items.item/storage/remaining_capacity/get"
     },

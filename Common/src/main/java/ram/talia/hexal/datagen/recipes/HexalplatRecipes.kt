@@ -39,7 +39,7 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 		)
 
 		BrainsweepRecipeBuilder(StateIngredientHelper.of(Blocks.SHULKER_BOX),
-				VillagerIngredient(ResourceLocation("cartopgrapher"), null, 2),
+				VillagerIngredient(ResourceLocation("cartographer"), null, 2),
 				HexalBlocks.MEDIAFIED_STORAGE.defaultBlockState())
 				.unlockedBy("enlightenment", enlightenment)
 				.save(recipes, modLoc("brainsweep/mediafied_storage"))
