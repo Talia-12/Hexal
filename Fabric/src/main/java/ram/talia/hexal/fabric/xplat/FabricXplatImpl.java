@@ -3,9 +3,9 @@ package ram.talia.hexal.fabric.xplat;
 import at.petrak.hexcasting.api.spell.iota.Iota;
 import at.petrak.hexcasting.api.spell.math.HexPattern;
 import at.petrak.hexcasting.common.network.IMessage;
-import dev.architectury.event.events.common.InteractionEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -21,6 +21,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
@@ -115,8 +116,8 @@ public class FabricXplatImpl implements IXplatAbstractions {
 
     @Override
     public boolean isInteractingAllowed(Level level, BlockPos pos, Direction direction, InteractionHand hand, Player player) {
-        var result = InteractionEvent.RIGHT_CLICK_BLOCK.invoker().click(player, hand, pos, direction);
-        return result.isEmpty() || result.isTrue();
+         return UseBlockCallback.EVENT.invoker()
+                .interact(player, level, hand, new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, true)).consumesAction(); // I think this is right but I'm not sure
     }
 
     @Override
