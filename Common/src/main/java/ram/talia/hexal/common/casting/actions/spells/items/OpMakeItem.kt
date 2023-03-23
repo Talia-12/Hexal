@@ -7,8 +7,10 @@ import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
+import net.minecraft.world.item.ItemStack
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.getItemEntityOrItemFrame
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
@@ -30,23 +32,29 @@ object OpMakeItem : Action {
         val args = stack.takeLast(this.argc)
         repeat(this.argc) { stack.removeLast() }
 
-        val iEntity = args.getItemEntity(0, argc)
+        val iEntityEither = args.getItemEntityOrItemFrame(0, argc)
+        val iEntity = iEntityEither.map({ it }, { it })
+
+
 
         ctx.assertEntityInRange(iEntity)
 
-        val itemStack = iEntity.item
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
-        if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(iEntity.position(), "storage_unloaded")
-        if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
-            throw MishapStorageFull(iEntity.position())
+        val itemStack = iEntityEither.map( { it.item }, { it.item })
 
-        val itemIota = itemStack.asActionResult(storage)[0]
+        if (!itemStack.isEmpty) {
+            val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
+            if (!MediafiedItemManager.isStorageLoaded(storage))
+                throw MishapNoBoundStorage(iEntity.position(), "storage_unloaded")
+            if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
+                throw MishapStorageFull(iEntity.position())
 
-        if (itemIota !is NullIota)
-            iEntity.discard()
+            val itemIota = itemStack.asActionResult(storage)[0]
 
-        stack.add(itemIota)
+            if (itemIota !is NullIota)
+                iEntityEither.map( { it.discard() }, { it.item = ItemStack.EMPTY } )
+
+            stack.add(itemIota)
+        }
 
         val sideEffects = mutableListOf(
                 OperatorSideEffect.ConsumeMedia(this.mediaCost),

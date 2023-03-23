@@ -7,6 +7,7 @@ import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
 import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.decoration.ItemFrame
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
@@ -151,6 +152,18 @@ fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<Bl
         is NullIota -> null
         else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
     }
+}
+
+fun List<Iota>.getItemEntityOrItemFrame(idx: Int, argc: Int = 0): Either<ItemEntity, ItemFrame> {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is EntityIota) {
+        val e = x.entity
+        if (e is ItemEntity)
+            return Either.left(e)
+        if (e is ItemFrame)
+            return Either.right(e)
+    }
+    throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "entity.itemitemframe")
 }
 
 fun List<Iota>.getItemType(idx: Int, argc: Int = 0): Item? {
