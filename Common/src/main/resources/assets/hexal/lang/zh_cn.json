@@ -12,7 +12,9 @@
   "hexcasting.mishap.others_wisp": "该咒灵为%s所有，而不是你",
   "hexcasting.mishap.no_links": "%s没有链接",
   "hexcasting.mishap.self_link": "试图将%s链接至其自身",
-  
+  "hexcasting.mishap.no_bound_storage": "未绑定物元枢纽",
+  "hexcasting.mishap.storage_unloaded": "绑定的物元枢纽未被加载",
+
   "hexcasting.mishap.invalid_value.class.linkable": "一个可链接的事物",
   "hexcasting.mishap.invalid_value.class.wisp": "一个咒灵",
   "hexcasting.mishap.invalid_value.class.consumable_entity": "一个可被拆解的实体",
@@ -22,12 +24,16 @@
   "hexcasting.mishap.invalid_value.class.type.block.able": "一个可代表方块的物品类型",
   "hexcasting.mishap.invalid_value.class.type.list.double": "一个由数组成的列表",
   "hexcasting.mishap.invalid_value.class.gate": "一个门径",
-  "hexcasting.mishap.invalid_value.class.item": "一个物品",
-  "hexcasting.mishap.invalid_value.itemitemtype": "一个物品或物品类型",
-  "hexal.mishap.invalid_value.vecitem": "一个向量或物品",
-  "hexal.mishap.invalid_value.veclist": "一个向量或由向量组成的列表",
-  "hexcasting.mishap.invalid_value.blockitementityitem": "一个位置向量、物品实体或物品",
-  "hexal.mishap.invalid_value.int.strictly_positive": "一个严格大于零的整数",
+  "hexcasting.mishap.invalid_value.class.item": "一个物元",
+  "hexcasting.mishap.invalid_value.itemitemtype": "一个物元或物品类型",
+  "hexcasting.mishap.invalid_value.vecitem": "一个向量或物元",
+  "hexcasting.mishap.invalid_value.veclist": "一个向量或由向量组成的列表",
+  "hexcasting.mishap.invalid_value.blockitementityitemframeitem": "一个位置向量、物品实体、物品展示框或物品",
+  "hexcasting.mishap.invalid_value.entity.itemitemframe": "一个物品实体或物品展示框",
+  "hexcasting.mishap.invalid_value.int.strictly_positive": "一个严格大于零的整数",
+  "hexcasting.mishap.invalid_value.crafting_recipe": "一个有效的合成配方",
+  "hexcasting.mishap.invalid_value.mote_duplicated": "each mote to appear only once",
+  "hexcasting.mishap.invalid_value.cant_combine_motes": "two motes that can be combined",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota类型",
@@ -41,10 +47,15 @@
   "hexal.spelldata.item": "%s x%d",
 
 
-  "hexcasting.spell.hexal:type/block_item": "分拣员之纯化",
-  "hexcasting.spell.hexal:type/entity": "内科医师之纯化",
   "hexcasting.spell.hexal:type/iota": "分类学家之纯化",
-  
+  "hexcasting.spell.hexal:type/entity": "内科医师之纯化",
+  "hexcasting.spell.hexal:type/block_item": "分拣员之纯化",
+  "hexcasting.spell.hexal:type/item_held": "分拣员之精思",
+
+  "hexcasting.spell.hexal:get_entity/type": "实体之馏化：类型",
+  "hexcasting.spell.hexal:zone_entity/type": "区域之提整：类型",
+  "hexcasting.spell.hexal:zone_entity/not_type": "区域之提整：非类型",
+
   "hexcasting.spell.hexal:current_tick": "计时员之精思",
   "hexcasting.spell.hexal:remaining_evals": "塔纳托斯之精思",
   "hexcasting.spell.hexal:breath": "潜水员之纯化",
@@ -105,6 +116,8 @@
   
   "hexcasting.spell.hexal:gate/make": "门径之精思",
   "hexcasting.spell.hexal:gate/mark": "开启门径",
+  "hexcasting.spell.hexal:gate/mark/num/get": "标径之纯化",
+  "hexcasting.spell.hexal:gate/mark/get": "标径之馏化",
   "hexcasting.spell.hexal:gate/close": "关闭门径",
 
   "hexcasting.spell.hexal:item/storage/bind": "绑定储库",
@@ -115,6 +128,7 @@
   "hexcasting.spell.hexal:item/make": "媒质化物品",
   "hexcasting.spell.hexal:item/return": "返还物品",
   "hexcasting.spell.hexal:item/combine": "堆叠之馏化",
+  "hexcasting.spell.hexal:item/combinable": "堆叠之馏化，第二型",
   "hexcasting.spell.hexal:item/split": "拆分之策略",
   "hexcasting.spell.hexal:item/storage/get": "货场之纯化",
   "hexcasting.spell.hexal:item/storage/set": "货场之策略",
@@ -159,11 +173,11 @@
   "hexal.page.hexal_maths.running/mul": "接受栈顶列表，并计算其前缀积。例如输入 [1, 2, 5] 则会返回 [1, 2, 10]。",
   
   "hexal.entry.hexal_spell": "咒法拓展：法术",
-  "hexal.page.hexal_spell.smelt.0": "移除栈顶位置向量或物品实体，然后烧炼该处方块或同时烧炼物品实体中所有物品。",
+  "hexal.page.hexal_spell.smelt.0": "移除栈顶位置向量、物品实体或物元，然后烧炼该处方块或同时烧炼物品实体或物元中所有物品。",
   "hexal.page.hexal_spell.smelt.1": "每烧炼一个物品消耗 3/4 个$(l:items/amethyst)$(item)紫水晶粉/$。（也即烧炼 1 个方块消耗 3/4 个$(l:items/amethyst)$(item)紫水晶粉/$，同时烧炼 8 个物品消耗 6 个$(l:items/amethyst)$(item)紫水晶粉/$。）",
   "hexal.page.hexal_spell.freeze": "冻结所给坐标处方块。例如，水变为冰，冰变为浮冰。消耗 3 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.hexal_spell.falling_block": "移除栈顶位置向量，并使该处方块下落，就像沙子和沙砾一样。消耗 3/2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
-  "hexal.page.hexal_spell.place_type": "接受一个位置向量和一个物品类型，并会尝试在该位置处放置所给物品类型的方块。消耗 1/8 个$(l:items/amethyst)$(item)紫水晶粉/$。",
+  "hexal.page.hexal_spell.place_type": "接受一个物品类型或物元和一个位置向量，并会尝试在该位置处放置所给物品类型的方块。若传入物元，则会从对应的物元记录中放置。消耗 1/8 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.hexal_spell.particles": "接受一个位置向量或一个列表的位置向量，并在所给位置处生成粒子，或在所给列表各位置之间生成粒子连线。每个位置向量消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   
   "hexal.entry.wisps": "咒灵",
@@ -190,7 +204,7 @@
   
   "hexal.entry.links": "链接",
   "hexal.page.links.0": "这些图案大致构建了一套能在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$间以及咒灵和其他事物间传递信息的系统。有若干图案与创建用于传递信息的链接有关，也有些和图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时维持任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
-  "hexal.page.links.1": "创建链接后，创建端会自动为这些链接分配编号，其数值等于该端已有链接的个数，这种编号可用作图案的参数，用于指代不同的链接。本章节大部分图案介绍中标记的可链接类型并不是其字面意思，而是指代所有可被转换为可链接事物的类型。（例如，entity -> linkable entities，vec -> linkable blocks等等。）链接会在两端范围上限内起效。",
+  "hexal.page.links.1": "创建链接后，创建端会自动为这些链接分配编号，其数值等于该端已有链接的个数，这种编号可用作图案的参数，用于指代不同的链接。本章节大部分图案介绍中标记的可链接类型并不是其字面意思，而是指代所有可被转换为可链接事物的类型。（例如，entity -> linkable entities，vec -> linkable blocks等等。）链接会在两端范围上限之和的两倍范围内起效。",
   "hexal.page.links.link": "将施法咒灵（即运行此图案的咒灵）链接至栈顶实体，且实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/others": "可在任意施法器件上运行。将两个实体链接，且两实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/unlink": "断开施法咒灵拥有的编号为所给数的链接。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
@@ -211,21 +225,24 @@
   "hexal.entry.gates": "门径",
   "hexal.page.gates.gate/make": "压入一个新的门径。所有此 iota 的复制品都指向同一个门径。消耗 32 个$(l:items/amethyst)$(item)充能紫水晶/$。",
   "hexal.page.gates.gate/mark": "移除栈顶实体与门径，并标记该实体，被标记的实体会在对应门径关闭时被传送。消耗 1/20 个$(l:items/amethyst)$(item)紫水晶粉/$。",
-  "hexal.page.gates.gate/mark/get": "移除栈顶门径，返回标记至该门径的所有实体组成的列表。",
+  "hexal.page.gates.gate/mark/num/get": "移除栈顶门径，返回被该门径标记的实体的数量。",
+  "hexal.page.gates.gate/mark/get": "移除栈顶门径和实体，返回该实体是否被该门径标记。",
   "hexal.page.gates.gate/close": "移除栈顶位置向量与门径，并将所有标记至该门径的实体传送到所给位置处。消耗 1/2 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
 
-  "hexal.entry.items": "物品",
+  "hexal.entry.items": "物元",
   "hexal.page.items.explanation.0": "此条目主要记述如何将物品本身拉进媒质，使其可被引用，可被计数，并将秩序带给它们也带给我也带给我的意识也带给——。压入栈中的媒质化物品 iota（称为“物元”）都代表着物元枢纽中的某个物元记录。这是因为假如没有东西承载物品中的思维模式，物品本身就会消亡——就像我的意识正在剥脱——",
   "hexal.page.items.explanation.1": "所有物元 iota 的复制版本都指向同一物元记录，也正因此，对其中一个做出的修改将同步到所有复制版本中去。拆分与合并与合成与交易都影响所有影响所有——",
   "hexal.page.items.explanation.2": "物元枢纽也有部分限制，但也只是部分。它最多能存放 1023 条记录，但每条记录中物品的个数则没有上限。我还没发现任何上限存在的证据，我能合并再合并再合并再合并直到永远记录增长然后增长然后增……",
+  "hexal.page.items.mediafed_storage_recipe":  "物元枢纽是用制图师的意识制成的，它会永不中断地标记和映射对应$(item)潜影盒/$中的物品。",
   "hexal.page.items.item/storage/bind": "锚定一个物元枢纽，并将自身与其绑定，所有我媒质化的物品都会存入该枢纽。若锚定至其他枢纽则会自动解开与原枢纽的绑定。消耗 32 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.items.item/storage/bind/temp": "锚定一个物元枢纽，并将自身与其绑定，直到当前咒术结束。其在本咒术内会暂时覆盖永久性的绑定。消耗 1 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.items.item/contained_type/get": "获取当前绑定的枢纽中所有物元的类型。",
   "hexal.page.items.item/contained/get": "获取当前绑定的枢纽中所有和所给物品类型对应的，或所有可与所给物元合并的物元。",
-  "hexal.page.items.item/storage/remaining_capacity/get": "获取当前绑定的枢纽剩余的容量。",
-  "hexal.page.items.item/make": "将物品实体转换为栈中的物元。媒质化 1 个物品消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
+  "hexal.page.items.item/storage/remaining_capacity/get": "获取所绑定的枢纽剩余的容量。",
+  "hexal.page.items.item/make": "将物品实体或物品展示框中的物品转换为栈中的物元。媒质化 1 个物品消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.items.item/return": "将物元中所有物品返还到所给位置处。消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
-  "hexal.page.items.item/combine": "将两个物元合并，也同时合并两者所指向的物元记录。如此就能在栈中放下远超我所能携带的物品了！",
+  "hexal.page.items.item/combine": "将两个物元合并，也同时合并两者所指向的物元记录。指向第二条记录的物元会变为 Null，指向第一条的物元则不会。如此就能在栈中放下远超我所能携带的物品了！",
+  "hexal.page.items.item/combinable": "若栈顶两物元可被合并，返回 True，否则返回 False。",
   "hexal.page.items.item/split": "从所给物元中拆分出所给数个物品，以此创建一条物元记录并返回对应物元 iota。",
   "hexal.page.items.item/storage/get": "获取存储所给物元的枢纽的位置。",
   "hexal.page.items.item/storage/set": "将所给物元对应的记录转移到所给位置处的物元枢纽中，并会返回指向新记录的物元 iota，且所有指向原记录的物元均会失效。",
@@ -234,8 +251,8 @@
   "hexal.page.items.item/villager/level/get": "接受代表村民的 iota，并返回代表该村民在其职业上熟练度的数。",
   "hexal.page.items.item/trade/get.0": "接受代表村民的 iota，并返回该村民所有的交易选项，返回结果是列表的列表的列表。每项交易由两个列表组成，内容分别为给出的物品和换得的物品。换得物品列表由对应的物品类型和可换得物品的数量组成。",
   "hexal.page.items.item/trade/get.1": "给出物品列表则由一对或两对物品类型与对应数量组成。例如，一项交易可能形如 [[[绿宝石, 1]], [红石粉, 1]]。",
-  "hexal.page.items.item/trade.0": "接受代表村民的 iota，由物元组成的列表（用于交易），和代表交易次序的数（可选）。若不输入次序数，则会依次寻找交易选项，直到找到接受所给物品的选项为止。",
-  "hexal.page.items.item/trade.1": "若输入次序数，则会直接跳转至该交易选项处。这之后便会一直进行交易，直到物品耗尽或是村民停用该项为止。交易结束后会返回由所获得的物品组成的物元。",
+  "hexal.page.items.item/trade.0": "接受代表村民的 iota，由物元组成的列表（用于交易），和代表交易次序的整数（可选）。（上方的 int? 表示可传入 2 或 3 个参数，可选的第三个参数需为整数。）",
+  "hexal.page.items.item/trade.1": "若不输入次序数，则会依次寻找交易选项，直到找到接受所给物品的选项为止。若输入次序数，则会直接跳转至该交易选项处。这之后便会一直进行交易，直到物品耗尽或是村民停用该项为止。交易结束后会返回由所获得的物品组成的物元。",
   "hexal.page.items.item/trade.2": "村民会将这些交易视作直接与我进行，且会获得对应经验，并以此精进技艺并改进交易选项。消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
 
   "hexal.entry.great_wisps": "卓越咒灵法术",
@@ -245,13 +262,16 @@
   "hexal.page.great_wisps.wisp/seon/get": "返回我当前绑定的咒灵。（这并不是卓越法术，记载于此是为了方便查找。）",
   
   "hexal.entry.types": "类型",
-  "hexal.page.types.type/block_item": "移除栈顶位置向量或物品实体。若是向量，则返回该处方块的类型；若是物品实体，则返回对应物品类型。（如草方块、石头、木棍等。）",
-  "hexal.page.types.type/entity": "移除栈顶实体，并返回该实体的类型（若是物品实体则返回对应物品类型）。",
   "hexal.page.types.type/iota": "移除栈顶元素，并返回该 iota 的类型。",
-  
-  
-  
-  
+  "hexal.page.types.type/entity": "移除栈顶实体，并返回该实体的类型。",
+  "hexal.page.types.type/block_item": "移除栈顶位置向量，$(l:hexal:hexal.entry.items)$(item)物元/$，物品实体或物品展示框。并返回该处方块的类型或对应物品类型。（如草方块、石头、木棍等。）",
+  "hexal.page.types.type/item_held": "若施法者副手中有物品，则将其类型压入栈顶；若无，则压入施法用手中物品的类型。",
+
+  "hexal.page.types.get_entity/type": "从栈顶获取实体类型和位置向量，返回该位置符合该类型的实体（若有）。",
+  "hexal.page.types.zone_entity/type": "从栈顶获取实体类型、位置向量及最大距离，返回该位置给定距离范围内所有符合给定类型的实体的列表。",
+  "hexal.page.types.zone_entity/not_type": "从栈顶获取实体类型、位置向量及最大距离，返回该位置给定距离范围内所有不符合给定类型的实体的列表。",
+
+
   "hexal.entry.everbook": "永恒之书",
   "hexal.page.everbook.0": "永恒之书是一片奇特的空间，如今已对我残破的意识开放。似乎有许多个我共用所有永恒之书的记录，共享不同世界的研究成果，又不断重新研究。永恒之书能够将图案和 iota 对应并存储，和$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$类似。不过考虑到如今我意识的脆弱，可能还是把永恒之书的访问权限全部交给$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$比较好。只要在某个世界中获得启迪，我就能在那个世界中访问永恒之书的所有内容。",
   "hexal.page.everbook.everbook/read": "接受指向$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$的位置向量，与一个作为密钥的图案，并返回永恒之书中对应密钥处的 iota，若能存储则同时会将其存至给定的$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$中。",
