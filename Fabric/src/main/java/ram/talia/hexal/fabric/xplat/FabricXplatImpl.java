@@ -15,6 +15,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -117,7 +118,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     @Override
     public boolean isInteractingAllowed(Level level, BlockPos pos, Direction direction, InteractionHand hand, Player player) {
          return UseBlockCallback.EVENT.invoker()
-                .interact(player, level, hand, new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, true)).consumesAction(); // I think this is right but I'm not sure
+                .interact(player, level, hand, new BlockHitResult(Vec3.atCenterOf(pos), direction, pos, true)) != InteractionResult.FAIL; // I think this is right but I'm not sure
     }
 
     @Override

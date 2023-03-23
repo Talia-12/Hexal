@@ -12,6 +12,7 @@
   "hexcasting.mishap.others_wisp": "That wisp is owned by %s, not you.",
   "hexcasting.mishap.no_links": "%s has no links.",
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
+  "hexcasting.mishap.no_bound_storage": "No bound Mote Nexus.",
 
   "hexcasting.mishap.invalid_value.class.linkable": "a linkable",
   "hexcasting.mishap.invalid_value.class.wisp": "a wisp",
@@ -24,13 +25,13 @@
   "hexcasting.mishap.invalid_value.class.gate": "a gate",
   "hexcasting.mishap.invalid_value.class.item": "a mote",
   "hexcasting.mishap.invalid_value.itemitemtype": "a mote or item type",
-  "hexal.mishap.invalid_value.vecitem": "a vector or mote",
-  "hexal.mishap.invalid_value.veclist": "a vector or a list of vectors",
+  "hexcasting.mishap.invalid_value.vecitem": "a vector or mote",
+  "hexcasting.mishap.invalid_value.veclist": "a vector or a list of vectors",
   "hexcasting.mishap.invalid_value.blockitementityitem": "a block, item entity, or mote",
-  "hexal.mishap.invalid_value.int.strictly_positive": "a strictly positive integer",
-  "hexal.mishap.invalid_value.crafting_recipe": "a valid crafting recipe",
-  "hexal.mishap.invalid_value.mote_duplicated": "each mote to appear only once",
-  "hexal.mishap.invalid_value.cant_combine_motes": "two motes that can be combined",
+  "hexcasting.mishap.invalid_value.int.strictly_positive": "a strictly positive integer",
+  "hexcasting.mishap.invalid_value.crafting_recipe": "a valid crafting recipe",
+  "hexcasting.mishap.invalid_value.mote_duplicated": "each mote to appear only once",
+  "hexcasting.mishap.invalid_value.cant_combine_motes": "two motes that can be combined",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota Type",

@@ -2,6 +2,7 @@ package ram.talia.hexal.common.blocks
 
 import at.petrak.hexcasting.xplat.IForgeLikeBlock
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -66,7 +67,9 @@ class BlockMediafiedStorage(properties: Properties) : Block(properties), EntityB
             val blockEntity = level.getBlockEntity(pos)
 
             if (blockEntity is BlockEntityMediafiedStorage) {
-               MediafiedItemManager.removeStorage(blockEntity.uuid)
+                MediafiedItemManager.removeStorage(blockEntity.uuid)
+                if (level is ServerLevel && !moved)
+                    blockEntity.dropAllContents(level, pos)
             }
         }
 
