@@ -28,7 +28,7 @@
   "hexcasting.mishap.invalid_value.itemitemtype": "a mote or item type",
   "hexcasting.mishap.invalid_value.vecitem": "a vector or mote",
   "hexcasting.mishap.invalid_value.veclist": "a vector or a list of vectors",
-  "hexcasting.mishap.invalid_value.blockitementityitem": "a block, item entity, or mote",
+  "hexcasting.mishap.invalid_value.blockitementityitemframeitem": "a block, item entity, item frame, or mote",
   "hexcasting.mishap.invalid_value.entity.itemitemframe": "an item entity or item frame",
   "hexcasting.mishap.invalid_value.int.strictly_positive": "a strictly positive integer",
   "hexcasting.mishap.invalid_value.crafting_recipe": "a valid crafting recipe",
