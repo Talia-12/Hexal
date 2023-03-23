@@ -127,6 +127,9 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         record.value.addCount(stack.count.toLong())
     }
 
+    /**
+     * When the BlockEntityMediafiedStorage is broken it should drop all its contents into the world.
+     */
     fun dropAllContents(level: ServerLevel, pos: BlockPos) {
         for ((record, _) in storedItems) {
             val toDrop = MediafiedItemManager.getStacksToDrop(MediafiedItemManager.Index(uuid, record), Long.MAX_VALUE) ?: continue

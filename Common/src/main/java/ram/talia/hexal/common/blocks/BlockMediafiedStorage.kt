@@ -67,9 +67,10 @@ class BlockMediafiedStorage(properties: Properties) : Block(properties), EntityB
             val blockEntity = level.getBlockEntity(pos)
 
             if (blockEntity is BlockEntityMediafiedStorage) {
-                MediafiedItemManager.removeStorage(blockEntity.uuid)
                 if (level is ServerLevel && !moved)
                     blockEntity.dropAllContents(level, pos)
+
+                MediafiedItemManager.removeStorage(blockEntity.uuid)
             }
         }
 
