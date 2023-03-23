@@ -108,7 +108,7 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
         fun readFromTag(tag: CompoundTag): ItemRecord? {
             return try {
                 val item = Registry.ITEM.getOptional(ResourceLocation(tag.getString(TAG_ITEM_ID))).orElseThrow { IllegalArgumentException("Unknown item id.") }
-                val extraTag = if (tag.contains(TAG_NBT)) tag.getCompound("tag") else null
+                val extraTag = if (tag.contains(TAG_NBT)) tag.getCompound(TAG_NBT) else null
                 val count = tag.getLong(TAG_COUNT)
                 ItemRecord(item, extraTag, count)
             } catch (e: Exception) {
