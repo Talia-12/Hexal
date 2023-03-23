@@ -90,6 +90,14 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:item/combinable",
+      "anchor": "hexal:item/combinable",
+      "input": "mote, mote",
+      "output": "bool",
+      "text": "hexal.page.items.item/combinable"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:item/split",
       "anchor": "hexal:item/split",
       "input": "mote, int",

@@ -30,6 +30,7 @@
   "hexal.mishap.invalid_value.int.strictly_positive": "a strictly positive integer",
   "hexal.mishap.invalid_value.crafting_recipe": "a valid crafting recipe",
   "hexal.mishap.invalid_value.mote_duplicated": "each mote to appear only once",
+  "hexal.mishap.invalid_value.cant_combine_motes": "two motes that can be combined",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota Type",
@@ -124,6 +125,7 @@
   "hexcasting.spell.hexal:item/make": "Mediafy Item",
   "hexcasting.spell.hexal:item/return": "Return Item",
   "hexcasting.spell.hexal:item/combine": "Stacking Distillation",
+  "hexcasting.spell.hexal:item/combinable": "Stacking Distillation II",
   "hexcasting.spell.hexal:item/split": "Splitting Gambit",
   "hexcasting.spell.hexal:item/storage/get": "Depot Purification",
   "hexcasting.spell.hexal:item/storage/set": "Depot Gambit",
@@ -237,6 +239,7 @@
   "hexal.page.items.item/make": "Convert an item entity in the world into a mote on your stack. Mediafying an item costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.items.item/return": "Returns all the items from a mote to the world at the location of your choosing. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.items.item/combine": "Combines two motes into one, merging the mote records they point to. Any pointers to the second mote will become null, any pointers to the first will remain. This can make motes holding many more items than I could carry in a stack naturally!",
+  "hexal.page.items.item/combinable": "Returns true if the two motes on top of the stack can be combined, and false otherwise.",
   "hexal.page.items.item/split": "Splits the specified number of items off of the passed mote, creating a new mote pointing to a new mote record.",
   "hexal.page.items.item/storage/get": "Get the position of the Mote Nexus that contains the passed mote.",
   "hexal.page.items.item/storage/set": "Move the record referenced by the passed mote to the Mote Nexus at the passed position. This returns a new mote pointing to that record, and invalidates all previous motes pointing to that record.",

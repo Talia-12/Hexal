@@ -92,6 +92,10 @@ public class ItemIota extends Iota {
         MediafiedItemManager.merge(this.getItemIndex(), other.getItemIndex());
     }
 
+    public boolean typeMatches(ItemIota other) {
+        return MediafiedItemManager.typeMatches(this.getItemIndex(), other.getItemIndex());
+    }
+
     public @Nullable ItemIota splitOff(int amount, @Nullable UUID storage) {
         var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount, storage);
         if (newIndex == null)

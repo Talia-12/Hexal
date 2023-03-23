@@ -234,6 +234,8 @@ object Patterns {
 	@JvmField
 	val ITEM_COMBINE = make(HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), modLoc("item/combine"), OpCombineItems)
 	@JvmField
+	val ITEM_COMBINABLE = make(HexPattern.fromAngles("dedqeaqa", HexDir.SOUTH_WEST), modLoc("item/combinable"), OpItemsCombinable)
+	@JvmField
 	val ITEM_SPLIT = make(HexPattern.fromAngles("eaqaaw", HexDir.EAST), modLoc("item/split"), OpSplitItem)
 	@JvmField
 	val ITEM_STORAGE_GET = make(HexPattern.fromAngles("qqqqqaw", HexDir.SOUTH_WEST), modLoc("item/storage/get"), OpGetItemStorage)

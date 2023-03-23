@@ -39,7 +39,16 @@ object OpTradeItem : VarargConstMediaAction {
         val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
 
         if (toTradeItemIotas.isEmpty())
-            throw MishapInvalidIota.of(args[1], 0, "villager_trade")
+            throw MishapInvalidIota.of(args[1], if (args.size == 3) 1 else 0, "villager_trade")
+
+        if (toTradeItemIotas.size > 1) {
+            for (i in toTradeItemIotas.indices) {
+                for (j in toTradeItemIotas.indices) {
+                    if (i != j && toTradeItemIotas[i].itemIndex == toTradeItemIotas[j].itemIndex)
+                        throw MishapInvalidIota.of(args[1], if (args.size == 3) 1 else 0, "mote_duplicated")
+                }
+            }
+        }
 
         ctx.assertEntityInRange(villager)
 

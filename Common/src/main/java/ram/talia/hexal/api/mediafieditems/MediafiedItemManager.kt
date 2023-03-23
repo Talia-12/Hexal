@@ -109,6 +109,14 @@ object MediafiedItemManager {
     }
 
     @JvmStatic
+    fun typeMatches(typerIndex: Index, typeeIndex: Index): Boolean {
+        val typer = access(typerIndex) ?: return false
+        val typee = access(typeeIndex) ?: return false
+
+        return typer.typeMatches(typee)
+    }
+
+    @JvmStatic
     fun merge(absorberIndex: Index, absorbeeIndex: Index) {
         val absorber = access(absorberIndex) ?: return
         val absorbee = access(absorbeeIndex) ?: return

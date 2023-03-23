@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.asActionResult
+import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.getItem
 
 object OpCombineItems : ConstMediaAction {
@@ -20,6 +21,9 @@ object OpCombineItems : ConstMediaAction {
         }
         if (absorber.itemIndex == absorbee.itemIndex)
             return listOf(absorber.copy())
+
+        if (!absorber.typeMatches(absorbee))
+            throw MishapInvalidIota.of(absorbee, 0, "cant_combine_motes")
 
         absorber.absorb(absorbee)
 
