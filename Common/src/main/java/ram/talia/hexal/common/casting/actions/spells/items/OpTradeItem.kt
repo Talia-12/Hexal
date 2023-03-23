@@ -53,6 +53,9 @@ object OpTradeItem : VarargConstMediaAction {
         ctx.assertEntityInRange(villager)
 
         val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        if (!MediafiedItemManager.isStorageLoaded(storage))
+            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+
         val isFull = MediafiedItemManager.isStorageFull(storage) ?: return null.asActionResult
         if (isFull)
             throw MishapStorageFull(ctx.caster.position())

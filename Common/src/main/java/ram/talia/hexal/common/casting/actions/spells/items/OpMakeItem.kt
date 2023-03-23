@@ -36,6 +36,8 @@ object OpMakeItem : Action {
 
         val itemStack = iEntity.item
         val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
+        if (!MediafiedItemManager.isStorageLoaded(storage))
+            throw MishapNoBoundStorage(iEntity.position(), "storage_unloaded")
         if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
             throw MishapStorageFull(iEntity.position())
 

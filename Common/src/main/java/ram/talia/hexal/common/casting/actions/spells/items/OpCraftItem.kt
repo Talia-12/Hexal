@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.ItemRecord
+import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.iota.ItemIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
@@ -42,6 +43,8 @@ object OpCraftItem : ConstMediaAction {
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
         val input = args.getList(0, argc)
         val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        if (!MediafiedItemManager.isStorageLoaded(storage))
+            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 
         val griddedIotas = makeItemIotaCraftingGrid(input)
 

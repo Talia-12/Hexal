@@ -12,10 +12,10 @@ import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.plus
 
-class MishapNoBoundStorage(val pos: Vec3) : Mishap() {
+class MishapNoBoundStorage(val pos: Vec3, val reason: String? = null) : Mishap() {
     override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.LIME)
 
-    override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = error("no_bound_storage")
+    override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = if (reason != null) error(reason) else error("no_bound_storage")
 
     override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
         val radius = 5.0

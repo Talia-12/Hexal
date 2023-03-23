@@ -10,6 +10,7 @@ import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.getItemOrItemType
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
 object OpGetContainedItems : ConstMediaAction {
     override val argc = 1
@@ -18,6 +19,8 @@ object OpGetContainedItems : ConstMediaAction {
         val item = args.getItemOrItemType(0, argc) ?: return null.asActionResult
 
         val storage = (ctx as IMixinCastingContext).boundStorage ?: return null.asActionResult
+        if (!MediafiedItemManager.isStorageLoaded(storage))
+            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 
         val results = item.map({itemIota ->
             itemIota.record?.let { MediafiedItemManager.getItemRecordsMatching(storage, it) }

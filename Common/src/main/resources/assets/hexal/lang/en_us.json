@@ -13,6 +13,7 @@
   "hexcasting.mishap.no_links": "%s has no links.",
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
   "hexcasting.mishap.no_bound_storage": "No bound Mote Nexus.",
+  "hexcasting.mishap.storage_unloaded": "Bound Mote Nexus is unloaded.",
 
   "hexcasting.mishap.invalid_value.class.linkable": "a linkable",
   "hexcasting.mishap.invalid_value.class.wisp": "a wisp",

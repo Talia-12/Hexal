@@ -28,6 +28,9 @@ object MediafiedItemManager {
     fun getBoundStorage(player: ServerPlayer): UUID? = IXplatAbstractions.INSTANCE.getBoundStorage(player).takeIf { it in allStorages }
 
     @JvmStatic
+    fun isStorageLoaded(id: UUID): Boolean = allStorages[id]?.get() != null
+
+    @JvmStatic
     fun setBoundStorage(player: ServerPlayer, storage: UUID?) = IXplatAbstractions.INSTANCE.setBoundStorage(player, storage)
 
     @JvmStatic

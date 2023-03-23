@@ -10,6 +10,7 @@ import ram.talia.hexal.api.getItem
 import ram.talia.hexal.api.getStrictlyPositiveInt
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
 
 object OpSplitItem : ConstMediaAction {
@@ -20,6 +21,8 @@ object OpSplitItem : ConstMediaAction {
         val toSplitOff = args.getStrictlyPositiveInt(1, argc)
 
         val storage = (ctx as IMixinCastingContext).boundStorage ?: item.itemIndex.storage
+        if (!MediafiedItemManager.isStorageLoaded(storage))
+            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
         if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
             throw MishapStorageFull(ctx.caster.position())
 
