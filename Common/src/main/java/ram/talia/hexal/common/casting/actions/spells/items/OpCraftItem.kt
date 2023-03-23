@@ -60,7 +60,7 @@ object OpCraftItem : ConstMediaAction {
         val recipe = recipes.find { it.matches(container, ctx.world) } ?: return emptyList<Iota>().asActionResult
 
         val itemResult = recipe.assemble(container)
-        val remainingItems = recipe.getRemainingItems(container)
+        val remainingItems = recipe.getRemainingItems(container).filter { item -> !item.isEmpty }
 
         val timesToCraft = getMinCount(griddedIotas)
 
