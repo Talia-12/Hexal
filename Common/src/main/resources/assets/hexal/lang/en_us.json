@@ -166,7 +166,7 @@
   "hexal.page.hexal_maths.running/mul": "Takes a list from the stack and computes its running product, for example inputting [1,2,5] would return [1,2,10].",
 
   "hexal.entry.hexal_spell": "Hexal Spells",
-  "hexal.page.hexal_spell.smelt.0": "Remove a location or item entity from the stack, then either smelt the block at the location or smelt all the items in the item entity.",
+  "hexal.page.hexal_spell.smelt.0": "Remove a location, item entity, or mote from the stack, then either smelt the block at the location or smelt all the items in the item entity or mote.",
   "hexal.page.hexal_spell.smelt.1": "Costs three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ per item smelted (i.e. three quarters of an $(l:items/amethyst)$(item)Amethyst Dust/$ for smelting a block, 6 $(l:items/amethyst)$(item)Amethyst Dust/$ to smelt a stack of 8 items.)",
   "hexal.page.hexal_spell.freeze": "Freezes the block at a block location. For example, turns water into ice, and ice into packed ice. Costs three $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.hexal_spell.falling_block": "Remove a location from the stack, and force the block there to fall as if it were sand or gravel. Costs one and a half $(l:items/amethyst)$(item)Amethyst Dust/$.",
