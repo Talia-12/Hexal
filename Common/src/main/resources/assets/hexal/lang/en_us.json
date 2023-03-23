@@ -251,8 +251,8 @@
   "hexal.page.items.item/villager/level/get": "Accepts a villager, returns a number representing that villager's seniority and skill at their craft.",
   "hexal.page.items.item/trade/get.0": "Accepts a villager and returns all of the trades that villager is offering. This is a list of lists of lists. Each trade comprises two lists, the cost, and the returned items. The returned items is a list containing the type of item, and the number of items.",
   "hexal.page.items.item/trade/get.1": "The cost is a list of one or two pairs of item and number of items required by the villager for the trade to be accepted. For example, one trade offer could be [[[Emerald, 1]], [Redstone, 1]].",
-  "hexal.page.items.item/trade.0": "Accepts a villager, a list of motes to trade with to villager, and optionally an int for which of that villager's trades to attempt. If no trade number was passed, it will try each of the villager's trade until finding one that accepts the passed items.",
-  "hexal.page.items.item/trade.1": "If a trade number was passed it will skip straight to using that trade. It will then repeat that trade for as long as it has enough items and the villager is still willing to trade. It will then return the items the villager traded away as a mote to the stack.",
+  "hexal.page.items.item/trade.0": "Accepts a villager, a list of motes to trade with to villager, and optionally an int for which of that villager's trades to attempt. (int? above means that you can pass 2 or 3 arguments, the optional 3rd being an int).",
+  "hexal.page.items.item/trade.1": "If no trade number was passed, it will try each of the villager's trade until finding one that accepts the passed items. If a trade number was passed it will skip straight to using that trade. It will then repeat that trade for as long as it has enough items and the villager is still willing to trade. It will then return the items the villager traded away as a mote to the stack.",
   "hexal.page.items.item/trade.2": "The villager will find this trade to be a learnable experience as it would if trading with you directly, and will improve its skills and trade offerings commensurately. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
 
   "hexal.entry.great_wisps": "Great Wisp Spells",
@@ -264,7 +264,7 @@
   "hexal.entry.types": "Types",
   "hexal.page.types.type/iota": "Remove an iota from the stack, and adds the type of that iota to the stack.",
   "hexal.page.types.type/entity": "Remove an entity from the stack, and adds the type of the entity at that location to the stack.",
-  "hexal.page.types.type/block_item": "Remove a location, $(l:hexal:hexal.entry.items)$(item)mote/$, or item entity from the stack, and adds the type of the block at that location, or type of that item, to the stack (e.g. Grass, Stone, Stick, etc.).",
+  "hexal.page.types.type/block_item": "Remove a location, $(l:hexal:hexal.entry.items)$(item)mote/$, item entity, or item frame from the stack, and adds the type of the block at that location, or type of that item, to the stack (e.g. Grass, Stone, Stick, etc.).",
   "hexal.page.types.type/item_held": "Adds the type of the item in the caster's offhand to the stack if there is one present, or the type of the casting hand otherwise.",
 
   "hexal.page.types.get_entity/type": "Remove an entity type and a position from the stack, and returns an entity of that type at that position if one exists.",

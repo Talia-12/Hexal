@@ -148,7 +148,7 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:item/trade",
       "anchor": "hexal:item/trade",
-      "input": "villager, [mote] | villager, [mote], int",
+      "input": "villager, [mote], int?",
       "output": "item",
       "text": "hexal.page.items.item/trade.0"
     },
