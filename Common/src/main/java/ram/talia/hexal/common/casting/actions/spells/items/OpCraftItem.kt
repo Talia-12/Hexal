@@ -94,6 +94,13 @@ object OpCraftItem : ConstMediaAction {
         if (out.all { it == null })
             throw MishapInvalidIota.of(ListIota(list), 0, "crafting_recipe")
 
+        for (a in out.indices) {
+            for (b in out.indices) {
+                if (a != b && out[a] != null && out[a]?.itemIndex == out[b]?.itemIndex)
+                    throw MishapInvalidIota.of(ListIota(list), 0, "mote_duplicated")
+            }
+        }
+
         return out
     }
 

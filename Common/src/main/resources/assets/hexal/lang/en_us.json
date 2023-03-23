@@ -28,6 +28,8 @@
   "hexal.mishap.invalid_value.veclist": "a vector or a list of vectors",
   "hexcasting.mishap.invalid_value.blockitementityitem": "a block, item entity, or mote",
   "hexal.mishap.invalid_value.int.strictly_positive": "a strictly positive integer",
+  "hexal.mishap.invalid_value.crafting_recipe": "a valid crafting recipe",
+  "hexal.mishap.invalid_value.mote_duplicated": "each mote to appear only once",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota Type",
