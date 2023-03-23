@@ -48,7 +48,7 @@ class HexalBlocks {
 
 		@JvmField
 		val MEDIAFIED_STORAGE = blockItem("mediafied_storage", BlockMediafiedStorage(
-				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion()
+				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(30.0f)
 		))
 
 		private fun <T : Block> blockNoItem(name: String, block: T): T {

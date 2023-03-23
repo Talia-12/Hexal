@@ -1,17 +1,12 @@
 package ram.talia.hexal.forge.datagen
 
-import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.datagen.HexBlockTagProvider
-import at.petrak.hexcasting.datagen.HexItemTagProvider
-import at.petrak.hexcasting.datagen.HexLootTables
-import at.petrak.hexcasting.datagen.recipe.HexplatRecipes
-import at.petrak.hexcasting.forge.datagen.HexForgeDataGenerators
-import at.petrak.hexcasting.xplat.IXplatAbstractions
 import at.petrak.paucal.api.forge.datagen.PaucalForgeDatagenWrappers
 import net.minecraftforge.data.event.GatherDataEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.lib.HexalSounds
+import ram.talia.hexal.datagen.HexalBlockTagProvider
+import ram.talia.hexal.datagen.HexalLootTables
 import ram.talia.hexal.datagen.recipes.HexalplatRecipes
 
 class HexalForgeDataGenerators {
@@ -43,12 +38,10 @@ class HexalForgeDataGenerators {
 
 			val gen = ev.generator
 			val efh = ev.existingFileHelper
+			gen.addProvider(ev.includeServer(), HexalLootTables(gen))
 			gen.addProvider(ev.includeServer(), HexalplatRecipes(gen))
-//				val xtags = IXplatAbstractions.INSTANCE.tags()
-//				val blockTagProvider = PaucalForgeDatagenWrappers.addEFHToTagProvider(
-//					HexBlockTagProvider(gen, xtags), efh
-//				)
-//				gen.addProvider(blockTagProvider)
+			val blockTagProvider = PaucalForgeDatagenWrappers.addEFHToTagProvider(HexalBlockTagProvider(gen), efh)
+			gen.addProvider(ev.includeServer(), blockTagProvider)
 //				val itemTagProvider = PaucalForgeDatagenWrappers.addEFHToTagProvider(
 //					HexItemTagProvider(gen, blockTagProvider, IXplatAbstractions.INSTANCE.tags()), efh
 //				)
