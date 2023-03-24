@@ -18,6 +18,7 @@ import net.minecraft.world.phys.shapes.VoxelShape
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage.AnimationState
+import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage.Companion.ANIMATION_LENGTH
 
 /**
  * Block that actually stores all the mediafied items from all the players bound to it.
@@ -51,10 +52,11 @@ class BlockMediafiedStorage(properties: Properties) : Block(properties), EntityB
     }
 
     override fun getShape(blockState: BlockState, level: BlockGetter, pos: BlockPos, ctx: CollisionContext): VoxelShape {
-        return if ((level.getBlockEntity(pos) as? BlockEntityMediafiedStorage)?.currentAnimation is AnimationState.Closing) {
-            CLOSED_SHAPE
+        val animation = (level.getBlockEntity(pos) as? BlockEntityMediafiedStorage)?.currentAnimation ?: return OPEN_SHAPE
+        return if (animation is AnimationState.Closing) {
+            box(0.0, 0.0, 0.0, 16.0, 16.0 - 6.0 * animation.progress.toDouble() / ANIMATION_LENGTH, 16.0)
         } else {
-            OPEN_SHAPE
+            box(0.0, 0.0, 0.0, 16.0, 10.0 + 6.0 * animation.progress.toDouble() / ANIMATION_LENGTH, 16.0)
         }
     }
 
