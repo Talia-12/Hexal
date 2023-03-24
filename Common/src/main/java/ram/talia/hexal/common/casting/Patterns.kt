@@ -210,6 +210,8 @@ object Patterns {
 	@JvmField
 	val GATE_MARK = make(HexPattern.fromAngles("qaqeede", HexDir.WEST), modLoc("gate/mark"), OpMarkGate)
 	@JvmField
+	val GATE_UNMARK = make(HexPattern.fromAngles("edeqqaq", HexDir.EAST), modLoc("gate/unmark"), OpUnmarkGate)
+	@JvmField
 	val GATE_MARK_GET = make(HexPattern.fromAngles("edwwdeeede", HexDir.EAST), modLoc("gate/mark/get"), OpGetMarkedGate)
 	@JvmField
 	val GATE_MARK_NUM_GET = make(HexPattern.fromAngles("qawwaqqqaq", HexDir.WEST), modLoc("gate/mark/num/get"), OpGetNumMarkedGate)
@@ -231,6 +233,8 @@ object Patterns {
 	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
 	@JvmField
 	val ITEM_RETURN = make(HexPattern.fromAngles("qded", HexDir.EAST), modLoc("item/return"), OpReturnItem)
+	@JvmField
+	val ITEM_COUNT_GET = make(HexPattern.fromAngles("qqqqwqqqqqaa", HexDir.NORTH_WEST), modLoc("item/count/get"), OpGetCountItems)
 	@JvmField
 	val ITEM_COMBINE = make(HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), modLoc("item/combine"), OpCombineItems)
 	@JvmField

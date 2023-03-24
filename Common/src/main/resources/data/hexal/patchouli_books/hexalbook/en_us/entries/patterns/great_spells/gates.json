@@ -24,6 +24,14 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:gate/unmark",
+      "anchor": "hexal:gate/unmark",
+      "input": "gate, entity",
+      "output": "",
+      "text": "hexal.page.gates.gate/unmark"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:gate/mark/num/get",
       "anchor": "hexal:gate/mark/num/get",
       "input": "gate",

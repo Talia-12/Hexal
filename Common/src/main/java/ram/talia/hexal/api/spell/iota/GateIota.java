@@ -51,6 +51,10 @@ public class GateIota extends Iota {
         GateManager.mark(this.getGateIndex(), entity);
     }
 
+    public void unmark(@NotNull Entity entity) {
+        GateManager.unmark(this.getGateIndex(), entity);
+    }
+
     public void clearMarked() {
         GateManager.clearMarked(this.getGateIndex());
     }
