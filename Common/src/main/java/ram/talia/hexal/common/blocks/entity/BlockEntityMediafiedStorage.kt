@@ -88,7 +88,7 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         currentAnimation.progress = min(currentAnimation.progress + 1, ANIMATION_LENGTH)
     }
 
-    private val SLOTS = intArrayOf(1)
+    private val SLOTS = intArrayOf(0)
 
     override fun getSlotsForFace(dir: Direction) = SLOTS
 
