@@ -19,7 +19,7 @@ data class MsgSendEverbookSyn(val everbook: Everbook) : IMessage {
 
 	fun handle(server: MinecraftServer, sender: ServerPlayer) {
 		server.execute {
-			IXplatAbstractions.INSTANCE.setFullEverbook(sender, everbook)
+			IXplatAbstractions.INSTANCE.setFullEverbook(sender, everbook.filterIotasIllegalInterworld(server.overworld()))
 		}
 	}
 
