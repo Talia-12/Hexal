@@ -18,7 +18,7 @@ class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
     override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = error("illegal_interworld_iota", iota.display())
 
     override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
-        TODO("Not yet implemented")
+        ctx.caster.health /= 2 // Bad but better than freaking TODO()
     }
 
     companion object {
