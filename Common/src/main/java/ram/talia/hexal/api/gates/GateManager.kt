@@ -12,7 +12,7 @@ import ram.talia.hexal.api.spell.iota.GateIota
 import java.util.UUID
 
 /**
- * Stores which gate index references which entities. On Forge data saved by [GateEventHandler], on Fabric by [].
+ * Stores which gate index references which entities. Data saved by [GateSavedData].
  */
 object GateManager {
     private var currentGateNum = 0
@@ -28,6 +28,14 @@ object GateManager {
         allMarked.putIfAbsent(gate, mutableSetOf())
 
         allMarked[gate]!!.add(entity)
+    }
+
+    @JvmStatic
+    fun unmark(gate: Int, entity: Entity) = unmark(gate, entity.uuid)
+
+    @JvmStatic
+    fun unmark(gate: Int, entity: UUID) {
+        allMarked[gate]?.remove(entity)
     }
 
     @JvmStatic

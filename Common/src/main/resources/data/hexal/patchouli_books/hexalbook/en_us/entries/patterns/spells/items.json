@@ -82,6 +82,14 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:item/count/get",
+      "anchor": "hexal:item/count/get",
+      "input": "mote",
+      "output": "int",
+      "text": "hexal.page.items.item/count/get"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:item/combine",
       "anchor": "hexal:item/combine",
       "input": "mote, mote",
@@ -131,6 +139,14 @@
     {
       "type": "patchouli:text",
       "text": "hexal.page.items.item/craft.1"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:item/villager/level/get",
+      "anchor": "hexal:item/villager/level/get",
+      "input": "villager",
+      "output": "int",
+      "text": "hexal.page.items.item/villager/level/get"
     },
     {
       "type": "hexcasting:pattern",

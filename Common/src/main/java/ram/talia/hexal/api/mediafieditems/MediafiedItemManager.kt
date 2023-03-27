@@ -163,6 +163,16 @@ object MediafiedItemManager {
     }
 
 
+    /**
+     * Returns false if the index doesn't exist or if it contains air. Otherwise, returns true.
+     */
+    @JvmStatic
+    fun isEmpty(index: Index): Boolean {
+        val empty = getRecord(index)?.get()?.toStack()?.isEmpty
+        return empty != false
+    }
+
+
     data class Index(val storage: UUID, val index: Int) {
         fun writeToNbt(tag: CompoundTag) {
             tag.putUUID(TAG_STORAGE, storage)

@@ -88,7 +88,7 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
         currentAnimation.progress = min(currentAnimation.progress + 1, ANIMATION_LENGTH)
     }
 
-    private val SLOTS = intArrayOf(1)
+    private val SLOTS = intArrayOf(0)
 
     override fun getSlotsForFace(dir: Direction) = SLOTS
 
@@ -117,6 +117,9 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     fun insertItemToContainer(stack: ItemStack) {
+        if (stack.isEmpty)
+            return
+
         // gets the largest record that matches the passed stack
         val record = getItemRecordsMatching(ItemRecord(stack)).entries.sortedBy { (_, record) -> -record.count }.firstOrNull()
         if (record == null) {

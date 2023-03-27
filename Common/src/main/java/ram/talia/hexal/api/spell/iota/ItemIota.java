@@ -62,7 +62,7 @@ public class ItemIota extends Iota {
     }
 
     public boolean isEmpty() {
-        return !MediafiedItemManager.contains(this.getItemIndex());
+        return MediafiedItemManager.isEmpty(this.getItemIndex());
     }
 
     public MediafiedItemManager.Index getItemIndex() {
@@ -145,13 +145,15 @@ public class ItemIota extends Iota {
     protected boolean toleratesOther(Iota that) {
         return (typesMatch(this, that) &&
                 that instanceof ItemIota ithat &&
-                this.getItemIndex() == ithat.getItemIndex())
-                || (this.isEmpty() && that instanceof NullIota);
+                this.getItemIndex().equals(ithat.getItemIndex())) ||
+                (this.isEmpty() && (that instanceof NullIota ||
+                        (that instanceof ItemIota ithat2 &&
+                                ithat2.isEmpty())));
     }
 
     @Override
     public boolean isTruthy() {
-        return true;
+        return !this.isEmpty();
     }
 
     @Override

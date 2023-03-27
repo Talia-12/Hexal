@@ -11,6 +11,7 @@ import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.UUID
@@ -21,9 +22,7 @@ import kotlin.io.path.*
  * a packet will be sent to their client which will save the file representation of their Everbook. When a player joins the world their Everbook will be loaded by their
  * client and sent to the server. Takes in a player's [UUID] to randomise the file content with.
  */
-class Everbook(val uuid: UUID,
-							 private val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf(),
-							 macros: List<String> = listOf()) {
+class Everbook(val uuid: UUID, private val entries: MutableMap<String, Pair<HexPattern, CompoundTag>> = mutableMapOf(), macros: List<String> = listOf()) {
 
 	// Java apparently can't figure out the default values thing.
 	constructor(uuid: UUID) : this(uuid, mutableMapOf(), listOf()) {}
@@ -90,6 +89,22 @@ class Everbook(val uuid: UUID,
 		val angles = key.anglesSignature()
 		// Bookkeepers: - contains no angle characters, so can't occur any way other than this
 		return angles.ifEmpty { "empty" }
+	}
+
+
+	/**
+	 * Returns the everbook, with any references to iotas that are illegal to bring interworld replaced with garbage. (Modifies in place and returns this).
+	 */
+	fun filterIotasIllegalInterworld(level: ServerLevel): Everbook {
+		entries.replaceAll { _, iotaCompound ->
+			val iota = MishapIllegalInterworldIota.replaceInNestedIota(HexIotaTypes.deserialize(iotaCompound.second, level))
+
+			iotaCompound.first to HexIotaTypes.serialize(iota)
+		}
+
+		macroHolder.recalcMacros()
+
+		return this
 	}
 
 	fun serialiseToNBT(): CompoundTag {

@@ -37,8 +37,7 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 		val vec = Vec3.atCenterOf(blockPos)
 
 		for (colouriser in HexItems.DYE_COLORIZERS.values) {
-			val frozenColouriser = FrozenColorizer(ItemStack(colouriser), Util.NIL_UUID)
-			val colour: Int = frozenColouriser.nextColour(random)
+			val colour: Int = colours[random.nextInt(colours.size)]
 
 			level.addParticle(
 					ConjureParticleOptions(colour, true),
@@ -101,6 +100,22 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 
 		fun getRandomColouriser(): FrozenColorizer {
 			return FrozenColorizer(ItemStack(HexItems.DYE_COLORIZERS.values.elementAt(RANDOM.nextInt(HexItems.DYE_COLORIZERS.size))), Util.NIL_UUID)
+		}
+
+		private val colours = makeColours()
+
+		private fun makeColours(): Array<Int> {
+			val random = RandomSource.create()
+			val coloursList = mutableListOf<Int>()
+
+			for (i in 0..32) {
+				for (colouriser in HexItems.DYE_COLORIZERS.values) {
+					val frozenColouriser = FrozenColorizer(ItemStack(colouriser), Util.NIL_UUID)
+					coloursList.add(frozenColouriser.nextColour(random))
+				}
+			}
+
+			return coloursList.toTypedArray()
 		}
 	}
 }
