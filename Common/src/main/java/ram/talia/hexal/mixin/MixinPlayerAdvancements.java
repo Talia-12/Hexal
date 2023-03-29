@@ -12,15 +12,17 @@ import ram.talia.hexal.api.fakes.FakePlayer;
 
 @Mixin(PlayerAdvancements.class)
 public class MixinPlayerAdvancements {
-	
-	@Shadow private ServerPlayer player;
-	
-	/**
-	 * Force the PlayerAdvancements to not load if the player that it was passed is a fake player.
-	 */
-	@Inject(method = "load", at = @At("HEAD"), cancellable = true)
-	private void loadFakePlayer(ServerAdvancementManager $$0, CallbackInfo ci) {
-		if (this.player instanceof FakePlayer)
-			ci.cancel();
-	}
+
+	// Turned off since apparently player doesn't exist to shadow for some people ????
+	// since I'm not actually using this for anything important I'm just gonna turn it off for now
+//	@Shadow private ServerPlayer player;
+//
+//	/**
+//	 * Force the PlayerAdvancements to not load if the player that it was passed is a fake player.
+//	 */
+//	@Inject(method = "load", at = @At("HEAD"), cancellable = true)
+//	private void loadFakePlayer(ServerAdvancementManager $$0, CallbackInfo ci) {
+//		if (this.player instanceof FakePlayer)
+//			ci.cancel();
+//	}
 }
