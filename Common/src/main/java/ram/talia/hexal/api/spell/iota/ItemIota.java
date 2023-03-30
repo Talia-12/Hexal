@@ -53,7 +53,7 @@ public class ItemIota extends Iota {
 
     /**
      * Returns the ItemIota if its item still exists, or null otherwise. SHOULD ALWAYS
-     * BE CALLED BEFORE MAKING USE OF AN ITEM IOTA (built into List<Iota>.getItem).
+     * BE CALLED BEFORE MAKING USE OF AN ITEM IOTA {@literal (built into List<Iota>.getItem)}.
      */
     public @Nullable ItemIota selfOrNull() {
         if (MediafiedItemManager.contains(this.getItemIndex()))

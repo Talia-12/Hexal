@@ -4,12 +4,16 @@ import at.petrak.hexcasting.api.block.HexBlockEntity
 import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.putList
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.WorldlyContainer
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.ItemRecord
@@ -18,7 +22,7 @@ import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
 import kotlin.math.min
 
-class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
+class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state), WorldlyContainer {
     var uuid: UUID = UUID.randomUUID()
         private set
 
@@ -82,6 +86,48 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     fun clientTick() {
         currentAnimation.progress = min(currentAnimation.progress + 1, ANIMATION_LENGTH)
+    }
+
+    private val SLOTS = intArrayOf(0)
+
+    override fun getSlotsForFace(dir: Direction) = SLOTS
+
+    override fun canPlaceItemThroughFace(slotIndex: Int, stack: ItemStack, dir: Direction?) = canPlaceItem(slotIndex, stack)
+
+    override fun canPlaceItem(slotIndex: Int, stack: ItemStack) = !isFull() || getItemRecordsMatching(ItemRecord(stack)).isNotEmpty()
+
+    override fun canTakeItemThroughFace(slotIndex: Int, stack: ItemStack, dir: Direction) = false
+
+    override fun getContainerSize() = 1
+
+    override fun isEmpty() = true
+
+    override fun getItem(index: Int): ItemStack = ItemStack.EMPTY.copy()
+
+    override fun removeItem(index: Int, count: Int): ItemStack = ItemStack.EMPTY.copy()
+
+    override fun removeItemNoUpdate(index: Int): ItemStack = ItemStack.EMPTY.copy()
+
+    override fun setItem(index: Int, stack: ItemStack) = insertItemToContainer(stack)
+
+    override fun stillValid(player: Player) = false
+
+    override fun clearContent() {
+        // NO-OP
+    }
+
+    fun insertItemToContainer(stack: ItemStack) {
+        if (stack.isEmpty)
+            return
+
+        // gets the largest record that matches the passed stack
+        val record = getItemRecordsMatching(ItemRecord(stack)).entries.sortedBy { (_, record) -> -record.count }.firstOrNull()
+        if (record == null) {
+            assignItem(ItemRecord(stack))
+            return
+        }
+
+        record.value.addCount(stack.count.toLong())
     }
 
     /**
