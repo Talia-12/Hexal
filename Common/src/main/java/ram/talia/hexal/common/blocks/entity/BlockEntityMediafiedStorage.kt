@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
@@ -94,7 +95,7 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     override fun canPlaceItemThroughFace(slotIndex: Int, stack: ItemStack, dir: Direction?) = canPlaceItem(slotIndex, stack)
 
-    override fun canPlaceItem(slotIndex: Int, stack: ItemStack) = !isFull() || getItemRecordsMatching(ItemRecord(stack)).isNotEmpty()
+    override fun canPlaceItem(slotIndex: Int, stack: ItemStack) = !stack.isEmpty && (!isFull() || getItemRecordsMatching(ItemRecord(stack)).isNotEmpty())
 
     override fun canTakeItemThroughFace(slotIndex: Int, stack: ItemStack, dir: Direction) = false
 
@@ -108,7 +109,11 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     override fun removeItemNoUpdate(index: Int): ItemStack = ItemStack.EMPTY.copy()
 
-    override fun setItem(index: Int, stack: ItemStack) = insertItemToContainer(stack)
+    override fun setItem(index: Int, stack: ItemStack) {
+        HexalAPI.LOGGER.info("inserting $stack into $index of $this")
+
+        insertItemToContainer(stack)
+    }
 
     override fun stillValid(player: Player) = false
 
@@ -117,6 +122,8 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
     }
 
     fun insertItemToContainer(stack: ItemStack) {
+        HexalAPI.LOGGER.info("inserting $stack into $this")
+
         if (stack.isEmpty)
             return
 
