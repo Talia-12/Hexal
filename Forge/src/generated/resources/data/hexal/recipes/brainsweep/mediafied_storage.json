@@ -1,0 +1,14 @@
+{
+  "type": "hexcasting:brainsweep",
+  "blockIn": {
+    "type": "block",
+    "block": "minecraft:shulker_box"
+  },
+  "result": {
+    "name": "hexal:mediafied_storage"
+  },
+  "villagerIn": {
+    "minLevel": 2,
+    "profession": "minecraft:cartographer"
+  }
+}
