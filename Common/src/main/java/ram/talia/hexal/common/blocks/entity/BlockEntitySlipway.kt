@@ -7,10 +7,12 @@ import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.Util
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.api.nextGaussian
@@ -26,14 +28,14 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 
 	private var nextSpawnTick: Long = 0
 
-	fun tick(level: Level, blockPos: BlockPos, blockState: BlockState) {
+	fun tick(level: Level, blockPos: BlockPos) {
 		if (level.isClientSide)
-			clientTick(level, blockPos, blockState)
+			clientTick(level, blockPos)
 		else
-			serverTick(level, blockPos, blockState)
+			serverTick(level as ServerLevel, blockPos)
 	}
 
-	private fun clientTick(level: Level, blockPos: BlockPos, blockState: BlockState) {
+	private fun clientTick(level: Level, blockPos: BlockPos) {
 		val vec = Vec3.atCenterOf(blockPos)
 
 		for (colouriser in HexItems.DYE_COLORIZERS.values) {
@@ -51,7 +53,7 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 		}
 	}
 
-	private fun serverTick(level: Level, blockPos: BlockPos, blockState: BlockState) {
+	private fun serverTick(level: ServerLevel, blockPos: BlockPos) {
 		if (!isActive) {
 			if (level.hasNearbyAlivePlayer(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(), ACTIVE_RANGE)) {
 				isActive = true
@@ -63,7 +65,9 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 
 		val tick = level.gameTime
 
-		if (tick >= nextSpawnTick) {
+		val aabb = AABB.ofSize(Vec3.atCenterOf(blockPos), 64.0, 64.0, 64.0)
+
+		if (tick >= nextSpawnTick && level.getEntitiesOfClass(WanderingWisp::class.java, aabb).size < 20) {
 			nextSpawnTick = tick + random.nextGaussian(SPAWN_INTERVAL_MU.toDouble(), SPAWN_INTERVAL_SIG.toDouble()).toLong()
 
 			val colouriser = getRandomColouriser()

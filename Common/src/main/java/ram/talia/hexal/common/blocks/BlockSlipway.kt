@@ -35,9 +35,10 @@ class BlockSlipway(properties: Properties) : Block(properties), EntityBlock, IFo
 	}
 
 	companion object {
+		@Suppress("UNUSED_PARAMETER")
 		private fun <T : BlockEntity> tick(level: Level, blockPos: BlockPos, blockState: BlockState, t: T) {
 			if (t is BlockEntitySlipway) {
-				t.tick(level, blockPos, blockState)
+				t.tick(level, blockPos)
 			}
 		}
 	}
