@@ -74,6 +74,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             @ConfigEntry.Gui.Tooltip(count = 2)
             double moveSpeedSetCost = DEFAULT_MOVE_SPEED_SET_COST;
             double summonTickingWispCost = DEFAULT_SUMMON_TICKING_WISP_COST;
+            double summonTickingWispMinCost = DEFAULT_SUMMON_TICKING_WISP_MIN_COST;
             double summonProjectileWispCost = DEFAULT_SUMMON_PROJECTILE_WISP_COST;
             double summonProjectileWispMinCost = DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST;
         }
@@ -91,7 +92,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             @ConfigEntry.Gui.Tooltip(count = 2)
             double seonDiscountFactor = DEFAULT_SEON_DISCOUNT_FACTOR;
             @ConfigEntry.Gui.Tooltip(count = 2)
-            public double storingPlayerCostScaleFactor;
+            public double storingPlayerCostScaleFactor = DEFAULT_STORING_PLAYER_COST_SCALE_FACTOR;
+            @ConfigEntry.Gui.Tooltip(count = 2)
+            public double mediaFlowRateOverLink = DEFAULT_MEDIA_FLOW_RATE_OVER_LINK;
         }
 
 
@@ -169,6 +172,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             // costs of wisp spells
             this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST, DEF_MAX_COST);
             this.wispSpells.summonTickingWispCost = bound(this.wispSpells.summonTickingWispCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.wispSpells.summonTickingWispMinCost = bound(this.wispSpells.summonTickingWispMinCost, DEF_MIN_COST, DEF_MAX_COST);
             this.wispSpells.summonProjectileWispCost = bound(this.wispSpells.summonProjectileWispCost, DEF_MIN_COST, DEF_MAX_COST);
             this.wispSpells.summonProjectileWispMinCost = bound(this.wispSpells.summonProjectileWispMinCost, DEF_MIN_COST, DEF_MAX_COST);
 
@@ -179,6 +183,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.wispUpkeep.linkUpkeepPerTick = bound(this.wispUpkeep.linkUpkeepPerTick, DEF_MIN_COST, DEF_MAX_COST);
             this.wispUpkeep.seonDiscountFactor = bound(this.wispUpkeep.seonDiscountFactor, MIN_SEON_DISCOUNT_FACTOR, MAX_SEON_DISCOUNT_FACTOR);
             this.wispUpkeep.storingPlayerCostScaleFactor = bound(this.wispUpkeep.storingPlayerCostScaleFactor, MIN_STORING_PLAYER_COST_SCALE_FACTOR, MAX_STORING_PLAYER_COST_SCALE_FACTOR);
+            this.wispUpkeep.mediaFlowRateOverLink = bound(this.wispUpkeep.mediaFlowRateOverLink, MIN_MEDIA_FLOW_RATE_OVER_LINK, MAX_MEDIA_FLOW_RATE_OVER_LINK);
 
             // costs of link spells
             this.linkSpells.linkCost = bound(this.linkSpells.linkCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -260,6 +265,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
+        public int getSummonTickingWispMinCost() {
+            return (int) (wispSpells.summonTickingWispMinCost * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
         public int getSummonProjectileWispCost() {
             return (int) (wispSpells.summonProjectileWispCost * MediaConstants.DUST_UNIT);
         }
@@ -297,6 +307,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public double getStoringPlayerCostScaleFactor() {
             return wispUpkeep.storingPlayerCostScaleFactor;
+        }
+
+        @Override
+        public double getMediaFlowRateOverLink() {
+            return wispUpkeep.mediaFlowRateOverLink;
         }
 
         @Override

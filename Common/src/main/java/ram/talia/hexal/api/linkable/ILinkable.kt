@@ -39,6 +39,17 @@ interface ILinkable {
 
 	fun writeToSync(): Tag
 
+	/**
+	 * Returns <= 0 if this [ILinkable] can't accept any media, returns how much media
+	 * it is accepting if it can accept media.
+	 */
+	fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int
+
+	/**
+	 * Called to pass [sentMedia] media from [other] to this [ILinkable].
+	 */
+	fun acceptMedia(other: ILinkable, sentMedia: Int)
+
 	//region default implementations
 
 	fun link(other: ILinkable, linkOther: Boolean = true) {

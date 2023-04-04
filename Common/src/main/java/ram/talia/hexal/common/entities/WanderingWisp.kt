@@ -13,12 +13,13 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalEntities
 import ram.talia.hexal.api.nextDouble
 import kotlin.math.abs
 
-class WanderingWisp	(entityType: EntityType<out WanderingWisp>, level: Level) : BaseWisp(entityType, level) {
+class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : BaseWisp(entityType, level) {
 	override var media: Int
 		get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
 		set(_) {}
@@ -42,6 +43,11 @@ class WanderingWisp	(entityType: EntityType<out WanderingWisp>, level: Level) : 
 	override fun numRemainingIota() = 0
 
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = false
+
+	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
+
+	override fun acceptMedia(other: ILinkable, sentMedia: Int) { }
+
 
 	constructor(world: Level, pos: Vec3) : this(HexalEntities.WANDERING_WISP, world) {
 		setPos(pos)

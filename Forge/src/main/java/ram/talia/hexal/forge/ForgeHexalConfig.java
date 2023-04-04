@@ -29,6 +29,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         // costs of wisp spells
         private static ForgeConfigSpec.DoubleValue moveSpeedSetCost;
         private static ForgeConfigSpec.DoubleValue summonTickingWispCost;
+        private static ForgeConfigSpec.DoubleValue summonTickingWispMinCost;
         private static ForgeConfigSpec.DoubleValue summonProjectileWispCost;
         private static ForgeConfigSpec.DoubleValue summonProjectileWispMinCost;
 
@@ -39,6 +40,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue linkUpkeepPerTick;
         private static ForgeConfigSpec.DoubleValue seonDiscountFactor;
         private static ForgeConfigSpec.DoubleValue storingPlayerCostScaleFactor;
+        private static ForgeConfigSpec.DoubleValue mediaFlowRateOverLink;
 
         // costs of link spells
         private static ForgeConfigSpec.DoubleValue linkCost;
@@ -102,6 +104,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("moveSpeedSetCost", DEFAULT_MOVE_SPEED_SET_COST, DEF_MIN_COST, DEF_MAX_COST);
             summonTickingWispCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonTickingWispCost")
                     .defineInRange("summonTickingWispCost", DEFAULT_SUMMON_TICKING_WISP_COST, DEF_MIN_COST, DEF_MAX_COST);
+            summonTickingWispMinCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonTickingWispMinCost")
+                    .defineInRange("summonTickingWispMinCost", DEFAULT_SUMMON_TICKING_WISP_MIN_COST, DEF_MIN_COST, DEF_MAX_COST);
             summonProjectileWispCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonProjectileWispCost")
                     .defineInRange("summonProjectileWispCost", DEFAULT_SUMMON_PROJECTILE_WISP_COST, DEF_MIN_COST, DEF_MAX_COST);
             summonProjectileWispMinCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonProjectileWispMinCost")
@@ -127,6 +131,9 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
             storingPlayerCostScaleFactor = builder.translation("text.autoconfig.hexal.option.server.wispUpkeep.storingPlayerCostScaleFactor")
                     .comment("The multiplicative cost increase of wisps containing an iota of another player.")
                     .defineInRange("storingPlayerCostScaleFactor", DEFAULT_STORING_PLAYER_COST_SCALE_FACTOR, MIN_STORING_PLAYER_COST_SCALE_FACTOR, MAX_STORING_PLAYER_COST_SCALE_FACTOR);
+            mediaFlowRateOverLink = builder.translation("text.autoconfig.hexal.option.server.wispUpkeep.mediaFlowRateOverLink")
+                    .comment("Proportion of the difference between media amounts that flows across a link per tick.")
+                    .defineInRange("mediaFlowRateOverLink", DEFAULT_MEDIA_FLOW_RATE_OVER_LINK, MIN_MEDIA_FLOW_RATE_OVER_LINK, MAX_MEDIA_FLOW_RATE_OVER_LINK);
 
             builder.pop();
 
@@ -256,6 +263,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
+        public int getSummonTickingWispMinCost() {
+            return (int) (summonTickingWispMinCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
         public int getSummonProjectileWispCost() {
             return (int) (summonProjectileWispCost.get() * MediaConstants.DUST_UNIT);
         }
@@ -293,6 +305,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public double getStoringPlayerCostScaleFactor() {
             return storingPlayerCostScaleFactor.get();
+        }
+
+        @Override
+        public double getMediaFlowRateOverLink() {
+            return mediaFlowRateOverLink.get();
         }
 
         @Override

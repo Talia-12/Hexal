@@ -32,7 +32,8 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
         val spell = when (ticking) {
             true -> {
                 media = args.getPositiveDouble(2, argc)
-                cost = HexalConfig.server.summonTickingWispCost.addBounded ((media * MediaConstants.DUST_UNIT).toInt())
+                cost = max(HexalConfig.server.summonTickingWispCost.addBounded ((media * MediaConstants.DUST_UNIT).toInt()),
+                            HexalConfig.server.summonTickingWispMinCost)
                 Spell(true, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt())
             }
             false -> {

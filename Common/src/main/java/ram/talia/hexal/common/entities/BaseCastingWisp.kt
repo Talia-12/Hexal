@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -29,6 +30,7 @@ import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
 import ram.talia.hexal.common.network.MsgWispCastSoundAck
 import ram.talia.hexal.xplat.IXplatAbstractions
+import java.lang.Integer.min
 import java.util.*
 
 
@@ -98,8 +100,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		oldPos = position()
 
 		if (!scheduledCast && caster != null) {
-			if (!level.isClientSide)
+			if (!level.isClientSide) {
 				deductMedia()
+				sendMediaToNeighbours()
+			}
 
 			childTick()
 			move()
@@ -144,6 +148,29 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	open val normalCostPerTick: Int get() = HexalConfig.server.projectileWispUpkeepPerTick
 	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
 
+	fun sendMediaToNeighbours() {
+		for (i in 0.until(this.numLinked())) {
+			val linked = this.getLinked(i)
+			val requested = linked.canAcceptMedia(this, this.media)
+
+			if (requested > 0) {
+				val sent = min(requested, this.media)
+				this.media -= sent
+				linked.acceptMedia(this, sent)
+			}
+		}
+	}
+
+	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
+		if (otherMediaLevel <= this.media)
+			return 0
+
+		return ((otherMediaLevel - this.media) * HexalConfig.server.mediaFlowRateOverLink).toInt()
+	}
+
+	override fun acceptMedia(other: ILinkable, sentMedia: Int) {
+		media += sentMedia
+	}
 
 	/**
 	 * Called in [tick] to execute other code that child classes may want to execute every tick; respects not executing if the wisp is waiting for a cast to be executed.

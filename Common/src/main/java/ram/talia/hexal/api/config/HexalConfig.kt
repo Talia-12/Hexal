@@ -21,6 +21,7 @@ object HexalConfig {
         // costs of wisp spells
         val moveSpeedSetCost: Int
         val summonTickingWispCost: Int
+        val summonTickingWispMinCost: Int
         val summonProjectileWispCost: Int
         val summonProjectileWispMinCost: Int
 
@@ -31,6 +32,7 @@ object HexalConfig {
         val linkUpkeepPerTick: Int
         val seonDiscountFactor: Double
         val storingPlayerCostScaleFactor: Double
+        val mediaFlowRateOverLink: Double
 
         // costs of link spells
         val linkCost: Int
@@ -81,6 +83,7 @@ object HexalConfig {
             // default costs of wisp spells
             const val DEFAULT_MOVE_SPEED_SET_COST =1.0
             const val DEFAULT_SUMMON_TICKING_WISP_COST = 3.0
+            const val DEFAULT_SUMMON_TICKING_WISP_MIN_COST = 0.1
             const val DEFAULT_SUMMON_PROJECTILE_WISP_COST = 1.7
             const val DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST = 0.5
 
@@ -91,6 +94,7 @@ object HexalConfig {
             const val DEFAULT_LINK_UPKEEP_PER_TICK = 0.01 / 20.0
             const val DEFAULT_SEON_DISCOUNT_FACTOR = 20.0
             const val DEFAULT_STORING_PLAYER_COST_SCALE_FACTOR = 20.0
+            const val DEFAULT_MEDIA_FLOW_RATE_OVER_LINK = 0.01
 
             const val MIN_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 0.0
             const val MAX_UNTRIGGERED_WISP_UPKEEP_DISCOUNT = 1.0
@@ -101,6 +105,8 @@ object HexalConfig {
             const val MIN_STORING_PLAYER_COST_SCALE_FACTOR = 1.0
             const val MAX_STORING_PLAYER_COST_SCALE_FACTOR = 200.0
 
+            const val MIN_MEDIA_FLOW_RATE_OVER_LINK = 0.0
+            const val MAX_MEDIA_FLOW_RATE_OVER_LINK = 0.1
 
             // default costs of link spells
             const val DEFAULT_LINK_COST = 5.0
@@ -183,6 +189,8 @@ object HexalConfig {
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val summonTickingWispCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val summonTickingWispMinCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val summonProjectileWispCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val summonProjectileWispMinCost: Int
@@ -204,6 +212,8 @@ object HexalConfig {
         override val sendIotaCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val unlinkCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val mediaFlowRateOverLink: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val makeGateCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

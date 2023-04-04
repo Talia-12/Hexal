@@ -54,6 +54,9 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	override fun writeToNbt(): Tag = NbtUtils.createUUID(player.uuid)
 
 	override fun writeToSync(): Tag = IntTag.valueOf(player.id)
+	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
+
+	override fun acceptMedia(other: ILinkable, sentMedia: Int) { }
 
 	fun loadAdditionalData(tag: CompoundTag) {
 		(tag.get(TAG_LINKABLE_HOLDER) as? CompoundTag)?.let {
