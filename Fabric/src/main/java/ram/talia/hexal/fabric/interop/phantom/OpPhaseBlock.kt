@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.fabric.network.MsgPhaseBlockAck
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpPhaseBlock : SpellAction {
     override val argc = 2
@@ -36,6 +38,8 @@ object OpPhaseBlock : SpellAction {
                 return
 
             ctx.world.phaseBlock(pos, ticks)
+
+            IXplatAbstractions.INSTANCE.sendPacketTracking(pos, ctx.world, MsgPhaseBlockAck(pos, ticks))
         }
     }
 }

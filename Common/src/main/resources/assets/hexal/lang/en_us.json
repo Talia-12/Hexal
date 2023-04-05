@@ -185,7 +185,7 @@
   "hexal.page.hexal_spell.particles": "Accepts a location or a list of locations, and either creates a particle at the location, or creates lines of particles between the locations in the list. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$ per location.",
 
   "hexal.entry.fabric_only_hexal": "Fabric-Only Hexal Spells",
-  "hexal.page.fabric_only_hexal.interop/fabric_only/phase_block": "Takes a position and a number, and phases the block at that position out for that many seconds. Costs 0.004 $(l:items/amethyst)$(item)Amethyst Dust/$ times the square of the time to phase out.",
+  "hexal.page.fabric_only_hexal.interop/fabric_only/phase_block": "Takes a position and a number, and phases the block at that position out for that many seconds. Costs one ten-thousandth of an $(l:items/amethyst)$(item)Amethyst Dust/$ times the square of the time to phase out for.",
 
   "hexal.entry.wisps": "Wisps",
   "hexal.page.wisps.0": "I have discovered a way to create constructs from the media itself, visible to others and able to move and act somewhat on their own. They are able to cast hexes in my place, similar to how a $(l:patterns/meta#hexcasting:eval)$(action)Hermes' Gambit/$ evaluates patterns. They do take some of my attention to operate this however, and if too many try and execute at once I will only be able to run some of them, leaving the rest for the next instant.",

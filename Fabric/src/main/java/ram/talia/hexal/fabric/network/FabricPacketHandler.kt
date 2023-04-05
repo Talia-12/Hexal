@@ -42,6 +42,8 @@ object FabricPacketHandler {
 		// Particles spell
 		ClientPlayNetworking.registerGlobalReceiver(MsgSingleParticleAck.ID, makeClientBoundHandler(MsgSingleParticleAck::deserialise, MsgSingleParticleAck::handle))
 		ClientPlayNetworking.registerGlobalReceiver(MsgParticleLinesAck.ID, makeClientBoundHandler(MsgParticleLinesAck::deserialise, MsgParticleLinesAck::handle))
+		// Phase Block
+		ClientPlayNetworking.registerGlobalReceiver(MsgPhaseBlockAck.ID, makeClientBoundHandler(MsgPhaseBlockAck::deserialise, MsgPhaseBlockAck::handle))
 	}
 
 	private fun <T> makeServerBoundHandler(decoder: Function<FriendlyByteBuf, T>, handle: TriConsumer<T, MinecraftServer, ServerPlayer>):
