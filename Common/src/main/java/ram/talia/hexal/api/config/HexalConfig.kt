@@ -18,6 +18,9 @@ object HexalConfig {
         val placeTypeCost: Int
         val smeltCost: Int
 
+        // costs of fabric only spells
+        val phaseBlockCost: Int
+
         // costs of wisp spells
         val moveSpeedSetCost: Int
         val summonTickingWispCost: Int
@@ -79,6 +82,9 @@ object HexalConfig {
             const val DEFAULT_PARTICLES_COST = 0.01
             const val DEFAULT_PLACE_TYPE_COST = 0.125
             const val DEFAULT_SMELT_COST = 0.75
+
+            // default costs of fabric only spells
+            const val DEFAULT_PHASE_BLOCK_COST = 0.004
 
             // default costs of wisp spells
             const val DEFAULT_MOVE_SPEED_SET_COST =1.0
@@ -184,6 +190,8 @@ object HexalConfig {
         override val placeTypeCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val smeltCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val phaseBlockCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val moveSpeedSetCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

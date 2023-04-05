@@ -277,7 +277,7 @@ object Patterns {
 //		return@make Action.makeConstantOp(StringIota("example! $pat"))
 //	}
 
-	private fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): PatternIota {
+	fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): PatternIota {
 		val triple = Triple(pattern, location, operator)
 		if (isPerWorld)
 			PER_WORLD_PATTERNS.add(triple)
@@ -286,7 +286,7 @@ object Patterns {
 		return PatternIota(pattern)
 	}
 
-	private fun make (location: ResourceLocation, specialHandler: PatternRegistry.SpecialHandler): Pair<ResourceLocation, PatternRegistry.SpecialHandler> {
+	fun make (location: ResourceLocation, specialHandler: PatternRegistry.SpecialHandler): Pair<ResourceLocation, PatternRegistry.SpecialHandler> {
 		val pair = location to specialHandler
 		SPECIAL_HANDLERS.add(pair)
 		return pair

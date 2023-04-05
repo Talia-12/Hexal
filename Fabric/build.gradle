@@ -50,6 +50,12 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+    maven {
+        url 'https://repo.sleeping.town'
+        content {
+            includeGroup 'com.unascribed'
+        }
+    }
 }
 
 dependencies {
@@ -97,6 +103,8 @@ dependencies {
     modApi("com.github.Virtuoel:Pehkui:${pehkuiVersion}", {
         exclude group: "net.fabricmc.fabric-api"
     })
+
+    modApi include("com.unascribed:lib39-phantom:$phantomVersion+$minecraftVersion")
 
     implementation 'org.jetbrains:annotations:23.0.0'
 

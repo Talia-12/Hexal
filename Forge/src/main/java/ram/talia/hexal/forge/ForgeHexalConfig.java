@@ -253,6 +253,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
+        public int getPhaseBlockCost() {
+            return 0;
+        }
+
+        @Override
         public int getMoveSpeedSetCost() {
             return (int) (moveSpeedSetCost.get() * MediaConstants.DUST_UNIT);
         }

@@ -1,14 +1,16 @@
 package ram.talia.hexal.fabric
 
+import at.petrak.hexcasting.api.spell.math.HexDir
+import at.petrak.hexcasting.api.spell.math.HexPattern
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.core.Registry
 import net.minecraft.data.BuiltinRegistries
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.api.gates.GateSavedData
 import ram.talia.hexal.common.casting.Patterns
 import ram.talia.hexal.common.lib.*
@@ -17,6 +19,7 @@ import ram.talia.hexal.common.lib.feature.HexalFeatures
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import ram.talia.hexal.common.recipe.HexalRecipeTypes
+import ram.talia.hexal.fabric.interop.phantom.OpPhaseBlock
 import ram.talia.hexal.fabric.network.FabricPacketHandler
 import java.util.function.BiConsumer
 
@@ -44,6 +47,8 @@ object FabricHexalInitializer : ModInitializer {
     }
 
     private fun initRegistries() {
+        fabricOnlyRegistration()
+
         HexalFeatures.registerFeatures(bind(Registry.FEATURE))
         HexalConfiguredFeatures.registerConfiguredFeatures(bind(BuiltinRegistries.CONFIGURED_FEATURE))
         HexalPlacedFeatures.registerPlacedFeatures(bind(BuiltinRegistries.PLACED_FEATURE))
@@ -63,6 +68,10 @@ object FabricHexalInitializer : ModInitializer {
         HexalRecipeTypes.registerTypes(bind(Registry.RECIPE_TYPE))
 
         HexalIotaTypes.registerTypes()
+    }
+
+    private fun fabricOnlyRegistration() {
+        Patterns.make(HexPattern.fromAngles("daqqqa", HexDir.WEST), modLoc("interop/yttr/phase_block"), OpPhaseBlock, false)
     }
 
 
