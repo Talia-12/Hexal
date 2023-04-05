@@ -6,17 +6,18 @@ import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.SpellList
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getList
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import com.mojang.datafixers.util.Either
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.CraftingContainer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.getItemOrList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
@@ -41,7 +42,7 @@ object OpCraftItem : ConstMediaAction {
 
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-        val input = args.getList(0, argc)
+        val input = args.getItemOrList(0, argc) ?: return listOf<Iota>().asActionResult
         val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
         if (!MediafiedItemManager.isStorageLoaded(storage))
             throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
@@ -73,10 +74,10 @@ object OpCraftItem : ConstMediaAction {
         return remainingItemIotas.asActionResult
     }
 
-    private fun makeItemIotaCraftingGrid(list: SpellList): Array<ItemIota?> {
+    private fun makeItemIotaCraftingGrid(input: Either<ItemIota, SpellList>): Array<ItemIota?> {
         val out = Array<ItemIota?>(9) { _ -> null }
 
-        for ((idy, iota) in list.withIndex()) {
+        for ((idy, iota) in input.map({ listOf(IndexedValue(0, it)) }, { it.withIndex() })) {
             when (iota) {
                 is ItemIota -> out[idy * 3] = iota.selfOrNull()
                 is ListIota -> {
@@ -84,23 +85,23 @@ object OpCraftItem : ConstMediaAction {
                         when (iota) {
                             is ItemIota -> out[idy * 3 + idx] = iota.selfOrNull()
                             is NullIota -> out[idy * 3 + idx] = null
-                            else -> throw MishapInvalidIota.of(ListIota(list), 0, "crafting_recipe")
+                            else -> throw MishapInvalidIota.of(input.map({ it }, { ListIota(it) }), 0, "crafting_recipe")
                         }
 
                     }
                 }
                 is NullIota -> out[idy * 3] = null
-                else -> throw MishapInvalidIota.of(ListIota(list), 0, "crafting_recipe")
+                else -> throw MishapInvalidIota.of(input.map({ it }, { ListIota(it) }), 0, "crafting_recipe")
             }
         }
 
         if (out.all { it == null })
-            throw MishapInvalidIota.of(ListIota(list), 0, "crafting_recipe")
+            throw MishapInvalidIota.of(input.map({ it }, { ListIota(it) }), 0, "crafting_recipe")
 
         for (a in out.indices) {
             for (b in out.indices) {
                 if (a != b && out[a] != null && out[a]?.itemIndex == out[b]?.itemIndex)
-                    throw MishapInvalidIota.of(ListIota(list), 0, "mote_duplicated")
+                    throw MishapInvalidIota.of(input.map({ it }, { ListIota(it) }), 0, "mote_duplicated")
             }
         }
 

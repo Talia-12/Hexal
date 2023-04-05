@@ -1,5 +1,6 @@
 package ram.talia.hexal.api
 
+import at.petrak.hexcasting.api.spell.SpellList
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.iota.*
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
@@ -236,6 +237,16 @@ fun List<Iota>.getItemOrItemType(idx: Int, argc: Int = 0): Either<ItemIota, Item
         return null
 
     throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "itemitemtype")
+}
+
+fun List<Iota>.getItemOrList(idx: Int, argc: Int = 0): Either<ItemIota, SpellList>? {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    return when (x) {
+        is ItemIota -> Either.left(x)
+        is NullIota -> null
+        is ListIota -> Either.right(x.list)
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlist")
+    }
 }
 
 fun List<Iota>.getItemOrItemList(idx: Int, argc: Int = 0): Either<ItemIota, List<ItemIota>>? {
