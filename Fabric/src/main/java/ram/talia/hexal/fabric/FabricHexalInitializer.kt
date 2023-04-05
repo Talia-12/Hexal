@@ -71,7 +71,7 @@ object FabricHexalInitializer : ModInitializer {
     }
 
     private fun fabricOnlyRegistration() {
-        Patterns.make(HexPattern.fromAngles("daqqqa", HexDir.WEST), modLoc("interop/yttr/phase_block"), OpPhaseBlock, false)
+        Patterns.make(HexPattern.fromAngles("daqqqa", HexDir.WEST), modLoc("interop/fabric_only/phase_block"), OpPhaseBlock, false)
     }
 
 
