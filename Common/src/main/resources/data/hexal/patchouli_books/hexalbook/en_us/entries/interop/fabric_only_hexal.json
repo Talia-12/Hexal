@@ -1,17 +1,17 @@
 {
-  "name": "hexcasting.entry.interop.fabric_only_hexal",
-  "icon": "minecraft:wool",
+  "name": "hexal.entry.fabric_only_hexal",
+  "icon": "minecraft:white_wool",
   "category": "hexcasting:interop",
   "advancement": "hexcasting:root",
   "flag": "mod:fabric-api",
   "pages": [
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexcasting:interop/fabric_only/phase_block",
-      "anchor": "hexcasting:interop/fabric_only/phase_block",
+      "op_id": "hexal:interop/fabric_only/phase_block",
+      "anchor": "hexal:interop/fabric_only/phase_block",
       "input": "vec, num",
       "output": "",
-      "text": "hexcasting.page.interop/fabric_only/phase_block"
+      "text": "hexal.page.fabric_only_hexal.interop/fabric_only/phase_block"
     }
   ]
 }
