@@ -26,7 +26,7 @@ object OpPhaseBlock : SpellAction {
 
         return Triple(
             Spell(pos, (time * 20).toInt()),
-            (HexalConfig.server.phaseBlockCost * time * time).toInt(),
+            (HexalConfig.server.phaseBlockCostFactor * time * time).toInt(),
             listOf(ParticleSpray.burst(Vec3.atCenterOf(pos), 0.5))
         )
     }

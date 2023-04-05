@@ -253,7 +253,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getPhaseBlockCost() {
+        public double getPhaseBlockCostFactor() {
             return 0;
         }
 

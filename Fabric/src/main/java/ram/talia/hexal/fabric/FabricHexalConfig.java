@@ -71,7 +71,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
 
         static class FabricOnlySpells {
             // costs of fabric only spells
-            double phaseBlockCost = DEFAULT_PHASE_BLOCK_COST;
+            double phaseBlockCostFactor = DEFAULT_PHASE_BLOCK_COST_FACTOR;
         }
 
         @ConfigEntry.Gui.CollapsibleObject
@@ -178,7 +178,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.miscSpells.smeltCost = bound(this.miscSpells.smeltCost, DEF_MIN_COST, DEF_MAX_COST);
 
             // costs of fabric only spells
-            this.fabricOnlySpells.phaseBlockCost = bound(this.fabricOnlySpells.phaseBlockCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.fabricOnlySpells.phaseBlockCostFactor = bound(this.fabricOnlySpells.phaseBlockCostFactor, MIN_PHASE_BLOCK_COST_FACTOR, MAX_PHASE_BLOCK_COST_FACTOR);
 
             // costs of wisp spells
             this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -261,8 +261,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getPhaseBlockCost() {
-            return (int) (fabricOnlySpells.phaseBlockCost * MediaConstants.DUST_UNIT);
+        public double getPhaseBlockCostFactor() {
+            return fabricOnlySpells.phaseBlockCostFactor * MediaConstants.DUST_UNIT;
         }
 
         @Override
