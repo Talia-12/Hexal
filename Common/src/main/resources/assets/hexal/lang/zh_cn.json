@@ -79,6 +79,8 @@
   "hexcasting.spell.hexal:place_type": "放置方块，第二型",
   "hexcasting.spell.hexal:particles": "粒子",
   
+  "hexcasting.spell.hexal:interop/fabric_only/phase_block": "暂消方块",
+
   "hexcasting.spell.hexal:wisp/summon/projectile": "召唤弹射式咒灵",
   "hexcasting.spell.hexal:wisp/summon/ticking": "召唤循环式咒灵",
   "hexcasting.spell.hexal:wisp/self": "自我之精思",
@@ -182,6 +184,9 @@
   "hexal.page.hexal_spell.place_type": "接受一个物品类型或物元和一个位置向量，并会尝试在该位置处放置所给物品类型的方块。若传入物元，则会从对应的物元记录中放置。消耗 1/8 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.hexal_spell.particles": "接受一个位置向量或一个由位置向量组成的列表，并在所给位置处生成粒子，或在所给列表各位置之间生成粒子连线。每个位置向量消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   
+  "hexal.entry.fabric_only_hexal": "咒术拓展：Fabric 独占法术",
+  "hexal.page.fabric_only_hexal.interop/fabric_only/phase_block": "接受一个位置向量和一个数，并使所给位置上方块的体积消失所给数秒。消耗 0.004 与消失时间的平方的乘积个$(l:items/amethyst)$(item)紫水晶粉/$。",
+
   "hexal.entry.wisps": "咒灵",
   "hexal.page.wisps.0": "我发现了一种能仅以媒质创造法术构造体的方式，它们能被他人看见，能移动，也有一定自主行动能力。它们能代替我施法，和$(l:patterns/meta#hexcasting:eval)$(action)赫尔墨斯之策略/$类似。不过保持它们的形态确实要耗费我的注意力，而且如果太多咒灵要同时施法，我也只能同时运行其中一部分，剩下的则要稍作延迟。",
   "hexal.page.wisps.1": "创造咒灵时需要给它们分配它们能访问的一块媒质“池”。这些媒质由我提供，用于形成咒灵本身。咒灵会常态消耗媒质，而当其运行其携带的图案列表时，其中各操作要消耗的媒质也会从媒质池中抽取。所有种类的咒灵似乎都需要 3 个$(l:items/amethyst)$(item)紫水晶粉/$才能召唤，并同时消耗等同于其媒质池容量的媒质。",
