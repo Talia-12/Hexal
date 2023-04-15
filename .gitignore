@@ -31,3 +31,4 @@ Session.vim
 plot/
 
 doc/out.html
+doc/__pycache__/
