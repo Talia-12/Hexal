@@ -24,7 +24,6 @@ object HexalConfig {
         // costs of wisp spells
         val moveSpeedSetCost: Int
         val summonTickingWispCost: Int
-        val summonTickingWispMinCost: Int
         val summonProjectileWispCost: Int
         val summonProjectileWispMinCost: Int
 
@@ -92,7 +91,6 @@ object HexalConfig {
             // default costs of wisp spells
             const val DEFAULT_MOVE_SPEED_SET_COST =1.0
             const val DEFAULT_SUMMON_TICKING_WISP_COST = 3.0
-            const val DEFAULT_SUMMON_TICKING_WISP_MIN_COST = 0.1
             const val DEFAULT_SUMMON_PROJECTILE_WISP_COST = 1.7
             const val DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST = 0.5
 
@@ -199,8 +197,6 @@ object HexalConfig {
         override val moveSpeedSetCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val summonTickingWispCost: Int
-            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val summonTickingWispMinCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val summonProjectileWispCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

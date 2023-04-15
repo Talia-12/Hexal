@@ -29,7 +29,6 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         // costs of wisp spells
         private static ForgeConfigSpec.DoubleValue moveSpeedSetCost;
         private static ForgeConfigSpec.DoubleValue summonTickingWispCost;
-        private static ForgeConfigSpec.DoubleValue summonTickingWispMinCost;
         private static ForgeConfigSpec.DoubleValue summonProjectileWispCost;
         private static ForgeConfigSpec.DoubleValue summonProjectileWispMinCost;
 
@@ -104,8 +103,6 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("moveSpeedSetCost", DEFAULT_MOVE_SPEED_SET_COST, DEF_MIN_COST, DEF_MAX_COST);
             summonTickingWispCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonTickingWispCost")
                     .defineInRange("summonTickingWispCost", DEFAULT_SUMMON_TICKING_WISP_COST, DEF_MIN_COST, DEF_MAX_COST);
-            summonTickingWispMinCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonTickingWispMinCost")
-                    .defineInRange("summonTickingWispMinCost", DEFAULT_SUMMON_TICKING_WISP_MIN_COST, DEF_MIN_COST, DEF_MAX_COST);
             summonProjectileWispCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonProjectileWispCost")
                     .defineInRange("summonProjectileWispCost", DEFAULT_SUMMON_PROJECTILE_WISP_COST, DEF_MIN_COST, DEF_MAX_COST);
             summonProjectileWispMinCost = builder.translation("text.autoconfig.hexal.option.server.wispSpells.summonProjectileWispMinCost")
@@ -265,11 +262,6 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getSummonTickingWispCost() {
             return (int) (summonTickingWispCost.get() * MediaConstants.DUST_UNIT);
-        }
-
-        @Override
-        public int getSummonTickingWispMinCost() {
-            return (int) (summonTickingWispMinCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override

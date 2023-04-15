@@ -82,7 +82,6 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             @ConfigEntry.Gui.Tooltip(count = 2)
             double moveSpeedSetCost = DEFAULT_MOVE_SPEED_SET_COST;
             double summonTickingWispCost = DEFAULT_SUMMON_TICKING_WISP_COST;
-            double summonTickingWispMinCost = DEFAULT_SUMMON_TICKING_WISP_MIN_COST;
             double summonProjectileWispCost = DEFAULT_SUMMON_PROJECTILE_WISP_COST;
             double summonProjectileWispMinCost = DEFAULT_SUMMON_PROJECTILE_WISP_MIN_COST;
         }
@@ -183,7 +182,6 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             // costs of wisp spells
             this.wispSpells.moveSpeedSetCost = bound(this.wispSpells.moveSpeedSetCost, DEF_MIN_COST, DEF_MAX_COST);
             this.wispSpells.summonTickingWispCost = bound(this.wispSpells.summonTickingWispCost, DEF_MIN_COST, DEF_MAX_COST);
-            this.wispSpells.summonTickingWispMinCost = bound(this.wispSpells.summonTickingWispMinCost, DEF_MIN_COST, DEF_MAX_COST);
             this.wispSpells.summonProjectileWispCost = bound(this.wispSpells.summonProjectileWispCost, DEF_MIN_COST, DEF_MAX_COST);
             this.wispSpells.summonProjectileWispMinCost = bound(this.wispSpells.summonProjectileWispMinCost, DEF_MIN_COST, DEF_MAX_COST);
 
@@ -278,11 +276,6 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getSummonTickingWispCost() {
             return (int) (wispSpells.summonTickingWispCost * MediaConstants.DUST_UNIT);
-        }
-
-        @Override
-        public int getSummonTickingWispMinCost() {
-            return (int) (wispSpells.summonTickingWispMinCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
