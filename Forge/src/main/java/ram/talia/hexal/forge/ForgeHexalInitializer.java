@@ -96,6 +96,7 @@ public class ForgeHexalInitializer {
 
 		evBus.register(BoundStorageEventHandler.class);
 		evBus.register(EverbookEventHandler.class);
+		evBus.register(GateEventHandler.class);
 		evBus.register(PlayerLinkstoreEventHandler.class);
 		evBus.register(RenderLinkEventHandler.class); // client only, might move into ForgeHexalClientInitializer if possible?
 		evBus.register(WispCastingMangerEventHandler.class);

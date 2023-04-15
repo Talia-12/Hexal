@@ -18,6 +18,9 @@ object GateManager {
     private var currentGateNum = 0
 
     @JvmField
+    var shouldClearOnWrite = false
+
+    @JvmField
     val allMarked: MutableMap<Int, MutableSet<UUID>> = mutableMapOf()
 
     @JvmStatic
@@ -79,6 +82,11 @@ object GateManager {
         }
 
         tag.putCompound(TAG_MARKED, markedTag)
+
+        if (shouldClearOnWrite) {
+            currentGateNum = 0
+            allMarked.clear()
+        }
     }
 
     const val TAG_CURRENT_GATE_NUM = "hexal:current_gate_num"
