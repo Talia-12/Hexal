@@ -11,6 +11,7 @@ import net.minecraft.data.BuiltinRegistries
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.HexalAPI.modLoc
+import ram.talia.hexal.api.gates.GateManager
 import ram.talia.hexal.api.gates.GateSavedData
 import ram.talia.hexal.common.casting.Patterns
 import ram.talia.hexal.common.lib.*
@@ -42,6 +43,11 @@ object FabricHexalInitializer : ModInitializer {
     private fun initListeners() {
         ServerLifecycleEvents.SERVER_STARTED.register {
             val savedData = it.overworld().dataStorage.computeIfAbsent(::GateSavedData, ::GateSavedData, FILE_GATE_MANAGER)
+            savedData.setDirty()
+        }
+        ServerLifecycleEvents.SERVER_STOPPING.register {
+            val savedData = it.overworld().dataStorage.computeIfAbsent(::GateSavedData, ::GateSavedData, FILE_GATE_MANAGER)
+            GateManager.shouldClearOnWrite = true
             savedData.setDirty()
         }
     }
