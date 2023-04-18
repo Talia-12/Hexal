@@ -195,7 +195,7 @@ def do_format(root_data, obj, *names):
 def identity(x): return x
 
 pattern_pat = re.compile(r'HexPattern\.fromAngles\("([qweasd]+)", HexDir\.(\w+)\),\s*modLoc\("([^"]+)"\)(?:[^val]*[^\(](true)\))?')
-pattern_stubs = [(None, "ram/talia/hexal/common/casting/Patterns.kt")]
+pattern_stubs = [(None, "ram/talia/hexal/common/casting/Patterns.kt"), ("Fabric", "ram/talia/hexal/fabric/FabricHexalInitializer.kt")]
 def fetch_patterns(root_data):
 	registry = {}
 	for loader, stub in pattern_stubs:
