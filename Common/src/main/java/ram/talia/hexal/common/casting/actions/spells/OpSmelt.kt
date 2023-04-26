@@ -57,10 +57,15 @@ object OpSmelt : SpellAction {
 
                 if (itemStack.item is BlockItem) {
                     ctx.world.setBlockAndUpdate(pos, (itemStack.item as BlockItem).block.defaultBlockState())
+
+                    if (itemStack.count > 1) {
+                        itemStack.count -= 1
+                        ctx.world.addFreshEntity(ItemEntity(ctx.world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), itemStack.copy()))
+                    }
                 } else {
                     ctx.world.destroyBlock(pos, false, ctx.caster)
                     ctx.world.addFreshEntity(ItemEntity(ctx.world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), itemStack.copy()))
-                    // Send a block update, also copied from Ars Nouveau (this is all copied from Ars Nouveau
+                    // Send a block update, also copied from Ars Nouveau (this is all copied from Ars Nouveau)
                     if (!ctx.world.isOutsideBuildHeight(pos))
                         ctx.world.sendBlockUpdated(pos, ctx.world.getBlockState(pos), ctx.world.getBlockState(pos), 3) // don't know how this works
                 }
@@ -68,14 +73,14 @@ object OpSmelt : SpellAction {
             }, {itemEntity -> // runs this code if the player passed an ItemEntity
                 val result = smeltResult(itemEntity.item.item, ctx) ?: return@map // cursed .item.item to map from ItemEntity to ItemLike to ItemStack
 
-                result.count = itemEntity.item.count
+                result.count *= itemEntity.item.count
 
                 ctx.world.addFreshEntity(ItemEntity(ctx.world, itemEntity.x, itemEntity.y, itemEntity.z, result.copy()))
                 itemEntity.remove(Entity.RemovalReason.DISCARDED)
-            }, {item ->
+            }, {item -> // runs this code if the player passed a mote
                 val result = smeltResult(item.item, ctx) ?: return@map
 
-                item.templateOff(result)
+                item.templateOff(result, item.count * result.count)
             })
         }
 

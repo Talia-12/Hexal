@@ -120,7 +120,14 @@ public class ItemIota extends Iota {
      * Takes a template ItemStack and sets the item and tag of the referenced ItemRecord to that item and tag, while leaving the count the same.
      */
     public void templateOff(@NotNull ItemStack template) {
-        MediafiedItemManager.templateOff(this.getItemIndex(), template);
+        MediafiedItemManager.templateOff(this.getItemIndex(), template, null);
+    }
+
+    /**
+     * Takes a template ItemStack and sets the item and tag of the referenced ItemRecord to that item and tag, as well as overriding the count to newCount.
+     */
+    public void templateOff(@NotNull ItemStack template, long newCount) {
+        MediafiedItemManager.templateOff(this.getItemIndex(), template, newCount);
     }
 
     public ItemIota copy() {

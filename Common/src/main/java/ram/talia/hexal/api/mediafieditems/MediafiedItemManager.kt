@@ -145,10 +145,11 @@ object MediafiedItemManager {
     }
 
     @JvmStatic
-    fun templateOff(index: Index, stack: ItemStack) {
+    fun templateOff(index: Index, stack: ItemStack, count: Long?) {
         val record = access(index) ?: return
         record.item = stack.item
         record.tag = stack.tag?.copy()
+        count?.let { record.count = it }
     }
 
     @JvmStatic
