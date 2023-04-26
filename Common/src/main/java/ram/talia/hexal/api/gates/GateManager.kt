@@ -3,9 +3,11 @@ package ram.talia.hexal.api.gates
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.api.utils.putList
 import at.petrak.hexcasting.api.utils.getList
+import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.api.nbt.toUUIDList
 import ram.talia.hexal.api.spell.iota.GateIota
@@ -51,8 +53,24 @@ object GateManager {
      * will be a reference to a previously made gate.
      */
     @JvmStatic
-    fun makeGate(): GateIota {
-        val gate = GateIota(currentGateNum)
+    fun makeGate(): GateIota = makeGate(null)
+
+    /**
+     * This creates a new gate iota with a new index; any gate iota created any other way
+     * will be a reference to a previously made gate.
+     */
+    @JvmStatic
+    fun makeGate(target: Vec3) = makeGate(Either.left(target))
+
+    /**
+     * This creates a new gate iota with a new index; any gate iota created any other way
+     * will be a reference to a previously made gate.
+     */
+    @JvmStatic
+    fun makeGate(target: Pair<Entity, Vec3>): GateIota = makeGate(Either.right(target))
+
+    private fun makeGate(target: Either<Vec3, Pair<Entity, Vec3>>?): GateIota {
+        val gate = GateIota(currentGateNum, target)
         currentGateNum += 1
         return gate
     }

@@ -17,15 +17,28 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getGate
 import ram.talia.hexal.api.minus
+import ram.talia.hexal.api.spell.VarargSpellAction
+import ram.talia.hexal.api.spell.iota.GateIota
 
-object OpCloseGate : SpellAction {
-    override val argc = 2
+object OpCloseGate : VarargSpellAction {
+    override fun argc(stack: List<Iota>): Int {
+        if (stack.isEmpty())
+            return 1
+        val top = stack[0]
+        if (top is GateIota && top.target == null)
+            return 1
+        return 2
+    }
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val gate = args.getGate(0, argc)
-        val targetPos = args.getVec3(1, argc)
+        val targetPos = if (argc == 2) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
 
-        ctx.assertVecInRange(targetPos)
+        // only check if in ambit when the gate is floating.
+        if (argc == 2) {
+            ctx.assertVecInRange(targetPos)
+        }
+
         if (!ctx.isVecInWorld(targetPos.subtract(0.0, 1.0, 0.0)))
             throw MishapLocationTooFarAway(targetPos, "too_close_to_out")
 
@@ -50,16 +63,16 @@ object OpCloseGate : SpellAction {
 
         override fun cast(ctx: CastingContext) {
             for (gatee in gatees) {
-                teleport(gatee, targetPos - gatee.position(), ctx)
+                teleport(gatee, gatees, targetPos - gatee.position(), ctx)
             }
         }
 
-        fun teleport(teleportee: Entity, delta: Vec3, ctx: CastingContext) {
+        fun teleport(teleportee: Entity, allTeleportees: Set<Entity>, delta: Vec3, ctx: CastingContext) {
             val distance = delta.length()
 
             // TODO make this not a magic number (config?)
             if (distance < 32768.0) {
-                teleportRespectSticky(teleportee, delta)
+                teleportRespectSticky(teleportee, allTeleportees, delta)
             }
 
             if (teleportee is ServerPlayer && teleportee == ctx.caster) {
@@ -95,25 +108,19 @@ object OpCloseGate : SpellAction {
         }
     }
 
-    fun teleportRespectSticky(teleportee: Entity, delta: Vec3) {
+    fun teleportRespectSticky(teleportee: Entity, allTeleportees: Set<Entity>, delta: Vec3) {
         val base = teleportee.rootVehicle
 
         val playersToUpdate = mutableListOf<ServerPlayer>()
         val indirect = base.indirectPassengers
 
+        val allGated = indirect.all { allTeleportees.contains(it) }
         val sticky = indirect.any { it.type.`is`(HexTags.Entities.STICKY_TELEPORTERS) }
         val cannotSticky = indirect.none { it.type.`is`(HexTags.Entities.CANNOT_TELEPORT) }
         if (sticky && cannotSticky)
             return
 
-        if (sticky) {
-            // this handles teleporting the passengers
-            val target = base.position().add(delta)
-            base.teleportTo(target.x, target.y, target.z)
-            indirect
-                    .filterIsInstance<ServerPlayer>()
-                    .forEach(playersToUpdate::add)
-        } else {
+        if (cannotSticky || !allGated) {
             // Break it into two stacks
             teleportee.stopRiding()
             teleportee.passengers.forEach(Entity::stopRiding)
@@ -121,6 +128,13 @@ object OpCloseGate : SpellAction {
             if (teleportee is ServerPlayer) {
                 playersToUpdate.add(teleportee)
             }
+        } else {
+            // this handles teleporting the passengers
+            val target = base.position().add(delta)
+            base.teleportTo(target.x, target.y, target.z)
+            indirect
+                    .filterIsInstance<ServerPlayer>()
+                    .forEach(playersToUpdate::add)
         }
 
         for (player in playersToUpdate) {
