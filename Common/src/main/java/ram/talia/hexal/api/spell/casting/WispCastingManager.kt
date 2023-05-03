@@ -37,15 +37,18 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		val cast = WispCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind)
 
 		// if the wisp is one that is hard enough to forkbomb with (specifically, lasting wisps), let it go through without reaching the queue
-		if (specialHandlers.any { handler -> handler.invoke(this, cast) })
+		if (specialHandlers.any { handler -> handler.invoke(this, cast).also {
+					if (it) { // if it should be let through, immediately cast it and execute the callback.
+						this.cast(cast).callback()
+					}
+				} })
 			return
 
 		queue.add(cast)
 	}
 
 	/**
-	 * Called by CCWispCastingManager (Fabric) and XXX (Forge) each tick, evaluates up to WISP_EVALS_PER_TICK Wisp casts (letting through any handled by specialHandlers
-	 * without decrementing the counter).
+	 * Called by CCWispCastingManager (Fabric) and WispCastingManagerEventHandler (Forge) each tick, evaluates up to WISP_EVALS_PER_TICK Wisp casts.
 	 */
 	fun executeCasts() {
 		if (caster.level.isClientSide) {
@@ -224,6 +227,15 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		const val TAG_CAST_LIST = "cast_list"
 		const val WISP_EVALS_PER_TICK = 10
 
+		/**
+		 * This is a list of pure methods that accept the casting manager and the WispCast, and if that WispCast should
+		 * be executed immediately rather than added to the queue, returns true.
+		 */
 		var specialHandlers: MutableList<(WispCastingManager, WispCast) -> Boolean> = mutableListOf()
+
+		init {
+			// if a wisp is bound, it should skip the queue.
+			specialHandlers.add { _, cast -> cast.wisp?.seon == true }
+		}
 	}
 }
