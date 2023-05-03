@@ -243,7 +243,7 @@
   "hexal.page.items.explanation.2": "A Mote Nexus is limited in some ways, but only some. It can contain 1023 different records, but each record can store items innumerable. I have yet to find any limit, I can merge and merge and merge forever and the record keeps growing and growing and growing...",
   "hexal.page.items.mediafed_storage_recipe":  "The Mote Nexus is built from the mind of a cartographer endlessly mapping the contents of the $(item)Shulker Box/$ that it has been flayed into.",
   "hexal.page.items.item/storage/bind": "Target a Mote Nexus block in the world and bind yourself to it, meaning all items you mediafy will be added to that nexus' capacity. Targeting any other block will unbind you from your currently bound nexus. Costs 32 $(l:items/amethyst)$(item)Amethyst Dust/$.",
-  "hexal.page.items.item/storage/bind/temp": "Target a Mote Nexus block in the world and bind to it for the remainder of this cast, temporarily overriding your primary binding. Costs one $(l:items/amethyst)$(item)Amethyst Dust/$.",
+  "hexal.page.items.item/storage/bind/temp": "Target a Mote Nexus block in the world and bind to it for the remainder of this cast, temporarily overriding your primary binding. Costs one thousandth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.items.item/contained_type/get": "Gets all the types of motes contained in the currently bound Mote Nexus.",
   "hexal.page.items.item/contained/get": "Gets all the mote records from the currently bound Mote Nexus that match the passed item type or could be combined with the passed mote.",
   "hexal.page.items.item/storage/remaining_capacity/get": "Gets the remaining capacity of the bound Mote Nexus.",

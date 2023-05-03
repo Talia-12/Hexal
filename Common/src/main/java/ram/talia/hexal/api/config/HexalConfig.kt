@@ -127,7 +127,7 @@ object HexalConfig {
 
             // default costs of item spells
             const val DEFAULT_BIND_STORAGE_COST = 32.0
-            const val DEFAULT_BIND_TEMPORARY_STORAGE_COST = 1.0
+            const val DEFAULT_BIND_TEMPORARY_STORAGE_COST = 0.001
             const val DEFAULT_MAKE_ITEM_COST = 0.1
             const val DEFAULT_RETURN_ITEM_COST = 0.1
             const val DEFAULT_CRAFT_ITEM_COST = 0.1
