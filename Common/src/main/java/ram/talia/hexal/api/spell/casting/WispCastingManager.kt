@@ -217,9 +217,8 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: SerialisedIotaList, val endRavenmind: SerialisedIota) {
-		constructor(wisp: BaseCastingWisp, succeeded: Boolean, endStack: List<Iota>, endRavenmind: Iota?)
-			: this(wisp, succeeded, SerialisedIotaList(endStack.toNbtList()), SerialisedIota(endRavenmind?.let { HexIotaTypes.serialize(it) }))
+	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: List<Iota>, val endRavenmind: Iota?) {
+
 		fun callback() { wisp.castCallback(this) }
 	}
 

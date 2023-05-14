@@ -34,6 +34,15 @@ class TickingWisp : BaseCastingWisp {
 	private var serStack: SerialisedIotaList = SerialisedIotaList(null)
 	private var serRavenmind: SerialisedIota = SerialisedIota(null)
 
+	fun setStack(iotas: List<Iota>) {
+		stackNumTrueNames = iotas.fold(0) { acc, iota -> acc + countTrueNamesInIota(iota, caster) }
+		serStack.set(iotas)
+	}
+	fun setRavenmind(iota: Iota?) {
+		ravenmindNumTrueNames = iota?.let { countTrueNamesInIota(it, caster) } ?: 0
+		serRavenmind.set(iota)
+	}
+
 	var currentMoveMultiplier: Float
 		get() = entityData.get(CURRENT_MOVE_MULTIPLIER)
 		set(value) {
@@ -71,22 +80,23 @@ class TickingWisp : BaseCastingWisp {
 		return serStack.get(level as ServerLevel).map(Iota::display)
 	}
 
-	override fun wispContainsPlayer(): Boolean {
-		if (level.isClientSide)
-			throw Exception("TickingWisp.wispContainsPlayer should only be called on server.") // TODO
+	//region Trueplayer handling stuff
+	private var stackNumTrueNames: Int = 0
+		set(value) { field = if (value >= 0) value else 0 }
+	private var ravenmindNumTrueNames: Int = 0
+		set(value) { field = if (value >= 0) value else 0 }
 
-		for (iota in serStack.get(level as ServerLevel)) {
-			val trueName = MishapOthersName.getTrueNameFromDatum(iota, caster)
-			if (trueName != null)
-				return true
+	override fun tick() {
+		if (firstTick && !level.isClientSide) {
+			stackNumTrueNames = serStack.get(level as ServerLevel).fold(0) { acc, iota -> acc + countTrueNamesInIota(iota, caster) }
+			ravenmindNumTrueNames = serRavenmind.get(level as ServerLevel)?.let { countTrueNamesInIota(it, caster) } ?: 0
 		}
 
-		val trueName = serRavenmind.get(level as ServerLevel)?.let { MishapOthersName.getTrueNameFromDatum(it, caster) }
-		if (trueName != null)
-			return true
-
-		return super.wispContainsPlayer()
+		super.tick()
 	}
+
+	override fun wispNumContainedPlayers(): Int = super.wispNumContainedPlayers() + stackNumTrueNames + ravenmindNumTrueNames
+	//endregion
 
 	override val normalCostPerTick =  HexalConfig.server.tickingWispUpkeepPerTick
 
@@ -127,8 +137,8 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
-		serStack.copy(result.endStack)
-		serRavenmind.copy(result.endRavenmind)
+		setStack(result.endStack)
+		setRavenmind(result.endRavenmind)
 
 		super.castCallback(result)
 	}

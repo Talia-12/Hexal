@@ -128,7 +128,7 @@ public class WispTests {
 		
 		TickingWisp wisp = new TickingWisp(helper.getLevel(), spawnPos, fakePlayer, 10 * MediaConstants.SHARD_UNIT);
 		
-		wisp.getSerHex().set(hex);
+		wisp.setHex(hex);
 		
 		if (helper.getLevel().addFreshEntity(wisp))
 			return wisp;

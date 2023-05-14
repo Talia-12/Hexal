@@ -1,7 +1,5 @@
 package ram.talia.hexal.common.lib
 
-import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.common.lib.HexBlockEntities
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
 import net.minecraft.resources.ResourceLocation
@@ -9,7 +7,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntitySlipway

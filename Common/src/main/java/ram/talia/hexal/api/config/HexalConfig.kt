@@ -2,6 +2,7 @@ package ram.talia.hexal.api.config
 
 import at.petrak.hexcasting.api.HexAPI
 import net.minecraft.resources.ResourceLocation
+import ram.talia.hexal.api.HexalAPI
 
 object HexalConfig {
     interface CommonConfigAccess { }
@@ -262,7 +263,7 @@ object HexalConfig {
     var common: CommonConfigAccess = DummyCommon
         set(access) {
             if (field != DummyCommon) {
-                HexAPI.LOGGER.warn("CommonConfigAccess was replaced! Old {} New {}",
+                HexalAPI.LOGGER.warn("CommonConfigAccess was replaced! Old {} New {}",
                         field.javaClass.name, access.javaClass.name)
             }
             field = access
@@ -272,7 +273,7 @@ object HexalConfig {
     var client: ClientConfigAccess = DummyClient
         set(access) {
             if (field != DummyClient) {
-                HexAPI.LOGGER.warn("ClientConfigAccess was replaced! Old {} New {}",
+                HexalAPI.LOGGER.warn("ClientConfigAccess was replaced! Old {} New {}",
                         field.javaClass.name, access.javaClass.name)
             }
             field = access
@@ -282,7 +283,7 @@ object HexalConfig {
     var server: ServerConfigAccess = DummyServer
         set(access) {
             if (field != DummyServer) {
-                HexAPI.LOGGER.warn("ServerConfigAccess was replaced! Old {} New {}",
+                HexalAPI.LOGGER.warn("ServerConfigAccess was replaced! Old {} New {}",
                         field.javaClass.name, access.javaClass.name)
             }
             field = access

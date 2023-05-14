@@ -1,6 +1,9 @@
 package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.hasByte
@@ -19,6 +22,7 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.*
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.nbt.SerialisedIota
@@ -32,6 +36,8 @@ import ram.talia.hexal.common.network.MsgWispCastSoundAck
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.lang.Integer.min
 import java.util.*
+import kotlin.collections.ArrayDeque
+import kotlin.math.pow
 
 
 abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, world: Level) : BaseWisp(entityType, world) {
@@ -73,6 +79,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
 
 	val serHex: SerialisedIotaList = SerialisedIotaList(null)
+
+	fun setHex(iotas: List<Iota>) {
+		hexNumTrueNames = iotas.fold(0) { acc, iota -> acc + countTrueNamesInIota(iota, caster) }
+		serHex.set(iotas)
+	}
 
 	private var scheduledCast: Boolean
 		get() = entityData.get(SCHEDULED_CAST)
@@ -133,22 +144,56 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			false -> untriggeredCostPerTick
 		}
 		cost += HexalConfig.server.linkUpkeepPerTick * numLinked()
-		if (wispContainsPlayer())
-			cost = (cost * HexalConfig.server.storingPlayerCostScaleFactor).toInt()
+
+		HexalAPI.LOGGER.info("Num contained players: ${wispNumContainedPlayers()}")
+		cost = (cost * HexalConfig.server.storingPlayerCostScaleFactor.pow(wispNumContainedPlayers().toDouble())).toInt()
+
 		if (seon)
 			cost = (cost / HexalConfig.server.seonDiscountFactor).toInt()
 		media -= cost
 	}
 
-	open fun wispContainsPlayer(): Boolean {
-		for (iota in allReceivedIotas()) {
-			val trueName = MishapOthersName.getTrueNameFromDatum(iota, caster)
-			if (trueName != null)
-				return true
+	//region Trueplayer handling stuff
+	private var receivedIotasNumTrueNames: Int = 0
+		set(value) { field = if (value >= 0) value else 0 }
+	private var hexNumTrueNames: Int = 0
+		set(value) { field = if (value >= 0) value else 0 }
+
+	open fun wispNumContainedPlayers(): Int = receivedIotasNumTrueNames + hexNumTrueNames
+
+	override fun receiveIota(iota: Iota) {
+		super.receiveIota(iota)
+		receivedIotasNumTrueNames += countTrueNamesInIota(iota, caster)
+	}
+
+	override fun nextReceivedIota(): Iota {
+		val iota = super.nextReceivedIota()
+		receivedIotasNumTrueNames -= countTrueNamesInIota(iota, caster)
+		return iota
+	}
+
+	override fun clearReceivedIotas() {
+		super.clearReceivedIotas()
+		receivedIotasNumTrueNames = 0
+	}
+
+	fun countTrueNamesInIota(iota: Iota, caster: Player?): Int {
+		val poolToSearch = ArrayDeque<Iota>()
+		poolToSearch.addLast(iota)
+
+		var numTrueNames = 0
+
+		while (poolToSearch.isNotEmpty()) {
+			val datumToCheck = poolToSearch.removeFirst()
+			if (datumToCheck is EntityIota && datumToCheck.entity is Player) // && datumToCheck.entity != caster)
+				numTrueNames += 1
+			if (datumToCheck is ListIota)
+				poolToSearch.addAll(datumToCheck.list)
 		}
 
-		return false
+		return numTrueNames
 	}
+	//endregion
 
 	open val normalCostPerTick: Int get() = HexalConfig.server.projectileWispUpkeepPerTick
 	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
