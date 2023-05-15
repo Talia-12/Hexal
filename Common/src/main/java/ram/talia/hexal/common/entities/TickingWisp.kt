@@ -93,6 +93,14 @@ class TickingWisp : BaseCastingWisp {
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")
 		if (level.isClientSide) return
+
+		// clear entities that have been removed from the world at least once per second
+		// to prevent any memory leak type errors
+		if (level.gameTime % 20 == 0L) {
+			serStack.refresh()
+			serRavenmind.refresh()
+		}
+
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
 	}
 

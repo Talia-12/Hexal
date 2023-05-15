@@ -89,6 +89,11 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
             isFirstTick = false
         }
 
+        // clear entities that have been removed from the world at least once per second
+        // to prevent any memory leak type errors
+        if (level.gameTime % 20 == 0L)
+            serReceivedIotas.refresh()
+
         for (i in (linked.size - 1) downTo 0) {
             if (linked[i].shouldRemove() || !thisLinkable.isInRange(linked[i]))
                 unlink(linked[i])

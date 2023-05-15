@@ -90,6 +90,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	override fun tick() {
 		super.tick()
 
+		// clear entities that have been removed from the world at least once per second
+		// to prevent any memory leak type errors
+		if (level.gameTime % 20 == 0L)
+			serHex.refresh()
+
 		// check if media is <= 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
 		if (media <= 0) {
 			discard()
@@ -218,9 +223,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		if (level.isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
 
-		val sPlayer = caster as ServerPlayer
-
-		IXplatAbstractions.INSTANCE.getWispCastingManager(sPlayer).scheduleCast(this, priority, hex, initialStack, initialRavenmind)
+		IXplatAbstractions.INSTANCE.getWispCastingManager(caster as ServerPlayer)
+				.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
 
 //			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $rHex, stack was $rInitialStack, ravenmind was $rInitialRavenmind")
 
