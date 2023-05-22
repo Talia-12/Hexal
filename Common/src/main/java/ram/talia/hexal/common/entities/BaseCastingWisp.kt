@@ -77,11 +77,17 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	// true at the end will be not-ed to false by the ! out the front
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
 
-	val serHex: SerialisedIotaList = SerialisedIotaList(null)
+	val serHex: SerialisedIotaList = SerialisedIotaList()
 
-	fun setHex(iotas: List<Iota>) {
-		hexNumTrueNames = iotas.fold(0) { acc, iota -> acc + countTrueNamesInIota(iota, caster) }
+	fun setHex(iotas: MutableList<Iota>) {
 		serHex.set(iotas)
+
+		hexNumTrueNames = 0;
+		for (entity in serHex.getReferencedEntities(level as ServerLevel)) {
+			if ((entity is Player) && (entity!= caster)) {
+				hexNumTrueNames++;
+			}
+		}
 	}
 
 	private var scheduledCast: Boolean
@@ -102,8 +108,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		// clear entities that have been removed from the world at least once per second
 		// to prevent any memory leak type errors
-		if (level.gameTime % 20 == 0L)
-			serHex.refresh()
+		if (!level.isClientSide && (level.gameTime % 20 == 0L))
+			serHex.refreshIotas(level as ServerLevel)
 
 		// check if media is <= 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
 		if (media <= 0) {
@@ -261,8 +267,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	fun scheduleCast(
 			priority: Int,
 			hex: SerialisedIotaList,
-			initialStack: SerialisedIotaList = SerialisedIotaList(null),
-			initialRavenmind: SerialisedIota = SerialisedIota(null),
+			initialStack: SerialisedIotaList,
+			initialRavenmind: SerialisedIota,
 	): Boolean {
 		if (level.isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
@@ -325,7 +331,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		when (val hexTag = compound.get(TAG_HEX)) {
 			null -> serHex.set(mutableListOf())
-			else -> serHex.tag = hexTag as? ListTag
+			else -> serHex.set(hexTag as ListTag)
 		}
 
 		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
@@ -345,7 +351,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			compound.putUUID(TAG_CASTER, casterUUID!!)
 
 //		HexalAPI.LOGGER.info("saving wisp $uuid's hex as $hexTag")
-		serHex.tag?.let { compound.put(TAG_HEX, it) }
+		compound.put(TAG_HEX, serHex.getTag())
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 		compound.putBoolean(TAG_SEON, seon)

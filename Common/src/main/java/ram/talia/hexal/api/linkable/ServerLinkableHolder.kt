@@ -27,7 +27,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
     /**
      * Initialise to [SerialisedIotaList] (null)
      */
-    private val serReceivedIotas = SerialisedIotaList(null)
+    private val serReceivedIotas = SerialisedIotaList()
 
     private fun addRenderLink(other: ILinkable) {
         lazyRenderLinks.get().add(other)
@@ -92,7 +92,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         // clear entities that have been removed from the world at least once per second
         // to prevent any memory leak type errors
         if (level.gameTime % 20 == 0L)
-            serReceivedIotas.refresh()
+            serReceivedIotas.refreshIotas(level)
 
         for (i in (linked.size - 1) downTo 0) {
             if (linked[i].shouldRemove() || !thisLinkable.isInRange(linked[i]))
@@ -102,19 +102,19 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
 
     fun receiveIota(iota: Iota) {
         if (numRemainingIota() < ILinkable.MAX_RECEIVED_IOTAS)
-            serReceivedIotas.add(iota, level)
+            serReceivedIotas.add(iota)
     }
 
     fun nextReceivedIota() = serReceivedIotas.pop(level) ?: NullIota()
 
-    fun numRemainingIota() = serReceivedIotas.size
+    fun numRemainingIota() = serReceivedIotas.size()
 
     fun clearReceivedIotas() {
-        serReceivedIotas.tag = ListTag()
+        serReceivedIotas.clear()
     }
 
     fun allReceivedIotas(): List<Iota> {
-        return serReceivedIotas.get(level)
+        return serReceivedIotas.getIotas(level)
     }
 
     /**
@@ -124,7 +124,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         val tag = CompoundTag()
         tag.put(TAG_LINKED, lazyLinked.getUnloaded())
         tag.put(TAG_RENDER_LINKED, lazyRenderLinks.getUnloaded())
-        serReceivedIotas.tag?.let { tag.put(TAG_RECEIVED, it) }
+        tag.put(TAG_RECEIVED, serReceivedIotas.getTag())
         return tag
     }
 
@@ -142,7 +142,10 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
             else -> lazyRenderLinks.set(renderLinkedTag)
         }
 
-        serReceivedIotas.tag = tag.get(TAG_RECEIVED) as? ListTag
+        when (val receivedTag = tag.get(TAG_RECEIVED) as? ListTag) {
+            null -> serReceivedIotas.clear()
+            else -> serReceivedIotas.set(receivedTag)
+        }
     }
 
     companion object {

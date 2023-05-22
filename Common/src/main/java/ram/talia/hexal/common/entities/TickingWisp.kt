@@ -31,16 +31,28 @@ import java.lang.Double.min
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
-	private var serStack: SerialisedIotaList = SerialisedIotaList(null)
-	private var serRavenmind: SerialisedIota = SerialisedIota(null)
+	private var serStack: SerialisedIotaList = SerialisedIotaList()
+	private var serRavenmind: SerialisedIota = SerialisedIota()
 
-	fun setStack(iotas: List<Iota>) {
-		stackNumTrueNames = iotas.fold(0) { acc, iota -> acc + countTrueNamesInIota(iota, caster) }
+	fun setStack(iotas: MutableList<Iota>) {
 		serStack.set(iotas)
+
+		stackNumTrueNames = 0;
+		for (entity in serStack.getReferencedEntities(level as ServerLevel)) {
+			if ((entity is Player) && (entity != caster)) {
+				stackNumTrueNames++;
+			}
+		}
 	}
 	fun setRavenmind(iota: Iota?) {
-		ravenmindNumTrueNames = iota?.let { countTrueNamesInIota(it, caster) } ?: 0
-		serRavenmind.set(iota)
+		serRavenmind.set(iota ?: NullIota())
+
+		ravenmindNumTrueNames = 0;
+		for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
+			if ((entity is Player) && (entity!= caster)) {
+				ravenmindNumTrueNames++;
+			}
+		}
 	}
 
 	var currentMoveMultiplier: Float
@@ -77,7 +89,7 @@ class TickingWisp : BaseCastingWisp {
 	override fun transmittingTargetReturnDisplay(): List<Component> {
 		if (level.isClientSide)
 			throw Exception("TickingWisp.transmittingTargetReturnDisplay should only be called on server.") // TODO
-		return serStack.get(level as ServerLevel).map(Iota::display)
+		return serStack.getIotas(level as ServerLevel).map(Iota::display)
 	}
 
 	//region Trueplayer handling stuff
@@ -88,8 +100,19 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun tick() {
 		if (firstTick && !level.isClientSide) {
-			stackNumTrueNames = serStack.get(level as ServerLevel).fold(0) { acc, iota -> acc + countTrueNamesInIota(iota, caster) }
-			ravenmindNumTrueNames = serRavenmind.get(level as ServerLevel)?.let { countTrueNamesInIota(it, caster) } ?: 0
+			stackNumTrueNames = 0;
+			for (entity in serStack.getReferencedEntities(level as ServerLevel)) {
+				if ((entity is Player) && (entity != caster)) {
+					stackNumTrueNames++;
+				}
+			}
+
+			ravenmindNumTrueNames = 0;
+			for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
+				if ((entity is Player) && (entity!= caster)) {
+                    ravenmindNumTrueNames++;
+                }
+			}
 		}
 
 		super.tick()
@@ -107,8 +130,8 @@ class TickingWisp : BaseCastingWisp {
 		// clear entities that have been removed from the world at least once per second
 		// to prevent any memory leak type errors
 		if (level.gameTime % 20 == 0L) {
-			serStack.refresh()
-			serRavenmind.refresh()
+			serStack.refreshIotas(level as ServerLevel)
+			serRavenmind.refreshIota(level as ServerLevel)
 		}
 
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
@@ -173,11 +196,11 @@ class TickingWisp : BaseCastingWisp {
 
 		when (val stackTag = compound.get(TAG_STACK)) {
 			null -> serStack.set(mutableListOf())
-			else -> serStack.tag = stackTag as? ListTag
+			else -> serStack.set(stackTag as ListTag)
 		}
 		when (val ravenmindTag = compound.get(TAG_RAVENMIND)) {
 			null -> serRavenmind.set(NullIota())
-			else -> serRavenmind.tag = ravenmindTag as? CompoundTag
+			else -> serRavenmind.set(ravenmindTag as CompoundTag)
 		}
 
 		entityData.set(HAS_TARGET_MOVE_POS, when(compound.hasByte(TAG_HAS_TARGET_MOVE_POS)) {
@@ -209,8 +232,8 @@ class TickingWisp : BaseCastingWisp {
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		serStack.tag?.let { compound.put(TAG_STACK, it) }
-		serRavenmind.tag?.let { compound.put(TAG_RAVENMIND, it) }
+		compound.put(TAG_STACK, serStack.getTag())
+		compound.put(TAG_RAVENMIND, serRavenmind.getTag())
 		compound.putBoolean(TAG_HAS_TARGET_MOVE_POS, entityData.get(HAS_TARGET_MOVE_POS))
 		compound.putFloat(TAG_TARGET_MOVE_POS_X, entityData.get(TARGET_MOVE_POS_X))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Y, entityData.get(TARGET_MOVE_POS_Y))

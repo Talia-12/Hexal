@@ -19,6 +19,6 @@ object OpWispHex : ConstMediaAction {
 		if (wisp.caster != ctx.caster)
 			throw MishapOthersWisp(wisp.caster)
 
-		return wisp.serHex.get(ctx.world).asActionResult
+		return wisp.serHex.getIotas(ctx.world).asActionResult
 	}
 }
