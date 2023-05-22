@@ -75,16 +75,23 @@ class TickingWisp : BaseCastingWisp {
 		if (level.isClientSide)
 			throw Exception("TickingWisp.wispContainsPlayer should only be called on server.") // TODO
 
-		// TODO: Rework to be not stupid
-		for (iota in serStack.getIotas(level as ServerLevel)) {
-			val trueName = MishapOthersName.getTrueNameFromDatum(iota, caster)
-			if (trueName != null)
+		for (entity in serHex.getReferencedEntities(level as ServerLevel))
+		{
+			if ((entity is Player) && (entity != caster))
+                return true
+		}
+
+		for (entity in serStack.getReferencedEntities(level as ServerLevel))
+		{
+			if ((entity is Player) && (entity != caster))
 				return true
 		}
 
-		val trueName = serRavenmind.getIota(level as ServerLevel)?.let { MishapOthersName.getTrueNameFromDatum(it, caster) }
-		if (trueName != null)
-			return true
+		for (entity in serRavenmind.getReferencedEntities(level as ServerLevel))
+		{
+			if ((entity is Player) && (entity != caster))
+				return true
+		}
 
 		return super.wispContainsPlayer()
 	}

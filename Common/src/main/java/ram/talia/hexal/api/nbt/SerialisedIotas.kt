@@ -329,6 +329,43 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
             0
         }
     }
+
+    fun getReferencedEntities(level: ServerLevel): List<Entity> {
+        if (tag != null)
+        {
+            if (tagReferencedEntityUUIDs == null)
+            {
+                tagReferencedEntityUUIDs = ArrayList()
+                for (innerTag in tag!!)
+                {
+                    scanTagForEntities(innerTag.asCompound, tagReferencedEntityUUIDs!!)
+                }
+            }
+            var referencedEntities: MutableList<Entity> = ArrayList()
+            for (uuid in tagReferencedEntityUUIDs!!)
+            {
+                val entity = level.getEntity(uuid)
+                if (entity!= null)
+                    referencedEntities.add(entity)
+            }
+            return referencedEntities;
+        }
+        else if (iotas!= null)
+        {
+            if (iotasReferencedEntities == null)
+            {
+                iotasReferencedEntities = ArrayList()
+                for (iota in iotas!!)
+                {
+                    scanIotaForEntities(iota, iotasReferencedEntities!!)
+                }
+            }
+            return iotasReferencedEntities as List<Entity>;
+        }
+        else {
+            return ArrayList()
+        }
+    }
 /*
     fun copy(serIotaList: SerialisedIotaList) {
         tag = serIotaList.tag?.copy()
@@ -387,5 +424,9 @@ class SerialisedIota(private val iotaList: SerialisedIotaList = SerialisedIotaLi
         val listTag = ListTag()
         listTag.add(tag)
         iotaList.set(listTag)
+    }
+
+    fun getReferencedEntities(level: ServerLevel) : List<Entity> {
+        return iotaList.getReferencedEntities(level)
     }
 }
