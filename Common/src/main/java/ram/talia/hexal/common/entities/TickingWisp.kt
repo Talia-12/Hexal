@@ -31,8 +31,8 @@ import java.lang.Double.min
 class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
-	private var serStack: SerialisedIotaList = SerialisedIotaList(null)
-	private var serRavenmind: SerialisedIota = SerialisedIota(null)
+	private var serStack: SerialisedIotaList = SerialisedIotaList()
+	private var serRavenmind: SerialisedIota = SerialisedIota()
 
 	var currentMoveMultiplier: Float
 		get() = entityData.get(CURRENT_MOVE_MULTIPLIER)
@@ -68,20 +68,21 @@ class TickingWisp : BaseCastingWisp {
 	override fun transmittingTargetReturnDisplay(): List<Component> {
 		if (level.isClientSide)
 			throw Exception("TickingWisp.transmittingTargetReturnDisplay should only be called on server.") // TODO
-		return serStack.get(level as ServerLevel).map(Iota::display)
+		return serStack.getIotas(level as ServerLevel).map(Iota::display)
 	}
 
 	override fun wispContainsPlayer(): Boolean {
 		if (level.isClientSide)
 			throw Exception("TickingWisp.wispContainsPlayer should only be called on server.") // TODO
 
-		for (iota in serStack.get(level as ServerLevel)) {
+		// TODO: Rework to be not stupid
+		for (iota in serStack.getIotas(level as ServerLevel)) {
 			val trueName = MishapOthersName.getTrueNameFromDatum(iota, caster)
 			if (trueName != null)
 				return true
 		}
 
-		val trueName = serRavenmind.get(level as ServerLevel)?.let { MishapOthersName.getTrueNameFromDatum(it, caster) }
+		val trueName = serRavenmind.getIota(level as ServerLevel)?.let { MishapOthersName.getTrueNameFromDatum(it, caster) }
 		if (trueName != null)
 			return true
 
@@ -119,8 +120,8 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")
-		serStack.copy(result.endStack)
-		serRavenmind.copy(result.endRavenmind)
+		serStack = result.endStack
+		serRavenmind = result.endRavenmind
 
 		super.castCallback(result)
 	}
@@ -155,11 +156,11 @@ class TickingWisp : BaseCastingWisp {
 
 		when (val stackTag = compound.get(TAG_STACK)) {
 			null -> serStack.set(mutableListOf())
-			else -> serStack.tag = stackTag as? ListTag
+			else -> serStack.set(stackTag as ListTag)
 		}
 		when (val ravenmindTag = compound.get(TAG_RAVENMIND)) {
 			null -> serRavenmind.set(NullIota())
-			else -> serRavenmind.tag = ravenmindTag as? CompoundTag
+			else -> serRavenmind.set(ravenmindTag as CompoundTag)
 		}
 
 		entityData.set(HAS_TARGET_MOVE_POS, when(compound.hasByte(TAG_HAS_TARGET_MOVE_POS)) {
@@ -191,8 +192,8 @@ class TickingWisp : BaseCastingWisp {
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		serStack.tag?.let { compound.put(TAG_STACK, it) }
-		serRavenmind.tag?.let { compound.put(TAG_RAVENMIND, it) }
+		compound.put(TAG_STACK, serStack.getTag())
+		compound.put(TAG_RAVENMIND, serRavenmind.getTag())
 		compound.putBoolean(TAG_HAS_TARGET_MOVE_POS, entityData.get(HAS_TARGET_MOVE_POS))
 		compound.putFloat(TAG_TARGET_MOVE_POS_X, entityData.get(TARGET_MOVE_POS_X))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Y, entityData.get(TARGET_MOVE_POS_Y))
