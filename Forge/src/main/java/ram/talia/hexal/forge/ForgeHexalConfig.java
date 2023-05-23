@@ -2,8 +2,14 @@ package ram.talia.hexal.forge;
 
 
 import at.petrak.hexcasting.api.misc.MediaConstants;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.jetbrains.annotations.NotNull;
 import ram.talia.hexal.api.config.HexalConfig;
+
+import java.util.List;
+
+import static ram.talia.hexal.api.config.HexalConfig.noneMatch;
 
 public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
     public ForgeHexalConfig(ForgeConfigSpec.Builder builder) {
@@ -69,6 +75,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue tickConstantCost;
         private static ForgeConfigSpec.DoubleValue tickCostPerTicked;
         private static ForgeConfigSpec.IntValue tickRandomTickIProb;
+
+        private static ForgeConfigSpec.ConfigValue<List<? extends String>> accelerateDenyList;
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.translation("text.autoconfig.hexal.option.server.terrainGeneration").push("terrainGeneration");
@@ -215,7 +223,15 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     )
                     .defineInRange("tickRandomTickIProb", DEFAULT_TICK_RANDOM_TICK_I_PROB, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
 
+
+            accelerateDenyList = builder.comment("Resource locations of dimensions you can't Blink or Greater Teleport in.")
+                    .defineList("tpDimDenyList", HexalConfig.ServerConfigAccess.Companion.getDEFAULT_ACCELERATE_DENY_LIST(), ForgeHexalConfig.Server::isValidReslocArg);
+
             builder.pop();
+        }
+
+        private static boolean isValidReslocArg(Object o) {
+            return o instanceof String s && ResourceLocation.isValidResourceLocation(s);
         }
 
         //region getters
@@ -407,6 +423,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getTickRandomTickIProb() {
             return tickRandomTickIProb.get();
+        }
+
+        @Override
+        public boolean isAccelerateAllowed(@NotNull ResourceLocation blockId) {
+            return noneMatch(accelerateDenyList.get(), blockId);
         }
         //endregion
     }

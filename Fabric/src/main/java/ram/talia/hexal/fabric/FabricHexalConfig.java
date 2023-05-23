@@ -7,9 +7,15 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.config.HexalConfig;
 import ram.talia.hexal.xplat.IXplatAbstractions;
+
+import java.util.List;
+
+import static ram.talia.hexal.api.config.HexalConfig.noneMatch;
 
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 @Config(name = HexalAPI.MOD_ID)
@@ -163,8 +169,10 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             @ConfigEntry.BoundedDiscrete(min = MIN_TICK_RANDOM_TICK_I_PROB, max = MAX_TICK_RANDOM_TICK_I_PROB)
             @ConfigEntry.Gui.Tooltip(count = 3)
             int tickRandomTickIProb = DEFAULT_TICK_RANDOM_TICK_I_PROB;
-        }
 
+            @ConfigEntry.Gui.Tooltip
+            private List<String> accelerateDenyList = HexalConfig.ServerConfigAccess.Companion.getDEFAULT_ACCELERATE_DENY_LIST();
+        }
 
 
         @Override
@@ -222,6 +230,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.greatSpells.tickCostPerTicked = bound(this.greatSpells.tickCostPerTicked, DEF_MIN_COST, DEF_MAX_COST);
 
             this.greatSpells.tickRandomTickIProb = bound(this.greatSpells.tickRandomTickIProb, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
+
+            if (this.greatSpells.accelerateDenyList.stream().anyMatch(b -> !isValidReslocArg(b)))
+                this.greatSpells.accelerateDenyList = HexalConfig.ServerConfigAccess.Companion.getDEFAULT_ACCELERATE_DENY_LIST();
         }
 
         private int bound(int toBind, int lower, int upper) {
@@ -231,6 +242,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             return Math.min(Math.max(toBind, lower), upper);
         }
 
+        private static boolean isValidReslocArg(Object o) {
+            return o instanceof String s && ResourceLocation.isValidResourceLocation(s);
+        }
 
         //region getters
         @Override
@@ -421,6 +435,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getTickRandomTickIProb() {
             return greatSpells.tickRandomTickIProb;
+        }
+
+        @Override
+        public boolean isAccelerateAllowed(@NotNull ResourceLocation blockId) {
+            return noneMatch(greatSpells.accelerateDenyList, blockId);
         }
         //endregion
     }

@@ -69,6 +69,7 @@ object HexalConfig {
         // inverse probability of OpTick random ticking a block.
         val tickRandomTickIProb: Int
 
+        fun isAccelerateAllowed(blockId: ResourceLocation): Boolean
 
         companion object {
             const val DEFAULT_GENERATE_SLIPWAY_GEODES: Boolean = true
@@ -158,11 +159,14 @@ object HexalConfig {
             const val DEFAULT_TICK_RANDOM_TICK_I_PROB = 1365
             const val MIN_TICK_RANDOM_TICK_I_PROB = 600
             const val MAX_TICK_RANDOM_TICK_I_PROB = 2100
+
+            val DEFAULT_ACCELERATE_DENY_LIST: List<String> = listOf("create:deployer")
         }
     }
 
     // Simple extensions for resource location configs
-    fun anyMatch(keys: List<String>, key: ResourceLocation): Boolean {
+    @JvmStatic
+    fun anyMatch(keys: MutableList<out String>, key: ResourceLocation): Boolean {
         for (s in keys) {
             if (ResourceLocation.isValidResourceLocation(s)) {
                 val rl = ResourceLocation(s)
@@ -174,7 +178,8 @@ object HexalConfig {
         return false
     }
 
-    fun noneMatch(keys: List<String>, key: ResourceLocation): Boolean {
+    @JvmStatic
+    fun noneMatch(keys: MutableList<out String>, key: ResourceLocation): Boolean {
         return !anyMatch(keys, key)
     }
 
@@ -257,6 +262,10 @@ object HexalConfig {
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val tickRandomTickIProb: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+
+        override fun isAccelerateAllowed(blockId: ResourceLocation): Boolean {
+            throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        }
     }
 
     @JvmStatic

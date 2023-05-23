@@ -49,15 +49,14 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	var summonedChildThisCast = false
 
 	private var casterUUID: UUID? = null
-	private var cachedCaster: Player? = null
 
-	var caster: Player?
+	var caster: Player? = null
 		get() {
-			return if (cachedCaster != null && !cachedCaster!!.isRemoved) {
-				cachedCaster
+			return if (field != null && !field!!.isRemoved) {
+				field
 			} else if (casterUUID != null && level is ServerLevel) {
-				cachedCaster = (level as ServerLevel).getEntity(casterUUID!!) as? Player
-				cachedCaster
+				field = (level as ServerLevel).getEntity(casterUUID!!) as? Player
+				field
 			} else {
 				null
 			}
@@ -65,7 +64,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		set(value) {
 			if (value != null) {
 				casterUUID = value.uuid
-				cachedCaster = value
+				field = value
 			}
 		}
 
