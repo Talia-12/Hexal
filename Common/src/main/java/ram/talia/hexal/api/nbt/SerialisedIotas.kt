@@ -305,6 +305,11 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
         }
         else if (iotas != null)
         {
+            if (iotas!!.size == 0)
+            {
+                return null
+            }
+
             // Modify deserialized version
             val poppedIota = iotas!!.removeAt(0)
 
