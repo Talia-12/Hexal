@@ -55,16 +55,19 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
 
     private fun scanTagForEntities(tag: CompoundTag, referencedEntityUUIDs: MutableList<UUID>)
     {
+        val type = getTypeFromTag(tag) ?: return
+        val data = tag[HexIotaTypes.KEY_DATA] ?: return
+
         when (getTypeFromTag(tag)) {
             HexIotaTypes.ENTITY -> {
-                val uuidTag = tag.downcast(CompoundTag.TYPE)["uuid"] ?: return
+                val uuidTag = data.downcast(CompoundTag.TYPE)["uuid"] ?: return
                 val uuid = NbtUtils.loadUUID(uuidTag)
                 if (!referencedEntityUUIDs.contains(uuid)) {
                     referencedEntityUUIDs.add(uuid)
                 }
             }
             HexIotaTypes.LIST -> {
-                val listTag = tag.downcast(ListTag.TYPE)
+                val listTag = data.downcast(ListTag.TYPE)
                 for (sub in listTag) {
                     scanTagForEntities(sub.downcast(CompoundTag.TYPE), referencedEntityUUIDs)
                 }
@@ -336,9 +339,15 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
             if (tagReferencedEntityUUIDs == null)
             {
                 tagReferencedEntityUUIDs = ArrayList()
+                tagReferencedEntitiesAreLoaded = ArrayList()
                 for (innerTag in tag!!)
                 {
                     scanTagForEntities(innerTag.asCompound, tagReferencedEntityUUIDs!!)
+                }
+
+                for (uuid in tagReferencedEntityUUIDs!!)
+                {
+                    tagReferencedEntitiesAreLoaded!!.add(level.getEntity(uuid) != null)
                 }
             }
             var referencedEntities: MutableList<Entity> = ArrayList()
@@ -348,6 +357,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
                 if (entity!= null)
                     referencedEntities.add(entity)
             }
+
             return referencedEntities;
         }
         else if (iotas!= null)
