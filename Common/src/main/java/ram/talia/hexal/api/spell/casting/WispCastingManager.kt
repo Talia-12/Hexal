@@ -5,6 +5,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingHarness
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.isTooLargeToSerialize
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.level.ServerLevel
@@ -111,7 +112,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		// TODO: Make this a mishap
 		// Clear stack if it gets too large
 		var endStack = harness.stack
-		if (endStack.size > 1024) {
+		if (isTooLargeToSerialize(endStack)) {
             endStack = mutableListOf()
         }
 
