@@ -30,11 +30,13 @@ public class GateIota extends Iota {
     public static String TAG_TARGET_Y = "target_y";
     public static String TAG_TARGET_Z = "target_z";
     public static String TAG_TARGET_UUID = "target_uuid";
+    public static String TAG_TARGET_NAME = "target_name";
 
-    private record Payload(int index, Either<Vec3, Pair<UUID, Vec3>> target) { }
+    private record Payload(int index, Either<Vec3, EntityAnchor> target) { }
+    record EntityAnchor(UUID uuid, String name, Vec3 offset) { }
 
     public GateIota(int index, @Nullable Either<Vec3, Pair<Entity, Vec3>> target) {
-        super(HexalIotaTypes.GATE, new Payload(index, target == null ? null : target.mapRight(pair -> new Pair<>(pair.getFirst().getUUID(), pair.getSecond()))));
+        super(HexalIotaTypes.GATE, new Payload(index, target == null ? null : target.mapRight(pair -> new EntityAnchor(pair.getFirst().getUUID(), pair.getFirst().getName().getString(), pair.getSecond()))));
     }
 
     public GateIota(Payload payload) {
@@ -45,7 +47,7 @@ public class GateIota extends Iota {
         return ((Payload) this.payload).index;
     }
 
-    public @Nullable Either<Vec3, Pair<UUID, Vec3>> getTarget() {
+    public @Nullable Either<Vec3, EntityAnchor> getTarget() {
         return ((Payload) this.payload).target;
     }
 
@@ -55,14 +57,28 @@ public class GateIota extends Iota {
         if (target == null)
             return null;
 
-        return target.map(vec3 -> vec3, pair -> {
-            var entity = level.getEntity(pair.component1());
+        return target.map(vec3 -> vec3, entityAnchor -> {
+            var entity = level.getEntity(entityAnchor.uuid);
 
             if (entity == null)
                 return null;
 
-            return entity.position().add(pair.component2());
+            return entity.position().add(entityAnchor.offset);
         });
+    }
+
+    public boolean isDrifting() {
+        return this.getTarget() == null;
+    }
+
+    public boolean isLocationAnchored() {
+        var target = this.getTarget();
+        return (target != null) && (target.left().isPresent());
+    }
+
+    public boolean isEntityAnchored() {
+        var target = this.getTarget();
+        return (target != null) && (target.right().isPresent());
     }
 
     public Set<Entity> getMarked(ServerLevel level) {
@@ -120,19 +136,27 @@ public class GateIota extends Iota {
             tag.putByte(TAG_TARGET_TYPE, (byte) 0);
         else {
             tag.putByte(TAG_TARGET_TYPE, this.getTarget().map(vec3 -> 1, pair -> 2).byteValue());
-            tag.putDouble(TAG_TARGET_X, this.getTarget().map(vec3 -> vec3.x, pair -> pair.getSecond().x));
-            tag.putDouble(TAG_TARGET_Y, this.getTarget().map(vec3 -> vec3.y, pair -> pair.getSecond().y));
-            tag.putDouble(TAG_TARGET_Z, this.getTarget().map(vec3 -> vec3.z, pair -> pair.getSecond().z));
+            tag.putDouble(TAG_TARGET_X, this.getTarget().map(vec3 -> vec3.x, entityAnchor -> entityAnchor.offset.x));
+            tag.putDouble(TAG_TARGET_Y, this.getTarget().map(vec3 -> vec3.y, entityAnchor -> entityAnchor.offset.y));
+            tag.putDouble(TAG_TARGET_Z, this.getTarget().map(vec3 -> vec3.z, entityAnchor -> entityAnchor.offset.z));
 
-            this.getTarget().ifRight(pair -> tag.putUUID(TAG_TARGET_UUID, pair.getFirst()));
+            this.getTarget().ifRight(entityAnchor -> {
+                tag.putUUID(TAG_TARGET_UUID, entityAnchor.uuid);
+                tag.putString(TAG_TARGET_NAME, entityAnchor.name);
+            });
         }
 
-        return IntTag.valueOf(this.getGateIndex());
+        return tag;
     }
 
     public static IotaType<GateIota> TYPE = new IotaType<>() {
-        @Override
-        public GateIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
+        private GateIota deserialize(Tag tag) throws IllegalArgumentException {
+            // handle legacy gate iotas
+            if (tag.getType() == IntTag.TYPE) {
+                var itag = (IntTag) tag;
+                return new GateIota(itag.getAsInt(), null);
+            }
+
             var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
 
             var index = ctag.getInt(TAG_INDEX);
@@ -147,22 +171,42 @@ public class GateIota extends Iota {
             var z = ctag.getDouble(TAG_TARGET_Z);
             var vec = new Vec3(x, y, z);
 
-            if (type == 1) { // Location Bound Gate
+            if (type == 1) { // Location Anchored Gate
                 return new GateIota(index, Either.left(vec));
             }
 
             var uuid = ctag.getUUID(TAG_TARGET_UUID);
+            var name = ctag.getString(TAG_TARGET_NAME);
 
-            return new GateIota(new Payload(index, Either.right(new Pair<>(uuid, vec))));
+            // Entity Anchored Gate
+            return new GateIota(new Payload(index, Either.right(new EntityAnchor(uuid, name, vec))));
+        }
+
+        @Override
+        public GateIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
+            return deserialize(tag);
         }
 
         @Override
         public Component display(Tag tag) {
-            if (!(tag instanceof IntTag itag)) {
+            if (!(tag instanceof IntTag) && !(tag instanceof  CompoundTag))
                 return Component.translatable("hexcasting.spelldata.unknown");
-            }
 
-            return Component.translatable("hexal.spelldata.gate", itag.getAsInt()).withStyle(ChatFormatting.LIGHT_PURPLE);
+            var gate = deserialize(tag);
+
+            if (gate.isDrifting()) {
+                return Component.translatable("hexal.spelldata.gate", gate.getGateIndex()).withStyle(ChatFormatting.LIGHT_PURPLE);
+            }
+            // if we get here then getTarget can't be null.
+            //noinspection DataFlowIssue
+            return gate.getTarget().map(
+                    vec3 -> Component.translatable("hexal.spelldata.gate", gate.getGateIndex()).append(String.format(" (%.2f, %.2f, %.2f)", vec3.x, vec3.y, vec3.z)).withStyle(ChatFormatting.LIGHT_PURPLE),
+                    entityAnchor -> {
+                        var offsetStr = String.format("%.2f, %.2f, %.2f", entityAnchor.offset.x, entityAnchor.offset.y, entityAnchor.offset.z);
+                        var anchorStr = String.format(" (%s, %s)", entityAnchor.name, offsetStr);
+
+                        return Component.translatable("hexal.spelldata.gate", gate.getGateIndex()).append(anchorStr).withStyle(ChatFormatting.LIGHT_PURPLE);
+            });
         }
 
         @Override

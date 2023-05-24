@@ -3,7 +3,6 @@ package ram.talia.hexal.common.casting.actions.spells.gates
 import at.petrak.hexcasting.api.mod.HexTags
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
-import at.petrak.hexcasting.api.spell.SpellAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getVec3
 import at.petrak.hexcasting.api.spell.iota.Iota
@@ -25,17 +24,17 @@ object OpCloseGate : VarargSpellAction {
         if (stack.isEmpty())
             return 1
         val top = stack[0]
-        if (top is GateIota && top.target == null)
+        if (top is GateIota && !top.isDrifting)
             return 1
         return 2
     }
 
     override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val gate = args.getGate(0, argc)
-        val targetPos = if (argc == 2) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
+        val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
 
-        // only check if in ambit when the gate is floating.
-        if (argc == 2) {
+        // only check if in ambit when the gate is drifting.
+        if (gate.isDrifting) {
             ctx.assertVecInRange(targetPos)
         }
 
