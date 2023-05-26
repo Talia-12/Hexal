@@ -6,9 +6,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import ram.talia.hexal.api.HexalAPI
 
 @EventBusSubscriber(modid = HexalAPI.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public object HexalGameTests {
+object HexalGameTests {
 	@SubscribeEvent
-	public fun registerTests(event: RegisterGameTestsEvent) {
+	fun registerTests(event: RegisterGameTestsEvent) {
 		HexalAPI.LOGGER.debug("registering tests")
 		event.register(WispTests::class.java)
 	}

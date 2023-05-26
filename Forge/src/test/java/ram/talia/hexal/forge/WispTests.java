@@ -84,7 +84,7 @@ public class WispTests {
 		});
 		
 		helper.onEachTick(() -> {
-			HexalAPI.LOGGER.debug("current tick: " + helper.getTick());
+			HexalAPI.LOGGER.debug("current tick (linkWispsMessageTest): " + helper.getTick());
 			
 			tickPlayer(fakePlayer);
 		});
