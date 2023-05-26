@@ -189,7 +189,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		while (poolToSearch.isNotEmpty()) {
 			val datumToCheck = poolToSearch.removeFirst()
-			if (datumToCheck is EntityIota && datumToCheck.entity is Player) // && datumToCheck.entity != caster)
+			if (datumToCheck is EntityIota && datumToCheck.entity is Player && datumToCheck.entity != caster)
 				numTrueNames += 1
 			if (datumToCheck is ListIota)
 				poolToSearch.addAll(datumToCheck.list)
