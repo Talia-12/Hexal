@@ -37,7 +37,7 @@ public class WispCastingMangerEventHandler {
 	}
 	
 	private static WispCastingManager loadCastingManager(ServerPlayer player) {
-		WispCastingManager manager = new WispCastingManager(player);
+		WispCastingManager manager = new WispCastingManager(player.getUUID(), player.server);
 		manager.readFromNbt(player.getPersistentData().getCompound(TAG_CASTING_MANAGER), player.getLevel());
 		return manager;
 	}

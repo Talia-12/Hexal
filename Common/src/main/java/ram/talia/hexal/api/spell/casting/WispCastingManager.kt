@@ -9,6 +9,7 @@ import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.isTooLargeToSerialize
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
@@ -18,7 +19,17 @@ import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
 
-class WispCastingManager(private val caster: ServerPlayer) {
+class WispCastingManager(private val casterUUID: UUID, private var server: MinecraftServer) {
+	private var cachedCaster: ServerPlayer? = null
+	private val caster: ServerPlayer?
+		get() {
+			return if (cachedCaster != null && !cachedCaster!!.isRemoved) {
+				cachedCaster
+			} else {
+				cachedCaster = server.playerList.getPlayer(casterUUID)
+				cachedCaster
+			}
+		}
 
 	private val queue: PriorityQueue<WispCast> = PriorityQueue()
 
@@ -34,7 +45,10 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			initialStack: SerialisedIotaList,
 			initialRavenmind: SerialisedIota,
 	) {
-		val cast = WispCast(wisp, priority, caster.level.gameTime, hex, initialStack, initialRavenmind)
+		if (caster == null)
+			return
+
+		val cast = WispCast(wisp, priority, caster!!.level.gameTime, hex, initialStack, initialRavenmind)
 
 		// if the wisp is one that is hard enough to forkbomb with (specifically, lasting wisps), let it go through without reaching the queue
 		if (specialHandlers.any { handler -> handler.invoke(this, cast).also {
@@ -51,7 +65,9 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	 * Called by CCWispCastingManager (Fabric) and WispCastingManagerEventHandler (Forge) each tick, evaluates up to WISP_EVALS_PER_TICK Wisp casts.
 	 */
 	fun executeCasts() {
-		if (caster.level.isClientSide) {
+		if (caster == null)
+			return
+		if (caster!!.level.isClientSide) {
 			HexalAPI.LOGGER.info("HOW DID THIS HAPPEN")
 			return
 		}
@@ -71,13 +87,13 @@ class WispCastingManager(private val caster: ServerPlayer) {
 			itr.remove()
 
 			// if the wisp isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
-			val wisp = cast.wisp ?: (caster.level as ServerLevel).getEntity(cast.wispUUID) as? BaseCastingWisp ?: continue
+			val wisp = cast.wisp ?: (caster!!.level as ServerLevel).getEntity(cast.wispUUID) as? BaseCastingWisp ?: continue
 			cast.wisp = wisp
 
 			if (wisp.isRemoved)
 				continue
 
-			if (wisp.level.dimension() != wisp.caster?.level?.dimension())
+			if (wisp.level.dimension() != caster?.level?.dimension())
 				continue
 
 			results += cast(cast)
@@ -94,7 +110,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 	@Suppress("CAST_NEVER_SUCCEEDS")
 	fun cast(cast: WispCast): WispCastResult {
 		val ctx = CastingContext(
-			caster,
+			caster!!,
 			InteractionHand.MAIN_HAND,
 			CastingContext.CastSource.PACKAGED_HEX
 		)
@@ -111,7 +127,7 @@ class WispCastingManager(private val caster: ServerPlayer) {
 		harness.stack = cast.initialStack.getIotas(ctx.world).toMutableList()
 		harness.ravenmind = cast.initialRavenmind.getIota(ctx.world)
 
-		val info = harness.executeIotas(cast.hex.getIotas(ctx.world), caster.getLevel())
+		val info = harness.executeIotas(cast.hex.getIotas(ctx.world), caster!!.getLevel())
 
 		// TODO: Make this a mishap
 		// Clear stack if it gets too large
