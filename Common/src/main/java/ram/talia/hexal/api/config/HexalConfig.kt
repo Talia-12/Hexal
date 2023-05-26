@@ -1,6 +1,5 @@
 package ram.talia.hexal.api.config
 
-import at.petrak.hexcasting.api.HexAPI
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 
@@ -160,7 +159,7 @@ object HexalConfig {
             const val MIN_TICK_RANDOM_TICK_I_PROB = 600
             const val MAX_TICK_RANDOM_TICK_I_PROB = 2100
 
-            val DEFAULT_ACCELERATE_DENY_LIST: List<String> = listOf("create:deployer")
+            val DEFAULT_ACCELERATE_DENY_LIST: List<String> = listOf("hexcasting:impetus_look", "create:deployer")
         }
     }
 
