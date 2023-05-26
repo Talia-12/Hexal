@@ -224,8 +224,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("tickRandomTickIProb", DEFAULT_TICK_RANDOM_TICK_I_PROB, MIN_TICK_RANDOM_TICK_I_PROB, MAX_TICK_RANDOM_TICK_I_PROB);
 
 
-            accelerateDenyList = builder.comment("Resource locations of dimensions you can't Blink or Greater Teleport in.")
-                    .defineList("tpDimDenyList", HexalConfig.ServerConfigAccess.Companion.getDEFAULT_ACCELERATE_DENY_LIST(), ForgeHexalConfig.Server::isValidReslocArg);
+            accelerateDenyList = builder.comment("Resource locations of blocks you can't accelerate.")
+                    .defineList("accelerateDenyList", HexalConfig.ServerConfigAccess.Companion.getDEFAULT_ACCELERATE_DENY_LIST(), ForgeHexalConfig.Server::isValidReslocArg);
 
             builder.pop();
         }

@@ -9,6 +9,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getBlockPos
 import at.petrak.hexcasting.api.spell.iota.Iota
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Registry
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -50,6 +51,9 @@ object OpTick : SpellAction {
             val blockState = ctx.world.getBlockState(pos)
             val level: ServerLevel = ctx.world
             val targetBE = level.getBlockEntity(pos)
+
+            if (!HexalConfig.server.isAccelerateAllowed(Registry.BLOCK.getKey(blockState.block)))
+                return
 
             if (targetBE != null) {
                 // if is TileEntity (furnace, brewing stand, ...)
