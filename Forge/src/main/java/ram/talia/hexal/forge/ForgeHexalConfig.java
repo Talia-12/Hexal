@@ -56,6 +56,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue makeGateCost;
         private static ForgeConfigSpec.DoubleValue markGateCost;
         private static ForgeConfigSpec.DoubleValue closeGateCost;
+        private static ForgeConfigSpec.DoubleValue closeGateDistanceCostFactor;
 
         // costs of item spells
         private static ForgeConfigSpec.DoubleValue bindStorageCost;
@@ -163,6 +164,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("markGateCost", DEFAULT_MARK_GATE_COST, DEF_MIN_COST, DEF_MAX_COST);
             closeGateCost = builder.translation("text.autoconfig.hexal.option.server.gateSpells.closeGateCost")
                     .defineInRange("closeGateCost", DEFAULT_CLOSE_GATE_COST, DEF_MIN_COST, DEF_MAX_COST);
+            closeGateDistanceCostFactor = builder.translation("text.autoconfig.hexal.option.server.gateSpells.closeGateDistanceCostFactor")
+                    .defineInRange("closeGateDistanceCostFactor", DEFAULT_CLOSE_GATE_DISTANCE_COST_SCALE_FACTOR, DEF_MIN_COST, DEF_MAX_COST);
 
             builder.pop();
 
@@ -353,6 +356,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getCloseGateCost() {
             return (int) (closeGateCost.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public int getCloseGateDistanceCostFactor() {
+            return (int) (closeGateDistanceCostFactor.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override

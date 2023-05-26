@@ -32,17 +32,22 @@ object OpCloseGate : VarargSpellAction {
     override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val gate = args.getGate(0, argc)
         val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
-
+        
+        
         // only check if in ambit when the gate is drifting.
-        if (gate.isDrifting) {
+        if (gate.isDrifting)
             ctx.assertVecInRange(targetPos)
-        }
 
         if (!ctx.isVecInWorld(targetPos.subtract(0.0, 1.0, 0.0)))
             throw MishapLocationTooFarAway(targetPos, "too_close_to_out")
 
         val gatees = gate.getMarked(ctx.world)
         gate.clearMarked()
+
+        var cost = HexalConfig.server.closeGateCost
+        if (gate.isDrifting) {
+            cost = gatees.fold(cost) { cumCost, gatee -> cumCost + (HexalConfig.server.closeGateDistanceCostFactor * gatee.position().distanceTo(targetPos)).toInt() }
+        }
 
         // make particle effects at every teleported entity.
         var meanEyeHeight = 0.0
@@ -52,7 +57,7 @@ object OpCloseGate : VarargSpellAction {
 
         return Triple(
                 Spell(gatees, targetPos),
-                HexalConfig.server.closeGateCost,
+                cost,
                 burst
         )
     }
