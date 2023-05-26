@@ -6,12 +6,12 @@ import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapEvalTooDeep
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.addBounded
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.mishaps.MishapExcessiveReproduction
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
 import java.lang.Integer.max
@@ -27,7 +27,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
 
         val mCast = ctx as? IMixinCastingContext
         if (mCast != null && mCast.hasWisp() && mCast.wisp!!.summonedChildThisCast)
-            throw MishapEvalTooDeep() // wisps can only summon one child per cast.
+            throw MishapExcessiveReproduction(mCast.wisp!!) // wisps can only summon one child per cast.
 
         val spell = when (ticking) {
             true -> {

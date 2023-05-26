@@ -14,6 +14,7 @@
   "hexcasting.mishap.self_link": "Tried to link %s to itself.",
   "hexcasting.mishap.no_bound_storage": "No bound Mote Nexus.",
   "hexcasting.mishap.storage_unloaded": "Bound Mote Nexus is unloaded.",
+  "hexcasting.mishap.excessive_reproduction": "Wisp %s tried to reproduce excessively; only 1 child per tick.",
 
   "hexcasting.mishap.invalid_value.class.linkable": "a linkable",
   "hexcasting.mishap.invalid_value.class.wisp": "a wisp",
