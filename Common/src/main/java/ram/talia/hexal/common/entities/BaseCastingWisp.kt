@@ -98,6 +98,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : this(entityType, world) {
 		setPos(pos)
 		this.caster = caster
+		@Suppress("LeakingThis")
 		this.media = media
 	}
 
@@ -128,6 +129,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			childTick()
 			move()
 		}
+		tryCheckInsideBlocks() // let the nether portal know if this wisp is inside it.
 
 		// TODO: move all this into BaseWisp
 		if (level.isClientSide) {
