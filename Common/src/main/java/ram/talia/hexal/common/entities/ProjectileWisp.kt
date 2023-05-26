@@ -2,7 +2,6 @@ package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.spell.iota.Vec3Iota
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
@@ -17,7 +16,6 @@ import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
-import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.common.lib.HexalEntities
@@ -110,7 +108,7 @@ open class ProjectileWisp : BaseCastingWisp {
 		if (level.isClientSide)
 			playTrailParticles()
 		else {
-			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this), EntityIota(result.entity)).toNbtList())
+			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this), EntityIota(result.entity)))
 			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, SerialisedIota())
 		}
 	}
@@ -121,7 +119,7 @@ open class ProjectileWisp : BaseCastingWisp {
 			playTrailParticles()
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this),
-					Vec3Iota(Vec3.atCenterOf(result.blockPos))).toNbtList())
+					Vec3Iota(Vec3.atCenterOf(result.blockPos))))
 			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, SerialisedIota())
 		}
 	}
