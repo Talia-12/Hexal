@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.ListIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
@@ -82,10 +81,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	fun setHex(iotas: MutableList<Iota>) {
 		serHex.set(iotas)
 
-		hexNumTrueNames = 0;
+		hexNumTrueNames = 0
 		for (entity in serHex.getReferencedEntities(level as ServerLevel)) {
 			if ((entity is Player) && (entity!= caster)) {
-				hexNumTrueNames++;
+				hexNumTrueNames++
 			}
 		}
 	}
@@ -320,6 +319,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		setLookVector(dV)
 	}
 
+	override fun remove(reason: RemovalReason) {
+		if (reason.shouldDestroy() && this.seon && this.caster != null)
+			IXplatAbstractions.INSTANCE.setSeon(this.caster!! as ServerPlayer, null)
+		super.remove(reason)
+	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)

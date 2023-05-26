@@ -10,10 +10,25 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.common.entities.BaseCastingWisp
+import java.util.UUID
 
-class CCWispCastingManager(private val player: Player, var seon: BaseCastingWisp? = null) :
+class CCWispCastingManager(private val player: Player, var seonUUID: UUID? = null) :
 		ServerTickingComponent, AutoSyncedComponent {
 	val manager = (player as? ServerPlayer)?.let { WispCastingManager(it) }
+
+	var seon: BaseCastingWisp? = null
+		get() {
+			if (seonUUID == null)
+				return null
+			if (field?.isRemoved != false)
+				return (player as? ServerPlayer)?.let { it.getLevel().getEntity(seonUUID!!) as BaseCastingWisp }
+			return field
+		}
+		set(value) {
+			seonUUID = value?.uuid
+			field = value
+		}
+
 	override fun serverTick() {
 		manager?.executeCasts()
 	}
@@ -23,7 +38,7 @@ class CCWispCastingManager(private val player: Player, var seon: BaseCastingWisp
 			if (tag.hasCompound(TAG_MANAGER))
 				manager?.readFromNbt(tag.getCompound(TAG_MANAGER), player.level as ServerLevel)
 			if (tag.hasUUID(TAG_SEON))
-				seon = player.getLevel().getEntity(tag.getUUID(TAG_SEON)) as? BaseCastingWisp
+				seonUUID = tag.getUUID(TAG_SEON)
 		}
 	}
 
@@ -33,9 +48,7 @@ class CCWispCastingManager(private val player: Player, var seon: BaseCastingWisp
 			manager.writeToNbt(manTag)
 			tag.putCompound(TAG_MANAGER, manTag)
 		}
-		if (seon != null) {
-			tag.putUUID(TAG_SEON, seon!!.uuid)
-		}
+		seonUUID?.let { tag.putUUID(TAG_SEON, it) }
 	}
 
 	companion object {
