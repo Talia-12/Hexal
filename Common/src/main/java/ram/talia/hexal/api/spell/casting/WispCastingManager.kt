@@ -93,8 +93,10 @@ class WispCastingManager(private val casterUUID: UUID, private var server: Minec
 			if (wisp.isRemoved)
 				continue
 
-			if (wisp.level.dimension() != caster?.level?.dimension())
+			if (wisp.level.dimension() != caster?.level?.dimension()) {
+				wisp.castCallback(WispCastResult(wisp, false, mutableListOf(), NullIota(), true))
 				continue
+			}
 
 			results += cast(cast)
 
@@ -245,7 +247,7 @@ class WispCastingManager(private val casterUUID: UUID, private var server: Minec
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota) {
+	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota, val cancelled: Boolean = true) {
 		fun callback() { wisp.castCallback(this) }
 	}
 

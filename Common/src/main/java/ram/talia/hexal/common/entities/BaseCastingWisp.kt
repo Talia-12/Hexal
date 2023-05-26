@@ -304,14 +304,17 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	open fun castCallback(result: WispCastingManager.WispCastResult) {
+		scheduledCast = false
+
+		if (result.cancelled)
+			return
+
 		// the cast errored, delete the wisp
 		if (!result.succeeded)
 			discard()
 
 //		if (result.makesCastSound)
 //			scheduleCastSound()
-
-		scheduledCast = false
 	}
 
 	override fun setDeltaMovement(dV: Vec3) {
