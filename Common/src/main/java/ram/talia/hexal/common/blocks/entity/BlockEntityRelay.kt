@@ -4,15 +4,38 @@ import at.petrak.hexcasting.api.block.HexBlockEntity
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.common.lib.HexItems
+import net.minecraft.Util
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.util.RandomSource
+import net.minecraft.world.item.DyeColor
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.*
 import ram.talia.hexal.common.lib.HexalBlockEntities
+import kotlin.math.min
 
 class BlockEntityRelay(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre {
+    private val random = RandomSource.create()
+
+    private var numNonRelaysLinked = 0
+    private var numMediaAcceptorsLinked = 0
+    private var lastTickComputedAverageMedia = 0L
+    private var computedAverageMedia = 0 // average media among all ILinkables connected to the relay network.
+
+    private val nonRelaysLinked: MutableList<ILinkable> = mutableListOf()
+    private val mediaAcceptorsLinked: MutableList<ILinkable> = mutableListOf()
+
+    /**
+     * Only called once per tick per Relay network, sets computedAverageMedia to the average amount of media among all [ILinkable]s connected to the relay network.
+     */
+    fun computeAverageMedia() {
+
+    }
 
     //region Linkable
 
@@ -36,30 +59,53 @@ class BlockEntityRelay(val pos: BlockPos, val state: BlockState) : HexBlockEntit
     override fun shouldRemove(): Boolean = this.isRemoved
 
     override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
-        TODO("Not yet implemented")
+        if (lastTickComputedAverageMedia < (level?.gameTime ?: 0))
+            computeAverageMedia()
+
+        val averageMediaWithoutOther = (computedAverageMedia * numMediaAcceptorsLinked - otherMediaLevel) / (numMediaAcceptorsLinked - 1)
+
+        if (otherMediaLevel <= averageMediaWithoutOther)
+            return 0
+
+        return ((otherMediaLevel - averageMediaWithoutOther) * HexalConfig.server.mediaFlowRateOverLink).toInt()
     }
 
     override fun acceptMedia(other: ILinkable, sentMedia: Int) {
-        TODO("Not yet implemented")
+        // TODO: handle same linkable connected to relay network multiple times
+        var remainingMedia = sentMedia
+        for (mediaAcceptor in mediaAcceptorsLinked.shuffled()) {
+            if (other == mediaAcceptor)
+                continue
+
+            val toSend = mediaAcceptor.canAcceptMedia(this, computedAverageMedia)
+            mediaAcceptor.acceptMedia(this, min(toSend, remainingMedia))
+            remainingMedia -= min(toSend, remainingMedia)
+            if (remainingMedia <= 0)
+                break
+        }
     }
 
     //endregion
 
     //region Linkable.IRenderCentre
+    private var cachedClientLinkableHolder: ClientLinkableHolder? = null
 
     override val clientLinkableHolder: ClientLinkableHolder?
-        get() = TODO("Not yet implemented")
+        get() = cachedClientLinkableHolder ?: let {
+            cachedClientLinkableHolder = this.level?.let { if (it.isClientSide) ClientLinkableHolder(this, it, random) else null }
+            cachedClientLinkableHolder
+        }
 
     override fun renderLinks() {
         super.renderLinks()
     }
 
     override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 {
-        TODO("Not yet implemented")
+        return Vec3.atCenterOf(pos) // TODO: Make this better; blockstates, tower, ect.
     }
 
     override fun colouriser(): FrozenColorizer {
-        TODO("Not yet implemented")
+        return colouriser // TODO: Make this better!
     }
 
     //endregion
@@ -74,5 +120,7 @@ class BlockEntityRelay(val pos: BlockPos, val state: BlockState) : HexBlockEntit
 
     companion object {
         const val MAX_SQR_LINK_RANGE = 32.0*32.0
+
+        val colouriser = FrozenColorizer(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
     }
 }

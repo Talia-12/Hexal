@@ -40,7 +40,9 @@ interface ILinkable {
 
 	/**
 	 * Returns <= 0 if this [ILinkable] can't accept any media, returns how much media
-	 * it is accepting if it can accept media.
+	 * it is accepting if it can accept media. If [otherMediaLevel] is -1, the [other]
+	 * is requesting to know how much media your [ILinkable] can store, and you should return
+	 * MAX_MEDIA - CURRENT_MEDIA.
 	 */
 	fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int
 
