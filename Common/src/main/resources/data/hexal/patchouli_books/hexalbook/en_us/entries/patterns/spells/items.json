@@ -186,19 +186,11 @@
     },
     {
       "type": "hexcasting:pattern",
-      "op_id": "hexal:item/use_on_block",
-      "anchor": "hexal:item/use_on_block",
-      "input": "mote, vec, vec",
+      "op_id": "hexal:item/use_on",
+      "anchor": "hexal:item/use_on",
+      "input": "mote, (entity) | (vec, vec)",
       "output": "",
-      "text": "hexal.page.hexal_spell.item/use_on_block"
-    },
-    {
-      "type": "hexcasting:pattern",
-      "op_id": "hexal:item/use_on_entity",
-      "anchor": "hexal:item/use_on_entity",
-      "input": "mote, entity",
-      "output": "",
-      "text": "hexal.page.hexal_spell.item/use_on_entity"
+      "text": "hexal.page.hexal_spell.item/use_on"
     }
   ]
 }
