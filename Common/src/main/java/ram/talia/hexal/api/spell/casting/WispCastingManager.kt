@@ -19,17 +19,23 @@ import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
 
-class WispCastingManager(private val casterUUID: UUID, private var server: MinecraftServer) {
+class WispCastingManager(private val casterUUID: UUID, private var cachedServer: MinecraftServer?) {
+	constructor(caster: ServerPlayer) : this(caster.uuid, caster.server) {
+		cachedCaster = caster
+	}
+
 	private var cachedCaster: ServerPlayer? = null
 	private val caster: ServerPlayer?
 		get() {
 			return if (cachedCaster != null && !cachedCaster!!.isRemoved) {
 				cachedCaster
 			} else {
-				cachedCaster = server.playerList.getPlayer(casterUUID)
+				cachedCaster = server?.playerList?.getPlayer(casterUUID)
 				cachedCaster
 			}
 		}
+	private val server: MinecraftServer?
+		get() = cachedServer ?: cachedCaster?.server
 
 	private val queue: PriorityQueue<WispCast> = PriorityQueue()
 

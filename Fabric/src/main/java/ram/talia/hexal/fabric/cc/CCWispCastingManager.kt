@@ -14,7 +14,7 @@ import java.util.UUID
 
 class CCWispCastingManager(private val player: Player, var seonUUID: UUID? = null) :
 		ServerTickingComponent, AutoSyncedComponent {
-	val manager = (player as? ServerPlayer)?.let { WispCastingManager(it.uuid, it.server) }
+	val manager = (player as? ServerPlayer)?.let { WispCastingManager(it) }
 
 	var seon: BaseCastingWisp? = null
 		get() {
