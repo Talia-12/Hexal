@@ -2,9 +2,6 @@ package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.IntTag
-import net.minecraft.nbt.NbtUtils
-import net.minecraft.nbt.Tag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.server.level.ServerLevel
@@ -26,10 +23,6 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	override fun getPosition(): Vec3 = position()
 
 	override fun shouldRemove() = isRemoved && removalReason?.shouldDestroy() == true
-
-	override fun writeToNbt(): Tag = NbtUtils.createUUID(uuid)
-
-	override fun writeToSync(): Tag = IntTag.valueOf(id)
 
 	override fun tick() {
 		super.tick()

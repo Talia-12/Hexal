@@ -50,6 +50,12 @@ object LinkableRegistry {
 
 	abstract class LinkableType<T : ILinkable, U : ILinkable.IRenderCentre>(val id: ResourceLocation) {
 		/**
+		 * Takes an instance of this [ILinkable]'s type and returns a tag containing a saved reference to that
+		 * [ILinkable] to be deserialised on the server.
+		 */
+		abstract fun toNbt(linkable: ILinkable): Tag
+
+		/**
 		 * Takes a tag representing a reference to the [ILinkable] and wraps it inside a [CompoundTag] that also stores
 		 * a reference to the [LinkableType] of the [ILinkable], meaning that the loader will know which [LinkableType]
 		 * to use to restore the reference. This wrap is used to save a reference on saving/loading the world.
@@ -66,6 +72,12 @@ object LinkableRegistry {
 		 * restores the reference. This is used to restore a reference on the server.
 		 */
 		abstract fun fromNbt(tag: Tag, level: ServerLevel): T?
+
+		/**
+		 * Takes an instance of this [ILinkable]'s type and returns a tag containing a saved reference to that
+		 * [ILinkable] to be deserialised on the client.
+		 */
+		abstract fun toSync(linkable: ILinkable): Tag
 
 		/**
 		 * Takes a tag representing a reference to the [ILinkable.IRenderCentre] and wraps it inside a [CompoundTag]
@@ -100,8 +112,8 @@ object LinkableRegistry {
 		abstract val canCast: Boolean
 
 		/**
-		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is connected to the
-		 * [CastingContext], and null otherwise.
+		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is the caster of the
+		 * [CastingContext], and null otherwise (where, e.g., a wisp or a player may be the 'caster' here).
 		 */
 		abstract fun linkableFromCastingContext(ctx: CastingContext): T?
 
@@ -115,7 +127,7 @@ object LinkableRegistry {
 		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is referenced by that
 		 * iota, and null otherwise.
 		 */
-		abstract fun linkableFromIota(iota: Iota): T?
+		abstract fun linkableFromIota(iota: Iota, level: ServerLevel): T?
 
 		/**
 		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
@@ -128,7 +140,10 @@ object LinkableRegistry {
 	 * Accepts an [ILinkable] and returns a [CompoundTag] storing both the [ILinkable]'s type and a tag representing it, which can be loaded with [fromNbt]
 	 */
 	@JvmStatic
-	fun wrapNbt(linkable: ILinkable) = linkable.getLinkableType().wrapNbt(linkable.writeToNbt())
+	fun wrapNbt(linkable: ILinkable): CompoundTag {
+		val type = linkable.getLinkableType()
+		return type.wrapNbt(type.toNbt(linkable))
+	}
 
 	@JvmStatic
 	fun fromNbt(tag: CompoundTag, level: ServerLevel): Result<ILinkable> {
@@ -149,7 +164,10 @@ object LinkableRegistry {
 	 * loaded with [fromSync]. [wrapSync] and [fromSync] are used to sync the link from Server to Client.
 	 */
 	@JvmStatic
-	fun wrapSync(linkable: ILinkable) = linkable.getLinkableType().wrapSync(linkable.writeToSync())
+	fun wrapSync(linkable: ILinkable): CompoundTag {
+		val type = linkable.getLinkableType()
+		return type.wrapSync(type.toSync(linkable))
+	}
 
 	@JvmStatic
 	fun fromSync(tag: CompoundTag, level: Level): ILinkable.IRenderCentre? {
@@ -180,8 +198,8 @@ object LinkableRegistry {
 	}
 
 	@JvmStatic
-	fun linkableFromIota(iota: Iota): ILinkable? {
-		iotaExtractionQueue.forEach { type -> type.linkableFromIota(iota)?.let { return it } }
+	fun linkableFromIota(iota: Iota, level: ServerLevel): ILinkable? {
+		iotaExtractionQueue.forEach { type -> type.linkableFromIota(iota, level)?.let { return it } }
 		return null
 	}
 }

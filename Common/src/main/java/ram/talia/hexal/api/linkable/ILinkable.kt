@@ -5,7 +5,6 @@ import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.utils.asCompound
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
-import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
@@ -35,9 +34,9 @@ interface ILinkable {
 	 */
 	fun shouldRemove(): Boolean
 
-	fun writeToNbt(): Tag
-
-	fun writeToSync(): Tag
+//	fun writeToNbt(): Tag
+//
+//	fun writeToSync(): Tag
 
 	/**
 	 * Returns <= 0 if this [ILinkable] can't accept any media, returns how much media

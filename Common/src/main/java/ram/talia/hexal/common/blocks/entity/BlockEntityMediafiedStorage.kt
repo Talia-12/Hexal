@@ -29,7 +29,7 @@ class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : He
 
     private var hasRegisteredToMediafiedItemManager: Boolean = false
 
-    val _storedItems: MutableMap<Int, ItemRecord> = mutableMapOf()
+    private val _storedItems: MutableMap<Int, ItemRecord> = mutableMapOf()
     val storedItems: Map<Int, ItemRecord>
         get() = _storedItems
 
