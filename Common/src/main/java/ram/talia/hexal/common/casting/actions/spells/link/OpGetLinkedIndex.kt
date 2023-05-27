@@ -10,7 +10,7 @@ object OpGetLinkedIndex : ConstMediaAction {
 
 	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
 		val linkThis = LinkableRegistry.linkableFromCastingContext(ctx)
-		val linkOther = LinkableRegistry.linkableFromIota(args[0]) ?: return (-1).asActionResult
+		val linkOther = LinkableRegistry.linkableFromIota(args[0], ctx.world) ?: return (-1).asActionResult
 
 		return linkThis.getLinkedIndex(linkOther).asActionResult
 	}

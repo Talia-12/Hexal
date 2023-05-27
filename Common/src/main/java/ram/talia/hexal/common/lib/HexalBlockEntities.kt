@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
+import ram.talia.hexal.common.blocks.entity.BlockEntityRelay
 import ram.talia.hexal.common.blocks.entity.BlockEntitySlipway
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
@@ -22,13 +23,16 @@ class HexalBlockEntities {
 			}
 		}
 
-		private val BLOCK_ENTITIES: MutableMap<ResourceLocation, BlockEntityType<*>> = LinkedHashMap()
+        private val BLOCK_ENTITIES: MutableMap<ResourceLocation, BlockEntityType<*>> = LinkedHashMap()
 
 		@JvmField
 		val SLIPWAY = register("slipway", ::BlockEntitySlipway, HexalBlocks.SLIPWAY)
 
 		@JvmField
 		val MEDIAFIED_STORAGE = register("mediafied_storage", ::BlockEntityMediafiedStorage, HexalBlocks.MEDIAFIED_STORAGE)
+
+		@JvmField
+		val RELAY = register("relay", ::BlockEntityRelay, HexalBlocks.RELAY)
 
 		private fun <T : BlockEntity?> register(
 			id: String,

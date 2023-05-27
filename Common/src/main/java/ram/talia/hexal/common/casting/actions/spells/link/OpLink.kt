@@ -16,7 +16,7 @@ object OpLink : SpellAction {
 	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val linkThis = LinkableRegistry.linkableFromCastingContext(ctx)
 
-		val linkOther = LinkableRegistry.linkableFromIota(args[0])
+		val linkOther = LinkableRegistry.linkableFromIota(args[0], ctx.world)
 				?: throw MishapInvalidIota.ofType(args[0], 0, "linkable")
 
 		if (linkThis == linkOther)

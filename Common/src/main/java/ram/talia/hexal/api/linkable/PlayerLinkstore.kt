@@ -3,9 +3,6 @@ package ram.talia.hexal.api.linkable
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.IntTag
-import net.minecraft.nbt.NbtUtils
-import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
@@ -51,9 +48,6 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 
 	override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
-	override fun writeToNbt(): Tag = NbtUtils.createUUID(player.uuid)
-
-	override fun writeToSync(): Tag = IntTag.valueOf(player.id)
 	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
 
 	override fun acceptMedia(other: ILinkable, sentMedia: Int) { }

@@ -12,6 +12,7 @@ import net.minecraft.world.level.material.MaterialColor
 import net.minecraft.world.level.material.PushReaction
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
+import ram.talia.hexal.common.blocks.BlockRelay
 import ram.talia.hexal.common.blocks.BlockSlipway
 import java.util.function.BiConsumer
 
@@ -32,7 +33,7 @@ class HexalBlocks {
 			}
 		}
 
-		private val BLOCKS: MutableMap<ResourceLocation, Block> = LinkedHashMap()
+        private val BLOCKS: MutableMap<ResourceLocation, Block> = LinkedHashMap()
 		private val BLOCK_ITEMS: MutableMap<ResourceLocation, Pair<Block, Item.Properties>> = LinkedHashMap()
 
 		@JvmField
@@ -50,6 +51,11 @@ class HexalBlocks {
 		val MEDIAFIED_STORAGE = blockItem("mediafied_storage", BlockMediafiedStorage(
 				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(30.0f)
 		))
+
+		val RELAY = blockItem("relay", BlockRelay(
+				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(3.0f)
+		))
+
 
 		private fun <T : Block> blockNoItem(name: String, block: T): T {
 			val old = BLOCKS.put(modLoc(name), block)
