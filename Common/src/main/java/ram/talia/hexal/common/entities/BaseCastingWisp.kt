@@ -218,6 +218,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
+		if (otherMediaLevel == -1)
+			return (Int.MAX_VALUE - this.media)
 		if (otherMediaLevel <= this.media)
 			return 0
 
