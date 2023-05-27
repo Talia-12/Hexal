@@ -14,6 +14,7 @@
   "hexcasting.mishap.self_link": "试图将%s链接至其自身",
   "hexcasting.mishap.no_bound_storage": "未绑定物元枢纽",
   "hexcasting.mishap.storage_unloaded": "绑定的物元枢纽未被加载",
+  "hexcasting.mishap.excessive_reproduction": "咒灵%s试图过度复制，每刻仅可召唤1个子咒灵",
 
   "hexcasting.mishap.invalid_value.class.linkable": "一个可链接的事物",
   "hexcasting.mishap.invalid_value.class.wisp": "一个咒灵",
@@ -208,7 +209,7 @@
   "hexal.page.wisps.zone_entity/not_wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有非咒灵实体的列表。",
   "hexal.page.wisps.wisp/trigger/tick": "移除栈顶数，然后将咒灵下一次施法时刻延迟所给数个 1/20 秒。所有可用于延迟咒灵施法的操作均能使咒灵的常态消耗减半，直到下一次施法为止。",
   "hexal.page.wisps.wisp/trigger/comm": "咒灵将在其收到至少一次$(l:hexal:patterns/spells/links#hexal:link/comm/send)$(action)通信/$后才进行下一次施法。",
-  "hexal.page.wisps.wisp/trigger/move": "咒灵将在其抵达其被$(l:hexal:patterns/spells/wisps#hexal:wisp/move/target/set)$(action)导向/$的位置后才进行下一次施法。",
+  "hexal.page.wisps.wisp/trigger/move": "咒灵将在其抵达被$(l:hexal:patterns/spells/wisps#hexal:wisp/move/target/set)$(action)导向/$的位置后才进行下一次施法。",
   
   "hexal.entry.links": "链接",
   "hexal.page.links.0": "这些图案大致构建了一套能在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$间以及咒灵和其他事物间传递信息的系统。有若干图案与创建用于传递信息的链接有关，也有些图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时维持任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
