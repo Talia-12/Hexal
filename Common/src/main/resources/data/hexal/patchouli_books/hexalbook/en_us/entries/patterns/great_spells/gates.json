@@ -7,10 +7,22 @@
   "read_by_default": true,
   "pages": [
     {
+      "type": "patchouli:text",
+      "text": "hexal.page.gates.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.gates.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.gates.2"
+    },
+    {
       "type": "hexcasting:pattern",
       "op_id": "hexal:gate/make",
       "anchor": "hexal:gate/make",
-      "input": "",
+      "input": "null | vec | vec, entity",
       "output": "gate",
       "text": "hexal.page.gates.gate/make"
     },
@@ -50,7 +62,7 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:gate/close",
       "anchor": "hexal:gate/close",
-      "input": "gate, vec",
+      "input": "gate | gate, vec",
       "output": "",
       "text": "hexal.page.gates.gate/close"
     }

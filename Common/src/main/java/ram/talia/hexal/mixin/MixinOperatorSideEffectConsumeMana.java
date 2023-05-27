@@ -26,9 +26,10 @@ public abstract class MixinOperatorSideEffectConsumeMana {
 	private void performEffectWisp (CastingHarness harness, CallbackInfoReturnable<Boolean> cir, boolean overcastOk, int leftoverMana) {
 		IMixinCastingContext ctxi = (IMixinCastingContext)(Object) harness.getCtx();
 		
-		HexalAPI.LOGGER.info("performEffectWisp called");
+		HexalAPI.LOGGER.debug("performEffectWisp called");
 		
 		if (ctxi.hasWisp()) {
+			//noinspection DataFlowIssue - wisp will never be null if the ctx has a wisp
 			if (ctxi.getWisp().getShouldComplainNotEnoughMedia())
 				harness.getCtx().getCaster().sendSystemMessage(Component.translatable("hexcasting.message.cant_overcast"));
 			

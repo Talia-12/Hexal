@@ -44,11 +44,11 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         if (other in linked || (other == thisLinkable))
             return
 
-        HexalAPI.LOGGER.info("adding $other to $thisLinkable's links.")
+        HexalAPI.LOGGER.debug("adding {} to {}'s links.", other, thisLinkable)
         linked.add(other)
 
         if (linkOther) {
-            HexalAPI.LOGGER.info("adding $other to $thisLinkable's render links.")
+            HexalAPI.LOGGER.debug("adding {} to {}'s render links.", other, thisLinkable)
             addRenderLink(other)
         }
 
@@ -58,7 +58,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
     }
 
     fun unlink(other: ILinkable, unlinkOther: Boolean = true) {
-        HexalAPI.LOGGER.info("unlinking $thisLinkable from $other")
+        HexalAPI.LOGGER.debug("unlinking {} from {}", thisLinkable, other)
 
         linked.remove(other)
         removeRenderLink(other)

@@ -28,14 +28,14 @@ object OpConsumeWisp : SpellAction {
 
 		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
 
-		HexalAPI.LOGGER.info("consumer: $consumer, ${consumed.fightConsume(consumer)}")
+		HexalAPI.LOGGER.debug("consumer: {}, {}", consumer, consumed.fightConsume(consumer))
 
 		val cost = when (consumed.fightConsume(consumer)) {
 			false  -> HexalConfig.server.consumeWispOwnCost
 			true   -> (HexalConfig.server.consumeWispOthersCostPerMedia * consumed.media).toInt()
 		}
 
-		HexalAPI.LOGGER.info("cost to consume $consumed is $cost")
+		HexalAPI.LOGGER.debug("cost to consume {} is {}", consumed, cost)
 
 		return Triple(
 			Spell(consumed),
@@ -47,7 +47,7 @@ object OpConsumeWisp : SpellAction {
 	private data class Spell(val consumed: IMediaEntity<*>) : RenderedSpell {
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		override fun cast(ctx: CastingContext) {
-			HexalAPI.LOGGER.info("cast method of Spell of OpConsumeWisp triggered targeting $consumed")
+			HexalAPI.LOGGER.debug("cast method of Spell of OpConsumeWisp triggered targeting {}", consumed)
 
 			val mCast = ctx as? IMixinCastingContext
 
@@ -56,7 +56,7 @@ object OpConsumeWisp : SpellAction {
 			else if (mCast != null)
 				mCast.consumedMedia += 19 * consumed.media / 20
 
-			HexalAPI.LOGGER.info("discarding $consumed")
+			HexalAPI.LOGGER.debug("discarding {}", consumed)
 			consumed.get().discard()
 		}
 	}

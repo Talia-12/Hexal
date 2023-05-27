@@ -80,7 +80,7 @@ object HexalConfig {
             // default costs of misc spells (in dust)
             const val DEFAULT_FALLING_BLOCK_COST = 1.5
             const val DEFAULT_FREEZE_COST = 1.0
-            const val DEFAULT_PARTICLES_COST = 0.01
+            const val DEFAULT_PARTICLES_COST = 0.002
             const val DEFAULT_PLACE_TYPE_COST = 0.125
             const val DEFAULT_SMELT_COST = 0.75
 
