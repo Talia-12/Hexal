@@ -94,6 +94,11 @@ object MediafiedItemManager {
     fun getTag(index: Index): CompoundTag? = access(index)?.tag
 
     @JvmStatic
+    fun setTag(index: Index, tag: CompoundTag?) {
+        access(index)?.tag = tag
+    }
+
+    @JvmStatic
     fun getCount(index: Index): Long? = access(index)?.count
 
     @JvmStatic

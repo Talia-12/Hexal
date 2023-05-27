@@ -142,6 +142,8 @@
   "hexcasting.spell.hexal:item/villager/level/get": "Seniority Purification",
   "hexcasting.spell.hexal:item/trade/get": "Offering Purification",
   "hexcasting.spell.hexal:item/trade": "Trade",
+  "hexcasting.spell.hexal:item/use_on_block": "Use Item I",
+  "hexcasting.spell.hexal:item/use_on_entity": "Use Item II",
 
   "hexcasting.spell.hexal:tick": "Accelerate",
 
@@ -270,6 +272,8 @@
   "hexal.page.items.item/trade.0": "Accepts a villager, a list of motes to trade with to villager, and optionally an int for which of that villager's trades to attempt. (int? above means that you can pass 2 or 3 arguments, the optional 3rd being an int).",
   "hexal.page.items.item/trade.1": "If no trade number was passed, it will try each of the villager's trade until finding one that accepts the passed items. If a trade number was passed it will skip straight to using that trade. It will then repeat that trade for as long as it has enough items and the villager is still willing to trade. It will then return the items the villager traded away as a mote to the stack.",
   "hexal.page.items.item/trade.2": "The villager will find this trade to be a learnable experience as it would if trading with you directly, and will improve its skills and trade offerings commensurately. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
+  "hexal.page.hexal_spell.item/use_on_block": "Accepts a mote, a target block, and a normal vector for the face of the block to be interacted with. Uses the item on the block.",
+  "hexal.page.hexal_spell.item/use_on_entity": "Accepts a mote, and an entity. Interacts with the entity using the item.",
 
   "hexal.entry.great_wisps": "Great Wisp Spells",
   "hexal.page.great_wisps.wisp/consume.0": "Remove a wisp from the stack, and disassemble the wisp. The patterns contained are lost, but the media that it contained can be repurposed if this spell is cast by another wisp.",
