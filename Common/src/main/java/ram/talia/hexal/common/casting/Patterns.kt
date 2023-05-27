@@ -230,6 +230,8 @@ object Patterns {
 	@JvmField
 	val ITEM_STORAGE_REMAINING_CAPACITY_GET = make(HexPattern.fromAngles("awedqdewa", HexDir.SOUTH_EAST), modLoc("item/storage/remaining_capacity/get"), OpGetStorageRemainingCapacity)
 	@JvmField
+	val ITEM_STORAGE_CONTAINS = make(HexPattern.fromAngles("dwqaeaqwd", HexDir.NORTH_EAST), modLoc("item/storage/contains"), OpStorageContains)
+	@JvmField
 	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
 	@JvmField
 	val ITEM_RETURN = make(HexPattern.fromAngles("qded", HexDir.EAST), modLoc("item/return"), OpReturnItem)
