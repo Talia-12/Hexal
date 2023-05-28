@@ -110,12 +110,12 @@ class BlockEntityRelay(val pos: BlockPos, val state: BlockState) : HexBlockEntit
 
     //endregion
 
-    override fun loadModData(tag: CompoundTag?) {
-        TODO("Not yet implemented")
+    override fun loadModData(tag: CompoundTag) {
+//        TODO("Not yet implemented")
     }
 
-    override fun saveModData(tag: CompoundTag?) {
-        TODO("Not yet implemented")
+    override fun saveModData(tag: CompoundTag) {
+//        TODO("Not yet implemented")
     }
 
     companion object {
