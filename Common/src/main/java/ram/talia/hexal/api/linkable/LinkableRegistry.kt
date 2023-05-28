@@ -26,6 +26,7 @@ object LinkableRegistry {
 	init {
 		registerLinkableType(LinkableTypes.LINKABLE_ENTITY_TYPE)
 		registerLinkableType(LinkableTypes.PLAYER_LINKSTORE_TYPE)
+		registerLinkableType(LinkableTypes.RELAY_TYPE)
 	}
 
 	fun registerLinkableType(type: LinkableType<*, *>) {
