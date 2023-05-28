@@ -23,8 +23,6 @@ class BlockEntityMediafiedStorageRenderer : BlockEntityRenderer<BlockEntityMedia
         light: Int,
         overlay: Int
     ) {
-        val totalTime = (blockEntity.level?.gameTime ?: 0) + tickDelta
-
         //no cull to show faces from inside
         val buffer = bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE_LOCATION))
 
@@ -102,7 +100,8 @@ class BlockEntityMediafiedStorageRenderer : BlockEntityRenderer<BlockEntityMedia
 
         //circle
         if (circleScale > 0.01) {
-            val circleRotation = (totalTime * SPINS_PER_SECOND * 18) % 360f
+            val circleTime = (blockEntity.level?.gameTime ?: 0) % 360 + tickDelta
+            val circleRotation = (circleTime * SPINS_PER_SECOND * 18) % 360f
 
             poseStack.translate(0.0, 8.0, 0.0)
             poseStack.mulPose(Vector3f.YP.rotationDegrees(circleRotation))
