@@ -253,7 +253,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	/**
 	 * the result passed back to the Wisp after its cast is successfully executed.
 	 */
-	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota, val cancelled: Boolean = true) {
+	data class WispCastResult(val wisp: BaseCastingWisp, val succeeded: Boolean, val endStack: MutableList<Iota>, val endRavenmind: Iota, val cancelled: Boolean = false) {
 		fun callback() { wisp.castCallback(this) }
 	}
 
