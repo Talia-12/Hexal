@@ -81,7 +81,11 @@ public class ItemIota extends Iota {
     }
 
     public CompoundTag getTag() {
-        return Objects.requireNonNull(MediafiedItemManager.getTag(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
+        return MediafiedItemManager.getTag(this.getItemIndex());
+    }
+
+    public void setTag(CompoundTag tag) {
+        MediafiedItemManager.setTag(this.getItemIndex(), tag);
     }
 
     public long getCount() {

@@ -255,7 +255,8 @@ object Patterns {
 	val ITEM_TRADE_GET = make(HexPattern.fromAngles("awdedwaawwqded", HexDir.SOUTH_EAST), modLoc("item/trade/get"), OpGetItemTrades)
 	@JvmField
 	val ITEM_TRADE = make(HexPattern.fromAngles("awdedwaeqded", HexDir.NORTH_WEST), modLoc("item/trade"), OpTradeItem)
-
+	@JvmField
+	val ITEM_USE_ON = make(HexPattern.fromAngles("qqqwqqqqaa", HexDir.EAST), modLoc("item/use_on"), OpUseItemOn)
 
 	// ============================== Great Stuff =====================================
 	@JvmField

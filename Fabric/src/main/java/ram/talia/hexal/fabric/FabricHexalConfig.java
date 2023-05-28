@@ -145,6 +145,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             double returnItemCost = DEFAULT_RETURN_ITEM_COST;
             double craftItemCost = DEFAULT_CRAFT_ITEM_COST;
             double tradeItemCost = DEFAULT_TRADE_ITEM_COST;
+
+            double useItemOnCost = DEFAULT_USE_ITEM_ON_COST;
+
             @ConfigEntry.BoundedDiscrete(min = MIN_MAX_ITEMS_RETURNED, max = MAX_MAX_ITEMS_RETURNED)
             @ConfigEntry.Gui.Tooltip(count = 2)
             int maxItemsReturned = DEFAULT_MAX_ITEMS_RETURNED;
@@ -221,6 +224,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.itemSpells.returnItemCost = bound(this.itemSpells.returnItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.craftItemCost = bound(this.itemSpells.craftItemCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.tradeItemCost = bound(this.itemSpells.tradeItemCost, DEF_MIN_COST, DEF_MAX_COST);
+            this.itemSpells.useItemOnCost = bound(this.itemSpells.useItemOnCost, DEF_MIN_COST, DEF_MAX_COST);
             this.itemSpells.maxItemsReturned = bound(this.itemSpells.maxItemsReturned, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
             this.itemSpells.maxRecordsInMediafiedStorage = bound(this.itemSpells.maxRecordsInMediafiedStorage, MIN_MAX_RECORDS_IN_MEDIAFIED_STORAGE, MAX_MAX_RECORDS_IN_MEDIAFIED_STORAGE);
 
@@ -403,6 +407,9 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         public int getTradeItemCost() {
             return (int) (itemSpells.tradeItemCost * MediaConstants.DUST_UNIT);
         }
+
+        @Override
+        public int getUseItemOnCost() { return (int) (itemSpells.useItemOnCost * MediaConstants.DUST_UNIT); }
 
         @Override
         public int getMaxItemsReturned() {
