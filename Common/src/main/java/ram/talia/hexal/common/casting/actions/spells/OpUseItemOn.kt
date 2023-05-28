@@ -39,9 +39,9 @@ object OpUseItemOn : VarargSpellAction {
     ): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val item = args.getItem(0, argc)
 
-        if ((item == null) || (item.count != 1L))
+        if ((item == null) || ((item.count != 1L) && (item.tag != null) ))
         {
-            throw MishapInvalidIota(item!!, 0, "hexcasting.mishap.invalid_value.mote_not_size_one".asTranslatedComponent)
+            throw MishapInvalidIota(item!!, 0, "hexcasting.mishap.invalid_value.mote_with_nbt_not_size_one".asTranslatedComponent)
         }
 
         if (argc == 2) {
