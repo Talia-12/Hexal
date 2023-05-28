@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getItem
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargSpellAction
@@ -56,7 +57,7 @@ object OpUseItemOn : VarargSpellAction {
 
             return Triple(
                 EntityTargetSpell(target, item),
-                MediaConstants.DUST_UNIT,
+                HexalConfig.server.useItemOnCost,
                 listOf(ParticleSpray.burst(Vec3.atCenterOf(target.onPos), 1.0))
             )
         }

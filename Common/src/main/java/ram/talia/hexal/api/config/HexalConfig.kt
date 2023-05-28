@@ -54,6 +54,7 @@ object HexalConfig {
         val returnItemCost: Int
         val craftItemCost: Int
         val tradeItemCost: Int
+        val useItemOnCost: Int
 
         val maxItemsReturned: Int
 
@@ -135,6 +136,7 @@ object HexalConfig {
             const val DEFAULT_RETURN_ITEM_COST = 0.1
             const val DEFAULT_CRAFT_ITEM_COST = 0.1
             const val DEFAULT_TRADE_ITEM_COST = 0.1
+            const val DEFAULT_USE_ITEM_ON_COST = 0.125
 
             const val DEFAULT_MAX_ITEMS_RETURNED = 32000
 
@@ -248,6 +250,8 @@ object HexalConfig {
         override val craftItemCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val tradeItemCost: Int
+            get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
+        override val useItemOnCost: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val maxItemsReturned: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
