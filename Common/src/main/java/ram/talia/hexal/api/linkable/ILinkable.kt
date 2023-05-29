@@ -2,7 +2,6 @@ package ram.talia.hexal.api.linkable
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.utils.asCompound
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.network.chat.Component
@@ -69,7 +68,7 @@ interface ILinkable {
 			throw Exception("ILinkable.unlink should only be accessed on server.") // TODO
 		linkableHolder!!.unlink(other, unlinkOther)
 	}
-	fun getLinked(index: Int): ILinkable {
+	fun getLinked(index: Int): ILinkable? {
 		if (linkableHolder == null)
 			throw Exception("ILinkable.getLinked should only be accessed on server.") // TODO
 		return linkableHolder!!.getLinked(index)
@@ -153,11 +152,72 @@ interface ILinkable {
 		override fun unload(loaded: ILinkable?) = if (loaded == null) CompoundTag() else LinkableRegistry.wrapNbt(loaded)
 	}
 
-	class LazyILinkableList(val level: ServerLevel) : LazyLoad<MutableList<ILinkable>, ListTag>(mutableListOf()) {
-		override fun load(unloaded: ListTag): MutableList<ILinkable> = unloaded.mapNotNull { LinkableRegistry.fromNbt(it.asCompound, level).getOrNull() } as MutableList
-		override fun unload(loaded: MutableList<ILinkable>) = loaded.map { LinkableRegistry.wrapNbt(it) }.toNbtList()
+	class LazyILinkableList(val level: ServerLevel) {
 
-		override fun get(): MutableList<ILinkable> = super.get()!!
+		private val lazies: MutableList<LazyILinkable> = mutableListOf()
+		private val loaded: MutableList<ILinkable?> = mutableListOf()
+
+		fun add(linkable: ILinkable) {
+			val lazy = LazyILinkable(level)
+			lazy.set(linkable)
+			lazies.add(lazy)
+			loaded.add(linkable)
+		}
+
+		fun remove(linkable: ILinkable): Boolean {
+			val tag = LinkableRegistry.wrapNbt(linkable)
+			val idx = lazies.indexOfFirst { it.getUnloaded() == tag }
+			if (idx == -1)
+				return false
+
+			lazies.removeAt(idx)
+			loaded.removeAt(idx)
+
+			return true
+		}
+
+		fun contains(linkable: ILinkable): Boolean {
+			return loaded.contains(linkable)
+		}
+
+		operator fun get(index: Int): ILinkable? = loaded[index]
+
+		fun indexOf(linkable: ILinkable) = loaded.indexOf(linkable)
+
+		fun size() = loaded.size
+
+		fun tryLoad() {
+			lazies.forEachIndexed { i, lazy ->
+				if (loaded[i] == null) {
+					loaded[i] = lazy.get()
+				}
+			}
+		}
+
+		fun getLoaded() = loaded.filterNotNull()
+
+		fun getUnloaded(): ListTag = lazies.map { it.getUnloaded() }.toNbtList()
+
+		fun set(it: MutableList<ILinkable>) {
+			// get lazies to a list of LazyILinkables the same size as it.
+			if (lazies.size > it.size)
+				lazies.drop(lazies.size - it.size)
+			if (lazies.size < it.size)
+				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable(level) } )
+
+
+			it.forEachIndexed { i, linkable -> lazies[i].set(linkable) }
+		}
+
+		fun set(it: ListTag) {
+			// get lazies to a list of LazyILinkables the same size as it.
+			if (lazies.size > it.size)
+				lazies.drop(lazies.size - it.size)
+			if (lazies.size < it.size)
+				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable(level) } )
+
+			it.forEachIndexed { i, tag -> lazies[i].set(tag as CompoundTag) }
+		}
 	}
 
 	companion object {

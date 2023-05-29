@@ -11,11 +11,6 @@ import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 class ServerLinkableHolder(private val thisLinkable: ILinkable, private val level: ServerLevel) {
-    private var linked: MutableList<ILinkable>
-        get() = lazyLinked.get()
-        set(value) {
-            lazyLinked.set(value)
-        }
 
     private val lazyLinked = LazyILinkableList(level)
 
@@ -30,22 +25,22 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
     private val serReceivedIotas = SerialisedIotaList()
 
     private fun addRenderLink(other: ILinkable) {
-        lazyRenderLinks.get().add(other)
+        lazyRenderLinks.add(other)
         IXplatAbstractions.INSTANCE.syncAddRenderLink(thisLinkable, other, level)
     }
 
     private fun removeRenderLink(other: ILinkable) {
         // only send a packet if something was actually removed.
-        if (lazyRenderLinks.get().remove(other))
+        if (lazyRenderLinks.remove(other))
             IXplatAbstractions.INSTANCE.syncRemoveRenderLink(thisLinkable, other, level)
     }
 
     fun link(other: ILinkable, linkOther: Boolean = true) {
-        if (other in linked || (other == thisLinkable))
+        if (lazyLinked.contains(other) || (other == thisLinkable))
             return
 
         HexalAPI.LOGGER.debug("adding {} to {}'s links.", other, thisLinkable)
-        linked.add(other)
+        lazyLinked.add(other)
 
         if (linkOther) {
             HexalAPI.LOGGER.debug("adding {} to {}'s render links.", other, thisLinkable)
@@ -60,7 +55,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
     fun unlink(other: ILinkable, unlinkOther: Boolean = true) {
         HexalAPI.LOGGER.debug("unlinking {} from {}", thisLinkable, other)
 
-        linked.remove(other)
+        lazyLinked.remove(other)
         removeRenderLink(other)
 
         if (unlinkOther) {
@@ -68,16 +63,16 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         }
     }
 
-    fun getLinked(index: Int): ILinkable {
-        return linked[index]
+    fun getLinked(index: Int): ILinkable? {
+        return lazyLinked[index]
     }
 
-    fun getLinkedIndex(other: ILinkable): Int = linked.indexOf(other)
+    fun getLinkedIndex(other: ILinkable): Int = lazyLinked.indexOf(other)
 
-    fun numLinked(): Int = linked.size
+    fun numLinked(): Int = lazyLinked.size()
 
     fun syncAll() {
-        IXplatAbstractions.INSTANCE.syncSetRenderLinks(thisLinkable, lazyRenderLinks.get(), level)
+        IXplatAbstractions.INSTANCE.syncSetRenderLinks(thisLinkable, lazyRenderLinks.getLoaded(), level)
     }
 
     /**
@@ -94,9 +89,14 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         if (level.gameTime % 20 == 0L)
             serReceivedIotas.refreshIotas(level)
 
-        for (i in (linked.size - 1) downTo 0) {
-            if (linked[i].shouldRemove() || !thisLinkable.isInRange(linked[i]))
-                unlink(linked[i])
+        if (level.gameTime % 20 == 10L)
+            lazyLinked.tryLoad()
+
+        for (i in (lazyLinked.size() - 1) downTo 0) {
+            val linked = lazyLinked[i] ?: continue
+
+            if (linked.shouldRemove() || !thisLinkable.isInRange(linked))
+                unlink(linked)
         }
     }
 
