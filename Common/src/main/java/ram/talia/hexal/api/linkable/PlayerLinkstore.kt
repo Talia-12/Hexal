@@ -47,6 +47,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	override fun getPosition(): Vec3 = player.position()
 
 	override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
+	override fun currentMediaLevel() = -1
 
 	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
 

@@ -18,7 +18,9 @@ import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
 import kotlin.math.min
 
-class BlockEntityMediafiedStorage(val pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
+class BlockEntityMediafiedStorage(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.MEDIAFIED_STORAGE, pos, state) {
+    val pos: BlockPos = pos.immutable()
+
     var uuid: UUID = UUID.randomUUID()
         private set
 

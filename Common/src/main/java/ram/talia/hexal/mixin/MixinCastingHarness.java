@@ -189,7 +189,7 @@ public abstract class MixinCastingHarness {
 					break;
 				
 				iter.remove();
-				transmittingTo.receiveIota(it);
+				transmittingTo.receiveIota(IXplatAbstractions.INSTANCE.getLinkstore(ctx.getCaster()), it);
 			}
 			
 			harness.setEscapeNext(false);
