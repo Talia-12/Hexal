@@ -10,11 +10,11 @@ import ram.talia.hexal.api.linkable.LinkableRegistry
 object OpUnlink : SpellAction {
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
 		val linkThis = LinkableRegistry.linkableFromCastingContext(ctx)
 
 		val otherIndex = args.getPositiveIntUnder(0, OpSendIota.argc, linkThis.numLinked())
-		val other = linkThis.getLinked(otherIndex)
+		val other = linkThis.getLinked(otherIndex) ?: return null
 
 		return Triple(
 			Spell(linkThis, other),

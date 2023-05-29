@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.block.HexBlockEntity
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.api.utils.putList
@@ -23,6 +24,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.*
+import ram.talia.hexal.api.linkable.ILinkable.LazyILinkableSet
 import ram.talia.hexal.common.lib.HexalBlockEntities
 import kotlin.math.min
 
@@ -32,7 +34,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     private val random = RandomSource.create()
 
     private var relayNetwork: MutableSet<BlockEntityRelay> = mutableSetOf(this)
-    private var directlyLinkedRelays: MutableSet<SerialisedBlockEntityRelay> = mutableSetOf()
+    private var relaysLinkedDirectly: MutableSet<SerialisedBlockEntityRelay> = mutableSetOf()
     private var numNonRelaysLinked = 0
     private var numMediaAcceptorsLinked = 0
     private var lastTickComputedAverageMedia = 0L
@@ -52,10 +54,10 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             return field
         }
 
-    private val nonRelaysLinkedDirectly: MutableSet<ILinkable> = mutableSetOf()
-    private var nonRelaysLinked: MutableSet<ILinkable> = mutableSetOf()
-    private var mediaExchangersLinkedDirectly: MutableSet<ILinkable> = mutableSetOf()
-    private var mediaExchangersLinked: MutableSet<ILinkable> = mutableSetOf()
+    private val nonRelaysLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
+    private var nonRelaysLinked: MutableSet<ILinkable> = LazyILinkableSet()
+    private var mediaExchangersLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
+    private var mediaExchangersLinked: MutableSet<ILinkable> = LazyILinkableSet()
 
     private var timeColouriserSet = 0L
     private var colouriser: FrozenColorizer = FrozenColorizer(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
@@ -66,6 +68,15 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
     fun serverTick() {
         checkLinks()
+
+        if (level != null && !level!!.isClientSide && level!!.gameTime % 20 == 0L) {
+            val newNonRelays = nonRelaysLinkedDirectly.tryLoad(level as ServerLevel)
+            val newMediaExchangers = mediaExchangersLinkedDirectly.tryLoad(level as ServerLevel)
+            nonRelaysLinked.addAll(newNonRelays)
+            mediaExchangersLinked.addAll(newMediaExchangers)
+            numNonRelaysLinked += newNonRelays.size
+            numMediaAcceptorsLinked += newMediaExchangers.size
+        }
     }
 
     fun clientTick() {
@@ -78,19 +89,26 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     }
 
     private fun combineNetworks(other: BlockEntityRelay) {
+        if (this.relayNetwork == other.relayNetwork)
+            return
+
         if (this.timeColouriserSet > other.timeColouriserSet)
             other.relayNetwork.forEach { it.setColouriser(this.colouriser, level!!) }
         else
             this.relayNetwork.forEach { it.setColouriser(other.colouriser, level!!) }
 
         this.relayNetwork.addAll(other.relayNetwork)
-        this.directlyLinkedRelays.add(other.toSerWrap())
+        this.relaysLinkedDirectly.add(other.toSerWrap())
         this.nonRelaysLinked.addAll(other.nonRelaysLinked)
         this.mediaExchangersLinked.addAll(other.mediaExchangersLinked)
+        this.numNonRelaysLinked += other.numNonRelaysLinked
+        this.numMediaAcceptorsLinked += other.numMediaAcceptorsLinked
         other.relayNetwork = this.relayNetwork
-        other.directlyLinkedRelays.add(this.toSerWrap())
+        other.relaysLinkedDirectly.add(this.toSerWrap())
         other.nonRelaysLinked = this.nonRelaysLinked
         other.mediaExchangersLinked = this.mediaExchangersLinked
+        other.numNonRelaysLinked = this.numNonRelaysLinked
+        other.numMediaAcceptorsLinked = this.numMediaAcceptorsLinked
     }
 
     /**
@@ -103,7 +121,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
         val newNetwork = mutableSetOf(this)
         // only add relays that are currently loaded to the frontier
-        val frontier = this.directlyLinkedRelays.mapNotNull { this.level?.let { level -> it.getRelay(level) } }.toMutableList()
+        val frontier = this.relaysLinkedDirectly.mapNotNull { this.level?.let { level -> it.getRelay(level) } }.toMutableList()
 
         while (frontier.isNotEmpty()) {
             val next = frontier.removeFirst()
@@ -114,7 +132,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             newNetwork.add(next)
             unvisited.remove(next)
             // only add relays that are currently loaded to the frontier
-            frontier.addAll(next.directlyLinkedRelays.mapNotNull { this.level?.let { level -> it.getRelay(level) } }.filter { it !in newNetwork })
+            frontier.addAll(next.relaysLinkedDirectly.mapNotNull { this.level?.let { level -> it.getRelay(level) } }.filter { it !in newNetwork })
         }
 
         // separate out the non-relays that are connected to this's new network vs other's new network
@@ -123,15 +141,32 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
                 nonRelays.addAll(relay.nonRelaysLinkedDirectly); mediaExchangers.addAll(relay.mediaExchangersLinkedDirectly)
                 nonRelays to mediaExchangers
             }
+        val newNumNonRelaysLinked = newNonRelaysLinked.size
+        val newNumMediaExchangersLinked = newMediaExchangersLinked.size
+
         val (unvisitedNonRelaysLinked, unvisitedMediaExchangersLinked) = unvisited.fold(mutableSetOf<ILinkable>() to mutableSetOf<ILinkable>())
         { (nonRelays, mediaExchangers), relay ->
             nonRelays.addAll(relay.nonRelaysLinkedDirectly); mediaExchangers.addAll(relay.mediaExchangersLinkedDirectly)
             nonRelays to mediaExchangers
         }
+        val unvisitedNumNonRelaysLinked = unvisitedNonRelaysLinked.size
+        val unvisitedNumMediaExchangersLinked = unvisitedMediaExchangersLinked.size
 
         // assign everything in the new network to contain the correct sets of things in and adjacent to the network. Do likewise for other's new network.
-        newNetwork.forEach { it.relayNetwork = newNetwork; it.nonRelaysLinked = newNonRelaysLinked; it.mediaExchangersLinked = newMediaExchangersLinked }
-        unvisited.forEach { it.relayNetwork = unvisited; it.nonRelaysLinked = unvisitedNonRelaysLinked; it.mediaExchangersLinked = unvisitedMediaExchangersLinked }
+        newNetwork.forEach {
+            it.relayNetwork = newNetwork
+            it.nonRelaysLinked = newNonRelaysLinked
+            it.mediaExchangersLinked = newMediaExchangersLinked
+            it.numNonRelaysLinked = newNumNonRelaysLinked
+            it.numMediaAcceptorsLinked = newNumMediaExchangersLinked
+        }
+        unvisited.forEach {
+            it.relayNetwork = unvisited
+            it.nonRelaysLinked = unvisitedNonRelaysLinked
+            it.mediaExchangersLinked = unvisitedMediaExchangersLinked
+            it.numNonRelaysLinked = unvisitedNumNonRelaysLinked
+            it.numMediaAcceptorsLinked = unvisitedNumMediaExchangersLinked
+        }
     }
 
     //region Linkable
@@ -212,8 +247,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             // don't need to run this on both relays
             if (!unlinkOther)
                 return
-            this.directlyLinkedRelays.remove(other.toSerWrap())
-            other.directlyLinkedRelays.remove(this.toSerWrap())
+            this.relaysLinkedDirectly.remove(other.toSerWrap())
+            other.relaysLinkedDirectly.remove(this.toSerWrap())
             // uncombine the networks of other and this.
             findSeparateNetworks(other)
         } else {
@@ -259,26 +294,53 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             timeColouriserSet = tag.getLong(TAG_COLOURISER_TIME)
         if (tag.contains(TAG_LINKABLE_HOLDER))
             serialisedLinkableHolder = tag.getCompound(TAG_LINKABLE_HOLDER)
-        if (tag.contains(TAG_DIRECTLY_LINKED_RELAYS))
-            directlyLinkedRelaysFromTag(tag.getList(TAG_DIRECTLY_LINKED_RELAYS, ListTag.TAG_LIST))
+        if (tag.contains(TAG_RELAYS_LINKED_DIRECTLY))
+            relaysLinkedDirectlyFromTag(tag.getList(TAG_RELAYS_LINKED_DIRECTLY, ListTag.TAG_LIST))
+        if (tag.contains(TAG_NON_RELAYS_LINKED_DIRECTLY))
+            nonRelaysLinkedDirectlyFromTag(tag.getList(TAG_NON_RELAYS_LINKED_DIRECTLY, ListTag.TAG_COMPOUND))
     }
 
     override fun saveModData(tag: CompoundTag) {
         tag.put(TAG_COLOURISER, colouriser.serializeToNBT())
         tag.putLong(TAG_COLOURISER_TIME, timeColouriserSet)
         tag.putCompound(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
-        tag.putList(TAG_DIRECTLY_LINKED_RELAYS, directlyLinkedRelaysToTag())
+        tag.putList(TAG_RELAYS_LINKED_DIRECTLY, relaysDirectlyLinkedToTag())
+        tag.putList(TAG_NON_RELAYS_LINKED_DIRECTLY, nonRelaysLinkedDirectlyToTag())
     }
 
-    private fun directlyLinkedRelaysToTag(): ListTag {
+    private fun relaysDirectlyLinkedToTag(): ListTag {
         val out = ListTag()
-        directlyLinkedRelays.forEach { out.add(blockPosToListTag(it.pos)) }
+        relaysLinkedDirectly.forEach { out.add(blockPosToListTag(it.pos)) }
         return out
     }
 
-    private fun directlyLinkedRelaysFromTag(tag: ListTag) {
+    private fun relaysLinkedDirectlyFromTag(tag: ListTag) {
         tag.forEach {
-            directlyLinkedRelays.add(SerialisedBlockEntityRelay(listTagToBlockPos(it as ListTag)))
+            relaysLinkedDirectly.add(SerialisedBlockEntityRelay(listTagToBlockPos(it as ListTag)))
+        }
+    }
+
+    private fun nonRelaysLinkedDirectlyToTag(): ListTag {
+        val out = ListTag()
+        val unloadedMediaExchangers = mediaExchangersLinkedDirectly.getLazies().map { it.getUnloaded() }
+        nonRelaysLinkedDirectly.getLazies().map {
+            val tag = it.getUnloaded()
+            tag.putBoolean(TAG_MEDIA_EXCHANGER, tag in unloadedMediaExchangers)
+            out.add(tag)
+        }
+        return out
+    }
+
+    private fun nonRelaysLinkedDirectlyFromTag(tag: ListTag) {
+        nonRelaysLinkedDirectly.clear()
+        mediaExchangersLinkedDirectly.clear()
+
+        tag.forEach {
+            val ctag = it.asCompound
+            val lazy = ILinkable.LazyILinkable.from(ctag)
+            if (ctag.getBoolean(TAG_MEDIA_EXCHANGER))
+                mediaExchangersLinkedDirectly.add(lazy)
+            nonRelaysLinkedDirectly.add(lazy)
         }
     }
 
@@ -303,7 +365,9 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         const val TAG_COLOURISER = "hexal:colouriser"
         const val TAG_COLOURISER_TIME = "hexal:colouriser_time"
         const val TAG_LINKABLE_HOLDER = "hexal:linkable_holder"
-        const val TAG_DIRECTLY_LINKED_RELAYS = "hexal:directly_linked_relays"
+        const val TAG_RELAYS_LINKED_DIRECTLY = "hexal:relays_linked_directly"
+        const val TAG_NON_RELAYS_LINKED_DIRECTLY = "hexal:non_relays_linked_directly"
+        const val TAG_MEDIA_EXCHANGER = "relay:media_exchanger"
 
         private fun blockPosToListTag(pos: BlockPos): ListTag {
             val listTag = ListTag()

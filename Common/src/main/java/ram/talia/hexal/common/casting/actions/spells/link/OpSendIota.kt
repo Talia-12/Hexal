@@ -11,13 +11,13 @@ import ram.talia.hexal.api.linkable.LinkableRegistry
 object OpSendIota : SpellAction {
 	override val argc = 2
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
 		val linkThis = LinkableRegistry.linkableFromCastingContext(ctx)
 
 		val linkedIndex = args.getPositiveIntUnder(0, linkThis.numLinked(), argc)
 		val iota = args[1]
 
-		val other = linkThis.getLinked(linkedIndex)
+		val other = linkThis.getLinked(linkedIndex) ?: return null
 
 		return Triple(
 			Spell(other, iota),
