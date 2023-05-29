@@ -70,6 +70,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         checkLinks()
 
         if (level != null && !level!!.isClientSide && level!!.gameTime % 20 == 0L) {
+            relaysLinkedDirectly.filter { it.loadRelay(level) }.forEach { it.getRelay(level)?.let { it1 -> combineNetworks(it1) } }
+
             val newNonRelays = nonRelaysLinkedDirectly.tryLoad(level as ServerLevel)
             val newMediaExchangers = mediaExchangersLinkedDirectly.tryLoad(level as ServerLevel)
             nonRelaysLinked.addAll(newNonRelays)
@@ -357,6 +359,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             relay = level?.getBlockEntity(pos) as? BlockEntityRelay
             relay
         }
+
+        fun loadRelay(level: Level?): Boolean = if (relay != null) false else getRelay(level) != null
     }
 
     companion object {
