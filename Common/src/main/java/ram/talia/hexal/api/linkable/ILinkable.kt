@@ -39,6 +39,12 @@ interface ILinkable {
 //	fun writeToSync(): Tag
 
 	/**
+	 * Media level of this [ILinkable], that is able to be sent to other [ILinkable]s. If this [ILinkable] will never
+	 * send media to others, return -1, regardless of the internal media level.
+	 */
+	fun currentMediaLevel(): Int
+
+	/**
 	 * Returns <= 0 if this [ILinkable] can't accept any media, returns how much media
 	 * it is accepting if it can accept media. If [otherMediaLevel] is -1, the [other]
 	 * is requesting to know how much media your [ILinkable] can store, and you should return
@@ -87,7 +93,7 @@ interface ILinkable {
 			throw Exception("ILinkable.checkLinks should only be accessed on server.") // TODO
 		linkableHolder!!.checkLinks()
 	}
-	fun receiveIota(iota: Iota) {
+	fun receiveIota(sender: ILinkable, iota: Iota) {
 		if (linkableHolder == null)
 			throw Exception("ILinkable.receiveIota should only be accessed on server.") // TODO
 		linkableHolder!!.receiveIota(iota)

@@ -21,6 +21,7 @@ import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
 
 class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(HexalBlockEntities.SLIPWAY, pos, state) {
+	val pos: BlockPos = pos.immutable()
 
 	private val random = RandomSource.create()
 

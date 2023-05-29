@@ -167,8 +167,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	open fun wispNumContainedPlayers(): Int = receivedIotasNumTrueNames + hexNumTrueNames
 
-	override fun receiveIota(iota: Iota) {
-		super.receiveIota(iota)
+	override fun receiveIota(sender: ILinkable, iota: Iota) {
+		super.receiveIota(sender, iota)
 		receivedIotasNumTrueNames += countTrueNamesInIota(iota, caster)
 	}
 
@@ -216,6 +216,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			}
 		}
 	}
+
+	override fun currentMediaLevel() = media
 
 	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
 		if (otherMediaLevel == -1)

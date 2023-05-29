@@ -36,13 +36,15 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 
 	override fun maxSqrLinkRange() = 16.0
 
-	override fun receiveIota(iota: Iota) { }
+	override fun receiveIota(sender: ILinkable, iota: Iota) { }
 
 	override fun nextReceivedIota() = NullIota()
 
 	override fun numRemainingIota() = 0
 
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = false
+
+	override fun currentMediaLevel() = -1
 
 	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
 
