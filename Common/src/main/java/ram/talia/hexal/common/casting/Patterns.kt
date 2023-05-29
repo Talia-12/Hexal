@@ -188,6 +188,8 @@ object Patterns {
 	@JvmField
 	val UNLINK = make(HexPattern.fromAngles("qdeddqeeeeedwqdeddw", HexDir.WEST), modLoc("link/unlink"), OpUnlink)
 	@JvmField
+	val UNLINK_OTHERS = make(HexPattern.fromAngles("qeeeeedweqqqqqaww", HexDir.WEST), modLoc("link/unlink/others"), OpUnlinkOthers)
+	@JvmField
 	val LINK_GET = make(HexPattern.fromAngles("eqqqqqaww", HexDir.EAST), modLoc("link/get"), OpGetLinked)
 	@JvmField
 	val LINK_GET_INDEX = make(HexPattern.fromAngles("aeqqqqqawwd", HexDir.SOUTH_WEST), modLoc("link/get_index"), OpGetLinkedIndex)
