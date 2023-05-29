@@ -147,18 +147,31 @@ interface ILinkable {
 		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 	}
 
-	class LazyILinkable(val level: ServerLevel) : LazyLoad<ILinkable?, CompoundTag>(null) { // default to empty compound tag
-		override fun load(unloaded: CompoundTag): ILinkable? = if (unloaded.isEmpty) null else LinkableRegistry.fromNbt(unloaded, level).getOrNull()
+	class LazyILinkable : LazyLoad<ILinkable?, CompoundTag>(null) { // default to empty compound tag
+		override fun load(unloaded: CompoundTag, level: ServerLevel): ILinkable? = if (unloaded.isEmpty) null else LinkableRegistry.fromNbt(unloaded, level).getOrNull()
 		override fun unload(loaded: ILinkable?) = if (loaded == null) CompoundTag() else LinkableRegistry.wrapNbt(loaded)
+
+		companion object {
+			fun from(linkable: ILinkable): LazyILinkable {
+				val lazy = LazyILinkable()
+				lazy.set(linkable)
+				return lazy
+			}
+			fun from(tag: CompoundTag): LazyILinkable {
+				val lazy = LazyILinkable()
+				lazy.set(tag)
+				return lazy
+			}
+		}
 	}
 
-	class LazyILinkableList(val level: ServerLevel) {
+	class LazyILinkableList {
 
 		private val lazies: MutableList<LazyILinkable> = mutableListOf()
 		private val loaded: MutableList<ILinkable?> = mutableListOf()
 
 		fun add(linkable: ILinkable) {
-			val lazy = LazyILinkable(level)
+			val lazy = LazyILinkable()
 			lazy.set(linkable)
 			lazies.add(lazy)
 			loaded.add(linkable)
@@ -186,10 +199,12 @@ interface ILinkable {
 
 		fun size() = loaded.size
 
-		fun tryLoad() {
+		fun tryLoad(level: ServerLevel) {
 			lazies.forEachIndexed { i, lazy ->
-				if (loaded[i] == null) {
-					loaded[i] = lazy.get()
+				if (loaded.size <= i) {
+					loaded.add(lazy.get(level))
+				} else if (loaded[i] == null) {
+					loaded[i] = lazy.get(level)
 				}
 			}
 		}
@@ -198,12 +213,12 @@ interface ILinkable {
 
 		fun getUnloaded(): ListTag = lazies.map { it.getUnloaded() }.toNbtList()
 
-		fun set(it: MutableList<ILinkable>) {
+		fun set(it: List<ILinkable>) {
 			// get lazies to a list of LazyILinkables the same size as it.
 			if (lazies.size > it.size)
 				lazies.drop(lazies.size - it.size)
 			if (lazies.size < it.size)
-				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable(level) } )
+				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable() } )
 
 
 			it.forEachIndexed { i, linkable -> lazies[i].set(linkable) }
@@ -214,13 +229,102 @@ interface ILinkable {
 			if (lazies.size > it.size)
 				lazies.drop(lazies.size - it.size)
 			if (lazies.size < it.size)
-				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable(level) } )
+				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable() } )
 
 			it.forEachIndexed { i, tag -> lazies[i].set(tag as CompoundTag) }
 		}
 	}
 
+	class LazyILinkableSet : MutableSet<ILinkable> {
+
+
+		private val lazies: MutableSet<LazyILinkable> = mutableSetOf()
+		private val loaded: MutableSet<ILinkable> = mutableSetOf()
+
+		override val size: Int = loaded.size
+
+		override fun add(element: ILinkable): Boolean {
+			val lazy = LazyILinkable()
+			lazy.set(element)
+			loaded.add(element)
+			return lazies.add(lazy)
+		}
+
+		fun add(element: LazyILinkable): Boolean = lazies.add(element)
+
+		override fun addAll(elements: Collection<ILinkable>): Boolean {
+			var anyAdded = false
+			elements.forEach { anyAdded = anyAdded || add(it) }
+			return anyAdded
+		}
+
+		override fun remove(element: ILinkable): Boolean {
+			val tag = LinkableRegistry.wrapNbt(element)
+			loaded.remove(element)
+			return lazies.removeIf { it.getUnloaded() == tag }
+		}
+
+		/**
+		 * Attempts to load elements of [lazies], and returns any elements that were newly loaded by this call.
+		 */
+		fun tryLoad(level: ServerLevel): Set<ILinkable> {
+			val out = mutableSetOf<ILinkable>()
+			lazies.mapNotNullTo(out) { lazy -> lazy.get(level)?.let { if (loaded.add(it)) it else null } }
+			return out
+		}
+
+		fun getLoaded() = loaded
+
+		fun getLazies() = lazies
+
+		fun getUnloaded(): ListTag = lazies.map { it.getUnloaded() }.toNbtList()
+
+		fun set(it: Set<ILinkable>) {
+			clear()
+
+			lazies.addAll(it.map { LazyILinkable.from(it) })
+			loaded.addAll(it)
+		}
+
+		fun set(it: ListTag) {
+			clear()
+
+			lazies.addAll(it.map { LazyILinkable.from(it as CompoundTag) })
+		}
+
+		override fun clear() {
+			lazies.clear()
+			loaded.clear()
+		}
+
+		override fun isEmpty(): Boolean = loaded.isEmpty()
+
+		override fun containsAll(elements: Collection<ILinkable>): Boolean = loaded.containsAll(elements)
+
+		override fun contains(element: ILinkable): Boolean = loaded.contains(element)
+
+		override fun iterator(): MutableIterator<ILinkable> = loaded.iterator()
+
+		override fun retainAll(elements: Collection<ILinkable>): Boolean {
+			val elementsSet = elements.toSet()
+			val elementsUnloaded = mutableSetOf<CompoundTag>()
+			elementsSet.mapTo(elementsUnloaded) { LinkableRegistry.wrapNbt(it) }
+
+			loaded.retainAll(elementsSet)
+			return lazies.removeIf { lazy -> lazy.toEither().map({ it !in elementsSet }, { it !in elementsUnloaded }) }
+		}
+
+		override fun removeAll(elements: Collection<ILinkable>): Boolean {
+			val elementsSet = elements.toSet()
+			val elementsUnloaded = mutableSetOf<CompoundTag>()
+			elementsSet.mapTo(elementsUnloaded) { LinkableRegistry.wrapNbt(it) }
+
+			loaded.removeAll(elementsSet)
+			return lazies.removeIf { lazy -> lazy.toEither().map({ it in elementsSet }, { it in elementsUnloaded }) }
+		}
+	}
+
 	companion object {
-		const val MAX_RECEIVED_IOTAS = 144
+		const val MAX_RECEIVED_IOTAS = 64
 	}
 }

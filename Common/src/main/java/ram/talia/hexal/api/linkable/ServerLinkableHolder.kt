@@ -12,9 +12,9 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 
 class ServerLinkableHolder(private val thisLinkable: ILinkable, private val level: ServerLevel) {
 
-    private val lazyLinked = LazyILinkableList(level)
+    private val lazyLinked = LazyILinkableList()
 
-    private val lazyRenderLinks = LazyILinkableList(level)
+    private val lazyRenderLinks = LazyILinkableList()
 
     // used to sync full list of render links only on first tick.
     private var isFirstTick = true
@@ -90,7 +90,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
             serReceivedIotas.refreshIotas(level)
 
         if (level.gameTime % 20 == 10L)
-            lazyLinked.tryLoad()
+            lazyLinked.tryLoad(level)
 
         for (i in (lazyLinked.size() - 1) downTo 0) {
             val linked = lazyLinked[i] ?: continue

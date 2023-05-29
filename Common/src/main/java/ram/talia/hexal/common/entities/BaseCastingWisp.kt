@@ -204,9 +204,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	open val normalCostPerTick: Int get() = HexalConfig.server.projectileWispUpkeepPerTick
 	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
 
-	fun sendMediaToNeighbours() {
-		for (i in 0.until(this.numLinked())) {
-			val linked = this.getLinked(i)
+	private fun sendMediaToNeighbours() {
+		for (i in 0 until this.numLinked()) {
+			val linked = this.getLinked(i) ?: continue
 			val requested = linked.canAcceptMedia(this, this.media)
 
 			if (requested > 0) {

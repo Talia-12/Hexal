@@ -3,7 +3,6 @@ package ram.talia.hexal.api.linkable
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
@@ -17,14 +16,14 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	//region Transmitting
 	var transmittingTo: ILinkable?
 		get() {
-			val it = lazyTransmittingTo.get() ?: return null
+			val it = lazyTransmittingTo.get(player.getLevel()) ?: return null
 
 			if (isInRange(it)) return it
 			resetTransmittingTo() // if it isn't in range stop transmitting to it
 			return null
 		}
 		private set(value) = lazyTransmittingTo.set(value)
-	private val lazyTransmittingTo: ILinkable.LazyILinkable = ILinkable.LazyILinkable(player.level as ServerLevel)
+	private val lazyTransmittingTo: ILinkable.LazyILinkable = ILinkable.LazyILinkable()
 
 	fun setTransmittingTo(to: Int) {
 		if (to >= numLinked()) {
