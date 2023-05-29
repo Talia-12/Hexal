@@ -33,13 +33,16 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
         val relay = level.getBlockEntity(pos) as? BlockEntityRelay ?: return InteractionResult.PASS
 
         val stack = player.getItemInHand(hand).copy()
-        if (!IXplatAbstractions.INSTANCE.isColorizer(stack))
+        if (!IXplatAbstractions.INSTANCE.isColorizer(stack)) {
+            relay.debug()
             return InteractionResult.PASS
+        }
 
         if (removeItem(player, stack, 1)) {
             relay.setColouriser(FrozenColorizer(stack, player.uuid), level)
             return InteractionResult.SUCCESS
         }
+
         return InteractionResult.FAIL
     }
 
@@ -81,6 +84,8 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
             if (t is BlockEntityRelay) {
                 if (level.isClientSide)
                     t.clientTick()
+                else
+                    t.serverTick()
             }
         }
     }
