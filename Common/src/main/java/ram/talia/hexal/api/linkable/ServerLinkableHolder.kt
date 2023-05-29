@@ -80,6 +80,9 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
      */
     fun checkLinks() {
         if (isFirstTick) {
+            lazyLinked.tryLoad(level)
+            lazyRenderLinks.tryLoad(level)
+
             syncAll()
             isFirstTick = false
         }
@@ -89,8 +92,10 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
         if (level.gameTime % 20 == 0L)
             serReceivedIotas.refreshIotas(level)
 
-        if (level.gameTime % 20 == 10L)
+        if (level.gameTime % 20 == 10L) {
             lazyLinked.tryLoad(level)
+            lazyRenderLinks.tryLoad(level).forEach { IXplatAbstractions.INSTANCE.syncAddRenderLink(thisLinkable, it, level) }
+        }
 
         for (i in (lazyLinked.size() - 1) downTo 0) {
             val linked = lazyLinked[i] ?: continue

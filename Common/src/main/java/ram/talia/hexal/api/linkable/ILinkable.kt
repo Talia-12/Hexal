@@ -184,7 +184,7 @@ interface ILinkable {
 				return false
 
 			lazies.removeAt(idx)
-			loaded.removeAt(idx)
+			loaded.remove(linkable)
 
 			return true
 		}
@@ -199,15 +199,16 @@ interface ILinkable {
 
 		fun size() = loaded.size
 
-		fun tryLoad(level: ServerLevel) {
-			lazies.forEachIndexed { i, lazy ->
+		fun tryLoad(level: ServerLevel): List<ILinkable> = lazies.mapIndexedNotNull { i, lazy ->
+				val wasLoaded = loaded.size > i && loaded[i] != null
 				if (loaded.size <= i) {
 					loaded.add(lazy.get(level))
+
 				} else if (loaded[i] == null) {
 					loaded[i] = lazy.get(level)
 				}
+				if (wasLoaded && loaded[i] != null) loaded[i] else null
 			}
-		}
 
 		fun getLoaded() = loaded.filterNotNull()
 
@@ -222,6 +223,8 @@ interface ILinkable {
 
 
 			it.forEachIndexed { i, linkable -> lazies[i].set(linkable) }
+			loaded.clear()
+			loaded.addAll(it)
 		}
 
 		fun set(it: ListTag) {
@@ -232,6 +235,8 @@ interface ILinkable {
 				lazies.addAll( (1 .. (it.size - lazies.size) ).map { LazyILinkable() } )
 
 			it.forEachIndexed { i, tag -> lazies[i].set(tag as CompoundTag) }
+			loaded.clear()
+			repeat(it.size) { loaded.add(null) }
 		}
 	}
 
