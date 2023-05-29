@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.xplat.IForgeLikeBlock
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
@@ -46,7 +47,21 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
         return InteractionResult.FAIL
     }
 
-    fun removeItem(player: Player, item: ItemStack, count: Int): Boolean {
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onRemove(blockState: BlockState, level: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
+        if (!newState.`is`(this)) {
+            val blockEntity = level.getBlockEntity(pos)
+
+            if (blockEntity is BlockEntityRelay) {
+                if (level is ServerLevel && !moved)
+                    blockEntity.disconnectAll()
+            }
+        }
+
+        super.onRemove(blockState, level, pos, newState, moved)
+    }
+
+    private fun removeItem(player: Player, item: ItemStack, count: Int): Boolean {
         val operativeItem = item.copy()
 
         val inv = player.inventory

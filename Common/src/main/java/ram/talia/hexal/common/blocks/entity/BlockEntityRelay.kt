@@ -55,9 +55,9 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         }
 
     private val nonRelaysLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
-    private var nonRelaysLinked: MutableSet<ILinkable> = LazyILinkableSet()
+    private var nonRelaysLinked: MutableSet<ILinkable> = mutableSetOf()
     private var mediaExchangersLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
-    private var mediaExchangersLinked: MutableSet<ILinkable> = LazyILinkableSet()
+    private var mediaExchangersLinked: MutableSet<ILinkable> = mutableSetOf()
 
     private var timeColouriserSet = 0L
     private var colouriser: FrozenColorizer = FrozenColorizer(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
@@ -68,6 +68,11 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
     fun serverTick() {
         checkLinks()
+
+        nonRelaysLinkedDirectly.removeIf { it.shouldRemove() }
+        nonRelaysLinked.removeIf { it.shouldRemove() }
+        mediaExchangersLinkedDirectly.removeIf { it.shouldRemove() }
+        mediaExchangersLinked.removeIf { it.shouldRemove() }
 
         if (level != null && !level!!.isClientSide && level!!.gameTime % 20 == 0L) {
             relaysLinkedDirectly.filter { it.loadRelay(level) }.forEach { it.getRelay(level)?.let { it1 -> combineNetworks(it1) } }
@@ -111,6 +116,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         other.mediaExchangersLinked = this.mediaExchangersLinked
         other.numNonRelaysLinked = this.numNonRelaysLinked
         other.numMediaAcceptorsLinked = this.numMediaAcceptorsLinked
+
+        this.relayNetwork.forEach { it.setChanged() }
     }
 
     /**
@@ -140,7 +147,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         // separate out the non-relays that are connected to this's new network vs other's new network
         val (newNonRelaysLinked, newMediaExchangersLinked) = newNetwork.fold(mutableSetOf<ILinkable>() to mutableSetOf<ILinkable>())
             { (nonRelays, mediaExchangers), relay ->
-                nonRelays.addAll(relay.nonRelaysLinkedDirectly); mediaExchangers.addAll(relay.mediaExchangersLinkedDirectly)
+                nonRelays.addAll(relay.nonRelaysLinkedDirectly)
+                mediaExchangers.addAll(relay.mediaExchangersLinkedDirectly)
                 nonRelays to mediaExchangers
             }
         val newNumNonRelaysLinked = newNonRelaysLinked.size
@@ -148,7 +156,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
         val (unvisitedNonRelaysLinked, unvisitedMediaExchangersLinked) = unvisited.fold(mutableSetOf<ILinkable>() to mutableSetOf<ILinkable>())
         { (nonRelays, mediaExchangers), relay ->
-            nonRelays.addAll(relay.nonRelaysLinkedDirectly); mediaExchangers.addAll(relay.mediaExchangersLinkedDirectly)
+            nonRelays.addAll(relay.nonRelaysLinkedDirectly)
+            mediaExchangers.addAll(relay.mediaExchangersLinkedDirectly)
             nonRelays to mediaExchangers
         }
         val unvisitedNumNonRelaysLinked = unvisitedNonRelaysLinked.size
@@ -161,6 +170,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             it.mediaExchangersLinked = newMediaExchangersLinked
             it.numNonRelaysLinked = newNumNonRelaysLinked
             it.numMediaAcceptorsLinked = newNumMediaExchangersLinked
+            it.setChanged()
         }
         unvisited.forEach {
             it.relayNetwork = unvisited
@@ -168,6 +178,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             it.mediaExchangersLinked = unvisitedMediaExchangersLinked
             it.numNonRelaysLinked = unvisitedNumNonRelaysLinked
             it.numMediaAcceptorsLinked = unvisitedNumMediaExchangersLinked
+            it.setChanged()
         }
     }
 
@@ -234,9 +245,9 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         } else {
             // add to list of non-relays linked to network.
             nonRelaysLinkedDirectly.add(other)
-            relayNetwork.forEach { it.nonRelaysLinked.add(other); it.numNonRelaysLinked += 1 }
+            relayNetwork.forEach { it.nonRelaysLinked.add(other); it.numNonRelaysLinked += 1; it.setChanged() }
             if (other.currentMediaLevel() != -1) {
-                mediaExchangersLinked.add(other)
+                mediaExchangersLinkedDirectly.add(other)
                 relayNetwork.forEach { it.mediaExchangersLinked.add(other); it.numMediaAcceptorsLinked += 1 }
             }
         }
@@ -256,12 +267,17 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         } else {
             // remove from list of non-relays linked to network.
             nonRelaysLinkedDirectly.remove(other)
-            relayNetwork.forEach { if (it.nonRelaysLinked.remove(other)) it.numNonRelaysLinked -= 1 }
+            relayNetwork.forEach { if (it.nonRelaysLinked.remove(other)) it.numNonRelaysLinked -= 1; it.setChanged() }
             if (other.currentMediaLevel() != -1) {
-                mediaExchangersLinked.remove(other)
+                mediaExchangersLinkedDirectly.remove(other)
                 relayNetwork.forEach { if (it.mediaExchangersLinked.add(other)) it.numMediaAcceptorsLinked -= 1 }
             }
         }
+    }
+
+    fun disconnectAll() {
+        for (relay in relaysLinkedDirectly)
+            relay.getRelay(level)?.let { unlink(it) }
     }
 
     override fun receiveIota(sender: ILinkable, iota: Iota) {
@@ -284,12 +300,13 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     }
 
     override fun colouriser(): FrozenColorizer {
-        return colouriser // TODO: Make this better!
+        return colouriser
     }
 
     //endregion
 
     override fun loadModData(tag: CompoundTag) {
+        HexalAPI.LOGGER.info("loading $tag at $pos on $level")
         if (tag.contains(TAG_COLOURISER))
             colouriser = FrozenColorizer.fromNBT(tag.getCompound(TAG_COLOURISER))
         if (tag.contains(TAG_COLOURISER_TIME))
@@ -308,6 +325,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         tag.putCompound(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
         tag.putList(TAG_RELAYS_LINKED_DIRECTLY, relaysDirectlyLinkedToTag())
         tag.putList(TAG_NON_RELAYS_LINKED_DIRECTLY, nonRelaysLinkedDirectlyToTag())
+        HexalAPI.LOGGER.info("saving $tag at $pos on $level")
     }
 
     private fun relaysDirectlyLinkedToTag(): ListTag {
