@@ -29,6 +29,8 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
@@ -38,6 +40,7 @@ dependencies {
     compileOnly "at.petra-k.paucal:paucal-common-$minecraftVersion:$paucalVersion"
     compileOnly "at.petra-k.hexcasting:hexcasting-common-$minecraftVersion:$hexcastingVersion"
     compileOnly "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
+    compileOnly "software.bernie.geckolib:geckolib-fabric-1.19:$geckolibVersion"
 
     testImplementation "at.petra-k.paucal:paucal-common-$minecraftVersion:$paucalVersion"
     testImplementation "at.petra-k.hexcasting:hexcasting-common-$minecraftVersion:$hexcastingVersion"

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
+import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -26,6 +27,9 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
     override fun <T : BlockEntity> getTicker(level: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T> {
         return BlockEntityTicker(Companion::tick)
     }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun getRenderShape(state: BlockState) = RenderShape.ENTITYBLOCK_ANIMATED
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hit: BlockHitResult): InteractionResult {
@@ -47,7 +51,7 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
         return InteractionResult.FAIL
     }
 
-    @Suppress("OVERRIDE_DEPRECATION")
+    @Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
     override fun onRemove(blockState: BlockState, level: Level, pos: BlockPos, newState: BlockState, moved: Boolean) {
         if (!newState.`is`(this)) {
             val blockEntity = level.getBlockEntity(pos)

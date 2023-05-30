@@ -1,0 +1,74 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.model.place": {
+			"animation_length": 4,
+			"bones": {
+				"Bobber": {
+					"rotation": {
+						"2.0": {
+							"vector": [0, 0, 0]
+						},
+						"4.0": {
+							"vector": [
+								"90*(math.sin((360/16) * (0) + 360*0.0)  +  1/2 * math.sin((360/8) * 0 + 360*0.1)  +  1/4 * math.sin((360/4) * 0 + 360*0.2)  +  1/8  * math.sin((360/2) * 0 + 360*0.3)  +  1/16 * math.sin((360/1) * 0 + 360*0.4))",
+								"90*(math.sin((360/16) * (0) + 360*0.4)  +  1/3 * math.sin((360/8) * 0 + 360*0.1)  +  1/3 * math.sin((360/4) * 0 - 360*0.4)  +  1/9  * math.sin((360/2) * 0 + 360*0.2)  +  1/12 * math.sin((360/1) * 0 + 360*0.7))",
+								"90*(math.sin((360/16) * (0) + 360*0.8)  +        math.sin((360/8) * 0 + 360*0.2)  +  1/4 * math.sin((360/4) * 0 - 360*0.2)  +  1/10 * math.sin((360/2) * 0 + 360*0.2)  +  1/12 * math.sin((360/1) * 0 + 360*1  ))"
+							],
+							"easing": "easeInOutCubic"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -8, 0]
+						},
+						"1.0": {
+							"vector": [0, -4, 0],
+							"easing": "easeInCubic"
+						},
+						"2.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutCubic"
+						},
+						"4.0": {
+							"vector": [0, -2.2, 0],
+							"easing": "easeInOutSine"
+						}
+					},
+					"scale": {
+						"1.0": {
+							"vector": [1, 1, 1]
+						},
+						"2.0": {
+							"vector": [1.3, 1.3, 1.3],
+							"easing": "easeInOutBack"
+						}
+					}
+				}
+			}
+		},
+		"animation.model.idle": {
+			"loop": true,
+			"animation_length": 32,
+			"bones": {
+				"Bobber": {
+					"rotation": {
+						"vector": [
+							"90*(math.sin((360/16) * (query.anim_time/2) + 360*0.0)  +  1/2 * math.sin((360/8) * query.anim_time/2 + 360*0.1)  +  1/4 * math.sin((360/4) * query.anim_time/2 + 360*0.2)  +  1/8  * math.sin((360/2) * query.anim_time/2 + 360*0.3)  +  1/16 * math.sin((360/1) * query.anim_time/2 + 360*0.4))",
+							"90*(math.sin((360/16) * (query.anim_time/2) + 360*0.4)  +  1/3 * math.sin((360/8) * query.anim_time/2 + 360*0.1)  +  1/3 * math.sin((360/4) * query.anim_time/2 - 360*0.4)  +  1/9  * math.sin((360/2) * query.anim_time/2 + 360*0.2)  +  1/12 * math.sin((360/1) * query.anim_time/2 + 360*0.7))",
+							"90*(math.sin((360/16) * (query.anim_time/2) + 360*0.8)  +        math.sin((360/8) * query.anim_time/2 + 360*0.2)  +  1/4 * math.sin((360/4) * query.anim_time/2 - 360*0.2)  +  1/10 * math.sin((360/2) * query.anim_time/2 + 360*0.2)  +  1/12 * math.sin((360/1) * query.anim_time/2 + 360*1  ))"
+						]
+					},
+					"position": {
+						"vector": [0, "2.2 * math.sin((360/8) * query.anim_time - 90)", 0],
+						"easing": "easeOutSine"
+					},
+					"scale": {
+						"vector": [1.3, 1.3, 1.3]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

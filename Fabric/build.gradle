@@ -56,6 +56,8 @@ repositories {
             includeGroup 'com.unascribed'
         }
     }
+
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
@@ -88,6 +90,8 @@ dependencies {
 
     modImplementation "io.github.tropheusj:serialization-hooks:$serializationHooksVersion"
     include "io.github.tropheusj:serialization-hooks:$serializationHooksVersion"
+
+    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:$geckolibVersion"
 
     // Optional integrations
 
