@@ -26,6 +26,8 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.*
 import ram.talia.hexal.api.linkable.ILinkable.LazyILinkableSet
 import ram.talia.hexal.api.plus
+import ram.talia.hexal.api.times
+import ram.talia.hexal.common.blocks.BlockRelay
 import ram.talia.hexal.common.lib.HexalBlockEntities
 import software.bernie.geckolib3.core.IAnimatable
 import software.bernie.geckolib3.core.PlayState
@@ -272,7 +274,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     private fun getBobberPosition(): Vec3 {
         val manager = factory.getOrCreateAnimationData(this.pos.hashCode()) // this is how the unique ID is calculated in GeoBlockRenderer
         val bobber = manager.boneSnapshotCollection["Bobber"]?.right ?: return Vec3.ZERO
-        return Vec3(bobber.positionOffsetX / 16.0, (bobber.positionOffsetY + 10) / 16.0, bobber.positionOffsetZ / 16.0)
+        return (bobber.positionOffsetY + 10) / 16.0 * Vec3.atLowerCornerOf(state.getValue(BlockRelay.FACING).normal)
     }
     //endregion
 
