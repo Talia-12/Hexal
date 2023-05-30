@@ -45,7 +45,15 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
     override fun getRenderShape(state: BlockState) = RenderShape.ENTITYBLOCK_ANIMATED
 
     override fun getShape(blockState: BlockState, level: BlockGetter, pos: BlockPos, ctx: CollisionContext): VoxelShape {
-        return box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0)
+        @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+        return when (blockState.getValue(FACING)) {
+            Direction.UP -> box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0)
+            Direction.DOWN -> box(0.0, 4.0, 0.0, 16.0, 16.0, 16.0)
+            Direction.NORTH -> box(0.0, 0.0, 4.0, 16.0, 16.0, 16.0)
+            Direction.SOUTH -> box(0.0, 0.0, 0.0, 16.0, 16.0, 12.0)
+            Direction.WEST ->box(4.0, 0.0, 0.0, 16.0, 16.0, 16.0)
+            Direction.EAST -> box(0.0, 0.0, 0.0, 12.0, 16.0, 16.0)
+        }
     }
 
     override fun use(state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hit: BlockHitResult): InteractionResult {
