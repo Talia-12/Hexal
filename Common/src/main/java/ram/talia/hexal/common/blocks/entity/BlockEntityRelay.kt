@@ -26,9 +26,16 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.*
 import ram.talia.hexal.api.linkable.ILinkable.LazyILinkableSet
 import ram.talia.hexal.common.lib.HexalBlockEntities
+import software.bernie.geckolib3.core.IAnimatable
+import software.bernie.geckolib3.core.PlayState
+import software.bernie.geckolib3.core.builder.AnimationBuilder
+import software.bernie.geckolib3.core.controller.AnimationController
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent
+import software.bernie.geckolib3.core.manager.AnimationData
+import software.bernie.geckolib3.core.manager.AnimationFactory
 import kotlin.math.min
 
-class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre {
+class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre, IAnimatable {
     val pos: BlockPos = pos.immutable()
 
     private val random = RandomSource.create()
@@ -238,6 +245,28 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
     override fun colouriser(): FrozenColorizer = relayNetwork.colouriser
 
+    //endregion
+
+    //region IAnimatable
+    @Suppress("DEPRECATION", "removal")
+    private val factory: AnimationFactory = AnimationFactory(this)
+
+    override fun registerControllers(data: AnimationData) {
+        data.addAnimationController(AnimationController(this, "controller", 0.0f, this::predicate))
+    }
+
+    private fun <E : IAnimatable> predicate(event: AnimationEvent<E>): PlayState {
+        @Suppress("DEPRECATION", "removal")
+        event.controller.setAnimation(
+                AnimationBuilder()
+                        .addAnimation("animation.model.place", false)
+                        .addAnimation("animation.model.idle", true)
+        )
+
+        return PlayState.CONTINUE
+    }
+
+    override fun getFactory(): AnimationFactory = factory
     //endregion
 
     override fun loadModData(tag: CompoundTag) {

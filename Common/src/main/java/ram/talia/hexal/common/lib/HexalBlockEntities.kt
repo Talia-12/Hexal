@@ -37,7 +37,7 @@ class HexalBlockEntities {
 		private fun <T : BlockEntity?> register(
 			id: String,
 			func: BiFunction<BlockPos, BlockState, T>, vararg blocks: Block
-		): BlockEntityType<T>? {
+		): BlockEntityType<T> {
 			val ret = IXplatAbstractions.INSTANCE.createBlockEntityType(func, *blocks)
 			val old = BLOCK_ENTITIES[modLoc(id)]
 			require(old == null) { "Duplicate id $id" }

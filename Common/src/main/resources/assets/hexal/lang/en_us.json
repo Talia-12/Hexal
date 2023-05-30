@@ -1,6 +1,7 @@
 {
   "block.hexal.slipway": "Slipway",
   "block.hexal.mediafied_storage": "Mote Nexus",
+  "block.hexal.relay": "Relay",
 
   "entity.hexal.wisp.projectile": "Projectile Wisp",
   "entity.hexal.wisp.ticking": "Cyclic Wisp",
