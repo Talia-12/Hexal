@@ -1,27 +1,33 @@
 package ram.talia.hexal.client
 
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import net.minecraft.client.Minecraft
+import net.minecraft.client.ParticleStatus
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
-import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable.IRenderCentre
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nextColour
-import java.util.*
 import kotlin.math.ln
 import kotlin.math.sqrt
 
 @JvmName("playLinkParticles")
 fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: RandomSource, level: Level) {
+	val particleStatus = Minecraft.getInstance().options.particles().get() as ParticleStatus
+
 	val sourceCentre = source.renderCentre(sink)
 	val delta = sink.renderCentre(source) - sourceCentre
-	val dist = delta.length() * 12
+	val dist = delta.length() * when (particleStatus) {
+		ParticleStatus.ALL -> 4.0
+		ParticleStatus.DECREASED -> 2.0
+		ParticleStatus.MINIMAL -> 0.5
+	}
 
 	val sourceColouriser = source.colouriser()
 	val sinkColouriser = sink.colouriser()
 
-	for (i in 0..dist.toInt()) {
-		val coeff = i / dist
+	for (i in 0 until dist.toInt()) {
+		val coeff = (i / dist) + (level.gameTime % 20) / (20 * dist)
 
 		val colour: Int = if (random.nextBeta(15, 15) < coeff) sinkColouriser.nextColour(random) else sourceColouriser.nextColour(random)
 
