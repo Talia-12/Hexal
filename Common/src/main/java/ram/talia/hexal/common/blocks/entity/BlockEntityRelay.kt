@@ -243,7 +243,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         }
 
     override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 {
-        return Vec3.atCenterOf(pos) + getBobberPosition() // TODO: Make this better; blockstates, tower, ect.
+        return Vec3.atCenterOf(pos) + getBobberPosition()
     }
 
     override fun colouriser(): FrozenColorizer = relayNetwork.colouriser
@@ -290,6 +290,11 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             relaysLinkedDirectlyFromTag(tag.getList(TAG_RELAYS_LINKED_DIRECTLY, ListTag.TAG_LIST))
         if (tag.contains(TAG_NON_RELAYS_LINKED_DIRECTLY))
             nonRelaysLinkedDirectlyFromTag(tag.getList(TAG_NON_RELAYS_LINKED_DIRECTLY, ListTag.TAG_COMPOUND))
+        if (tag.contains(TAG_SYNC_NETWORK_ROOT)) {
+            val newNetwork = (level?.getBlockEntity(listTagToBlockPos(tag.getList(TAG_SYNC_NETWORK_ROOT, ListTag.TAG_INT))) as? BlockEntityRelay)?.relayNetwork
+            if (newNetwork != null)
+                this.relayNetwork = newNetwork
+        }
     }
 
     override fun saveModData(tag: CompoundTag) {
@@ -299,6 +304,12 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         tag.putList(TAG_RELAYS_LINKED_DIRECTLY, relaysDirectlyLinkedToTag())
         tag.putList(TAG_NON_RELAYS_LINKED_DIRECTLY, nonRelaysLinkedDirectlyToTag())
         HexalAPI.LOGGER.info("saving $tag at $pos on $level")
+    }
+
+    override fun getUpdateTag(): CompoundTag {
+        val tag = super.getUpdateTag()
+        tag.putList(TAG_SYNC_NETWORK_ROOT, blockPosToListTag(relayNetwork.root.pos))
+        return tag
     }
 
     private fun relaysDirectlyLinkedToTag(): ListTag {
@@ -422,8 +433,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
         fun absorb(other: RelayNetwork) {
             if (this.timeColouriserSet < other.timeColouriserSet) {
-                this.colouriser = other.colouriser
-                this.timeColouriserSet = other.timeColouriserSet
+                this.setColouriser(other.colouriser, other.timeColouriserSet)
             }
 
             this.relays.addAll(other.relays)
@@ -432,7 +442,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             this.numNonRelays += other.numNonRelays
             this.numMediaExchangers += other.numMediaExchangers
 
-            other.relays.forEach { it.relayNetwork = this }
+            other.relays.forEach { it.relayNetwork = this; it.sync() }
         }
 
         fun tick() {
@@ -450,6 +460,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         const val TAG_RELAYS_LINKED_DIRECTLY = "hexal:relays_linked_directly"
         const val TAG_NON_RELAYS_LINKED_DIRECTLY = "hexal:non_relays_linked_directly"
         const val TAG_MEDIA_EXCHANGER = "relay:media_exchanger"
+        const val TAG_SYNC_NETWORK_ROOT = "relay:sync_network_root"
 
         private fun blockPosToListTag(pos: BlockPos): ListTag {
             val listTag = ListTag()

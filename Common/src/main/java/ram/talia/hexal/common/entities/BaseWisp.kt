@@ -4,6 +4,8 @@ import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
+import net.minecraft.client.Minecraft
+import net.minecraft.client.ParticleStatus
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
@@ -20,6 +22,7 @@ import ram.talia.hexal.api.nextColour
 import kotlin.math.*
 
 abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : LinkableEntity(entityType, world), IMediaEntity<BaseWisp> {
+	@Suppress("LeakingThis")
 	var oldPos: Vec3 = position()
 
 	override var media: Int
@@ -72,7 +75,13 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	protected open fun playWispParticles(colouriser: FrozenColorizer) {
 		val radius = (media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 100
 
-		for (i in 0..50) {
+		val repeats = when (Minecraft.getInstance().options.particles().get() as ParticleStatus) {
+			ParticleStatus.ALL -> 50
+			ParticleStatus.DECREASED -> 20
+			ParticleStatus.MINIMAL -> 5
+		}
+
+		for (i in 0..repeats) {
 			val colour: Int = colouriser.nextColour(random)
 
 			level.addParticle(
