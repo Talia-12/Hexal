@@ -56,13 +56,13 @@ object OpCloseGate : VarargSpellAction {
         burst.add(ParticleSpray.burst(targetPos.add(0.0, meanEyeHeight / 2.0, 0.0), 2.0))
 
         return Triple(
-                Spell(gatees, targetPos),
+                Spell(gatees, targetPos, gate.isDrifting && !ctx.isVecInRange(targetPos)),
                 cost,
                 burst
         )
     }
 
-    private data class Spell(val gatees: Set<Entity>, val targetPos: Vec3) : RenderedSpell {
+    private data class Spell(val gatees: Set<Entity>, val targetPos: Vec3, val dropItems: Boolean) : RenderedSpell {
         // stole all this from the default teleport; sadge that it isn't accessible.
 
         override fun cast(ctx: CastingContext) {
@@ -79,7 +79,7 @@ object OpCloseGate : VarargSpellAction {
                 teleportRespectSticky(teleportee, allTeleportees, delta)
             }
 
-            if (teleportee is ServerPlayer && teleportee == ctx.caster) {
+            if (teleportee is ServerPlayer && teleportee == ctx.caster && dropItems) {
                 // Drop items conditionally, based on distance teleported.
                 // MOST IMPORTANT: Never drop main hand item, since if it's a trinket, it will get duplicated later.
 

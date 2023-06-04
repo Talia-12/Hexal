@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.getEntity
 import at.petrak.hexcasting.api.spell.getVec3
@@ -32,12 +31,14 @@ object OpMakeGate : VarargConstMediaAction {
             return listOf(GateManager.makeGate())
 
         val vec = args.getVec3(0, argc)
+        ctx.assertVecInRange(vec)
 
         if (argc == 2) {
             val entity = args.getEntity(1, argc)
 
             if (entity is ServerPlayer && entity != ctx.caster)
                 throw MishapOthersName(entity)
+            ctx.assertVecInRange(entity.position())
 
             return listOf(GateManager.makeGate(entity to vec))
         }
