@@ -1,0 +1,196 @@
+{
+  "name": "hexal.entry.motes",
+  "category": "hexcasting:patterns/spells",
+  "icon": "minecraft:chest",
+  "sortnum": 20,
+  "advancement": "hexcasting:enlightenment",
+  "entry_color": "54398a",
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.explanation.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.explanation.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.explanation.2"
+    },
+    {
+      "type": "hexcasting:brainsweep",
+      "recipe": "hexal:brainsweep/mediafied_storage",
+      "text": "hexal.page.motes.mediafed_storage_recipe"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/storage/bind",
+      "anchor": "hexal:mote/storage/bind",
+      "input": "vec",
+      "output": "",
+      "text": "hexal.page.motes.mote/storage/bind"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/storage/bind/temp",
+      "anchor": "hexal:mote/storage/bind/temp",
+      "input": "vec",
+      "output": "",
+      "text": "hexal.page.motes.mote/storage/bind/temp"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/contained_type/get",
+      "anchor": "hexal:mote/contained_type/get",
+      "input": "",
+      "output": "[itemtype]",
+      "text": "hexal.page.motes.mote/contained_type/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/contained/get",
+      "anchor": "hexal:mote/contained/get",
+      "input": "mote | itemtype",
+      "output": "[mote]",
+      "text": "hexal.page.motes.mote/contained/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/storage/remaining_capacity/get",
+      "anchor": "hexal:mote/storage/remaining_capacity/get",
+      "input": "",
+      "output": "int",
+      "text": "hexal.page.motes.mote/storage/remaining_capacity/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/storage/contains",
+      "anchor": "hexal:mote/storage/contains",
+      "input": "vec, (itemtype | mote)",
+      "output": "bool",
+      "text": "hexal.page.motes.mote/storage/contains"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/make",
+      "anchor": "hexal:mote/make",
+      "input": "item | item, mote",
+      "output": "mote",
+      "text": "hexal.page.motes.mote/make"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/return",
+      "anchor": "hexal:mote/return",
+      "input": "mote, vec | mote, vec, num",
+      "output": "",
+      "text": "hexal.page.motes.mote/return"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/count/get",
+      "anchor": "hexal:mote/count/get",
+      "input": "mote",
+      "output": "int",
+      "text": "hexal.page.motes.mote/count/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/combine",
+      "anchor": "hexal:mote/combine",
+      "input": "mote, mote",
+      "output": "mote",
+      "text": "hexal.page.motes.mote/combine"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/combinable",
+      "anchor": "hexal:mote/combinable",
+      "input": "mote, (mote | item)",
+      "output": "bool",
+      "text": "hexal.page.motes.mote/combinable"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/split",
+      "anchor": "hexal:mote/split",
+      "input": "mote, int",
+      "output": "mote, mote",
+      "text": "hexal.page.motes.mote/split"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/storage/get",
+      "anchor": "hexal:mote/storage/get",
+      "input": "mote",
+      "output": "vec",
+      "text": "hexal.page.motes.mote/storage/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/storage/set",
+      "anchor": "hexal:mote/storage/set",
+      "input": "mote, vec",
+      "output": "mote",
+      "text": "hexal.page.motes.mote/storage/set"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/craft",
+      "anchor": "hexal:mote/craft",
+      "input": "mote | [mote] | [[mote]]",
+      "output": "[mote]",
+      "text": "hexal.page.motes.mote/craft.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.mote/craft.1"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/villager/level/get",
+      "anchor": "hexal:mote/villager/level/get",
+      "input": "villager",
+      "output": "int",
+      "text": "hexal.page.motes.mote/villager/level/get"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/trade/get",
+      "anchor": "hexal:mote/trade/get",
+      "input": "villager",
+      "output": "[complicated!]",
+      "text": "hexal.page.motes.mote/trade/get.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.mote/trade/get.1"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/trade",
+      "anchor": "hexal:mote/trade",
+      "input": "villager, [mote], int?",
+      "output": "item",
+      "text": "hexal.page.motes.mote/trade.0"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.mote/trade.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.motes.mote/trade.2"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:mote/use_on",
+      "anchor": "hexal:mote/use_on",
+      "input": "mote, (entity | vec, vec)",
+      "output": "",
+      "text": "hexal.page.hexal_spell.mote/use_on"
+    }
+  ]
+}

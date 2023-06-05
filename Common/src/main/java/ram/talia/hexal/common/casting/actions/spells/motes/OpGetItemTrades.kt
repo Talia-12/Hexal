@@ -1,4 +1,4 @@
-package ram.talia.hexal.common.casting.actions.spells.items
+package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.asActionResult

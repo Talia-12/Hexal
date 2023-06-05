@@ -1,4 +1,4 @@
-package ram.talia.hexal.common.casting.actions.spells.items
+package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.casting.CastingContext
@@ -13,16 +13,16 @@ import net.minecraft.world.item.trading.MerchantOffer
 import net.minecraft.world.item.trading.MerchantOffers
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.getItemOrItemList
+import ram.talia.hexal.api.getMoteOrMoteList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargConstMediaAction
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
 
-object OpTradeItem : VarargConstMediaAction {
+object OpTradeMote : VarargConstMediaAction {
     override val mediaCost: Int
         get() = HexalConfig.server.tradeItemCost
 
@@ -35,7 +35,7 @@ object OpTradeItem : VarargConstMediaAction {
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota> {
         val villager = args.getVillager(0, argc)
-        val toTradeItemIotas = args.getItemOrItemList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
+        val toTradeItemIotas = args.getMoteOrMoteList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
         val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
 
         if (toTradeItemIotas.isEmpty())
@@ -103,7 +103,7 @@ object OpTradeItem : VarargConstMediaAction {
 
         villager.stopTrading()
 
-        return outRecord?.let { record -> ItemIota.makeIfStorageLoaded(record, storage)?.let{ listOf(it) } } ?: null.asActionResult
+        return outRecord?.let { record -> MoteIota.makeIfStorageLoaded(record, storage)?.let{ listOf(it) } } ?: null.asActionResult
     }
 
     fun getFirstMatchingInStockOffer(offers: MerchantOffers, toTrade0: ItemStack, toTrade1: ItemStack): MerchantOffer? {

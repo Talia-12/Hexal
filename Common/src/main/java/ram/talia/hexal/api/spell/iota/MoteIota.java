@@ -25,37 +25,37 @@ import java.util.UUID;
  * Similar to GateIotas, stores a reference to an item stored in the
  * media. When the item is used up, all references to it become null.
  */
-public class ItemIota extends Iota {
+public class MoteIota extends Iota {
     static final String TAG_DISPLAY_NAME = "name";
     static final String TAG_COUNT = "count";
 
-    public ItemIota(MediafiedItemManager.Index payload) {
+    public MoteIota(MediafiedItemManager.Index payload) {
         super(HexalIotaTypes.ITEM, payload);
     }
 
-    public static @Nullable ItemIota makeIfStorageLoaded(ItemStack stack, UUID storageUUID) {
+    public static @Nullable MoteIota makeIfStorageLoaded(ItemStack stack, UUID storageUUID) {
         var index = MediafiedItemManager.assignItem(stack, storageUUID);
 
         if (index != null)
-            return new ItemIota(index);
+            return new MoteIota(index);
         else
             return null;
     }
 
-    public static @Nullable ItemIota makeIfStorageLoaded(ItemRecord record, UUID storageUUID) {
+    public static @Nullable MoteIota makeIfStorageLoaded(ItemRecord record, UUID storageUUID) {
         var index = MediafiedItemManager.assignItem(record, storageUUID);
 
         if (index != null)
-            return new ItemIota(index);
+            return new MoteIota(index);
         else
             return null;
     }
 
     /**
-     * Returns the ItemIota if its item still exists, or null otherwise. SHOULD ALWAYS
+     * Returns the MoteIota if its item still exists, or null otherwise. SHOULD ALWAYS
      * BE CALLED BEFORE MAKING USE OF AN ITEM IOTA {@literal (built into List<Iota>.getItem)}.
      */
-    public @Nullable ItemIota selfOrNull() {
+    public @Nullable MoteIota selfOrNull() {
         if (MediafiedItemManager.contains(this.getItemIndex()))
             return this;
         return null;
@@ -77,7 +77,7 @@ public class ItemIota extends Iota {
     }
 
     public Item getItem() {
-        return Objects.requireNonNull(MediafiedItemManager.getItem(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
+        return Objects.requireNonNull(MediafiedItemManager.getItem(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing MoteIota.");
     }
 
     public CompoundTag getTag() {
@@ -89,23 +89,31 @@ public class ItemIota extends Iota {
     }
 
     public long getCount() {
-        return Objects.requireNonNull(MediafiedItemManager.getCount(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing ItemIota.");
+        return Objects.requireNonNull(MediafiedItemManager.getCount(this.getItemIndex()), "MediafiedItemManager returned null for Item that has existing MoteIota.");
     }
 
-    public void absorb(ItemIota other) {
+    public void absorb(MoteIota other) {
         MediafiedItemManager.merge(this.getItemIndex(), other.getItemIndex());
     }
 
-    public boolean typeMatches(ItemIota other) {
+    public int absorb(ItemStack other) {
+        return MediafiedItemManager.merge(this.getItemIndex(), other);
+    }
+
+    public boolean typeMatches(MoteIota other) {
         return MediafiedItemManager.typeMatches(this.getItemIndex(), other.getItemIndex());
     }
 
-    public @Nullable ItemIota splitOff(int amount, @Nullable UUID storage) {
+    public boolean typeMatches(ItemStack other) {
+        return MediafiedItemManager.typeMatches(this.getItemIndex(), other);
+    }
+
+    public @Nullable MoteIota splitOff(int amount, @Nullable UUID storage) {
         var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount, storage);
         if (newIndex == null)
             return null;
 
-        return new ItemIota(newIndex);
+        return new MoteIota(newIndex);
     }
 
     public List<ItemStack> getStacksToDrop(int count) {
@@ -134,11 +142,11 @@ public class ItemIota extends Iota {
         MediafiedItemManager.templateOff(this.getItemIndex(), template, newCount);
     }
 
-    public ItemIota copy() {
-        return new ItemIota(this.getItemIndex());
+    public MoteIota copy() {
+        return new MoteIota(this.getItemIndex());
     }
 
-    public @Nullable ItemIota setStorage(@NotNull UUID uuid) {
+    public @Nullable MoteIota setStorage(@NotNull UUID uuid) {
         var storageFull = MediafiedItemManager.isStorageFull(uuid);
         if (storageFull == null || storageFull) // isStorageFull can return null
             return null;
@@ -149,16 +157,16 @@ public class ItemIota extends Iota {
             return null;
 
         var newIndex = MediafiedItemManager.assignItem(record, uuid);
-        return new ItemIota(newIndex);
+        return new MoteIota(newIndex);
     }
 
     @Override
     protected boolean toleratesOther(Iota that) {
         return (typesMatch(this, that) &&
-                that instanceof ItemIota ithat &&
+                that instanceof MoteIota ithat &&
                 this.getItemIndex().equals(ithat.getItemIndex())) ||
                 (this.isEmpty() && (that instanceof NullIota ||
-                        (that instanceof ItemIota ithat2 &&
+                        (that instanceof MoteIota ithat2 &&
                                 ithat2.isEmpty())));
     }
 
@@ -191,9 +199,9 @@ public class ItemIota extends Iota {
         return tag;
     }
 
-    public static IotaType<ItemIota> TYPE = new IotaType<>() {
+    public static IotaType<MoteIota> TYPE = new IotaType<>() {
         @Override
-        public ItemIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
+        public MoteIota deserialize(Tag tag, ServerLevel world) throws IllegalArgumentException {
             var ctag = HexUtils.downcast(tag, CompoundTag.TYPE);
 
             var index = MediafiedItemManager.Index.readFromNbt(ctag);
@@ -201,7 +209,7 @@ public class ItemIota extends Iota {
             if (!MediafiedItemManager.contains(index))
                 return null;
 
-            return new ItemIota(index);
+            return new MoteIota(index);
         }
 
         @Override

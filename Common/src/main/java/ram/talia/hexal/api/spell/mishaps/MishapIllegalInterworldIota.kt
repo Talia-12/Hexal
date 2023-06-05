@@ -10,7 +10,7 @@ import at.petrak.hexcasting.api.spell.mishaps.Mishap
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.DyeColor
 import ram.talia.hexal.api.spell.iota.GateIota
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 
 class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
     override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.GREEN)
@@ -28,7 +28,7 @@ class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
 
             while (poolToSearch.isNotEmpty()) {
                 val iotaToCheck = poolToSearch.removeFirst()
-                if (iotaToCheck is GateIota || iotaToCheck is ItemIota)
+                if (iotaToCheck is GateIota || iotaToCheck is MoteIota)
                     return iotaToCheck
                 if (iotaToCheck is ListIota)
                     poolToSearch.addAll(iotaToCheck.list)
@@ -40,7 +40,7 @@ class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
         fun replaceInNestedIota(iota: Iota): Iota {
             return when (iota) {
                 is GateIota -> GarbageIota()
-                is ItemIota -> GarbageIota()
+                is MoteIota -> GarbageIota()
                 is ListIota -> iota.list.map { replaceInNestedIota(it) }.asActionResult[0]
                 else -> iota
             }

@@ -20,7 +20,7 @@ import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.iota.EntityTypeIota
 import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.IotaTypeIota
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.iota.ItemTypeIota
 import ram.talia.hexal.api.util.Anyone
 import ram.talia.hexal.common.entities.BaseCastingWisp
@@ -79,9 +79,9 @@ inline val Block.asActionResult get() = listOf(ItemTypeIota(this))
 inline val EntityType<*>.asActionResult get() = listOf(EntityTypeIota(this))
 inline val Item.asActionResult get() = listOf(ItemTypeIota(this))
 inline val List<Item>.asActionResult get() = this.map { ItemTypeIota(it) }.asActionResult
-inline val Map<MediafiedItemManager.Index, ItemRecord>.asActionResult get() = this.map { (index, _) -> ItemIota(index) }.asActionResult
+inline val Map<MediafiedItemManager.Index, ItemRecord>.asActionResult get() = this.map { (index, _) -> MoteIota(index) }.asActionResult
 
-fun ItemStack.asActionResult(storageUUID: UUID) = listOf(ItemIota.makeIfStorageLoaded(this, storageUUID) ?: NullIota())
+fun ItemStack.asActionResult(storageUUID: UUID) = listOf(MoteIota.makeIfStorageLoaded(this, storageUUID) ?: NullIota())
 
 fun List<Iota>.getBaseWisp(idx: Int, argc: Int = 0): BaseWisp {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
@@ -144,12 +144,12 @@ fun List<Iota>.getStrictlyPositiveInt(idx: Int, argc: Int = 0): Int {
     throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "int.strictly_positive")
 }
 
-fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<BlockPos, ItemEntity, ItemIota>? {
+fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<BlockPos, ItemEntity, MoteIota>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     return when (x) {
         is Vec3Iota -> Anyone.first(BlockPos(x.vec3))
         is EntityIota -> (x.entity as? ItemEntity)?.let { Anyone.second(it) } ?: throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
-        is ItemIota -> x.selfOrNull()?.let { Anyone.third(it) }
+        is MoteIota -> x.selfOrNull()?.let { Anyone.third(it) }
         is NullIota -> null
         else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
     }
@@ -191,11 +191,11 @@ fun List<Iota>.getItemBlockType(idx: Int, argc: Int = 0): Either<Item, Block> {
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.item")
 }
 
-fun List<Iota>.getBlockTypeOrBlockItem(idx: Int, argc: Int = 0): Either<Block, ItemIota>? {
+fun List<Iota>.getBlockTypeOrBlockItem(idx: Int, argc: Int = 0): Either<Block, MoteIota>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is ItemTypeIota)
         return x.block ?.let { Either.left(it) }
-    if (x is ItemIota)
+    if (x is MoteIota)
         return x.selfOrNull()?.let { if (it.item is BlockItem) Either.right(it) else null }
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.block")
 }
@@ -217,54 +217,71 @@ fun List<Iota>.getGate(idx: Int, argc: Int = 0): GateIota {
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "gate")
 }
 
-fun List<Iota>.getItem(idx: Int, argc: Int = 0): ItemIota? {
+fun List<Iota>.getMote(idx: Int, argc: Int = 0): MoteIota? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
-    if (x is ItemIota)
+    if (x is MoteIota)
         return x.selfOrNull()
     if (x is NullIota)
         return null
 
-    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "item")
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "mote")
 }
 
-fun List<Iota>.getItemOrItemType(idx: Int, argc: Int = 0): Either<ItemIota, Item>? {
+fun List<Iota>.getMoteOrItemEntityOrItemFrame(idx: Int, argc: Int = 0): Anyone<MoteIota, ItemEntity, ItemFrame>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
-    if (x is ItemIota)
+    if (x is MoteIota)
+        return x.selfOrNull()?.let { Anyone.first(it) }
+    if (x is NullIota)
+        return null
+    if (x is EntityIota) {
+        val e = x.entity
+        if (e is ItemEntity)
+            return Anyone.second(e)
+        if (e is ItemFrame)
+            return Anyone.third(e)
+    }
+
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "moteentity.itemitemframe")
+}
+
+fun List<Iota>.getMoteOrItemType(idx: Int, argc: Int = 0): Either<MoteIota, Item>? {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is MoteIota)
         return x.selfOrNull()?.let { Either.left(it) }
     if (x is ItemTypeIota)
         return Either.right(x.item)
     if (x is NullIota)
         return null
 
-    throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "itemitemtype")
+    throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "moteitemtype")
 }
 
-fun List<Iota>.getItemOrList(idx: Int, argc: Int = 0): Either<ItemIota, SpellList>? {
+fun List<Iota>.getMoteOrList(idx: Int, argc: Int = 0): Either<MoteIota, SpellList>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     return when (x) {
-        is ItemIota -> Either.left(x)
+        is MoteIota -> Either.left(x)
         is NullIota -> null
         is ListIota -> Either.right(x.list)
-        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlist")
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "motemotelistmotelistlist")
     }
 }
 
-fun List<Iota>.getItemOrItemList(idx: Int, argc: Int = 0): Either<ItemIota, List<ItemIota>>? {
+fun List<Iota>.getMoteOrMoteList(idx: Int, argc: Int = 0): Either<MoteIota, List<MoteIota>>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     return when (x) {
-        is ItemIota -> Either.left(x)
+        is MoteIota -> Either.left(x)
         is NullIota -> null
         is ListIota -> {
-            val out = mutableListOf<ItemIota>()
+            val out = mutableListOf<MoteIota>()
             for (i in x.list) {
                 when (i) {
-                    is ItemIota -> out.add(i)
+                    is MoteIota -> out.add(i)
                     is NullIota -> continue
-                    else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlist")
+                    else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "motemotelist")
                 }
             }
             Either.right(out)
         }
-        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlist")
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "motemotelist")
     }
 }

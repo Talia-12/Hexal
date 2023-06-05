@@ -25,7 +25,7 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBlockTypeOrBlockItem
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 import java.util.function.Predicate
 
 object OpPlaceType : SpellAction {
@@ -56,7 +56,7 @@ object OpPlaceType : SpellAction {
         )
     }
 
-    private data class Spell(val pos: BlockPos, val blockOrItemIota: Either<Block, ItemIota>) : RenderedSpell {
+    private data class Spell(val pos: BlockPos, val blockOrMoteIota: Either<Block, MoteIota>) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             if (!ctx.canEditBlockAt(pos))
                 return
@@ -66,7 +66,7 @@ object OpPlaceType : SpellAction {
             )
 
             val bstate = ctx.world.getBlockState(pos)
-            val placeeStack = blockOrItemIota.map(
+            val placeeStack = blockOrMoteIota.map(
                     { block -> getItemSlot(ctx) { it.item is BlockItem && (it.item as BlockItem).block == block }?.copy() },
                     { itemIota -> if (itemIota.item is BlockItem) itemIota.record?.toStack()?.takeUnless { it.isEmpty } else null }
             )  ?: return
@@ -91,7 +91,7 @@ object OpPlaceType : SpellAction {
                     return
                 }
 
-                if (blockOrItemIota.left().isPresent && !ctx.withdrawItem(placeeStack, 1, false)) {
+                if (blockOrMoteIota.left().isPresent && !ctx.withdrawItem(placeeStack, 1, false)) {
                     ctx.caster.setItemInHand(ctx.castingHand, oldStack)
                     return
                 }
@@ -103,7 +103,7 @@ object OpPlaceType : SpellAction {
                 if (res == InteractionResult.FAIL)
                     return
 
-                blockOrItemIota.map(
+                blockOrMoteIota.map(
                         { ctx.withdrawItem(placeeStack, 1, true) }, // if we're placing based on a block type, remove from the caster's inventory
                         { itemIota -> itemIota.removeItems(1) } // if we're placing from an item iota, remove from the iota.
                 )

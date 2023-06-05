@@ -125,12 +125,29 @@ object MediafiedItemManager {
     }
 
     @JvmStatic
+    fun typeMatches(typerIndex: Index, typee: ItemStack): Boolean {
+        val typer = access(typerIndex) ?: return false
+
+        return typer.typeMatches(typee)
+    }
+
+    @JvmStatic
     fun merge(absorberIndex: Index, absorbeeIndex: Index) {
         val absorber = access(absorberIndex) ?: return
         val absorbee = access(absorbeeIndex) ?: return
 
         if (absorber.absorb(absorbee) && absorbee.count <= 0)
             removeRecord(absorbeeIndex)
+    }
+
+    /**
+     * Returns the number remaining in the itemstack.
+     */
+    @JvmStatic
+    fun merge(absorberIndex: Index, absorbee: ItemStack): Int {
+        val absorber = access(absorberIndex) ?: return absorbee.count
+
+        return absorber.absorb(absorbee)
     }
 
     @JvmStatic

@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBlockPosOrItemEntityOrItem
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.toIntCapped
 import ram.talia.hexal.api.util.Anyone
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -24,7 +24,7 @@ import java.util.*
 object OpSmelt : SpellAction {
     override val argc = 1
 
-    fun numToSmelt(toSmelt: Anyone<BlockPos, ItemEntity, ItemIota>): Int {
+    fun numToSmelt(toSmelt: Anyone<BlockPos, ItemEntity, MoteIota>): Int {
         return toSmelt.flatMap({ 1 }, { item -> item.item.count }, { item -> item.count.toIntCapped() })
     }
 
@@ -46,7 +46,7 @@ object OpSmelt : SpellAction {
         )
     }
 
-    private data class Spell(val vOrIeOrI: Anyone<BlockPos, ItemEntity, ItemIota>) : RenderedSpell {
+    private data class Spell(val vOrIeOrI: Anyone<BlockPos, ItemEntity, MoteIota>) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             vOrIeOrI.map({ pos -> // runs this code if the player passed a BlockPos
                  if (!ctx.canEditBlockAt(pos)) return@map

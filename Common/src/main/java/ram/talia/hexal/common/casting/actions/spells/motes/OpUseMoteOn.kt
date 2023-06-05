@@ -1,17 +1,14 @@
-package ram.talia.hexal.common.casting.actions.spells
+package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.mishaps.Mishap
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.utils.asTranslatedComponent
 import at.petrak.hexcasting.ktxt.UseOnContext
 import at.petrak.hexcasting.xplat.IXplatAbstractions
-import com.mojang.brigadier.Message
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.InteractionHand
@@ -20,15 +17,14 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.getItem
+import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargSpellAction
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
-import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
 
-object OpUseItemOn : VarargSpellAction {
+object OpUseMoteOn : VarargSpellAction {
     override fun argc(stack: List<Iota>): Int {
         return if (stack[0] is EntityIota) 2 else 3
     }
@@ -38,7 +34,7 @@ object OpUseItemOn : VarargSpellAction {
             argc: Int,
             ctx: CastingContext
     ): Triple<RenderedSpell, Int, List<ParticleSpray>> {
-        val item = args.getItem(0, argc)
+        val item = args.getMote(0, argc)
 
         if ((item == null) || ((item.count != 1L) && (item.tag != null) ))
         {
@@ -78,13 +74,13 @@ object OpUseItemOn : VarargSpellAction {
         }
     }
 
-    private data class EntityTargetSpell(val entity: Entity, val item: ItemIota) : RenderedSpell {
+    private data class EntityTargetSpell(val entity: Entity, val item: MoteIota) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             if (!ctx.isEntityInRange(entity))
                 return
 
             val itemStack = ItemStack(item.item, 1)
-            itemStack.tag = item.tag;
+            itemStack.tag = item.tag
 
             // Swap item in hand to the new stack
             val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
@@ -103,13 +99,13 @@ object OpUseItemOn : VarargSpellAction {
         }
     }
 
-    private data class BlockTargetSpell(val pos: BlockPos, val direction: Vec3, val item: ItemIota) : RenderedSpell {
+    private data class BlockTargetSpell(val pos: BlockPos, val direction: Vec3, val item: MoteIota) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             if (!ctx.canEditBlockAt(pos))
                 return
 
             val itemStack = ItemStack(item.item, 1)
-            itemStack.tag = item.tag;
+            itemStack.tag = item.tag
 
             val context = UseOnContext(
                 ctx.world,

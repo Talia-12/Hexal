@@ -23,14 +23,17 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
         return item == other.item && tag == other.tag
     }
 
+    fun typeMatches(other: ItemStack): Boolean {
+        return item == other.item && tag == other.tag
+    }
+
     fun addCount(toAdd: Long) {
         count = count.addBounded(toAdd)
     }
 
     /**
      * Absorb the contents of another [ItemRecord] that matches this one,
-     * increasing this record's count by the other's. Doesn't set the other's
-     * count to 0 or remove it.
+     * increasing this record's count by the other's.
      */
     fun absorb(other: ItemRecord): Boolean {
         if (!typeMatches(other))
@@ -42,6 +45,16 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
         other.addCount(oldCount - count) // reduce the other's count by the amount moved to this' count.
 
         return true
+    }
+
+    fun absorb(other: ItemStack): Int {
+        if (!typeMatches(other))
+            return other.count
+
+        // protection against overflow errors (really shouldn't happen but ya know why not
+        val oldCount = count
+        addCount(other.count.toLong())
+        return other.count - (count - oldCount).toInt()
     }
 
     fun split(amount: Long): ItemRecord {

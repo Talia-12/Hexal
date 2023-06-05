@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class MishapStorageFull(val position: Vec3) : Mishap() {
@@ -25,7 +25,7 @@ class MishapStorageFull(val position: Vec3) : Mishap() {
         val storage = (ctx as IMixinCastingContext).boundStorage ?: return // somehow got mishap storage full with no storage, wild
         val allRecords = MediafiedItemManager.getAllRecords(storage) ?: return
         val index = allRecords.keys.randomOrNull() ?: return
-        val iota = ItemIota(index)
+        val iota = MoteIota(index)
         val toDrop = iota.getStacksToDrop(iota.item.maxStackSize) // the stack to drop.
 
         //get a random pos within range

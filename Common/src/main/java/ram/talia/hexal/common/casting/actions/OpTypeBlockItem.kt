@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.decoration.ItemFrame
 import net.minecraft.world.entity.item.ItemEntity
 import ram.talia.hexal.api.asActionResult
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 
 object OpTypeBlockItem : ConstMediaAction {
     override val argc = 1
@@ -26,7 +26,7 @@ object OpTypeBlockItem : ConstMediaAction {
                     blockState.block.asActionResult
                 }
             }
-            is ItemIota -> arg.selfOrNull()?.item?.asActionResult ?: null.asActionResult
+            is MoteIota -> arg.selfOrNull()?.item?.asActionResult ?: null.asActionResult
             is EntityIota -> {
                 return when (val entity = arg.entity) {
                     is ItemEntity -> entity.item.item.asActionResult

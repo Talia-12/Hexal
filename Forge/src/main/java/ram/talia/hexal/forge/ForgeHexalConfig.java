@@ -188,7 +188,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
             useItemOnCost = builder.translation("text.autoconfig.hexal.option.server.itemSpells.useItemOnCost")
                     .defineInRange("useItemOnCost", DEFAULT_USE_ITEM_ON_COST, DEF_MIN_COST, DEF_MAX_COST);
             maxItemsReturned = builder.translation("text.autoconfig.hexal.option.server.itemSpells.maxItemsReturned")
-                    .comment("Maximum number of items that can be returned to the world as item entities in a single OpReturnItem call.")
+                    .comment("Maximum number of items that can be returned to the world as item entities in a single OpReturnMote call.")
                     .defineInRange("maxItemsReturned", DEFAULT_MAX_ITEMS_RETURNED, MIN_MAX_ITEMS_RETURNED, MAX_MAX_ITEMS_RETURNED);
             maxRecordsInMediafiedStorage = builder.translation("text.autoconfig.hexal.option.server.itemSpells.maxRecordsInMediafiedStorage")
                     .comment("Maximum number of Item Records (the things Item Iotas point at) that can be stored in a Mediafied Storage block.")

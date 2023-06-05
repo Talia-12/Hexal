@@ -1,6 +1,6 @@
 @file:Suppress("NAME_SHADOWING")
 
-package ram.talia.hexal.common.casting.actions.spells.items
+package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.SpellList
@@ -17,11 +17,11 @@ import net.minecraft.world.inventory.CraftingContainer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.getItemOrList
+import ram.talia.hexal.api.getMoteOrList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.iota.ItemIota
+import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
 /**
@@ -35,14 +35,14 @@ import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
  *   S
  * you'd pass the list \[\[D, D, D\], \[null, S\], \[null, S\]\].
  */
-object OpCraftItem : ConstMediaAction {
+object OpCraftMote : ConstMediaAction {
     override val argc = 1
     override val mediaCost: Int
         get() = HexalConfig.server.craftItemCost
 
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-        val input = args.getItemOrList(0, argc) ?: return listOf<Iota>().asActionResult
+        val input = args.getMoteOrList(0, argc) ?: return listOf<Iota>().asActionResult
         val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
         if (!MediafiedItemManager.isStorageLoaded(storage))
             throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
@@ -65,25 +65,25 @@ object OpCraftItem : ConstMediaAction {
 
         val timesToCraft = getMinCount(griddedIotas)
 
-        val itemIotaResult = ItemIota.makeIfStorageLoaded(ItemRecord(itemResult.item, itemResult.tag, itemResult.count * timesToCraft), storage) ?: return emptyList<Iota>().asActionResult
-        val remainingItemIotas = remainingItems.map { ItemIota.makeIfStorageLoaded(ItemRecord(it.item, it.tag, it.count * timesToCraft), storage)!! }.toMutableList()
+        val moteIotaResult = MoteIota.makeIfStorageLoaded(ItemRecord(itemResult.item, itemResult.tag, itemResult.count * timesToCraft), storage) ?: return emptyList<Iota>().asActionResult
+        val remainingMoteIotas = remainingItems.map { MoteIota.makeIfStorageLoaded(ItemRecord(it.item, it.tag, it.count * timesToCraft), storage)!! }.toMutableList()
 
         for (item in griddedIotas) item?.removeItems(timesToCraft)
 
-        remainingItemIotas.add(0, itemIotaResult)
-        return remainingItemIotas.asActionResult
+        remainingMoteIotas.add(0, moteIotaResult)
+        return remainingMoteIotas.asActionResult
     }
 
-    private fun makeItemIotaCraftingGrid(input: Either<ItemIota, SpellList>): Array<ItemIota?> {
-        val out = Array<ItemIota?>(9) { _ -> null }
+    private fun makeItemIotaCraftingGrid(input: Either<MoteIota, SpellList>): Array<MoteIota?> {
+        val out = Array<MoteIota?>(9) { _ -> null }
 
         for ((idy, iota) in input.map({ listOf(IndexedValue(0, it)) }, { it.withIndex() })) {
             when (iota) {
-                is ItemIota -> out[idy * 3] = iota.selfOrNull()
+                is MoteIota -> out[idy * 3] = iota.selfOrNull()
                 is ListIota -> {
                     for ((idx, iota) in iota.list.withIndex()) {
                         when (iota) {
-                            is ItemIota -> out[idy * 3 + idx] = iota.selfOrNull()
+                            is MoteIota -> out[idy * 3 + idx] = iota.selfOrNull()
                             is NullIota -> out[idy * 3 + idx] = null
                             else -> throw MishapInvalidIota.of(input.map({ it }, { ListIota(it) }), 0, "crafting_recipe")
                         }
@@ -108,7 +108,7 @@ object OpCraftItem : ConstMediaAction {
         return out
     }
 
-    private fun getMinCount(griddedIotas: Array<ItemIota?>): Long = griddedIotas.minOf { iota -> iota?.count ?: Long.MAX_VALUE }
+    private fun getMinCount(griddedIotas: Array<MoteIota?>): Long = griddedIotas.minOf { iota -> iota?.count ?: Long.MAX_VALUE }
 
     // from AE2 https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/9965a2fd4d3fbf9eadd0a0e7190e0812537f836e/src/main/java/appeng/menu/AutoCraftingMenu.java#L30
     private class AutoCraftingMenu : AbstractContainerMenu(null, 0) {

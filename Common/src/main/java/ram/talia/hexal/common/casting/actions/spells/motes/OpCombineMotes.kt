@@ -1,18 +1,18 @@
-package ram.talia.hexal.common.casting.actions.spells.items
+package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.spell.ConstMediaAction
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.asActionResult
 import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import ram.talia.hexal.api.getItem
+import ram.talia.hexal.api.getMote
 
-object OpCombineItems : ConstMediaAction {
+object OpCombineMotes : ConstMediaAction {
     override val argc = 2
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-        val absorber = args.getItem(0, argc)
-        val absorbee = args.getItem(1, argc)
+        val absorber = args.getMote(0, argc)
+        val absorbee = args.getMote(1, argc)
 
         if (absorber == null || absorbee == null) {
             // ensure always 1 iota returned to the stack.

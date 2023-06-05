@@ -38,7 +38,7 @@ interface VarargSpellAction : Action {
             ravenmind: Iota?,
             ctx: CastingContext
     ): OperationResult {
-        val argc = this.argc(stack.asReversed())
+        val argc = this.argc(stack.reversed())
         if (argc > stack.size)
             throw MishapNotEnoughArgs(argc, stack.size)
         val args = stack.takeLast(argc)

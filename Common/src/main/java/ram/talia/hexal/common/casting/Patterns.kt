@@ -20,7 +20,7 @@ import ram.talia.hexal.common.casting.actions.everbook.*
 import ram.talia.hexal.common.casting.actions.spells.*
 import ram.talia.hexal.common.casting.actions.spells.gates.*
 import ram.talia.hexal.common.casting.actions.spells.great.*
-import ram.talia.hexal.common.casting.actions.spells.items.*
+import ram.talia.hexal.common.casting.actions.spells.motes.*
 import ram.talia.hexal.common.casting.actions.spells.link.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
 import ram.talia.hexal.common.entities.BaseWisp
@@ -220,43 +220,43 @@ object Patterns {
 
 	// =============================== Gate Stuff =====================================
 	@JvmField
-	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("item/storage/bind"), OpBindStorage(false))
+	val BIND_STORAGE = make(HexPattern.fromAngles("qaqwqaqwqaq", HexDir.NORTH_WEST), modLoc("mote/storage/bind"), OpBindStorage(false))
 	@JvmField
-	val BIND_STORAGE_TEMP = make(HexPattern.fromAngles("edewedewede", HexDir.NORTH_EAST), modLoc("item/storage/bind/temp"), OpBindStorage(true))
+	val BIND_STORAGE_TEMP = make(HexPattern.fromAngles("edewedewede", HexDir.NORTH_EAST), modLoc("mote/storage/bind/temp"), OpBindStorage(true))
 	@JvmField
-	val ITEM_CONTAINED_TYPE_GET = make(HexPattern.fromAngles("dwqqqqqwddww", HexDir.NORTH_EAST), modLoc("item/contained_type/get"), OpGetContainedItemTypes)
+	val MOTE_CONTAINED_TYPE_GET = make(HexPattern.fromAngles("dwqqqqqwddww", HexDir.NORTH_EAST), modLoc("mote/contained_type/get"), OpGetContainedItemTypes)
 	@JvmField
-	val ITEM_CONTAINED_GET = make(HexPattern.fromAngles("aweeeeewaaww", HexDir.SOUTH_EAST), modLoc("item/contained/get"), OpGetContainedItems)
+	val MOTE_CONTAINED_GET = make(HexPattern.fromAngles("aweeeeewaaww", HexDir.SOUTH_EAST), modLoc("mote/contained/get"), OpGetContainedMotes)
 	@JvmField
-	val ITEM_STORAGE_REMAINING_CAPACITY_GET = make(HexPattern.fromAngles("awedqdewa", HexDir.SOUTH_EAST), modLoc("item/storage/remaining_capacity/get"), OpGetStorageRemainingCapacity)
+	val MOTE_STORAGE_REMAINING_CAPACITY_GET = make(HexPattern.fromAngles("awedqdewa", HexDir.SOUTH_EAST), modLoc("mote/storage/remaining_capacity/get"), OpGetStorageRemainingCapacity)
 	@JvmField
-	val ITEM_STORAGE_CONTAINS = make(HexPattern.fromAngles("dwqaeaqwd", HexDir.NORTH_EAST), modLoc("item/storage/contains"), OpStorageContains)
+	val MOTE_STORAGE_CONTAINS = make(HexPattern.fromAngles("dwqaeaqwd", HexDir.NORTH_EAST), modLoc("mote/storage/contains"), OpStorageContains)
 	@JvmField
-	val ITEM_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("item/make"), OpMakeItem)
+	val MOTE_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("mote/make"), OpMakeItem)
 	@JvmField
-	val ITEM_RETURN = make(HexPattern.fromAngles("qded", HexDir.EAST), modLoc("item/return"), OpReturnItem)
+	val MOTE_RETURN = make(HexPattern.fromAngles("qded", HexDir.EAST), modLoc("mote/return"), OpReturnMote)
 	@JvmField
-	val ITEM_COUNT_GET = make(HexPattern.fromAngles("qqqqwqqqqqaa", HexDir.NORTH_WEST), modLoc("item/count/get"), OpGetCountItems)
+	val MOTE_COUNT_GET = make(HexPattern.fromAngles("qqqqwqqqqqaa", HexDir.NORTH_WEST), modLoc("mote/count/get"), OpGetCountMote)
 	@JvmField
-	val ITEM_COMBINE = make(HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), modLoc("item/combine"), OpCombineItems)
+	val MOTE_COMBINE = make(HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), modLoc("mote/combine"), OpCombineMotes)
 	@JvmField
-	val ITEM_COMBINABLE = make(HexPattern.fromAngles("dedqeaqa", HexDir.SOUTH_WEST), modLoc("item/combinable"), OpItemsCombinable)
+	val MOTE_COMBINABLE = make(HexPattern.fromAngles("dedqeaqa", HexDir.SOUTH_WEST), modLoc("mote/combinable"), OpMotesCombinable)
 	@JvmField
-	val ITEM_SPLIT = make(HexPattern.fromAngles("eaqaaw", HexDir.EAST), modLoc("item/split"), OpSplitItem)
+	val MOTE_SPLIT = make(HexPattern.fromAngles("eaqaaw", HexDir.EAST), modLoc("mote/split"), OpSplitMote)
 	@JvmField
-	val ITEM_STORAGE_GET = make(HexPattern.fromAngles("qqqqqaw", HexDir.SOUTH_WEST), modLoc("item/storage/get"), OpGetItemStorage)
+	val MOTE_STORAGE_GET = make(HexPattern.fromAngles("qqqqqaw", HexDir.SOUTH_WEST), modLoc("mote/storage/get"), OpGetMoteStorage)
 	@JvmField
-	val ITEM_STORAGE_SET = make(HexPattern.fromAngles("eeeeedw", HexDir.SOUTH_EAST), modLoc("item/storage/set"), OpSetItemStorage)
+	val MOTE_STORAGE_SET = make(HexPattern.fromAngles("eeeeedw", HexDir.SOUTH_EAST), modLoc("mote/storage/set"), OpSetMoteStorage)
 	@JvmField
-	val ITEM_CRAFT = make(HexPattern.fromAngles("wwawdedwawdewwdwaqawdwwedwawdedwaww", HexDir.SOUTH_EAST), modLoc("item/craft"), OpCraftItem)
+	val MOTE_CRAFT = make(HexPattern.fromAngles("wwawdedwawdewwdwaqawdwwedwawdedwaww", HexDir.SOUTH_EAST), modLoc("mote/craft"), OpCraftMote)
 	@JvmField
-	val ITEM_VILLAGER_LEVEL_GET = make(HexPattern.fromAngles("qqwdedwqqaww", HexDir.NORTH_WEST), modLoc("item/villager/level/get"), OpGetVillagerLevel)
+	val MOTE_VILLAGER_LEVEL_GET = make(HexPattern.fromAngles("qqwdedwqqaww", HexDir.NORTH_WEST), modLoc("mote/villager/level/get"), OpGetVillagerLevel)
 	@JvmField
-	val ITEM_TRADE_GET = make(HexPattern.fromAngles("awdedwaawwqded", HexDir.SOUTH_EAST), modLoc("item/trade/get"), OpGetItemTrades)
+	val MOTE_TRADE_GET = make(HexPattern.fromAngles("awdedwaawwqded", HexDir.SOUTH_EAST), modLoc("mote/trade/get"), OpGetItemTrades)
 	@JvmField
-	val ITEM_TRADE = make(HexPattern.fromAngles("awdedwaeqded", HexDir.NORTH_WEST), modLoc("item/trade"), OpTradeItem)
+	val MOTE_TRADE = make(HexPattern.fromAngles("awdedwaeqded", HexDir.NORTH_WEST), modLoc("mote/trade"), OpTradeMote)
 	@JvmField
-	val ITEM_USE_ON = make(HexPattern.fromAngles("qqqwqqqqaa", HexDir.EAST), modLoc("item/use_on"), OpUseItemOn)
+	val MOTE_USE_ON = make(HexPattern.fromAngles("qqqwqqqqaa", HexDir.EAST), modLoc("mote/use_on"), OpUseMoteOn)
 
 	// ============================== Great Stuff =====================================
 	@JvmField
