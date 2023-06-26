@@ -259,7 +259,7 @@
   "hexal.page.motes.mote/contained/get": "获取当前绑定的枢纽中所有和所给物品类型对应的，或所有可与所给物元合并的物元。",
   "hexal.page.motes.mote/storage/remaining_capacity/get": "获取所绑定的枢纽剩余的空间。",
   "hexal.page.motes.mote/storage/contains": "若所给位置的物元枢纽中包含所给类型的物元，或包含可与所给物元合并的物元，则返回 True，否则返回 False。",
-  "hexal.page.motes.mote/make": "将世界中的物品（物品实体、物品展示框）转换为物元。若传入物元，则会将所给物体与该物元合并。媒质化 1 个物品消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
+  "hexal.page.motes.mote/make": "将世界中的物品（物品实体、物品展示框）转换为物元。若传入物元，则会将所给物体与该物元合并。媒质化 1 份物品消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.motes.mote/return": "将物元中所有物品返还到所给位置处。若传入数，则最多返还该数个物品。消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.motes.mote/count/get": "接受物元，并返回该物元对应的记录中物品的个数。",
   "hexal.page.motes.mote/combine": "将两个物元合并，也同时合并两者所指向的物元记录。指向第二条记录的物元会变为 Null，指向第一条的物元不会。如此就能在栈中放下远超我随身携带量的物品了！",
