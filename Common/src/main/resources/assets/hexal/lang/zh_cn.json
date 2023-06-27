@@ -299,8 +299,8 @@
   "hexal.page.everbook.everbook/read": "接受指向$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$的位置向量，与一个作为密钥的图案，并返回永恒之书中对应密钥处的 iota，若能存储则同时会将其存至给定的$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$中。",
   "hexal.page.everbook.everbook/write": "接受指向$(l:hexcasting:greatwork/akashiclib)$(item)阿卡夏记录/$的位置向量，与一个作为密钥的图案，并将阿卡夏记录中该图案对应的 iota 以同一图案存至永恒之书中。",
   "hexal.page.everbook.everbook/delete": "接受一个图案，并移除永恒之书中该图案对应的条目。",
-  "hexal.page.everbook.everbook/toggle_macro.0": "接受一个图案，并以该图案标记永恒之书中对应条目，使得该图案能和任何自然创造的其他图案视同一律。",
-  "hexal.page.everbook.everbook/toggle_macro.1": "当绘制被标记的永恒之书条目所对应的图案时，如果对应条目存有一个列表，则自然会如同$(l:patterns/meta#hexcasting:eval)$(action)赫尔墨斯之策略/$一样依次执行列表中各元素，不过在执行结束后咒术并不会结束。试图将不存在的条目或是会无限递归的条目标记为图案则会失败。",
+  "hexal.page.everbook.everbook/toggle_macro.0": "接受一个图案，并以该图案标记永恒之书中对应条目，使得绘制该图案所产生的效果和自然创造的其他图案相仿。",
+  "hexal.page.everbook.everbook/toggle_macro.1": "当绘制被标记的永恒之书条目所对应的图案时，如果对应条目存有一个列表，则自然会如同$(l:patterns/meta#hexcasting:eval)$(action)赫尔墨斯之策略/$一样依次执行列表中各元素，但不会消耗递归层数。试图将不存在的条目或是会无限递归的条目标记为图案则会失败。",
   
   "hexal.entry.everbook_entries": "永恒之书条目",
   "hexal.page.everbook_entries.0": "此条目中每一页都会显示我$(l:hexal:patterns/everbook)$(action)永恒之书/$中某一条目对应的图案密钥。",
