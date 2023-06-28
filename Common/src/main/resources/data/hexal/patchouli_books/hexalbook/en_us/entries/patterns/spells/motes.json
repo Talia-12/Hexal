@@ -190,7 +190,7 @@
       "anchor": "hexal:mote/use_on",
       "input": "mote, (entity | vec, vec)",
       "output": "",
-      "text": "hexal.page.hexal_spell.mote/use_on"
+      "text": "hexal.page.motes.mote/use_on"
     }
   ]
 }
