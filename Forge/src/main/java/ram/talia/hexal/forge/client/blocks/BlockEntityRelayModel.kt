@@ -1,4 +1,4 @@
-package ram.talia.hexal.fabric.client.blocks
+package ram.talia.hexal.forge.client.blocks
 
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI

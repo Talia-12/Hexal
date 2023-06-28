@@ -1,4 +1,4 @@
-package ram.talia.hexal.fabric.client.blocks
+package ram.talia.hexal.forge.client.blocks
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer

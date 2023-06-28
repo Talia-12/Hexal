@@ -56,7 +56,7 @@ object OpCloseGate : VarargSpellAction {
         burst.add(ParticleSpray.burst(targetPos.add(0.0, meanEyeHeight / 2.0, 0.0), 2.0))
 
         return Triple(
-                Spell(gatees, targetPos, gate.isDrifting && !ctx.isVecInRange(targetPos)),
+                Spell(gatees, targetPos, gate.isDrifting),
                 cost,
                 burst
         )
