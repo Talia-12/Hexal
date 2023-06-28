@@ -5,6 +5,9 @@
     64,
     64
   ],
+  "textures": {
+    "particle": "hexal:block/relay"
+  },
   "display": {
     "thirdperson_righthand": {
       "scale": [

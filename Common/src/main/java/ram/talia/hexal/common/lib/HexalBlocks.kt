@@ -52,7 +52,7 @@ class HexalBlocks {
 				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(30.0f)
 		))
 
-		val RELAY = blockItem("relay", BlockRelay(
+		val RELAY = blockNoItem("relay", BlockRelay(
 				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(3.0f)
 		))
 

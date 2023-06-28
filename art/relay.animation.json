@@ -68,6 +68,16 @@
 					}
 				}
 			}
+		},
+		"animation.model.inv": {
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"Bobber": {
+					"position": {
+						"vector": [0, -8, 0]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

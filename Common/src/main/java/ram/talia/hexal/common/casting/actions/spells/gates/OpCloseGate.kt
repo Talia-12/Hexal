@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
 import at.petrak.hexcasting.api.mod.HexTags
+import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.ParticleSpray
 import at.petrak.hexcasting.api.spell.RenderedSpell
 import at.petrak.hexcasting.api.spell.casting.CastingContext
@@ -79,7 +80,7 @@ object OpCloseGate : VarargSpellAction {
                 teleportRespectSticky(teleportee, allTeleportees, delta)
             }
 
-            if (teleportee is ServerPlayer && teleportee == ctx.caster && dropItems) {
+            if (teleportee is ServerPlayer && teleportee == ctx.caster && distance < Action.MAX_DISTANCE && dropItems) {
                 // Drop items conditionally, based on distance teleported.
                 // MOST IMPORTANT: Never drop main hand item, since if it's a trinket, it will get duplicated later.
 

@@ -67,6 +67,7 @@ object FabricHexalInitializer : ModInitializer {
         HexalSounds.registerSounds(bind(Registry.SOUND_EVENT))
         HexalBlocks.registerBlocks(bind(Registry.BLOCK))
         HexalBlocks.registerBlockItems(bind(Registry.ITEM))
+        HexalItems.registerItems(bind(Registry.ITEM))
         HexalBlockEntities.registerBlockEntities(bind(Registry.BLOCK_ENTITY_TYPE))
         HexalEntities.registerEntities(bind(Registry.ENTITY_TYPE))
 

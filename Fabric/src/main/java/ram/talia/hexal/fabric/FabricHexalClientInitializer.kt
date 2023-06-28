@@ -11,8 +11,11 @@ import ram.talia.hexal.client.LinkablePacketHolder
 import ram.talia.hexal.client.RegisterClientStuff
 import ram.talia.hexal.common.blocks.entity.BlockEntityRelay
 import ram.talia.hexal.common.lib.HexalBlockEntities
+import ram.talia.hexal.common.lib.HexalItems
 import ram.talia.hexal.fabric.client.blocks.BlockEntityRelayRenderer
+import ram.talia.hexal.fabric.client.items.ItemRelayRenderer
 import ram.talia.hexal.fabric.network.FabricPacketHandler
+import software.bernie.geckolib3.renderers.geo.GeoItemRenderer
 
 object FabricHexalClientInitializer : ClientModInitializer {
     override fun onInitializeClient() {
@@ -31,5 +34,7 @@ object FabricHexalClientInitializer : ClientModInitializer {
 
         @Suppress("UNCHECKED_CAST")
         BlockEntityRendererRegistry.register(HexalBlockEntities.RELAY) { BlockEntityRelayRenderer() as BlockEntityRenderer<BlockEntityRelay> }
+
+        GeoItemRenderer.registerItemRenderer(HexalItems.RELAY, ItemRelayRenderer())
     }
 }

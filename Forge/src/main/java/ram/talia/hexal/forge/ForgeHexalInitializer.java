@@ -61,6 +61,7 @@ public class ForgeHexalInitializer {
 		bind(Registry.SOUND_EVENT_REGISTRY, HexalSounds::registerSounds);
 		bind(Registry.BLOCK_REGISTRY, HexalBlocks::registerBlocks);
 		bind(Registry.ITEM_REGISTRY, HexalBlocks::registerBlockItems);
+		bind(Registry.ITEM_REGISTRY, HexalItems::registerItems);
 		bind(Registry.BLOCK_ENTITY_TYPE_REGISTRY, HexalBlockEntities::registerBlockEntities);
 		bind(Registry.ENTITY_TYPE_REGISTRY, HexalEntities::registerEntities);
 		
