@@ -4,5 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "hexal.mixins.refmap.json",
   "package": "ram.talia.hexal.forge.mixin",
-  "mixins": [], "client": []
+  "mixins": [
+    "MixinItem"
+  ],
+  "client": []
 }
