@@ -2,6 +2,8 @@ package ram.talia.hexal.datagen.recipes
 
 import at.petrak.hexcasting.api.advancements.OvercastTrigger
 import at.petrak.hexcasting.api.mod.HexTags
+import at.petrak.hexcasting.common.lib.HexBlocks
+import at.petrak.hexcasting.common.lib.HexItems
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
 import at.petrak.hexcasting.common.recipe.ingredient.VillagerIngredient
 import at.petrak.hexcasting.datagen.recipe.builders.BrainsweepRecipeBuilder
@@ -10,10 +12,13 @@ import net.minecraft.advancements.critereon.EntityPredicate
 import net.minecraft.advancements.critereon.MinMaxBounds
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.recipes.FinishedRecipe
+import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Blocks
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.lib.HexalBlocks
+import ram.talia.hexal.common.lib.HexalItems
 import ram.talia.hexal.datagen.recipes.builders.FreezeRecipeBuilder
 import java.util.function.Consumer
 
@@ -21,6 +26,16 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 
 
 	override fun makeRecipes(recipes: Consumer<FinishedRecipe>) {
+		ShapedRecipeBuilder.shaped(HexalItems.RELAY)
+			.define('C', HexItems.CHARGED_AMETHYST)
+			.define('S', HexBlocks.SLATE_BLOCK)
+			.define('A', Items.AMETHYST_BLOCK)
+			.pattern(" C ")
+			.pattern("SSS")
+			.pattern("SAS")
+			.unlockedBy("has_item", hasItem(HexTags.Items.STAVES))
+			.save(recipes)
+
 		FreezeRecipeBuilder(StateIngredientHelper.of(Blocks.ICE), Blocks.PACKED_ICE.defaultBlockState())
 			.unlockedBy("has_item", hasItem(HexTags.Items.STAVES))
 			.save(recipes, modLoc("freeze/packed_ice"))

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "C": {
+      "item": "hexcasting:charged_amethyst"
+    },
+    "S": {
+      "item": "hexcasting:slate_block"
+    }
+  },
+  "pattern": [
+    " C ",
+    "SSS",
+    "SAS"
+  ],
+  "result": {
+    "item": "hexal:relay"
+  }
+}
