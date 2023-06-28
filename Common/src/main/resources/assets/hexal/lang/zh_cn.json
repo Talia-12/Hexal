@@ -1,6 +1,7 @@
 {
   "block.hexal.slipway": "质道",
   "block.hexal.mediafied_storage": "物元枢纽",
+  "block.hexal.relay": "Relay",
   
   "entity.hexal.wisp.projectile": "弹射式咒灵",
   "entity.hexal.wisp.ticking": "循环式咒灵",
@@ -110,6 +111,7 @@
   "hexcasting.spell.hexal:link": "链接",
   "hexcasting.spell.hexal:link/others": "链接实体",
   "hexcasting.spell.hexal:link/unlink": "解链接",
+  "hexcasting.spell.hexal:link/unlink/others": "解链接实体",
   "hexcasting.spell.hexal:link/get": "电话簿之纯化",
   "hexcasting.spell.hexal:link/get_index": "识别之纯化",
   "hexcasting.spell.hexal:link/num": "名气之精思",
@@ -223,6 +225,7 @@
   "hexal.page.links.link": "将施法者链接至栈顶实体，且实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/others": "可在任意施法器件上运行。将两个实体链接，且两实体必须均为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/unlink": "断开施法者的编号为所给数的链接。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
+  "hexal.page.links.link/unlink/others": "接受两个可链接事物，若其间存在链接，则会将其断开。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.links.link/get": "移除栈顶数，并返回对应编号的链接所连的实体。",
   "hexal.page.links.link/get_index": "移除栈顶实体，并返回自身与该实体相连的链接的编号。若施法者与其无链接则返回 -1。",
   "hexal.page.links.link/num": "返回自身的链接个数。",
