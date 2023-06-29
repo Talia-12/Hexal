@@ -101,7 +101,7 @@ class ServerLinkableHolder(private val thisLinkable: ILinkable, private val leve
             val linked = lazyLinked[i] ?: continue
 
             if (linked.shouldRemove() || !thisLinkable.isInRange(linked))
-                unlink(linked)
+                thisLinkable.unlink(linked)
         }
     }
 
