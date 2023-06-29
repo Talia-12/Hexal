@@ -53,10 +53,10 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     fun setColouriser(colorizer: FrozenColorizer, level: Level) = relayNetwork.setColouriser(colorizer, level.gameTime)
 
     fun serverTick() {
-        checkLinks()
+         checkLinks()
 
-        nonRelaysLinkedDirectly.removeIf { it.shouldRemove() }
-        mediaExchangersLinkedDirectly.removeIf { it.shouldRemove() }
+        nonRelaysLinkedDirectly.removeIf { it.shouldRemove() || !this.isInRange(it) }
+        mediaExchangersLinkedDirectly.removeIf { it.shouldRemove() || !this.isInRange(it) }
 
         relayNetwork.tick()
 
