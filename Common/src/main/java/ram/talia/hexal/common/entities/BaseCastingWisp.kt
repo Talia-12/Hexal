@@ -167,6 +167,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	open fun wispNumContainedPlayers(): Int = receivedIotasNumTrueNames + hexNumTrueNames
 
+	override fun owner(): UUID = casterUUID ?: uuid
+
 	override fun receiveIota(sender: ILinkable, iota: Iota) {
 		super.receiveIota(sender, iota)
 		receivedIotasNumTrueNames += countTrueNamesInIota(iota, caster)

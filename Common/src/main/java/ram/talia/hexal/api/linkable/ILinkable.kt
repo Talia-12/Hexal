@@ -10,12 +10,18 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.LazyLoad
 import ram.talia.hexal.api.nbt.toNbtList
+import java.util.UUID
 import kotlin.math.sqrt
 
 interface ILinkable {
 	val asActionResult: List<Iota>
 
 	val linkableHolder: ServerLinkableHolder?
+
+	/**
+	 * Return a value representing the owner of this [ILinkable].
+	 */
+	fun owner(): UUID
 
 	/**
 	 * Return the registered LinkableType<T> for this [ILinkable], used to save/load the [ILinkable].

@@ -36,6 +36,7 @@ import software.bernie.geckolib3.core.controller.AnimationController
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent
 import software.bernie.geckolib3.core.manager.AnimationData
 import software.bernie.geckolib3.core.manager.AnimationFactory
+import java.util.*
 import kotlin.math.min
 
 class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre, IAnimatable {
@@ -155,6 +156,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
                 serialisedLinkableHolder?.let { cachedLinkableHolder?.readFromNbt(it)?.let { serialisedLinkableHolder = null } }
                 cachedLinkableHolder
             }
+
+    override fun owner(): UUID = UUID(0, relayNetwork.root.pos.asLong())
 
     override fun getLinkableType() = LinkableTypes.RELAY_TYPE
 
