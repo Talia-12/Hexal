@@ -306,7 +306,6 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         tag.putCompound(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
         tag.putList(TAG_RELAYS_LINKED_DIRECTLY, relaysDirectlyLinkedToTag())
         tag.putList(TAG_NON_RELAYS_LINKED_DIRECTLY, nonRelaysLinkedDirectlyToTag())
-        HexalAPI.LOGGER.info("saving $tag at $pos on $level")
     }
 
     override fun getUpdateTag(): CompoundTag {

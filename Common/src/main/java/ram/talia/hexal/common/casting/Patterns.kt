@@ -137,7 +137,7 @@ object Patterns {
 	@JvmField
 	val WISP_OWNER = make(HexPattern.fromAngles("dwqqwdedwqqwddwww", HexDir.SOUTH_WEST), modLoc("wisp/owner"), OpWispOwner)
 
-	// Set and Get Move Target WEST awqwawqaw
+	// Set and Get Move Target
 	@JvmField
 	val WISP_MOVE_TARGET_SET = make(HexPattern.fromAngles("awqwawqaw", HexDir.WEST), modLoc("wisp/move/target/set"), OpMoveTargetSet)
 	@JvmField
@@ -147,6 +147,21 @@ object Patterns {
 	@JvmField
 	val WISP_MOVE_SPEED_GET = make(HexPattern.fromAngles("eeewdqdee", HexDir.EAST), modLoc("wisp/move/speed/get"), OpMoveSpeedGet)
 
+	// Allow and Disallow Media Transfer
+	@JvmField
+	val WISP_TRANSFER_ALLOW = make(HexPattern.fromAngles("qqqqqewwqeeeee", HexDir.NORTH_WEST), modLoc("wisp/transfer/allow"), OpTransferAllowed(true))
+	@JvmField
+	val WISP_TRANSFER_DISALLOW = make(HexPattern.fromAngles("qqqqqeqdeddweqqqqq", HexDir.NORTH_WEST), modLoc("wisp/transfer/disallow"), OpTransferAllowed(false))
+	@JvmField
+	val WISP_TRANSFER_OTHERS_ALLOW = make(
+			HexPattern.fromAngles("eeeeeqwweqqqqq", HexDir.SOUTH_WEST),
+			modLoc("wisp/transfer/others/allow"),
+			OpTransferAllowedOthers(true))
+	@JvmField
+	val WISP_TRANSFER_OTHERS_DISALLOW = make(
+			HexPattern.fromAngles("eeeeeqeaqaawqeeeee", HexDir.SOUTH_WEST),
+			modLoc("wisp/transfer/others/disallow"),
+			OpTransferAllowedOthers(false))
 
 	// Entity purification and Zone distillations
 	@JvmField

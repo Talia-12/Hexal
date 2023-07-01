@@ -234,6 +234,11 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	private val blackListTransferMedia: ILinkable.LazyILinkableSet = ILinkable.LazyILinkableSet()
 	private val whiteListTransferMedia: ILinkable.LazyILinkableSet = ILinkable.LazyILinkableSet()
 
+	fun addToBlackListTransferMedia(other: ILinkable) = blackListTransferMedia.add(other)
+	fun addToWhiteListTransferMedia(other: ILinkable) = whiteListTransferMedia.add(other)
+	fun removeFromBlackListTransferMedia(other: ILinkable) = blackListTransferMedia.remove(other)
+	fun removeFromWhiteListTransferMedia(other: ILinkable) = whiteListTransferMedia.remove(other)
+
 	private fun shouldBlockTransfer(other: ILinkable): Boolean
 		= blackListTransferMedia.contains(other) || (other.owner() != this.owner() && !whiteListTransferMedia.contains(other))
 
