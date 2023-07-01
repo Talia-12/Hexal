@@ -284,9 +284,9 @@ interface ILinkable {
 			return out
 		}
 
-		fun getLoaded() = loaded
+		fun getLoaded(): Set<ILinkable> = loaded
 
-		fun getLazies() = lazies
+		fun getLazies(): Set<LazyILinkable> = lazies
 
 		fun getUnloaded(): ListTag = lazies.map { it.getUnloaded() }.toNbtList()
 
