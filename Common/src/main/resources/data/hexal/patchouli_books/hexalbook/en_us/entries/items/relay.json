@@ -15,7 +15,8 @@
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "hexal:relay"
+      "recipe": "hexal:relay",
+      "text": "hexal.page.relay.2"
     }
   ]
 }
