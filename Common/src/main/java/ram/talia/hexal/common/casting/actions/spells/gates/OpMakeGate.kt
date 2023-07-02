@@ -6,6 +6,7 @@ import at.petrak.hexcasting.api.spell.getVec3
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
+import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.config.HexalConfig
@@ -31,7 +32,6 @@ object OpMakeGate : VarargConstMediaAction {
             return listOf(GateManager.makeGate())
 
         val vec = args.getVec3(0, argc)
-        ctx.assertVecInRange(vec)
 
         if (argc == 2) {
             val entity = args.getEntity(1, argc)
@@ -39,9 +39,13 @@ object OpMakeGate : VarargConstMediaAction {
             if (entity is ServerPlayer && entity != ctx.caster)
                 throw MishapOthersName(entity)
             ctx.assertVecInRange(entity.position())
+            if (vec.length() > HexalConfig.server.maxGateOffset)
+                throw MishapInvalidIota.of(args[0], 1, "gate.offset", HexalConfig.server.maxGateOffset)
 
             return listOf(GateManager.makeGate(entity to vec))
         }
+
+        ctx.assertVecInRange(vec)
 
         return listOf(GateManager.makeGate(vec))
     }

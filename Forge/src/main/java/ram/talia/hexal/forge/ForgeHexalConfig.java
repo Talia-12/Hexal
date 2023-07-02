@@ -57,6 +57,7 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         private static ForgeConfigSpec.DoubleValue markGateCost;
         private static ForgeConfigSpec.DoubleValue closeGateCost;
         private static ForgeConfigSpec.DoubleValue closeGateDistanceCostFactor;
+        private static ForgeConfigSpec.DoubleValue maxGateOffset;
 
         // costs of item spells
         private static ForgeConfigSpec.DoubleValue bindStorageCost;
@@ -167,6 +168,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
                     .defineInRange("closeGateCost", DEFAULT_CLOSE_GATE_COST, DEF_MIN_COST, DEF_MAX_COST);
             closeGateDistanceCostFactor = builder.translation("text.autoconfig.hexal.option.server.gateSpells.closeGateDistanceCostFactor")
                     .defineInRange("closeGateDistanceCostFactor", DEFAULT_CLOSE_GATE_DISTANCE_COST_SCALE_FACTOR, DEF_MIN_COST, DEF_MAX_COST);
+            maxGateOffset = builder.translation("text.autoconfig.hexal.option.server.gateSpells.maxGateOffset")
+                    .defineInRange("maxGateOffset", DEFAULT_MAX_GATE_OFFSET, MIN_MAX_GATE_OFFSET, MAX_MAX_GATE_OFFSET);
 
             builder.pop();
 
@@ -364,6 +367,11 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         @Override
         public int getCloseGateDistanceCostFactor() {
             return (int) (closeGateDistanceCostFactor.get() * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public double getMaxGateOffset() {
+            return maxGateOffset.get();
         }
 
         @Override
