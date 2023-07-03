@@ -131,6 +131,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             double markGateCost = DEFAULT_MARK_GATE_COST;
             double closeGateCost = DEFAULT_CLOSE_GATE_COST;
             double closeGateDistanceCostFactor = DEFAULT_CLOSE_GATE_DISTANCE_COST_SCALE_FACTOR;
+            double maxGateOffset = DEFAULT_MAX_GATE_OFFSET;
         }
 
 
@@ -216,6 +217,7 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
             this.gateSpells.markGateCost = bound(this.gateSpells.markGateCost, DEF_MIN_COST, DEF_MAX_COST);
             this.gateSpells.closeGateCost = bound(this.gateSpells.closeGateCost, DEF_MIN_COST, DEF_MAX_COST);
             this.gateSpells.closeGateDistanceCostFactor = bound(this.gateSpells.closeGateDistanceCostFactor, DEF_MIN_COST, DEF_MAX_COST);
+            this.gateSpells.maxGateOffset = bound(this.gateSpells.maxGateOffset, MIN_MAX_GATE_OFFSET, MAX_MAX_GATE_OFFSET);
 
             // costs of item spells
             this.itemSpells.bindStorageCost = bound(this.itemSpells.bindStorageCost, DEF_MIN_COST, DEF_MAX_COST);
@@ -376,6 +378,11 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         @Override
         public int getCloseGateDistanceCostFactor() {
             return (int) (gateSpells.closeGateDistanceCostFactor * MediaConstants.DUST_UNIT);
+        }
+
+        @Override
+        public double getMaxGateOffset() {
+            return gateSpells.maxGateOffset;
         }
 
         @Override

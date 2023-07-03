@@ -21,7 +21,7 @@ class CCWispCastingManager(private val player: Player, var seonUUID: UUID? = nul
 			if (seonUUID == null)
 				return null
 			if (field?.isRemoved != false)
-				return (player as? ServerPlayer)?.let { it.getLevel().getEntity(seonUUID!!) as BaseCastingWisp }
+				return (player as? ServerPlayer)?.let { it.getLevel().getEntity(seonUUID!!) as? BaseCastingWisp }
 			return field
 		}
 		set(value) {

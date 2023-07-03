@@ -17,6 +17,7 @@ import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalEntities
 import ram.talia.hexal.api.nextDouble
+import java.util.*
 import kotlin.math.abs
 
 class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : BaseWisp(entityType, level) {
@@ -33,6 +34,8 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 		}
 
 	var startTick: Long = 0
+
+	override fun owner(): UUID = uuid
 
 	override fun maxSqrLinkRange() = 16.0
 

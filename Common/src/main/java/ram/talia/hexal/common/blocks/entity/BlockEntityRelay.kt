@@ -36,6 +36,7 @@ import software.bernie.geckolib3.core.controller.AnimationController
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent
 import software.bernie.geckolib3.core.manager.AnimationData
 import software.bernie.geckolib3.core.manager.AnimationFactory
+import java.util.*
 import kotlin.math.min
 
 class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre, IAnimatable {
@@ -155,6 +156,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
                 serialisedLinkableHolder?.let { cachedLinkableHolder?.readFromNbt(it)?.let { serialisedLinkableHolder = null } }
                 cachedLinkableHolder
             }
+
+    override fun owner(): UUID = UUID(0, relayNetwork.root.pos.asLong())
 
     override fun getLinkableType() = LinkableTypes.RELAY_TYPE
 
@@ -303,7 +306,6 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         tag.putCompound(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
         tag.putList(TAG_RELAYS_LINKED_DIRECTLY, relaysDirectlyLinkedToTag())
         tag.putList(TAG_NON_RELAYS_LINKED_DIRECTLY, nonRelaysLinkedDirectlyToTag())
-        HexalAPI.LOGGER.info("saving $tag at $pos on $level")
     }
 
     override fun getUpdateTag(): CompoundTag {

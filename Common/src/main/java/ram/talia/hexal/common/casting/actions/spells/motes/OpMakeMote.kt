@@ -23,7 +23,7 @@ import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
  * Mediafy an ItemEntity. This is an [Action] rather than a [ConstMediaAction] or a [SpellAction] so that it can both
  * return things to the stack and have casting particles and a casting sound.
  */
-object OpMakeItem : Action {
+object OpMakeMote : Action {
     fun argc(stack: List<Iota>): Int {
         if (stack.isEmpty())
             return 1

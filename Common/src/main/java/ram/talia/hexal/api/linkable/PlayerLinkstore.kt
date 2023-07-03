@@ -8,10 +8,13 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.plus
+import java.util.*
 
 class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	override val asActionResult = listOf(EntityIota(player))
 	override val linkableHolder: ServerLinkableHolder = ServerLinkableHolder(this, player.getLevel())
+
+	override fun owner(): UUID = player.uuid
 
 	//region Transmitting
 	var transmittingTo: ILinkable?

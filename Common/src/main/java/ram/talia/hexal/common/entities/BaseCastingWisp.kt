@@ -5,11 +5,13 @@ import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.ListIota
 import at.petrak.hexcasting.api.utils.asCompound
+import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.hasByte
 import com.mojang.datafixers.util.Either
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.Tag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -108,8 +110,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		// clear entities that have been removed from the world at least once per second
 		// to prevent any memory leak type errors
-		if (!level.isClientSide && (level.gameTime % 20 == 0L))
+		if (!level.isClientSide && (tickCount % 20 == 0)) {
 			serHex.refreshIotas(level as ServerLevel)
+			tryLoadTransferMediaFilters()
+		}
 
 		// check if media is <= 0 ; destroy the wisp if it is, decrement the lifespan otherwise.
 		if (media <= 0) {
@@ -167,6 +171,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	open fun wispNumContainedPlayers(): Int = receivedIotasNumTrueNames + hexNumTrueNames
 
+	override fun owner(): UUID = casterUUID ?: uuid
+
 	override fun receiveIota(sender: ILinkable, iota: Iota) {
 		super.receiveIota(sender, iota)
 		receivedIotasNumTrueNames += countTrueNamesInIota(iota, caster)
@@ -204,9 +210,17 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	open val normalCostPerTick: Int get() = HexalConfig.server.projectileWispUpkeepPerTick
 	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
 
+	private fun tryLoadTransferMediaFilters() {
+		blackListTransferMedia.tryLoad(level as ServerLevel)
+		whiteListTransferMedia.tryLoad(level as ServerLevel)
+	}
+
 	private fun sendMediaToNeighbours() {
 		for (i in 0 until this.numLinked()) {
 			val linked = this.getLinked(i) ?: continue
+			if (shouldBlockTransfer(linked))
+				continue
+
 			val requested = linked.canAcceptMedia(this, this.media)
 
 			if (requested > 0) {
@@ -217,11 +231,24 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		}
 	}
 
+	private val blackListTransferMedia: ILinkable.LazyILinkableSet = ILinkable.LazyILinkableSet()
+	private val whiteListTransferMedia: ILinkable.LazyILinkableSet = ILinkable.LazyILinkableSet()
+
+	fun addToBlackListTransferMedia(other: ILinkable) = blackListTransferMedia.add(other)
+	fun addToWhiteListTransferMedia(other: ILinkable) = whiteListTransferMedia.add(other)
+	fun removeFromBlackListTransferMedia(other: ILinkable) = blackListTransferMedia.remove(other)
+	fun removeFromWhiteListTransferMedia(other: ILinkable) = whiteListTransferMedia.remove(other)
+
+	private fun shouldBlockTransfer(other: ILinkable): Boolean
+		= blackListTransferMedia.contains(other) || (other.owner() != this.owner() && !whiteListTransferMedia.contains(other))
+
 	override fun currentMediaLevel() = media
 
 	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
 		if (otherMediaLevel == -1)
 			return (Int.MAX_VALUE - this.media)
+		if (shouldBlockTransfer(other))
+			return 0
 		if (otherMediaLevel <= this.media)
 			return 0
 
@@ -353,6 +380,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		}
 
 		seon = if (compound.hasByte(TAG_SEON)) { compound.getBoolean(TAG_SEON) } else { false }
+
+		blackListTransferMedia.set(compound.getList(TAG_BLACKLIST_MEDIA_TRANSFER, Tag.TAG_COMPOUND))
+		whiteListTransferMedia.set(compound.getList(TAG_WHITELIST_MEDIA_TRANSFER, Tag.TAG_COMPOUND))
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
@@ -368,6 +398,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		if (activeTrigger != null)
 			compound.put(TAG_ACTIVE_TRIGGER, WispTriggerRegistry.wrapNbt(activeTrigger!!))
 		compound.putBoolean(TAG_SEON, seon)
+
+		compound.put(TAG_BLACKLIST_MEDIA_TRANSFER, blackListTransferMedia.getUnloaded())
+		compound.put(TAG_WHITELIST_MEDIA_TRANSFER, whiteListTransferMedia.getUnloaded())
 	}
 
 	override fun defineSynchedData() {
@@ -403,6 +436,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		const val TAG_HEX = "hex"
 		const val TAG_ACTIVE_TRIGGER = "active_trigger"
 		const val TAG_SEON = "seon"
+		const val TAG_BLACKLIST_MEDIA_TRANSFER = "blacklist_media_transfer"
+		const val TAG_WHITELIST_MEDIA_TRANSFER = "whitelist_media_transfer"
 	}
 }
 

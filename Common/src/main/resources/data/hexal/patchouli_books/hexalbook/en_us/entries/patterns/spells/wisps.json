@@ -104,6 +104,38 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/transfer/allow",
+      "anchor": "hexal:wisp/transfer/allow",
+      "input": "num",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/transfer/allow"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/transfer/disallow",
+      "anchor": "hexal:wisp/transfer/disallow",
+      "input": "num",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/transfer/disallow"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/transfer/others/allow",
+      "anchor": "hexal:wisp/transfer/others/allow",
+      "input": "wisp, num",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/transfer/others/allow"
+    },
+    {
+      "type": "hexcasting:pattern",
+      "op_id": "hexal:wisp/transfer/others/disallow",
+      "anchor": "hexal:wisp/transfer/others/disallow",
+      "input": "wisp, num",
+      "output": "",
+      "text": "hexal.page.wisps.wisp/transfer/others/disallow"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:get_entity/wisp",
       "anchor": "hexal:get_entity/wisp",
       "input": "vec",
