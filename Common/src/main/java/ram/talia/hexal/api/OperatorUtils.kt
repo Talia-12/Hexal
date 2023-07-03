@@ -148,7 +148,11 @@ fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<Bl
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     return when (x) {
         is Vec3Iota -> Anyone.first(BlockPos(x.vec3))
-        is EntityIota -> (x.entity as? ItemEntity)?.let { Anyone.second(it) } ?: throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
+        is EntityIota -> {
+            if (x.entity.isRemoved)
+                throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "entity.itemitemframe")
+            (x.entity as? ItemEntity)?.let { Anyone.second(it) } ?: throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
+        }
         is MoteIota -> x.selfOrNull()?.let { Anyone.third(it) }
         is NullIota -> null
         else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
@@ -159,6 +163,8 @@ fun List<Iota>.getItemEntityOrItemFrame(idx: Int, argc: Int = 0): Either<ItemEnt
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is EntityIota) {
         val e = x.entity
+        if (e.isRemoved)
+            throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "entity.itemitemframe")
         if (e is ItemEntity)
             return Either.left(e)
         if (e is ItemFrame)

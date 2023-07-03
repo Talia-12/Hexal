@@ -249,7 +249,7 @@ object Patterns {
 	@JvmField
 	val MOTE_STORAGE_CONTAINS = make(HexPattern.fromAngles("dwqaeaqwd", HexDir.NORTH_EAST), modLoc("mote/storage/contains"), OpStorageContains)
 	@JvmField
-	val MOTE_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("mote/make"), OpMakeItem)
+	val MOTE_MAKE = make(HexPattern.fromAngles("eaqa", HexDir.WEST), modLoc("mote/make"), OpMakeMote)
 	@JvmField
 	val MOTE_RETURN = make(HexPattern.fromAngles("qded", HexDir.EAST), modLoc("mote/return"), OpReturnMote)
 	@JvmField
