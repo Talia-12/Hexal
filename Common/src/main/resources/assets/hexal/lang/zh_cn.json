@@ -40,6 +40,7 @@
   "hexcasting.mishap.invalid_value.mote_duplicated": "各物元仅出现一次",
   "hexcasting.mishap.invalid_value.cant_combine_motes": "两个可合并的物元",
   "hexcasting.mishap.invalid_value.mote_not_size_one": "一个不包含NBT数据或大小为1的物元",
+  "hexcasting.mishap.invalid_value.gate.offset": "an offset of at most %f blocks",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota类型",
@@ -103,6 +104,10 @@
   "hexcasting.spell.hexal:wisp/consume": "拆解咒灵",
   "hexcasting.spell.hexal:wisp/seon/set": "绑定咒灵",
   "hexcasting.spell.hexal:wisp/seon/get": "密友之精思",
+  "hexcasting.spell.hexal:wisp/transfer/allow": "允许转送",
+  "hexcasting.spell.hexal:wisp/transfer/disallow": "禁止转送",
+  "hexcasting.spell.hexal:wisp/transfer/others/allow": "允许实体转送",
+  "hexcasting.spell.hexal:wisp/transfer/others/disallow": "禁止实体转送",
 
   "hexcasting.spell.hexal:get_entity/wisp": "实体之纯化：咒灵",
   "hexcasting.spell.hexal:zone_entity/wisp": "区域之馏化：咒灵",
@@ -173,6 +178,7 @@
   "hexal.entry.relay": "继链器",
   "hexal.page.relay.0": "我常希望有方法能$(l:hexal:patterns/spells/links#hexal:link)$(action)连接/$多个$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$，以便远距共享媒质和信息。然而用咒灵远距中继相当不方便，常态消耗也很大。为解决这些问题，我制造出了继链器。它们是固态方块而非媒质构造体，也因此在维持链接时不会有常态消耗。",
   "hexal.page.relay.1": "相互连接的继链器会形成网络，与之连接的咒灵会共享媒质，类似于咒灵间直接相连。此外，传给网络内任一继链器的 iota 会发送给连接至网络的所有非继链器事物。继链器的工作范围是 32 格（也即两个继链器可链接的最远距离为 64 格）。手持染色剂右击任一继链器即可改变网络链接的颜色。",
+  "hexal.page.relay.2": "继链器没有所有者，若要我的咒灵和其$(l:hexal:patterns/spells/wisps#hexal:wisp/transfer/allow)$(action)transfer media/$，则必须先允许咒灵这么做。",
 
   "hexal.entry.hexal_basics": "咒法拓展：基础图案",
   "hexal.page.hexal_basics.current_tick": "返回一个数，这个数似乎与自然记录时间的方式有关。如果先绘制一遍此图案，在 1 秒后再绘制一遍，返回的数会增加 20。",
@@ -215,6 +221,10 @@
   "hexal.page.wisps.wisp/move/target/get": "返回循环式咒灵自身当前目标位置的位置向量。",
   "hexal.page.wisps.wisp/move/speed/set": "移除栈顶数，并将循环式咒灵自身的速度上限设为该数。",
   "hexal.page.wisps.wisp/move/speed/get": "返回循环式咒灵自身当前速度上限。",
+  "hexal.page.wisps.wisp/transfer/allow": "当两咒灵$(l:hexal:patterns/spells/links)$(thing)连接/$时，它们会相互转送媒质，直至两者平衡。默认状况下，仅所有者相同的咒灵会自发转送。此操作接受一个编号数，并显式允许咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/disallow": "相应地，此操作接受一个编号数，并禁止咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/others/disallow": "接受一个咒灵实体（所有者需是我）和一个编号数，并允许该咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/others/allow": "接受一个咒灵实体（所有者需是我）和一个编号数，并禁止该咒灵与该编号链接另一端的事物交换媒质。",
   "hexal.page.wisps.get_entity/wisp": "将栈顶位置向量变为该处咒灵（若无则返回 $(l:casting/influences)$(thing)Null/$）。",
   "hexal.page.wisps.zone_entity/wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有咒灵的列表。",
   "hexal.page.wisps.zone_entity/not_wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有非咒灵实体的列表。",
