@@ -30,7 +30,7 @@
   "hexcasting.mishap.invalid_value.class.mote": "一个物元",
   "hexcasting.mishap.invalid_value.class.moteentity.itemitemframe": "一个物元、物品实体或物品展示框",
   "hexcasting.mishap.invalid_value.moteitemtype": "一个物元或物品类型",
-  "hexcasting.mishap.invalid_value.motemotelist": "一个物元或由物元组成的列表",
+  "hexcasting.mishap.invalid_value.motemotelist": "一个物元或物元列表",
   "hexcasting.mishap.invalid_value.motemotelistmotelistlist": "一个物元、物元列表或由物元列表组成的列表",
   "hexcasting.mishap.invalid_value.veclist": "一个向量或由向量组成的列表",
   "hexcasting.mishap.invalid_value.blockitementityitemframeitem": "一个位置向量、物品实体、物品展示框或物品",
@@ -40,7 +40,7 @@
   "hexcasting.mishap.invalid_value.mote_duplicated": "各物元仅出现一次",
   "hexcasting.mishap.invalid_value.cant_combine_motes": "两个可合并的物元",
   "hexcasting.mishap.invalid_value.mote_not_size_one": "一个不包含NBT数据或大小为1的物元",
-  "hexcasting.mishap.invalid_value.gate.offset": "an offset of at most %f blocks",
+  "hexcasting.mishap.invalid_value.gate.offset": "不超过%f格的偏移量",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota类型",
@@ -254,7 +254,7 @@
   "hexal.page.tick.tick.1": "施放此法术要消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$，在整个咒术内，每对同一方块加速一次，额外消耗 1/1000 个$(l:items/amethyst)$(item)紫水晶粉/$。",
 
   "hexal.entry.gates": "门径",
-  "hexal.page.gates.0": "门径是我长时间有关空间远距连接和瞬间移动的研究的最新成果。与我之前的试验不同的是，它能$(o)极为高效地$()完成目标。我已学会构造三种不同的门径，所有三种都需要巨量的媒质才能烧入现实，但后续的操作则相较之下极为便宜。",
+  "hexal.page.gates.0": "门径是我有关空间远距连接和瞬间移动的长时间研究的最新成果。与我之前的试验不同的是，它能$(o)极为高效地$()完成传送任务。我已学会构造三种不同的门径，所有三种都需要巨量的媒质才能烧入现实，但后续的操作则相较之下极为便宜。",
   "hexal.page.gates.1": "位置锚定门径与世界上某一位置绑定，会将所有穿过它们的事物送至该位置。实体锚定门径则与世界上某一实体绑定，会将所有穿过它们的事物送至该实体处（可附带一个偏移向量，需在烧入门径时提供）。",
   "hexal.page.gates.2": "未锚定门径没有与任何事物绑定，可用于将实体送至任意位置。但其效率也会相应降低，只能将实体送至我所能影响的范围内的位置。门径烧入成功后，我的栈上便会出现一个代表其的 iota。我能以此 iota 标记实体，如此当我关闭门径时，所有被标记的实体就会被传送至门径终点。需注意关闭门径不会将其消耗，获得门径 iota 后便能永久使用。",
   "hexal.page.gates.gate/make": "压入一个新的门径。所有此 iota 的复制品都指向同一个门径。消耗 32 个$(l:items/amethyst)$(item)充能紫水晶/$。若传入 Null，则构造未锚定门径；若传入一个向量，则构造位置锚定门径；若传入一个向量和一个实体，则构造实体锚定门径。",
