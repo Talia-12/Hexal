@@ -33,13 +33,13 @@ public class GateIota extends Iota {
     public static String TAG_TARGET_NAME = "target_name";
 
     private record Payload(int index, Either<Vec3, EntityAnchor> target) { }
-    record EntityAnchor(UUID uuid, String name, Vec3 offset) { }
+    public record EntityAnchor(UUID uuid, String name, Vec3 offset) { }
 
     public GateIota(int index, @Nullable Either<Vec3, Pair<Entity, Vec3>> target) {
         super(HexalIotaTypes.GATE, new Payload(index, target == null ? null : target.mapRight(pair -> new EntityAnchor(pair.getFirst().getUUID(), pair.getFirst().getName().getString(), pair.getSecond()))));
     }
 
-    public GateIota(Payload payload) {
+    private GateIota(Payload payload) {
         super(HexalIotaTypes.GATE, payload);
     }
 
