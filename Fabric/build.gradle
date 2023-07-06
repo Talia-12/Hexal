@@ -169,6 +169,7 @@ modrinth {
         required.project "patchouli"
         required.project "fabric-language-kotlin"
         required.project "cardinal-components-api"
+        required.project "geckolib"
     }
 }
 

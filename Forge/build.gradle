@@ -302,6 +302,7 @@ modrinth {
         required.project "paucal"
         required.project "patchouli"
         required.project "kotlin-for-forge"
+        required.project "geckolib"
     }
 }
 

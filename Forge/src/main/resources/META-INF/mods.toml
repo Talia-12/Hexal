@@ -48,3 +48,10 @@ mandatory = true
 versionRange = "[0.10.3]"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.hexal]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[3.1.40]"
+ordering = "NONE"
+side = "BOTH"
