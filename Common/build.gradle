@@ -12,10 +12,10 @@ minecraft {
 repositories {
     mavenCentral()
 
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+//     If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
+     flatDir {
+         dir 'libs'
+     }
 
     maven { url 'https://maven.blamejared.com' }
 
@@ -37,13 +37,13 @@ dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
-    compileOnly "${modID}:paucal-common-$minecraftVersion:$paucalVersion"
-    compileOnly "${modID}:hexcasting-common-$minecraftVersion:$hexcastingVersion"
+    compileOnly "$modID:paucal-common-$minecraftVersion:$paucalVersion"
+    compileOnly "$modID:hexcasting-common-$minecraftVersion:$hexcastingVersion"
     compileOnly "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
     compileOnly "software.bernie.geckolib:geckolib-fabric-1.19:$geckolibVersion"
 
-    testImplementation "${modID}:paucal-common-$minecraftVersion:$paucalVersion"
-    testImplementation "${modID}:hexcasting-common-$minecraftVersion:$hexcastingVersion"
+    testImplementation "$modID:paucal-common-$minecraftVersion:$paucalVersion"
+    testImplementation "$modID:hexcasting-common-$minecraftVersion:$hexcastingVersion"
     testImplementation "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'

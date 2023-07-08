@@ -168,15 +168,15 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
+    minecraft "net.minecraftforge:forge:$minecraftVersion-$forgeVersion"
     compileOnly project(":Common")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    compileOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
-    runtimeOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
-    compileOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
-    runtimeOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    compileOnly fg.deobf("$modID:paucal-forge-$minecraftVersion:$paucalVersion")
+    runtimeOnly fg.deobf("$modID:paucal-forge-$minecraftVersion:$paucalVersion")
+    compileOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    runtimeOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
@@ -188,10 +188,10 @@ dependencies {
 
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    testCompileOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
-    testRuntimeOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
-    testCompileOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
-    testRuntimeOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    testCompileOnly fg.deobf("$modID:paucal-forge-$minecraftVersion:$paucalVersion")
+    testRuntimeOnly fg.deobf("$modID:paucal-forge-$minecraftVersion:$paucalVersion")
+    testCompileOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    testRuntimeOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     testCompileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
     testRuntimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
 

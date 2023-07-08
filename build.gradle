@@ -44,7 +44,7 @@ def isRelease() {
 }
 
 String getArtifactID(String platform) {
-    return "${modID}-${platform}-${minecraftVersion}"
+    return "$modID-$platform-$minecraftVersion"
 }
 
 void setupJar(Object project) {
@@ -93,7 +93,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = "ram.talia.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-    version = "${modVersion}"
+    version = "$modVersion"
     if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
         version += "-pre-" + System.getenv('BUILD_NUMBER')
     } else if (System.getenv('TAG_NAME') != null) {
