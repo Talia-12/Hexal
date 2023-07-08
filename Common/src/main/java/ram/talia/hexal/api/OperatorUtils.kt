@@ -27,7 +27,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.BaseWisp
 import java.util.UUID
 import kotlin.math.abs
-import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 operator fun Double.times(vec: Vec3): Vec3 = vec.scale(this)
 operator fun Vec3.times(d: Double): Vec3 = this.scale(d)
@@ -54,6 +54,16 @@ fun Long.addBounded(long: Long): Long {
         if (this + long < this) Long.MAX_VALUE else this + long
     else
         if (this + long > this) Long.MIN_VALUE else this + long
+}
+
+/**
+ * If the addition would overflow, instead bound it at MAX/MIN.
+ */
+fun Long.mulBounded(long: Long): Long {
+    return if (long > 0)
+        if (this * long < this) Long.MAX_VALUE else this * long
+    else
+        if (this * long > this) Long.MIN_VALUE else this * long
 }
 
 fun Long.toIntCapped(): Int {
@@ -132,11 +142,11 @@ fun List<Iota>.getVec3OrListVec3(idx: Int, argc: Int = 0): Either<Vec3, List<Vec
     }
 }
 
-fun List<Iota>.getStrictlyPositiveInt(idx: Int, argc: Int = 0): Int {
+fun List<Iota>.getStrictlyPositiveLong(idx: Int, argc: Int = 0): Long {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is DoubleIota) {
         val double = x.double
-        val rounded = double.roundToInt()
+        val rounded = double.roundToLong()
         if (abs(double - rounded) <= DoubleIota.TOLERANCE && rounded > 0) {
             return rounded
         }

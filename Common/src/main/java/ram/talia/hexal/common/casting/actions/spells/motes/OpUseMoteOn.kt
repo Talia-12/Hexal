@@ -20,7 +20,6 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargSpellAction
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
@@ -37,9 +36,7 @@ object OpUseMoteOn : VarargSpellAction {
         val item = args.getMote(0, argc)
 
         if ((item == null) || ((item.count != 1L) && (item.tag != null) ))
-        {
             throw MishapInvalidIota(item!!, 0, "hexcasting.mishap.invalid_value.mote_with_nbt_not_size_one".asTranslatedComponent)
-        }
 
         if (argc == 2) {
             // Entity Version
@@ -47,7 +44,7 @@ object OpUseMoteOn : VarargSpellAction {
 
             ctx.assertEntityInRange(target)
 
-            val storage = (ctx as IMixinCastingContext).boundStorage ?: item.itemIndex.storage
+            val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
                 throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 
@@ -62,7 +59,7 @@ object OpUseMoteOn : VarargSpellAction {
             val direction = args.getVec3(2, argc)
             val target = args.getBlockPos(1, argc)
 
-            val storage = (ctx as IMixinCastingContext).boundStorage ?: item.itemIndex.storage
+            val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
                 throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 
@@ -93,9 +90,7 @@ object OpUseMoteOn : VarargSpellAction {
 
             item.tag = itemStack.tag
             if (itemStack.isEmpty)
-            {
                 item.removeItems(1)
-            }
         }
     }
 
@@ -117,16 +112,12 @@ object OpUseMoteOn : VarargSpellAction {
 
             val isAllowed = IXplatAbstractions.INSTANCE.isPlacingAllowed(ctx.world, pos, itemStack, ctx.caster)
             if (!isAllowed)
-            {
                 return
-            }
             itemStack.useOn(context).consumesAction()
             item.tag = itemStack.tag
 
             if (itemStack.isEmpty)
-            {
                 item.removeItems(1)
-            }
         }
     }
 }

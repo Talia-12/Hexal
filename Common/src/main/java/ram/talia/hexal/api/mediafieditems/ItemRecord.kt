@@ -51,7 +51,7 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
         if (!typeMatches(other))
             return other.count
 
-        // protection against overflow errors (really shouldn't happen but ya know why not
+        // protection against overflow errors (really shouldn't happen but ya know why not)
         val oldCount = count
         addCount(other.count.toLong())
         return other.count - (count - oldCount).toInt()

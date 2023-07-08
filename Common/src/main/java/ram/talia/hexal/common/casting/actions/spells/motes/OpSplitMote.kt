@@ -7,7 +7,7 @@ import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
 import ram.talia.hexal.api.getMote
-import ram.talia.hexal.api.getStrictlyPositiveInt
+import ram.talia.hexal.api.getStrictlyPositiveLong
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
@@ -18,7 +18,7 @@ object OpSplitMote : ConstMediaAction {
 
     override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
         val item = args.getMote(0, argc) ?: return listOf(NullIota())
-        val toSplitOff = args.getStrictlyPositiveInt(1, argc)
+        val toSplitOff = args.getStrictlyPositiveLong(1, argc)
 
         val storage = (ctx as IMixinCastingContext).boundStorage ?: item.itemIndex.storage
         if (!MediafiedItemManager.isStorageLoaded(storage))

@@ -20,6 +20,7 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMoteOrList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
+import ram.talia.hexal.api.mulBounded
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
@@ -65,8 +66,8 @@ object OpCraftMote : ConstMediaAction {
 
         val timesToCraft = getMinCount(griddedIotas)
 
-        val moteIotaResult = MoteIota.makeIfStorageLoaded(ItemRecord(itemResult.item, itemResult.tag, itemResult.count * timesToCraft), storage) ?: return emptyList<Iota>().asActionResult
-        val remainingMoteIotas = remainingItems.map { MoteIota.makeIfStorageLoaded(ItemRecord(it.item, it.tag, it.count * timesToCraft), storage)!! }.toMutableList()
+        val moteIotaResult = MoteIota.makeIfStorageLoaded(ItemRecord(itemResult.item, itemResult.tag, itemResult.count.toLong().mulBounded(timesToCraft)), storage) ?: return emptyList<Iota>().asActionResult
+        val remainingMoteIotas = remainingItems.map { MoteIota.makeIfStorageLoaded(ItemRecord(it.item, it.tag, it.count.toLong().mulBounded(timesToCraft)), storage)!! }.toMutableList()
 
         for (item in griddedIotas) item?.removeItems(timesToCraft)
 

@@ -108,7 +108,7 @@ public class MoteIota extends Iota {
         return MediafiedItemManager.typeMatches(this.getItemIndex(), other);
     }
 
-    public @Nullable MoteIota splitOff(int amount, @Nullable UUID storage) {
+    public @Nullable MoteIota splitOff(long amount, @Nullable UUID storage) {
         var newIndex = MediafiedItemManager.splitOff(this.getItemIndex(), amount, storage);
         if (newIndex == null)
             return null;
