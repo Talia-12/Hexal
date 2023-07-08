@@ -1,12 +1,13 @@
 {
   "block.hexal.slipway": "质道",
   "block.hexal.mediafied_storage": "物元枢纽",
-  
+  "block.hexal.relay": "继链器",
+
   "entity.hexal.wisp.projectile": "弹射式咒灵",
   "entity.hexal.wisp.ticking": "循环式咒灵",
   "entity.hexal.wisp.wandering": "巡航中咒灵",
-  
-  
+
+
   "hexcasting.mishap.non_player": "%s需由玩家执行",
   "hexcasting.mishap.no_wisp": "%s需由咒灵执行",
   "hexcasting.mishap.others_wisp": "该咒灵为%s所有，而不是你",
@@ -29,7 +30,7 @@
   "hexcasting.mishap.invalid_value.class.mote": "一个物元",
   "hexcasting.mishap.invalid_value.class.moteentity.itemitemframe": "一个物元、物品实体或物品展示框",
   "hexcasting.mishap.invalid_value.moteitemtype": "一个物元或物品类型",
-  "hexcasting.mishap.invalid_value.motemotelist": "一个物元或由物元组成的列表",
+  "hexcasting.mishap.invalid_value.motemotelist": "一个物元或物元列表",
   "hexcasting.mishap.invalid_value.motemotelistmotelistlist": "一个物元、物元列表或由物元列表组成的列表",
   "hexcasting.mishap.invalid_value.veclist": "一个向量或由向量组成的列表",
   "hexcasting.mishap.invalid_value.blockitementityitemframeitem": "一个位置向量、物品实体、物品展示框或物品",
@@ -39,6 +40,7 @@
   "hexcasting.mishap.invalid_value.mote_duplicated": "各物元仅出现一次",
   "hexcasting.mishap.invalid_value.cant_combine_motes": "两个可合并的物元",
   "hexcasting.mishap.invalid_value.mote_not_size_one": "一个不包含NBT数据或大小为1的物元",
+  "hexcasting.mishap.invalid_value.gate.offset": "不超过%f格的偏移量",
 
 
   "hexcasting.iota.hexal:iota_type": "Iota类型",
@@ -68,22 +70,22 @@
   "hexcasting.spell.hexal:armour": "乡绅之纯化",
   "hexcasting.spell.hexal:toughness": "拳击手之纯化",
   "hexcasting.spell.hexal:light_level": "灯夫之纯化",
-  
+
   "hexcasting.spell.hexal:factorial": "阶乘之纯化",
   "hexcasting.spell.hexal:running/sum": "前缀和之纯化",
   "hexcasting.spell.hexal:running/mul": "前缀积之纯化",
-  
+
   "hexcasting.spell.hexal:everbook/read": "谟涅摩叙涅之策略",
   "hexcasting.spell.hexal:everbook/write": "极乐园之策略",
   "hexcasting.spell.hexal:everbook/delete": "忘川之策略",
   "hexcasting.spell.hexal:everbook/toggle_macro": "布莱之策略",
-  
+
   "hexcasting.spell.hexal:smelt": "烧炼",
   "hexcasting.spell.hexal:freeze": "冻结",
   "hexcasting.spell.hexal:falling_block": "坠落方块",
   "hexcasting.spell.hexal:place_type": "放置方块，第二型",
   "hexcasting.spell.hexal:particles": "粒子",
-  
+
   "hexcasting.spell.hexal:interop/fabric_only/phase_block": "暂消方块",
 
   "hexcasting.spell.hexal:wisp/summon/projectile": "召唤弹射式咒灵",
@@ -102,25 +104,30 @@
   "hexcasting.spell.hexal:wisp/consume": "拆解咒灵",
   "hexcasting.spell.hexal:wisp/seon/set": "绑定咒灵",
   "hexcasting.spell.hexal:wisp/seon/get": "密友之精思",
-  
+  "hexcasting.spell.hexal:wisp/transfer/allow": "允许转送",
+  "hexcasting.spell.hexal:wisp/transfer/disallow": "禁止转送",
+  "hexcasting.spell.hexal:wisp/transfer/others/allow": "允许实体转送",
+  "hexcasting.spell.hexal:wisp/transfer/others/disallow": "禁止实体转送",
+
   "hexcasting.spell.hexal:get_entity/wisp": "实体之纯化：咒灵",
   "hexcasting.spell.hexal:zone_entity/wisp": "区域之馏化：咒灵",
   "hexcasting.spell.hexal:zone_entity/not_wisp": "区域之馏化：非咒灵",
-  
+
   "hexcasting.spell.hexal:link": "链接",
   "hexcasting.spell.hexal:link/others": "链接实体",
   "hexcasting.spell.hexal:link/unlink": "解链接",
+  "hexcasting.spell.hexal:link/unlink/others": "解链接实体",
   "hexcasting.spell.hexal:link/get": "电话簿之纯化",
   "hexcasting.spell.hexal:link/get_index": "识别之纯化",
   "hexcasting.spell.hexal:link/num": "名气之精思",
-  
+
   "hexcasting.spell.hexal:link/comm/send": "发送Iota",
   "hexcasting.spell.hexal:link/comm/read": "朗诵之精思",
   "hexcasting.spell.hexal:link/comm/num": "邮政局长之精思",
   "hexcasting.spell.hexal:link/comm/clear": "除塞之策略",
   "hexcasting.spell.hexal:link/comm/open_transmit": "开始发信",
   "hexcasting.spell.hexal:link/comm/close_transmit": "结束发信",
-  
+
   "hexcasting.spell.hexal:gate/make": "门径之精思",
   "hexcasting.spell.hexal:gate/mark": "开启门径",
   "hexcasting.spell.hexal:gate/unmark": "解除门径",
@@ -149,26 +156,30 @@
   "hexcasting.spell.hexal:mote/use_on": "使用物品",
 
   "hexcasting.spell.hexal:tick": "加速",
-  
-  
-  
+
+
+
   "hexcasting.spell.book.hexal:light_level": "灯夫之纯化",
-  
+
   "hexcasting.spell.book.hexal:running/sum": "前缀和之纯化",
   "hexcasting.spell.book.hexal:running/mul": "前缀积之纯化",
-  
+
   "hexcasting.spell.book.hexal:get_entity/wisp": "实体之纯化：咒灵",
   "hexcasting.spell.book.hexal:zone_entity/wisp": "区域之馏化：咒灵",
   "hexcasting.spell.book.hexal:zone_entity/not_wisp": "区域之馏化：非咒灵",
-  
+
   "hexcasting.spell.book.hexal:mote/storage/bind/temp": "绑定储库，临时型",
-  
-  
-  
+
+
+
   "hexal.entry.slipways": "质道",
   "hexal.page.slipways": "我曾听说过某些晶洞中有形如泛着光的传送门的东西，它们被称作“质道”。这些质道通常“被莹莹光点围绕”，和我所知的$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$十分相似。也许它们之间的联系值得研究。",
-  
-  
+
+  "hexal.entry.relay": "继链器",
+  "hexal.page.relay.0": "我常希望有方法能$(l:hexal:patterns/spells/links#hexal:link)$(action)连接/$多个$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$，以便远距共享媒质和信息。然而用咒灵远距中继相当不方便，常态消耗也很大。为解决这些问题，我制造出了继链器。它们是固态方块而非媒质构造体，也因此在维持链接时不会有常态消耗。",
+  "hexal.page.relay.1": "相互连接的继链器会形成网络，与之连接的咒灵会共享媒质，类似于咒灵间直接相连。此外，传给网络内任一继链器的 iota 会发送给连接至网络的所有非继链器事物。继链器的工作范围是 32 格（也即两个继链器可链接的最远距离为 64 格）。手持染色剂右击任一继链器即可改变网络链接的颜色。",
+  "hexal.page.relay.2": "继链器没有所有者，若要我的咒灵和其$(l:hexal:patterns/spells/wisps#hexal:wisp/transfer/allow)$(action)transfer media/$，则必须先允许咒灵这么做。",
+
   "hexal.entry.hexal_basics": "咒法拓展：基础图案",
   "hexal.page.hexal_basics.current_tick": "返回一个数，这个数似乎与自然记录时间的方式有关。如果先绘制一遍此图案，在 1 秒后再绘制一遍，返回的数会增加 20。",
   "hexal.page.hexal_basics.remaining_evals": "将咒术在结束前还能运行图案的次数压入栈顶。结果会因$(l:patterns/meta#hexcasting:eval)$(action)赫尔墨斯之策略/$和$(l:patterns/meta#hexcasting:for_each)$(action)托特之策略/$而减少。",
@@ -177,12 +188,12 @@
   "hexal.page.hexal_basics.armour": "移除栈顶实体，并返回其护甲值。",
   "hexal.page.hexal_basics.toughness": "移除栈顶实体，并返回其盔甲韧性（盔甲的另一属性）。",
   "hexal.page.hexal_basics.light_level": "移除栈顶位置向量，并返回该处光照强度。",
-  
+
   "hexal.entry.hexal_maths": "咒法拓展：数学",
   "hexal.page.hexal_maths.factorial": "移除栈顶数，返回其阶乘。例如输入 4 则会返回 4 * 3 * 2 * 1 = 24。",
   "hexal.page.hexal_maths.running/sum": "接受栈顶列表，并计算其前缀和。例如输入 [1, 2, 5] 则会返回 [1, 3, 8]。",
   "hexal.page.hexal_maths.running/mul": "接受栈顶列表，并计算其前缀积。例如输入 [1, 2, 5] 则会返回 [1, 2, 10]。",
-  
+
   "hexal.entry.hexal_spell": "咒法拓展：法术",
   "hexal.page.hexal_spell.smelt.0": "移除栈顶位置向量、物品实体或物元，然后烧炼该处方块，或同时烧炼物品实体或物元中所有物品。",
   "hexal.page.hexal_spell.smelt.1": "每烧炼一个物品消耗 3/4 个$(l:items/amethyst)$(item)紫水晶粉/$。（也即烧炼 1 个方块消耗 3/4 个$(l:items/amethyst)$(item)紫水晶粉/$，同时烧炼 8 个物品消耗 6 个$(l:items/amethyst)$(item)紫水晶粉/$。）",
@@ -190,7 +201,7 @@
   "hexal.page.hexal_spell.falling_block": "移除栈顶位置向量，并使该处方块下落，就像沙子和沙砾一样。消耗 3/2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.hexal_spell.place_type": "接受一个物品类型或物元和一个位置向量，并会尝试在该位置处放置所给物品类型的方块。若传入物元，则会从对应的物元记录中放置。消耗 1/8 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.hexal_spell.particles": "接受一个位置向量或一个由位置向量组成的列表，并在所给位置处生成粒子，或在所给列表各位置之间生成粒子连线。每个位置向量消耗 1/500 个$(l:items/amethyst)$(item)紫水晶粉/$。",
-  
+
   "hexal.entry.fabric_only_hexal": "咒术拓展：Fabric 独占法术",
   "hexal.page.fabric_only_hexal.interop/fabric_only/phase_block": "接受一个位置向量和一个数，并使所给位置上方块的体积消失所给数秒。消耗 1/1000 与消失时间的平方的乘积个$(l:items/amethyst)$(item)紫水晶粉/$。",
 
@@ -210,19 +221,24 @@
   "hexal.page.wisps.wisp/move/target/get": "返回循环式咒灵自身当前目标位置的位置向量。",
   "hexal.page.wisps.wisp/move/speed/set": "移除栈顶数，并将循环式咒灵自身的速度上限设为该数。",
   "hexal.page.wisps.wisp/move/speed/get": "返回循环式咒灵自身当前速度上限。",
+  "hexal.page.wisps.wisp/transfer/allow": "当两咒灵$(l:hexal:patterns/spells/links)$(thing)连接/$时，它们会相互转送媒质，直至两者平衡。默认状况下，仅所有者相同的咒灵会自发转送。此操作接受一个编号数，并显式允许咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/disallow": "相应地，此操作接受一个编号数，并禁止咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/others/disallow": "接受一个咒灵实体（所有者需是我）和一个编号数，并允许该咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/others/allow": "接受一个咒灵实体（所有者需是我）和一个编号数，并禁止该咒灵与该编号链接另一端的事物交换媒质。",
   "hexal.page.wisps.get_entity/wisp": "将栈顶位置向量变为该处咒灵（若无则返回 $(l:casting/influences)$(thing)Null/$）。",
   "hexal.page.wisps.zone_entity/wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有咒灵的列表。",
   "hexal.page.wisps.zone_entity/not_wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有非咒灵实体的列表。",
   "hexal.page.wisps.wisp/trigger/tick": "移除栈顶数，然后将咒灵下一次施法时刻延迟所给数个 1/20 秒。所有可用于延迟咒灵施法的操作均能使咒灵的常态消耗减半，直到下一次施法为止。",
   "hexal.page.wisps.wisp/trigger/comm": "咒灵将在其收到至少一次$(l:hexal:patterns/spells/links#hexal:link/comm/send)$(action)通信/$后才进行下一次施法。",
   "hexal.page.wisps.wisp/trigger/move": "咒灵将在其抵达被$(l:hexal:patterns/spells/wisps#hexal:wisp/move/target/set)$(action)导向/$的位置后才进行下一次施法。",
-  
+
   "hexal.entry.links": "链接",
-  "hexal.page.links.0": "这些图案大致构建了一套能在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$间以及咒灵和其他事物间传递信息的系统。有若干图案与创建用于传递信息的链接有关，也有些图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时维持任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
-  "hexal.page.links.1": "创建链接后，创建端会自动为这些链接分配编号，其数值等于该端已有链接的个数，这种编号可用作图案的参数，用于指代不同的链接。本章节大部分图案介绍中可链接事物参数并不是其字面意思，而是指代所有可被转换为可链接事物的类型。（例如，entity -> linkable entities，vec -> linkable blocks等等。）链接会在两端影响范围之和的两倍范围内起效。",
+  "hexal.page.links.0": "这些图案大致构建了一套能在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$间以及咒灵和其他事物间传递信息的系统。有若干图案与创建链接有关，也有些图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时维持任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
+  "hexal.page.links.1": "可链接事物会以创建顺序为这些链接编号，此编号可用作图案的参数。介绍中的“可链接事物”不是具体参数类型，而是指代所有可被转换为可链接事物的类型。（例如，Entity -> Linkable entities，Vec -> Linkable blocks等等。）链接仅会在两可链接事物影响范围之和的两倍内起效。若要跨更远的距离连接两者，应该转而使用$(l:hexal:items/relay)$(item)继链器/$。",
   "hexal.page.links.link": "将施法者链接至栈顶实体，且实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/others": "可在任意施法器件上运行。将两个实体链接，且两实体必须均为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/unlink": "断开施法者的编号为所给数的链接。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
+  "hexal.page.links.link/unlink/others": "接受两个可链接事物，若其间存在链接，则会将其断开。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
   "hexal.page.links.link/get": "移除栈顶数，并返回对应编号的链接所连的实体。",
   "hexal.page.links.link/get_index": "移除栈顶实体，并返回自身与该实体相连的链接的编号。若施法者与其无链接则返回 -1。",
   "hexal.page.links.link/num": "返回自身的链接个数。",
@@ -232,13 +248,13 @@
   "hexal.page.links.link/comm/clear": "移除施法者接收队列中所有未读 iota。",
   "hexal.page.links.link/comm/open_transmit": "与$(l:patterns/patterns_as_iotas#hexcasting:open_paren)$(action)内省/$类似。在绘制$(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)结束发信/$后，所有我绘制的图案会通过编号为栈顶数的链接发送出去。",
   "hexal.page.links.link/comm/close_transmit": "在$(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)开始发信/$之后绘制，意味着发信过程结束。如果$(l:hexal:patterns/spells/links#hexal:link/comm/open_transmit)$(action)开始发信/$或$(l:hexal:patterns/spells/links#hexal:link/comm/close_transmit)$(action)结束发信/$是由中介施法者（如咒灵）运行的话，则会产生事故。",
-  
+
   "hexal.entry.tick": "加速",
   "hexal.page.tick.tick.0": "在法术运行的那一刻，加速所给位置处方块的运作。",
   "hexal.page.tick.tick.1": "施放此法术要消耗 1/10 个$(l:items/amethyst)$(item)紫水晶粉/$，在整个咒术内，每对同一方块加速一次，额外消耗 1/1000 个$(l:items/amethyst)$(item)紫水晶粉/$。",
 
   "hexal.entry.gates": "门径",
-  "hexal.page.gates.0": "门径是我长时间有关空间远距连接和瞬间移动的研究的最新成果。与我之前的试验不同的是，它能$(o)极为高效地$()完成目标。我已学会构造三种不同的门径，所有三种都需要巨量的媒质才能烧入现实，但后续的操作则相较之下极为便宜。",
+  "hexal.page.gates.0": "门径是我有关空间远距连接和瞬间移动的长时间研究的最新成果。与我之前的试验不同的是，它能$(o)极为高效地$()完成传送任务。我已学会构造三种不同的门径，所有三种都需要巨量的媒质才能烧入现实，但后续的操作则相较之下极为便宜。",
   "hexal.page.gates.1": "位置锚定门径与世界上某一位置绑定，会将所有穿过它们的事物送至该位置。实体锚定门径则与世界上某一实体绑定，会将所有穿过它们的事物送至该实体处（可附带一个偏移向量，需在烧入门径时提供）。",
   "hexal.page.gates.2": "未锚定门径没有与任何事物绑定，可用于将实体送至任意位置。但其效率也会相应降低，只能将实体送至我所能影响的范围内的位置。门径烧入成功后，我的栈上便会出现一个代表其的 iota。我能以此 iota 标记实体，如此当我关闭门径时，所有被标记的实体就会被传送至门径终点。需注意关闭门径不会将其消耗，获得门径 iota 后便能永久使用。",
   "hexal.page.gates.gate/make": "压入一个新的门径。所有此 iota 的复制品都指向同一个门径。消耗 32 个$(l:items/amethyst)$(item)充能紫水晶/$。若传入 Null，则构造未锚定门径；若传入一个向量，则构造位置锚定门径；若传入一个向量和一个实体，则构造实体锚定门径。",
@@ -282,7 +298,7 @@
   "hexal.page.great_wisps.wisp/consume.1": "若咒灵的所有者是我，消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$；若咒灵的所有者是他人，则消耗该咒灵所拥有的媒质量的一半。媒质的再利用效率不算特别高，会在传输过程中损耗掉被拆解咒灵媒质池容量的 1/20。",
   "hexal.page.great_wisps.wisp/seon/set": "在我的咒灵和我之间建立更紧密的联系。我只能同时绑定一个咒灵，但绑定咒灵的常态消耗将大大减少。",
   "hexal.page.great_wisps.wisp/seon/get": "返回我当前绑定的咒灵。（这并不是卓越法术，记载于此是为了方便查找。）",
-  
+
   "hexal.entry.types": "类型",
   "hexal.page.types.type/iota": "移除栈顶元素，并返回该 iota 的类型。",
   "hexal.page.types.type/entity": "移除栈顶实体，并返回该实体的类型。",
@@ -301,10 +317,10 @@
   "hexal.page.everbook.everbook/delete": "接受一个图案，并移除永恒之书中该图案对应的条目。",
   "hexal.page.everbook.everbook/toggle_macro.0": "接受一个图案，并以该图案标记永恒之书中对应条目，使得绘制该图案所产生的效果和自然创造的其他图案相仿。",
   "hexal.page.everbook.everbook/toggle_macro.1": "当绘制被标记的永恒之书条目所对应的图案时，如果对应条目存有一个列表，则自然会如同$(l:patterns/meta#hexcasting:eval)$(action)赫尔墨斯之策略/$一样依次执行列表中各元素，但不会消耗递归层数。试图将不存在的条目或是会无限递归的条目标记为图案则会失败。",
-  
+
   "hexal.entry.everbook_entries": "永恒之书条目",
   "hexal.page.everbook_entries.0": "此条目中每一页都会显示我$(l:hexal:patterns/everbook)$(action)永恒之书/$中某一条目对应的图案密钥。",
-  
+
   "hexal.everbook_pattern_entry.header": "存储密钥：%d",
   "hexal.everbook_pattern_entry.macro_header": "宏密钥：%d",
 
