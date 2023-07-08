@@ -173,8 +173,8 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    compileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
-    runtimeOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    compileOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
+    runtimeOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
     compileOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     runtimeOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
 
@@ -188,8 +188,8 @@ dependencies {
 
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    testCompileOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
-    testRuntimeOnly fg.deobf("at.petra-k.paucal:paucal-forge-$minecraftVersion:$paucalVersion")
+    testCompileOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
+    testRuntimeOnly fg.deobf("${modID}:paucal-forge-$minecraftVersion:$paucalVersion")
     testCompileOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     testRuntimeOnly fg.deobf("${modID}:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     testCompileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
