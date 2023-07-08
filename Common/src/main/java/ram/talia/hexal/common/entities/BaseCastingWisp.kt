@@ -75,8 +75,14 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		get() = entityData.get(SEON)
 		set(value) = entityData.set(SEON, value)
 
-	// true at the end will be not-ed to false by the ! out the front
-	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = !(this.caster?.equals(consumer.map({ it.caster }, { it })) ?: false)
+	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>): Boolean = consumer.map({ wisp ->
+		wisp.caster == this.caster ||
+		whiteListTransferMedia.contains(wisp) ||
+		(wisp.caster?.let { whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: false)
+	}, {
+		it == this.caster ||
+		whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it))
+	})
 
 	val serHex: SerialisedIotaList = SerialisedIotaList()
 
@@ -238,6 +244,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	fun addToWhiteListTransferMedia(other: ILinkable) = whiteListTransferMedia.add(other)
 	fun removeFromBlackListTransferMedia(other: ILinkable) = blackListTransferMedia.remove(other)
 	fun removeFromWhiteListTransferMedia(other: ILinkable) = whiteListTransferMedia.remove(other)
+
+	fun blackListContains(other: ILinkable): Boolean = blackListTransferMedia.contains(other)
+	fun whiteListContains(other: ILinkable): Boolean = whiteListTransferMedia.contains(other)
 
 	private fun shouldBlockTransfer(other: ILinkable): Boolean
 		= blackListTransferMedia.contains(other) || (other.owner() != this.owner() && !whiteListTransferMedia.contains(other))
