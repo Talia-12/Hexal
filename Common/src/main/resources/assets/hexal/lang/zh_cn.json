@@ -178,7 +178,7 @@
   "hexal.entry.relay": "继链器",
   "hexal.page.relay.0": "我常希望有方法能$(l:hexal:patterns/spells/links#hexal:link)$(action)连接/$多个$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$，以便远距共享媒质和信息。然而用咒灵远距中继相当不方便，常态消耗也很大。为解决这些问题，我制造出了继链器。它们是固态方块而非媒质构造体，也因此在维持链接时不会有常态消耗。",
   "hexal.page.relay.1": "相互连接的继链器会形成网络，与之连接的咒灵会共享媒质，类似于咒灵间直接相连。此外，传给网络内任一继链器的 iota 会发送给连接至网络的所有非继链器事物。继链器的工作范围是 32 格（也即两个继链器可链接的最远距离为 64 格）。手持染色剂右击任一继链器即可改变网络链接的颜色。",
-  "hexal.page.relay.2": "继链器没有所有者，若要我的咒灵和其$(l:hexal:patterns/spells/wisps#hexal:wisp/transfer/allow)$(action)transfer media/$，则必须先允许咒灵这么做。",
+  "hexal.page.relay.2": "继链器没有所有者，若要我的咒灵和其$(l:hexal:patterns/spells/wisps#hexal:wisp/transfer/allow)$(action)转送媒质/$，则必须先允许咒灵这么做。",
 
   "hexal.entry.hexal_basics": "咒法拓展：基础图案",
   "hexal.page.hexal_basics.current_tick": "返回一个数，这个数似乎与自然记录时间的方式有关。如果先绘制一遍此图案，在 1 秒后再绘制一遍，返回的数会增加 20。",
@@ -215,7 +215,7 @@
   "hexal.page.wisps.wisp/summon/ticking.1": "其初始栈包含一个代表其自身的 iota，而后每次施法开始时会保留上一次施法后的栈和渡鸦之思。这种咒灵的形态较不稳定，常态消耗率远大于弹射式咒灵。其每秒消耗 7/10 个$(l:items/amethyst)$(item)紫水晶粉/$。其影响区域半径为 8 格。",
   "hexal.page.wisps.wisp/self": "返回一个代表施法咒灵的 iota。此操作必须由咒灵执行。尝试用法杖执行会招致可怖的事故。",
   "hexal.page.wisps.wisp/media": "将咒灵媒质池中剩余的媒质量压入栈顶。此操作必须由咒灵执行。尝试用法杖执行会招致可怖的事故。",
-  "hexal.page.wisps.wisp/hex": "移除一个咒灵实体，并返回该咒灵所携带的咒术。所给 iota 必须代表由我召唤的咒灵。",
+  "hexal.page.wisps.wisp/hex": "移除一个咒灵实体，并返回该咒灵所携带的咒术。所给 iota 必须代表由我召唤的咒灵，或$(l:hexal:patterns/spells/wisps#hexal:wisp/transfer/allow)允许$(action)与施法者或其所有者转送的咒灵。",
   "hexal.page.wisps.wisp/owner": "移除一个咒灵实体和一个实体，若该实体是该咒灵的所有者，返回 True；否则返回 False。",
   "hexal.page.wisps.wisp/move/target/set": "移除栈顶位置向量。运行此图案的循环式咒灵会沿直线移动至所给位置（会与途中地形地貌等碰撞），直至抵达该位置处。",
   "hexal.page.wisps.wisp/move/target/get": "返回循环式咒灵自身当前目标位置的位置向量。",
@@ -223,8 +223,8 @@
   "hexal.page.wisps.wisp/move/speed/get": "返回循环式咒灵自身当前速度上限。",
   "hexal.page.wisps.wisp/transfer/allow": "当两咒灵$(l:hexal:patterns/spells/links)$(thing)连接/$时，它们会相互转送媒质，直至两者平衡。默认状况下，仅所有者相同的咒灵会自发转送。此操作接受一个编号数，并显式允许咒灵与该编号链接另一端的事物交换媒质。",
   "hexal.page.wisps.wisp/transfer/disallow": "相应地，此操作接受一个编号数，并禁止咒灵与该编号链接另一端的事物交换媒质。",
-  "hexal.page.wisps.wisp/transfer/others/disallow": "接受一个咒灵实体（所有者需是我）和一个编号数，并允许该咒灵与该编号链接另一端的事物交换媒质。",
-  "hexal.page.wisps.wisp/transfer/others/allow": "接受一个咒灵实体（所有者需是我）和一个编号数，并禁止该咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/others/allow": "接受一个咒灵实体（所有者需是我）和一个编号数，并允许该咒灵与该编号链接另一端的事物交换媒质。",
+  "hexal.page.wisps.wisp/transfer/others/disallow": "接受一个咒灵实体（所有者需是我）和一个编号数，并禁止该咒灵与该编号链接另一端的事物交换媒质。",
   "hexal.page.wisps.get_entity/wisp": "将栈顶位置向量变为该处咒灵（若无则返回 $(l:casting/influences)$(thing)Null/$）。",
   "hexal.page.wisps.zone_entity/wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有咒灵的列表。",
   "hexal.page.wisps.zone_entity/not_wisp": "从栈顶获取位置及最大距离，返回该位置给定距离范围内所有非咒灵实体的列表。",
@@ -234,7 +234,7 @@
 
   "hexal.entry.links": "链接",
   "hexal.page.links.0": "这些图案大致构建了一套能在$(l:hexal:patterns/spells/wisps)$(thing)咒灵/$间以及咒灵和其他事物间传递信息的系统。有若干图案与创建链接有关，也有些图案和通过链接发送和接收 iota 的方式相关。一个咒灵能同时维持任意数目的链接，每条每 1/20 秒常态消耗极少量媒质。",
-  "hexal.page.links.1": "可链接事物会以创建顺序为这些链接编号，此编号可用作图案的参数。介绍中的“可链接事物”不是具体参数类型，而是指代所有可被转换为可链接事物的类型。（例如，Entity -> Linkable entities，Vec -> Linkable blocks等等。）链接仅会在两可链接事物影响范围之和的两倍内起效。若要跨更远的距离连接两者，应该转而使用$(l:hexal:items/relay)$(item)继链器/$。",
+  "hexal.page.links.1": "可链接事物会以创建顺序为这些链接编号，此编号可用作图案的参数。介绍中的“可链接事物”（Linkable）不是具体参数类型，而是指代所有可被转换为可链接事物的类型。（例如，Entity -> Linkable entities，Vec -> Linkable blocks等等。）链接仅会在两可链接事物影响范围之和的两倍内起效。若要跨更远的距离连接两者，应该转而使用$(l:hexal:items/relay)$(item)继链器/$。",
   "hexal.page.links.link": "将施法者链接至栈顶实体，且实体必须为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/others": "可在任意施法器件上运行。将两个实体链接，且两实体必须均为可链接的。消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$。",
   "hexal.page.links.link/unlink": "断开施法者的编号为所给数的链接。消耗 2 个$(l:items/amethyst)$(item)紫水晶粉/$。",
@@ -295,7 +295,7 @@
 
   "hexal.entry.great_wisps": "卓越咒灵法术",
   "hexal.page.great_wisps.wisp/consume.0": "移除栈顶咒灵实体，并拆解该咒灵。咒灵携带的图案不可追回，但是如果此法术是由其他咒灵施放的，那么被拆解咒灵所剩的媒质还可再加利用。",
-  "hexal.page.great_wisps.wisp/consume.1": "若咒灵的所有者是我，消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$；若咒灵的所有者是他人，则消耗该咒灵所拥有的媒质量的一半。媒质的再利用效率不算特别高，会在传输过程中损耗掉被拆解咒灵媒质池容量的 1/20。",
+  "hexal.page.great_wisps.wisp/consume.1": "若咒灵的所有者是我，或其被$(l:hexal:patterns/spells/wisps#hexal:wisp/transfer/allow)允许$(action)与施法者或其所有者转送，消耗 1 个$(l:items/amethyst)$(item)紫水晶碎片/$；若咒灵的所有者是他人且未被允许转送，则消耗该咒灵所拥有的媒质量的一半。媒质的再利用效率不算特别高，会在传输过程中损耗掉被拆解咒灵媒质池容量的 1/20。",
   "hexal.page.great_wisps.wisp/seon/set": "在我的咒灵和我之间建立更紧密的联系。我只能同时绑定一个咒灵，但绑定咒灵的常态消耗将大大减少。",
   "hexal.page.great_wisps.wisp/seon/get": "返回我当前绑定的咒灵。（这并不是卓越法术，记载于此是为了方便查找。）",
 
