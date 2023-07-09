@@ -177,11 +177,13 @@ dependencies {
     runtimeOnly fg.deobf("$modID:paucal-forge-$minecraftVersion:$paucalVersion")
     compileOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     runtimeOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    compileOnly fg.deobf("$modID:moreiotas-forge-$minecraftVersion:$moreIotasVersion")
+    runtimeOnly fg.deobf("$modID:moreiotas-forge-$minecraftVersion:$moreIotasVersion")
 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
 
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:$geckolibVersion")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-$minecraftVersion:$geckolibVersion")
 
     // Testing dependencies:
     testCompileOnly project(":Common")
@@ -192,6 +194,8 @@ dependencies {
     testRuntimeOnly fg.deobf("$modID:paucal-forge-$minecraftVersion:$paucalVersion")
     testCompileOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
     testRuntimeOnly fg.deobf("$modID:hexcasting-forge-$minecraftVersion:$hexcastingVersion")
+    testCompileOnly fg.deobf("$modID:moreiotas-forge-$minecraftVersion:$moreIotasVersion")
+    testRuntimeOnly fg.deobf("$modID:moreiotas-forge-$minecraftVersion:$moreIotasVersion")
     testCompileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
     testRuntimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion")
 

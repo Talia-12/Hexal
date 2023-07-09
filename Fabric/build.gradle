@@ -79,10 +79,11 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     compileOnly project(":Common")
 
-    modImplementation "at.petra-k.paucal:paucal-fabric-$minecraftVersion:$paucalVersion"
-    modImplementation("at.petra-k.hexcasting:hexcasting-fabric-$minecraftVersion:$hexcastingVersion") {
+    modImplementation "$modID:paucal-fabric-$minecraftVersion:$paucalVersion"
+    modImplementation("$modID:hexcasting-fabric-$minecraftVersion:$hexcastingVersion") {
         exclude module: "phosphor"
     }
+    modImplementation "$modID:moreiotas-fabric-$minecraftVersion:$moreIotasVersion"
     modImplementation "vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FABRIC"
 
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
@@ -94,7 +95,7 @@ dependencies {
     modImplementation "$modID:serialization-hooks:$serializationHooksVersion"
     include "$modID:serialization-hooks:$serializationHooksVersion"
 
-    modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:$geckolibVersion"
+    modImplementation "software.bernie.geckolib:geckolib-fabric-$minecraftVersion:$geckolibVersion"
 
     // Optional integrations
 
@@ -106,7 +107,6 @@ dependencies {
 
     modImplementation "dev.emi:emi-fabric:${emiVersion}"
 
-    modImplementation "maven.modrinth:gravity-api:$gravityApiVersion"
     modApi("com.github.Virtuoel:Pehkui:${pehkuiVersion}", {
         exclude group: "net.fabricmc.fabric-api"
     })

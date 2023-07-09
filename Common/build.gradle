@@ -39,11 +39,13 @@ dependencies {
 
     compileOnly "$modID:paucal-common-$minecraftVersion:$paucalVersion"
     compileOnly "$modID:hexcasting-common-$minecraftVersion:$hexcastingVersion"
+    compileOnly "$modID:moreiotas-common-$minecraftVersion:$moreIotasVersion"
     compileOnly "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
-    compileOnly "software.bernie.geckolib:geckolib-fabric-1.19:$geckolibVersion"
+    compileOnly "software.bernie.geckolib:geckolib-fabric-$minecraftVersion:$geckolibVersion"
 
     testImplementation "$modID:paucal-common-$minecraftVersion:$paucalVersion"
     testImplementation "$modID:hexcasting-common-$minecraftVersion:$hexcastingVersion"
+    testImplementation "$modID:moreiotas-common-$minecraftVersion:$moreIotasVersion"
     testImplementation "vazkii.patchouli:Patchouli-xplat:$minecraftVersion-$patchouliVersion"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
