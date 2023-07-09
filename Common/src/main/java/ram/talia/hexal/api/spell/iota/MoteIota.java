@@ -221,7 +221,7 @@ public class MoteIota extends Iota {
             if (!ctag.contains(TAG_DISPLAY_NAME) || !ctag.contains(TAG_COUNT))
                 return Component.translatable("hexcasting.tooltip.null_iota").withStyle(ChatFormatting.GRAY);
 
-            return Component.translatable("hexal.spelldata.item", ctag.getString(TAG_DISPLAY_NAME), ctag.getLong(TAG_COUNT)).withStyle(ChatFormatting.YELLOW);
+            return Component.translatable("hexal.spelldata.mote", ctag.getString(TAG_DISPLAY_NAME), ctag.getLong(TAG_COUNT)).withStyle(ChatFormatting.YELLOW);
         }
 
         @Override

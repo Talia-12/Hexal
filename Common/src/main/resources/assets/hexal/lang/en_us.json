@@ -51,8 +51,7 @@
 
   "hexal.spelldata.entity_type": "Type",
   "hexal.spelldata.gate": "Gate %d",
-  "hexal.spelldata.item": "%s x%d",
-
+  "hexal.spelldata.mote": "%s x%d",
 
   "hexcasting.spell.hexal:type/iota": "Classifier's Purification",
   "hexcasting.spell.hexal:type/entity": "Physician's Purification",
