@@ -1,5 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
+import at.petrak.hexcasting.api.casting.castables.SpellAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
@@ -31,8 +33,8 @@ object OpUseMoteOn : VarargSpellAction {
     override fun execute(
             args: List<Iota>,
             argc: Int,
-            ctx: CastingContext
-    ): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+            ctx: CastingEnvironment
+    ): SpellAction.Result {
         val item = args.getMote(0, argc)
 
         if ((item == null) || ((item.count != 1L) && (item.tag != null) ))

@@ -1,5 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
+import at.petrak.hexcasting.api.casting.castables.SpellAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.mod.HexTags
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.ParticleSpray
@@ -30,7 +32,7 @@ object OpCloseGate : VarargSpellAction {
         return 2
     }
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): SpellAction.Result {
         val gate = args.getGate(0, argc)
         val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
         

@@ -45,11 +45,11 @@ object FakePlayerFactory {
 
 	// TODO: make sure this gets called when a dimension is unloaded
 	fun unloadLevel(level: ServerLevel) {
-		fakePlayers.entries.removeIf { (_, value): Map.Entry<GameProfile, FakePlayer> -> value.level === level }
-		if (MINECRAFT_PLAYER != null && MINECRAFT_PLAYER!!.get() != null && MINECRAFT_PLAYER!!.get()!!.level === level) // This shouldn't be strictly necessary, but lets be aggressive.
+		fakePlayers.entries.removeIf { (_, value): Map.Entry<GameProfile, FakePlayer> -> value.level() === level }
+		if (MINECRAFT_PLAYER != null && MINECRAFT_PLAYER!!.get() != null && MINECRAFT_PLAYER!!.get()!!.level() === level) // This shouldn't be strictly necessary, but lets be aggressive.
 		{
 			val mc: FakePlayer? = MINECRAFT_PLAYER!!.get()
-			if (mc != null && mc.level === level) {
+			if (mc != null && mc.level() === level) {
 				MINECRAFT_PLAYER = null
 			}
 		}

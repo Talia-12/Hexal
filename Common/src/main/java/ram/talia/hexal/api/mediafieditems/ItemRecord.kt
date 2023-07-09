@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.mediafieditems
 
 import at.petrak.hexcasting.api.utils.putCompound
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -105,7 +105,7 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
     }
 
     fun writeToTag(tag: CompoundTag) {
-        tag.putString(TAG_ITEM_ID, Registry.ITEM.getKey(this.item).toString())
+        tag.putString(TAG_ITEM_ID, BuiltInRegistries.ITEM.getKey(this.item).toString())
         this.tag?.let { tag.putCompound(TAG_NBT, it) }
         tag.putLong(TAG_COUNT, count)
     }
@@ -120,12 +120,12 @@ data class ItemRecord(var item: Item, var tag: CompoundTag?, var count: Long) {
          */
         fun readFromTag(tag: CompoundTag): ItemRecord? {
             return try {
-                val item = Registry.ITEM.getOptional(ResourceLocation(tag.getString(TAG_ITEM_ID))).orElseThrow { IllegalArgumentException("Unknown item id.") }
+                val item = BuiltInRegistries.ITEM.getOptional(ResourceLocation(tag.getString(TAG_ITEM_ID))).orElseThrow { IllegalArgumentException("Unknown item id.") }
                 val extraTag = if (tag.contains(TAG_NBT)) tag.getCompound(TAG_NBT) else null
                 val count = tag.getLong(TAG_COUNT)
                 ItemRecord(item, extraTag, count)
             } catch (e: Exception) {
-                HexalAPI.LOGGER.debug("Tried to load an invalid item key from NBT: $tag, $e")
+                HexalAPI.LOGGER.error("Tried to load an invalid item key from NBT: $tag, $e")
                 null
             }
         }

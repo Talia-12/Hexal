@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.blocks.entity
 
 import at.petrak.hexcasting.api.block.HexBlockEntity
-import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.common.lib.HexItems
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.Util
@@ -39,11 +39,11 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 	private fun clientTick(level: Level, blockPos: BlockPos) {
 		val vec = Vec3.atCenterOf(blockPos)
 
-		for (colouriser in HexItems.DYE_COLORIZERS.values) {
+		for (colouriser in HexItems.DYE_PIGMENTS.values) {
 			val colour: Int = colours[random.nextInt(colours.size)]
 
 			level.addParticle(
-					ConjureParticleOptions(colour, true),
+					ConjureParticleOptions(colour),
 					(vec.x + RENDER_RADIUS * random.nextGaussian()),
 					(vec.y + RENDER_RADIUS * random.nextGaussian()),
 					(vec.z + RENDER_RADIUS * random.nextGaussian()),
@@ -71,7 +71,7 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 		if (tick >= nextSpawnTick && level.getEntitiesOfClass(WanderingWisp::class.java, aabb).size < 20) {
 			nextSpawnTick = tick + random.nextGaussian(SPAWN_INTERVAL_MU.toDouble(), SPAWN_INTERVAL_SIG.toDouble()).toLong()
 
-			val colouriser = getRandomColouriser()
+			val colouriser = getRandomPigment()
 
 			val wisp = WanderingWisp(level, Vec3.atCenterOf(blockPos))
 			wisp.setColouriser(colouriser)
@@ -103,8 +103,8 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 
 		private val RANDOM = Random()
 
-		fun getRandomColouriser(): FrozenColorizer {
-			return FrozenColorizer(ItemStack(HexItems.DYE_COLORIZERS.values.elementAt(RANDOM.nextInt(HexItems.DYE_COLORIZERS.size))), Util.NIL_UUID)
+		fun getRandomPigment(): FrozenPigment {
+			return FrozenPigment(ItemStack(HexItems.DYE_PIGMENTS.values.elementAt(RANDOM.nextInt(HexItems.DYE_PIGMENTS.size))), Util.NIL_UUID)
 		}
 
 		private val colours = makeColours()
@@ -114,8 +114,8 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 			val coloursList = mutableListOf<Int>()
 
 			for (i in 0..32) {
-				for (colouriser in HexItems.DYE_COLORIZERS.values) {
-					val frozenColouriser = FrozenColorizer(ItemStack(colouriser), Util.NIL_UUID)
+				for (colouriser in HexItems.DYE_PIGMENTS.values) {
+					val frozenColouriser = FrozenPigment(ItemStack(colouriser), Util.NIL_UUID)
 					coloursList.add(frozenColouriser.nextColour(random))
 				}
 			}

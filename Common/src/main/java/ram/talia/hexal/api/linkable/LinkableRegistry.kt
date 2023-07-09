@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
@@ -113,19 +113,19 @@ object LinkableRegistry {
 		abstract val canCast: Boolean
 
 		/**
-		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is the caster of the
-		 * [CastingContext], and null otherwise (where, e.g., a wisp or a player may be the 'caster' here).
+		 * Takes in a [CastingEnvironment] and returns an [ILinkable] if an [ILinkable] of type [T] is the caster of the
+		 * [CastingEnvironment], and null otherwise (where, e.g., a wisp or a player may be the 'caster' here).
 		 */
-		abstract fun linkableFromCastingContext(ctx: CastingContext): T?
+		abstract fun linkableFromCastingContext(env: CastingEnvironment): T?
 
 		/**
 		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
-		 * from a [CastingContext]. (Lower number means lower priority)
+		 * from a [CastingEnvironment]. (Lower number means lower priority)
 		 */
 		abstract val castingContextPriority: Int
 
 		/**
-		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is referenced by that
+		 * Takes in an [Iota] and returns an [ILinkable] if an [ILinkable] of type [T] is referenced by that
 		 * iota, and null otherwise.
 		 */
 		abstract fun linkableFromIota(iota: Iota, level: ServerLevel): T?
@@ -193,9 +193,9 @@ object LinkableRegistry {
 	}
 
 	@JvmStatic
-	fun linkableFromCastingContext(ctx: CastingContext): ILinkable {
-		castingContextExtractionQueue.forEach { type -> type.linkableFromCastingContext(ctx)?.let { return it } }
-		throw Exception("At least one type should have accepted the ctx and returned itself (namely the player type).")
+	fun linkableFromCastingContext(env: CastingEnvironment): ILinkable {
+		castingContextExtractionQueue.forEach { type -> type.linkableFromCastingContext(env)?.let { return it } }
+		throw Exception("At least one type should have accepted the env and returned itself (namely the player type).")
 	}
 
 	@JvmStatic

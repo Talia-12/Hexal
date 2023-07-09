@@ -1,8 +1,8 @@
 package ram.talia.hexal.api.spell.casting.triggers
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getLong
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getLong
+import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.utils.asLong
 import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.LongTag
@@ -17,10 +17,10 @@ object WispTriggerTypes {
 	val TICK_TRIGGER_TYPE = object : WispTriggerRegistry.WispTriggerType<TickTrigger>(HexalAPI.modLoc("trigger/tick")) {
 		override val argc = 1
 
-		override fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, ctx: CastingContext): TickTrigger {
+		override fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, env: CastingEnvironment): TickTrigger {
 			val count = args.getLong(0, argc)
 
-			return TickTrigger(count + ctx.world.gameTime)
+			return TickTrigger(count + env.world.gameTime)
 		}
 
 		override fun fromNbt(tag: Tag, level: ServerLevel) = TickTrigger.readFromNbt(tag, level)
@@ -30,7 +30,7 @@ object WispTriggerTypes {
 	val COMM_TRIGGER_TYPE = object : WispTriggerRegistry.WispTriggerType<CommTrigger>(HexalAPI.modLoc("trigger/comm")) {
 		override val argc = 0
 
-		override fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, ctx: CastingContext) = CommTrigger()
+		override fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, env: CastingEnvironment) = CommTrigger()
 
 		override fun fromNbt(tag: Tag, level: ServerLevel) = CommTrigger.readFromNbt(tag, level)
 	}
@@ -39,7 +39,7 @@ object WispTriggerTypes {
 	val MOVE_TRIGGER_TYPE = object : WispTriggerRegistry.WispTriggerType<MoveTrigger>(HexalAPI.modLoc("trigger/move")) {
 		override val argc = 0
 
-		override fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, ctx: CastingContext) = MoveTrigger()
+		override fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, env: CastingEnvironment) = MoveTrigger()
 
 		override fun fromNbt(tag: Tag, level: ServerLevel) = MoveTrigger.readFromNbt(tag, level)
 	}
@@ -50,7 +50,7 @@ data class TickTrigger(val tick: Long) : IWispTrigger {
 
 	override fun shouldTrigger(wisp: BaseCastingWisp): Boolean {
 
-		if (wisp.level.gameTime < tick)
+		if (wisp.level().gameTime < tick)
 			return false
 
 		hasTriggered = true

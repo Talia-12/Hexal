@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.spell.getEntity
 import at.petrak.hexcasting.api.spell.getVec3
 import at.petrak.hexcasting.api.spell.iota.EntityIota
@@ -24,7 +24,7 @@ object OpMakeGate : VarargConstMediaAction {
     override val mediaCost: Int
         get() = HexalConfig.server.makeGateCost
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): List<Iota> {
         // if OpMakeGate receives a null, then it'll make a drifting gate that costs proportional to distance but can teleport anywhere in ambit.
         // if it receives a vec and no entity, all teleports will go to the position pointed to by that vec.
         // if it receives a vec and an entity, all teleports will go to that entity, offset by that vec.
@@ -36,16 +36,16 @@ object OpMakeGate : VarargConstMediaAction {
         if (argc == 2) {
             val entity = args.getEntity(1, argc)
 
-            if (entity is ServerPlayer && entity != ctx.caster)
+            if (entity is ServerPlayer && entity != env.caster)
                 throw MishapOthersName(entity)
-            ctx.assertVecInRange(entity.position())
+            env.assertVecInRange(entity.position())
             if (vec.length() > HexalConfig.server.maxGateOffset)
                 throw MishapInvalidIota.of(args[0], 1, "gate.offset", HexalConfig.server.maxGateOffset)
 
             return listOf(GateManager.makeGate(entity to vec))
         }
 
-        ctx.assertVecInRange(vec)
+        env.assertVecInRange(vec)
 
         return listOf(GateManager.makeGate(vec))
     }

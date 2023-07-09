@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.network.chat.Component
@@ -148,7 +148,7 @@ interface ILinkable {
 		 */
 		fun shouldRemove(): Boolean
 
-		fun pigment(): FrozenColorizer
+		fun pigment(): FrozenPigment
 
 		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 	}

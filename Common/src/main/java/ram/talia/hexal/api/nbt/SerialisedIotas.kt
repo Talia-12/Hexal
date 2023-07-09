@@ -1,13 +1,14 @@
 package ram.talia.hexal.api.nbt
 
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.ListIota
-import at.petrak.hexcasting.api.spell.iota.NullIota
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.IotaType.getTypeFromTag
+import at.petrak.hexcasting.api.casting.iota.ListIota
+import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.downcast
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.getTypeFromTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
@@ -58,7 +59,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
         val type = getTypeFromTag(tag) ?: return
         val data = tag[HexIotaTypes.KEY_DATA] ?: return
 
-        when (getTypeFromTag(tag)) {
+        when (type) {
             HexIotaTypes.ENTITY -> {
                 val uuidTag = data.downcast(CompoundTag.TYPE)["uuid"] ?: return
                 val uuid = NbtUtils.loadUUID(uuidTag)
@@ -166,13 +167,13 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
             }
 
             // If some entities have been removed, then force serialization so we don't loose the reference
-            var forceSerialize = false;
+            var forceSerialize = false
             for (entity in iotasReferencedEntities!!)
             {
                 if (entity.isRemoved)
                 {
-                    forceSerialize = true;
-                    break;
+                    forceSerialize = true
+                    break
                 }
             }
 
@@ -182,7 +183,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
                 tag = iotas!!.toNbtList()
                 // Abbreviated cache regeneration
                 iotas = tag!!.toIotaList(level)
-                this.level = level;
+                this.level = level
 
                 // Invalidate caches
                 iotasReferencedEntities = null
@@ -217,7 +218,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
         if (tag != null)
         {
             // Modify serialized version and invalidate cache
-            val newTag = HexIotaTypes.serialize(iota)
+            val newTag = IotaType.serialize(iota)
             tag!!.add(newTag)
 
             // Invalidate caches
@@ -302,10 +303,10 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
             // If the list is now empty, decay to fully null (and un-opinionated between serialized/deserialized modes)
             if (tag!!.size == 0)
             {
-                this.tag = null;
+                this.tag = null
             }
 
-            return HexIotaTypes.deserialize(poppedTag.asCompound, level)
+            return IotaType.deserialize(poppedTag.asCompound, level)
         }
         else if (iotas != null)
         {
@@ -359,7 +360,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
                     tagReferencedEntitiesAreLoaded!!.add(level.getEntity(uuid) != null)
                 }
             }
-            var referencedEntities: MutableList<Entity> = ArrayList()
+            val referencedEntities: MutableList<Entity> = ArrayList()
             for (uuid in tagReferencedEntityUUIDs!!)
             {
                 val entity = level.getEntity(uuid)
@@ -367,7 +368,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
                     referencedEntities.add(entity)
             }
 
-            return referencedEntities;
+            return referencedEntities
         }
         else if (iotas!= null)
         {
@@ -379,7 +380,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
                     scanIotaForEntities(iota, iotasReferencedEntities!!)
                 }
             }
-            return iotasReferencedEntities as List<Entity>;
+            return iotasReferencedEntities as List<Entity>
         }
         else {
             return ArrayList()
@@ -415,7 +416,7 @@ class SerialisedIota(private val iotaList: SerialisedIotaList = SerialisedIotaLi
         val listTag = iotaList.getTag()
         return if (listTag.size == 0)
         {
-            HexIotaTypes.serialize(NullIota())
+            IotaType.serialize(NullIota())
         }
         else
         {

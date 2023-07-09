@@ -1,7 +1,8 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
+import at.petrak.hexcasting.api.casting.eval.env.PlayerBasedCastEnv
+import at.petrak.hexcasting.api.casting.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
@@ -12,14 +13,14 @@ import java.util.*
 
 class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	override val asActionResult = listOf(EntityIota(player))
-	override val linkableHolder: ServerLinkableHolder = ServerLinkableHolder(this, player.getLevel())
+	override val linkableHolder: ServerLinkableHolder = ServerLinkableHolder(this, player.serverLevel())
 
 	override fun owner(): UUID = player.uuid
 
 	//region Transmitting
 	var transmittingTo: ILinkable?
 		get() {
-			val it = lazyTransmittingTo.get(player.getLevel()) ?: return null
+			val it = lazyTransmittingTo.get(player.serverLevel()) ?: return null
 
 			if (isInRange(it)) return it
 			resetTransmittingTo() // if it isn't in range stop transmitting to it
@@ -42,7 +43,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	}
 	//endregion
 
-	override fun maxSqrLinkRange() = Action.MAX_DISTANCE * Action.MAX_DISTANCE
+	override fun maxSqrLinkRange() = PlayerBasedCastEnv.AMBIT_RADIUS * PlayerBasedCastEnv.AMBIT_RADIUS
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<PlayerLinkstore, *> = LinkableTypes.PLAYER_LINKSTORE_TYPE
 
@@ -72,7 +73,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	}
 
 	class RenderCentre(val player: Player) : ILinkable.IRenderCentre {
-		override val clientLinkableHolder = ClientLinkableHolder(this, player.level, player.random)
+		override val clientLinkableHolder = ClientLinkableHolder(this, player.level(), player.random)
 
 		override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 {
 			if (!recursioning)
@@ -82,7 +83,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 
 		override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
-		override fun pigment() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(player)
+		override fun pigment(): FrozenPigment = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getPigment(player)
 
 		override fun getLinkableType() = LinkableTypes.PLAYER_LINKSTORE_TYPE
 	}

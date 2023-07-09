@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.blocks
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.xplat.IForgeLikeBlock
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
@@ -62,13 +62,13 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
         val relay = level.getBlockEntity(pos) as? BlockEntityRelay ?: return InteractionResult.PASS
 
         val stack = player.getItemInHand(hand).copy()
-        if (!IXplatAbstractions.INSTANCE.isColorizer(stack)) {
+        if (!IXplatAbstractions.INSTANCE.isPigment(stack)) {
             relay.debug()
             return InteractionResult.PASS
         }
 
         if (removeItem(player, stack, 1)) {
-            relay.setPigment(FrozenColorizer(stack, player.uuid), level)
+            relay.setPigment(FrozenPigment(stack, player.uuid), level)
             return InteractionResult.SUCCESS
         }
 

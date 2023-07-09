@@ -32,7 +32,7 @@ fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: Random
 		val colour: Int = if (random.nextBeta(15, 15) < coeff) sinkColouriser.nextColour(random) else sourceColouriser.nextColour(random)
 
 		level.addParticle(
-			ConjureParticleOptions(colour, false),
+			ConjureParticleOptions(colour),
 			(sourceCentre.x + delta.x * coeff),
 			(sourceCentre.y + delta.y * coeff),
 			(sourceCentre.z + delta.z * coeff),

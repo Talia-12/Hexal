@@ -1,9 +1,9 @@
 package ram.talia.hexal.api.nbt
 
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.asInt
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.IntTag
@@ -20,7 +20,7 @@ fun ListTag.toIotaList(level: ServerLevel): MutableList<Iota> {
 	val out = ArrayList<Iota>()
 	for (patTag in this) {
 		val tag = patTag.asCompound
-		out.add(HexIotaTypes.deserialize(tag, level))
+		out.add(IotaType.deserialize(tag, level))
 	}
 	return out
 }
@@ -29,7 +29,7 @@ fun ListTag.toIotaList(level: ServerLevel): MutableList<Iota> {
 fun List<Iota>.toNbtList(): ListTag {
 	val patsTag = ListTag()
 	for (pat in this) {
-		patsTag.add(HexIotaTypes.serialize(pat))
+		patsTag.add(IotaType.serialize(pat))
 	}
 	return patsTag
 }

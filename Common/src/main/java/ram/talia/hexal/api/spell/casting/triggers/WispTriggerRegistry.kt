@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.spell.casting.triggers
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
@@ -36,7 +36,7 @@ object WispTriggerRegistry {
 		/**
 		 * Build an [IWispTrigger] of this type from spell arguments, to be used in OpWispSetTrigger
 		 */
-		abstract fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, ctx: CastingContext): T
+		abstract fun makeFromArgs(wisp: BaseCastingWisp, args: List<Iota>, env: CastingEnvironment): T
 
 		/**
 		 * Takes a tag from [IWispTrigger.writeToNbt] and wraps it inside a [CompoundTag] that also stores a reference to the [WispTriggerType] of the

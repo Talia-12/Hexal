@@ -21,7 +21,7 @@ import java.util.*
 import java.util.function.Consumer
 import javax.annotation.ParametersAreNonnullByDefault
 
-class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.server, level, name, null) {
+class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.server, level, name) {
 
 	private val sendMessageListeners: MutableList<Consumer<Component>> = mutableListOf()
 	init {
@@ -43,7 +43,7 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 	override fun die(source: DamageSource) { }
 	override fun tick() { }
 	override fun updateOptions(pkt: ServerboundClientInformationPacket) { }
-	override fun getServer() = level.server
+	override fun getServer() = level().server
 
 	override fun getAdvancements(): PlayerAdvancements {
 		return FakePlayerAdvancements(this)
@@ -89,7 +89,6 @@ class FakePlayer(level: ServerLevel, name: GameProfile) : ServerPlayer(level.ser
 		override fun handleBlockEntityTagQuery(packet: ServerboundBlockEntityTagQuery) {}
 		override fun handleMovePlayer(packet: ServerboundMovePlayerPacket) {}
 		override fun teleport(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {}
-		override fun teleport(x: Double, y: Double, z: Double, yaw: Float, pitch: Float, flags: Set<ClientboundPlayerPositionPacket.RelativeArgument>) {}
 		override fun handlePlayerAction(packet: ServerboundPlayerActionPacket) {}
 		override fun handleUseItemOn(packet: ServerboundUseItemOnPacket) {}
 		override fun handleUseItem(packet: ServerboundUseItemPacket) {}

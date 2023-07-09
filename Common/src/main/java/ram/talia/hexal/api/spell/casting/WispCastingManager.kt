@@ -1,12 +1,10 @@
 package ram.talia.hexal.api.spell.casting
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.casting.CastingHarness
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType.isTooLargeToSerialize
+import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.isTooLargeToSerialize
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.MinecraftServer
@@ -54,7 +52,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 		if (caster == null)
 			return
 
-		val cast = WispCast(wisp, priority, caster!!.level.gameTime, hex, initialStack, initialRavenmind)
+		val cast = WispCast(wisp, priority, caster!!.level().gameTime, hex, initialStack, initialRavenmind)
 
 		// if the wisp is one that is hard enough to forkbomb with (specifically, lasting wisps), let it go through without reaching the queue
 		if (specialHandlers.any { handler -> handler.invoke(this, cast).also {
@@ -73,7 +71,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	fun executeCasts() {
 		if (caster == null)
 			return
-		if (caster!!.level.isClientSide) {
+		if (caster!!.level().isClientSide) {
 			HexalAPI.LOGGER.info("HOW DID THIS HAPPEN")
 			return
 		}
@@ -93,13 +91,13 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 			itr.remove()
 
 			// if the wisp isn't chunkloaded at the moment, delete it from the queue (this is a small enough edge case I can't be bothered robustly handling it)
-			val wisp = cast.wisp ?: (caster!!.level as ServerLevel).getEntity(cast.wispUUID) as? BaseCastingWisp ?: continue
+			val wisp = cast.wisp ?: caster!!.serverLevel().getEntity(cast.wispUUID) as? BaseCastingWisp ?: continue
 			cast.wisp = wisp
 
 			if (wisp.isRemoved)
 				continue
 
-			if (wisp.level.dimension() != caster?.level?.dimension()) {
+			if (wisp.level().dimension() != caster?.level()?.dimension()) {
 				wisp.castCallback(WispCastResult(wisp, false, mutableListOf(), NullIota(), true))
 				continue
 			}
@@ -115,7 +113,6 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	/**
 	 * Actually executes the cast described in [cast]. Will throw a NullPointerException if it somehow got here with [cast] == null.
 	 */
-	@Suppress("CAST_NEVER_SUCCEEDS")
 	fun cast(cast: WispCast): WispCastResult {
 		val ctx = CastingContext(
 			caster!!,

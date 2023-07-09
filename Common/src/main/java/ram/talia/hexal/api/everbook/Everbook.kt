@@ -1,10 +1,10 @@
 package ram.talia.hexal.api.everbook
 
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.StringTag
@@ -35,7 +35,7 @@ class Everbook(val uuid: UUID, private val entries: MutableMap<String, Pair<HexP
 
 	fun getIota(key: HexPattern, level: ServerLevel): Iota {
 		val entry = entries[getKey(key)]
-		return if (entry == null) NullIota() else HexIotaTypes.deserialize(entry.second, level)
+		return if (entry == null) NullIota() else IotaType.deserialize(entry.second, level)
 	}
 
 	internal fun getIota(key: String) : CompoundTag {
@@ -44,7 +44,7 @@ class Everbook(val uuid: UUID, private val entries: MutableMap<String, Pair<HexP
 	}
 
 	fun setIota(key: HexPattern, iota: Iota) {
-		entries[getKey(key)] = Pair(key, HexIotaTypes.serialize(iota))
+		entries[getKey(key)] = Pair(key, IotaType.serialize(iota))
 
 		if (macroHolder.isMacro(key))
 			macroHolder.recalcMacros()
@@ -97,9 +97,9 @@ class Everbook(val uuid: UUID, private val entries: MutableMap<String, Pair<HexP
 	 */
 	fun filterIotasIllegalInterworld(level: ServerLevel): Everbook {
 		entries.replaceAll { _, iotaCompound ->
-			val iota = MishapIllegalInterworldIota.replaceInNestedIota(HexIotaTypes.deserialize(iotaCompound.second, level))
+			val iota = MishapIllegalInterworldIota.replaceInNestedIota(IotaType.deserialize(iotaCompound.second, level))
 
-			iotaCompound.first to HexIotaTypes.serialize(iota)
+			iotaCompound.first to IotaType.serialize(iota)
 		}
 
 		macroHolder.recalcMacros()

@@ -1,7 +1,8 @@
 package ram.talia.hexal.api.everbook
 
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -24,7 +25,7 @@ class MacroHolder(val everbook: Everbook) {
 	}
 
 	fun getMacro(key: HexPattern, level: ServerLevel): List<Iota>? {
-		return macros[getKey(key)]?.map { HexIotaTypes.deserialize(it, level) }
+		return macros[getKey(key)]?.map { IotaType.deserialize(it, level) }
 	}
 
 	fun isMacro(key: HexPattern): Boolean {

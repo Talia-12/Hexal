@@ -1,9 +1,9 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.Vec3Iota
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.Vec3Iota
 import at.petrak.hexcasting.api.utils.asInt
 import at.petrak.hexcasting.api.utils.asUUID
 import at.petrak.hexcasting.api.utils.downcast
@@ -30,9 +30,8 @@ object LinkableTypes {
 		override fun fromSync(tag: Tag, level: Level) = level.getEntity(tag.asInt) as? LinkableEntity
 		override fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag) = (centre as LinkableEntity).id == tag.asInt
 		override val canCast = true
-		@Suppress("CAST_NEVER_SUCCEEDS")
-		override fun linkableFromCastingContext(ctx: CastingContext): LinkableEntity? {
-			val mCast = ctx as? IMixinCastingContext
+		override fun linkableFromCastingContext(env: CastingEnvironment): LinkableEntity? {
+			val mCast = env as? IMixinCastingContext
 			return mCast?.wisp
 		}
 		override val castingContextPriority = 0
@@ -58,8 +57,8 @@ object LinkableTypes {
 		override fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag) = (centre as PlayerLinkstore.RenderCentre).player.id == tag.asInt
 		override val canCast = true
 
-		override fun linkableFromCastingContext(ctx: CastingContext)
-			= IXplatAbstractions.INSTANCE.getLinkstore(ctx.caster)
+		override fun linkableFromCastingContext(env: CastingEnvironment)
+			= IXplatAbstractions.INSTANCE.getLinkstore(env.caster)
 
 		override val castingContextPriority = -100
 
@@ -110,12 +109,12 @@ object LinkableTypes {
 
 		override val canCast = false
 
-		override fun linkableFromCastingContext(ctx: CastingContext) = null
+		override fun linkableFromCastingContext(env: CastingEnvironment) = null
 
 		override val castingContextPriority = -10_000_000
 
 		override fun linkableFromIota(iota: Iota, level: ServerLevel): BlockEntityRelay? = (iota as? Vec3Iota)?.let {
-			 level.getBlockEntity(BlockPos(it.vec3)) as? BlockEntityRelay
+			 level.getBlockEntity(BlockPos.containing(it.vec3)) as? BlockEntityRelay
 		}
 
 		override val iotaPriority = 0

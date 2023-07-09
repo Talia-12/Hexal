@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.spell.iota;
 
-import at.petrak.hexcasting.api.spell.iota.Iota;
-import at.petrak.hexcasting.api.spell.iota.IotaType;
+import at.petrak.hexcasting.api.casting.iota.Iota;
+import at.petrak.hexcasting.api.casting.iota.IotaType;
 import at.petrak.hexcasting.api.utils.HexUtils;
 import com.mojang.datafixers.util.Either;
 import kotlin.Pair;

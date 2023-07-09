@@ -2,6 +2,7 @@ package ram.talia.hexal.common.entities
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.client.Minecraft
@@ -33,7 +34,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 
 	override fun get() = this
 
-	override fun pigment() = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+	override fun pigment(): FrozenPigment = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 
 	override fun getEyeHeight(pose: Pose, dim: EntityDimensions) = 0f
 
