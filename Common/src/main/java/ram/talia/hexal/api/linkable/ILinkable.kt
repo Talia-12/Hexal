@@ -148,7 +148,7 @@ interface ILinkable {
 		 */
 		fun shouldRemove(): Boolean
 
-		fun colouriser(): FrozenColorizer
+		fun pigment(): FrozenColorizer
 
 		fun getLinkableType(): LinkableRegistry.LinkableType<*, *>
 	}

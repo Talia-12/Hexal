@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
-import ram.talia.hexal.common.casting.Patterns;
+import ram.talia.hexal.common.lib.hex.HexActions;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -185,7 +185,7 @@ public abstract class MixinCastingHarness {
 				
 				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
 				if (!harness.getEscapeNext() && iota.getType() == HexIotaTypes.PATTERN &&
-						Iota.tolerates(iota, Patterns.LINK_COMM_CLOSE_TRANSMIT))
+						Iota.tolerates(iota, HexActions.LINK_COMM_CLOSE_TRANSMIT))
 					break;
 				
 				iter.remove();

@@ -82,7 +82,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 
 		override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
-		override fun colouriser() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(player)
+		override fun pigment() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(player)
 
 		override fun getLinkableType() = LinkableTypes.PLAYER_LINKSTORE_TYPE
 	}

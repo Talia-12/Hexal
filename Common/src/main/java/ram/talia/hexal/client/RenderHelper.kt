@@ -23,8 +23,8 @@ fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: Random
 		ParticleStatus.MINIMAL -> 0.5
 	}
 
-	val sourceColouriser = source.colouriser()
-	val sinkColouriser = sink.colouriser()
+	val sourceColouriser = source.pigment()
+	val sinkColouriser = sink.pigment()
 
 	for (i in 0 until dist.toInt()) {
 		val coeff = (i / dist) + (level.gameTime % 20) / (20 * dist)

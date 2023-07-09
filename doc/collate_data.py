@@ -198,7 +198,7 @@ pattern_pat = re.compile(
 	r'HexPattern\.fromAngles\("([qweasd]+)", HexDir\.(\w+)\),\s*modLoc\("([^"]+)"\),[^,]+?(?:makeConstantOp|Op\w+).*?(\btrue)?\)(?:[^\)]+?\bval\b|(?:(?!\bval\b)(?:.))+$)',
     re.S,
 )
-pattern_stubs = [(None, "ram/talia/hexal/common/casting/Patterns.kt"), ("Fabric", "ram/talia/hexal/fabric/FabricHexalInitializer.kt")]
+pattern_stubs = [(None, "ram/talia/hexal/common/lib/hex/HexActions.kt"), ("Fabric", "ram/talia/hexal/fabric/FabricHexalInitializer.kt")]
 def fetch_patterns(root_data):
 	registry = {}
 	for loader, stub in pattern_stubs:

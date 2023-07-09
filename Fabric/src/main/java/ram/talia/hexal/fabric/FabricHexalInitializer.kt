@@ -13,7 +13,7 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.api.gates.GateManager
 import ram.talia.hexal.api.gates.GateSavedData
-import ram.talia.hexal.common.casting.Patterns
+import ram.talia.hexal.common.lib.hex.HexActions
 import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
@@ -37,7 +37,7 @@ object FabricHexalInitializer : ModInitializer {
 
         initRegistries()
 
-        Patterns.registerPatterns()
+        HexActions.registerPatterns()
     }
 
     private fun initListeners() {
@@ -78,7 +78,7 @@ object FabricHexalInitializer : ModInitializer {
     }
 
     private fun fabricOnlyRegistration() {
-        Patterns.make(HexPattern.fromAngles("daqqqa", HexDir.WEST), modLoc("interop/fabric_only/phase_block"), OpPhaseBlock, false)
+        HexActions.make(HexPattern.fromAngles("daqqqa", HexDir.WEST), modLoc("interop/fabric_only/phase_block"), OpPhaseBlock, false)
     }
 
 

@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.blocks.entity
 
 import at.petrak.hexcasting.api.block.HexBlockEntity
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.asActionResult
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.putCompound
@@ -29,13 +29,6 @@ import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.times
 import ram.talia.hexal.common.blocks.BlockRelay
 import ram.talia.hexal.common.lib.HexalBlockEntities
-import software.bernie.geckolib3.core.IAnimatable
-import software.bernie.geckolib3.core.PlayState
-import software.bernie.geckolib3.core.builder.AnimationBuilder
-import software.bernie.geckolib3.core.controller.AnimationController
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent
-import software.bernie.geckolib3.core.manager.AnimationData
-import software.bernie.geckolib3.core.manager.AnimationFactory
 import java.util.*
 import kotlin.math.min
 
@@ -51,7 +44,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     private val nonRelaysLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
     private var mediaExchangersLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
 
-    fun setColouriser(colorizer: FrozenColorizer, level: Level) = relayNetwork.setColouriser(colorizer, level.gameTime)
+    fun setPigment(pigment: FrozenPigment, level: Level) = relayNetwork.setPigment(pigment, level.gameTime)
 
     fun serverTick() {
          checkLinks()
@@ -137,7 +130,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         }
 
         val network = RelayNetwork(root, relays, newNonRelaysLinked, newMediaExchangersLinked)
-        network.setColouriser(root.colouriser(), root.level?.gameTime ?: 0L)
+        network.setPigment(root.pigment(), root.level?.gameTime ?: 0L)
 
         return network
     }
@@ -249,7 +242,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         return Vec3.atCenterOf(pos) + getBobberPosition()
     }
 
-    override fun colouriser(): FrozenColorizer = relayNetwork.colouriser
+    override fun pigment(): FrozenPigment = relayNetwork.pigment
 
     //endregion
 
@@ -283,10 +276,10 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
     override fun loadModData(tag: CompoundTag) {
         HexalAPI.LOGGER.info("loading $tag at $pos on $level")
-        if (tag.contains(TAG_COLOURISER))
-            relayNetwork.colouriser = FrozenColorizer.fromNBT(tag.getCompound(TAG_COLOURISER))
-        if (tag.contains(TAG_COLOURISER_TIME))
-            relayNetwork.timeColouriserSet = tag.getLong(TAG_COLOURISER_TIME)
+        if (tag.contains(TAG_PIGMENT))
+            relayNetwork.pigment = FrozenPigment.fromNBT(tag.getCompound(TAG_PIGMENT))
+        if (tag.contains(TAG_PIGMENT_TIME))
+            relayNetwork.timeColouriserSet = tag.getLong(TAG_PIGMENT_TIME)
         if (tag.contains(TAG_LINKABLE_HOLDER))
             serialisedLinkableHolder = tag.getCompound(TAG_LINKABLE_HOLDER)
         if (tag.contains(TAG_RELAYS_LINKED_DIRECTLY))
@@ -301,8 +294,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     }
 
     override fun saveModData(tag: CompoundTag) {
-        tag.put(TAG_COLOURISER, relayNetwork.colouriser.serializeToNBT())
-        tag.putLong(TAG_COLOURISER_TIME, relayNetwork.timeColouriserSet)
+        tag.put(TAG_PIGMENT, relayNetwork.pigment.serializeToNBT())
+        tag.putLong(TAG_PIGMENT_TIME, relayNetwork.timeColouriserSet)
         tag.putCompound(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
         tag.putList(TAG_RELAYS_LINKED_DIRECTLY, relaysDirectlyLinkedToTag())
         tag.putList(TAG_NON_RELAYS_LINKED_DIRECTLY, nonRelaysLinkedDirectlyToTag())
@@ -388,10 +381,10 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             }
 
         var timeColouriserSet = 0L
-        var colouriser: FrozenColorizer = FrozenColorizer(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
+        var pigment: FrozenPigment = FrozenPigment(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
 
-        fun setColouriser(colorizer: FrozenColorizer, time: Long) {
-            colouriser = colorizer
+        fun setPigment(pigment: FrozenPigment, time: Long) {
+            this.pigment = pigment
             timeColouriserSet = time
             root.sync()
         }
@@ -435,7 +428,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
         fun absorb(other: RelayNetwork) {
             if (this.timeColouriserSet < other.timeColouriserSet) {
-                this.setColouriser(other.colouriser, other.timeColouriserSet)
+                this.setPigment(other.pigment, other.timeColouriserSet)
             }
 
             this.relays.addAll(other.relays)
@@ -456,8 +449,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     companion object {
         const val MAX_SQR_LINK_RANGE = 32.0*32.0
 
-        const val TAG_COLOURISER = "hexal:colouriser"
-        const val TAG_COLOURISER_TIME = "hexal:colouriser_time"
+        const val TAG_PIGMENT = "hexal:pigment"
+        const val TAG_PIGMENT_TIME = "hexal:pigment_time"
         const val TAG_LINKABLE_HOLDER = "hexal:linkable_holder"
         const val TAG_RELAYS_LINKED_DIRECTLY = "hexal:relays_linked_directly"
         const val TAG_NON_RELAYS_LINKED_DIRECTLY = "hexal:non_relays_linked_directly"

@@ -1,7 +1,7 @@
 package ram.talia.hexal.client.blocks
 
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.math.Vector3f
+import com.mojang.math.Axis
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
@@ -61,7 +61,7 @@ class BlockEntityMediafiedStorageRenderer : BlockEntityRenderer<BlockEntityMedia
                 vertex(8f, 0f, -8f, 0f, 0f, -1f, uStart + 16f, v + WALL_HEIGHT)
                 vertex(-8f, 0f, -8f, 0f, 0f, -1f, uStart, v + WALL_HEIGHT)
 
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(90f)) //rotate to next wall
+                poseStack.mulPose(Axis.YP.rotationDegrees(90f)) //rotate to next wall
             }
         }
 
@@ -104,20 +104,20 @@ class BlockEntityMediafiedStorageRenderer : BlockEntityRenderer<BlockEntityMedia
             val circleRotation = (circleTime * SPINS_PER_SECOND * 18) % 360f
 
             poseStack.translate(0.0, 8.0, 0.0)
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(circleRotation))
+            poseStack.mulPose(Axis.YP.rotationDegrees(circleRotation))
             poseStack.scale(circleScale, circleScale, circleScale)
 
             drawHorizontalQuad(CIRCLE_RADIUS, CIRCLE_U, CIRCLE_V, 1f)
 
             poseStack.scale(1 / circleScale, 1 / circleScale, 1 / circleScale)
-            poseStack.mulPose(Vector3f.YN.rotationDegrees(circleRotation))
+            poseStack.mulPose(Axis.YN.rotationDegrees(circleRotation))
             poseStack.translate(0.0, -8.0, 0.0)
         }
 
 
         //top box half
         poseStack.translate(0.0, height, 0.0)
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(angle))
+        poseStack.mulPose(Axis.YP.rotationDegrees(angle))
         drawWalls(UPPER_WALL_V)
         poseStack.translate(0.0, WALL_HEIGHT.toDouble(), 0.0)
         drawHorizontalQuad(8f, TOP_U, TOP_V, 1f)

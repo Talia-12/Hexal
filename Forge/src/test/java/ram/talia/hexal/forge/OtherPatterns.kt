@@ -12,7 +12,7 @@ import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
 import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIf
 import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
 import net.minecraft.resources.ResourceLocation
-import ram.talia.hexal.common.casting.Patterns
+import ram.talia.hexal.common.lib.hex.HexActions
 
 object OtherPatterns {
 	@JvmField
@@ -64,22 +64,22 @@ object OtherPatterns {
 
 
 	@JvmField
-	val TIMEKEEPER = Patterns.CURRENT_TICK
+	val TIMEKEEPER = HexActions.CURRENT_TICK
 
 	@JvmField
-	val ZONE_DSTL_WISP = Patterns.ZONE_ENTITY_WISP
+	val ZONE_DSTL_WISP = HexActions.ZONE_ENTITY_WISP
 	@JvmField
-	val WISP_TRIGGER_COMM = Patterns.WISP_TRIGGER_COMM
+	val WISP_TRIGGER_COMM = HexActions.WISP_TRIGGER_COMM
 
 	@JvmField
-	val LINK = Patterns.LINK
+	val LINK = HexActions.LINK
 	@JvmField
-	val POPULARITY = Patterns.LINK_NUM
+	val POPULARITY = HexActions.LINK_NUM
 
 	@JvmField
-	val SEND_IOTA = Patterns.LINK_COMM_SEND
+	val SEND_IOTA = HexActions.LINK_COMM_SEND
 	@JvmField
-	val RECITATION = Patterns.LINK_COMM_READ
+	val RECITATION = HexActions.LINK_COMM_READ
 
 	private fun patternOf(op: Action): PatternIota = PatternIota(PatternRegistry.lookupPattern(PatternRegistry.lookupPattern(op)!!).prototype)
 	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(PatternRegistry.lookupPattern(loc).prototype)

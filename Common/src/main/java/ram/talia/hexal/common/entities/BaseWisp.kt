@@ -33,7 +33,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 
 	override fun get() = this
 
-	override fun colouriser() = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+	override fun pigment() = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
 
 	override fun getEyeHeight(pose: Pose, dim: EntityDimensions) = 0f
 
@@ -69,7 +69,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 = renderCentre()
 
 	fun playTrailParticles() {
-		playTrailParticles(colouriser())
+		playTrailParticles(pigment())
 	}
 
 	protected open fun playWispParticles(colouriser: FrozenColorizer) {

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package ram.talia.hexal.common.casting
+package ram.talia.hexal.common.lib.hex
 
 import at.petrak.hexcasting.api.PatternRegistry
 import at.petrak.hexcasting.api.spell.Action
@@ -25,7 +25,7 @@ import ram.talia.hexal.common.casting.actions.spells.link.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
 import ram.talia.hexal.common.entities.BaseWisp
 
-object Patterns {
+object HexActions {
 
 	@JvmField
 	var PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()

@@ -68,7 +68,7 @@ class BlockRelay(properties: Properties) : Block(properties), EntityBlock, IForg
         }
 
         if (removeItem(player, stack, 1)) {
-            relay.setColouriser(FrozenColorizer(stack, player.uuid), level)
+            relay.setPigment(FrozenColorizer(stack, player.uuid), level)
             return InteractionResult.SUCCESS
         }
 

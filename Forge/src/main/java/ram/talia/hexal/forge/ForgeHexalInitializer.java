@@ -15,7 +15,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.config.HexalConfig;
-import ram.talia.hexal.common.casting.Patterns;
+import ram.talia.hexal.common.lib.hex.HexActions;
 import ram.talia.hexal.common.lib.*;
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
 import ram.talia.hexal.common.lib.feature.HexalFeatures;
@@ -83,7 +83,7 @@ public class ForgeHexalInitializer {
 				 ForgePacketHandler.init();
 			 }));
 		
-		modBus.addListener((FMLCommonSetupEvent evt) -> evt.enqueueWork(Patterns::registerPatterns));
+		modBus.addListener((FMLCommonSetupEvent evt) -> evt.enqueueWork(HexActions::registerPatterns));
 		
 		// We have to do these at some point when the registries are still open
 //		modBus.addGenericListener(Item.class, (GenericEvent<Item> evt) -> HexalRecipeSerializers.registerTypes());
