@@ -69,7 +69,7 @@ object HexActions {
 	@JvmField
 	val CURRENT_TICK = make(HexPattern.fromAngles("ddwaa", HexDir.NORTH_WEST), modLoc("current_tick"), OpCurrentTick)
 	@JvmField
-	val REMAINING_EVALS = make(HexPattern.fromAngles("qqaed", HexDir.SOUTH_EAST), modLoc("remaining_evals"), OpRemainingEvals)
+	val REMAINING_EVALS = make(HexPattern.fromAngles("qqaed", HexDir.SOUTH_EAST), modLoc("remaining_evals"), OpRemainingOps)
 	@JvmField
 	val BREATH = make(HexPattern.fromAngles("aqawdwaqawd", HexDir.NORTH_WEST), modLoc("breath"), OpGetBreath)
 	@JvmField

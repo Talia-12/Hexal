@@ -2,18 +2,18 @@
 
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
-import at.petrak.hexcasting.api.spell.SpellList
-import at.petrak.hexcasting.api.spell.asActionResult
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.ListIota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.SpellList
+import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.ListIota
+import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import com.mojang.datafixers.util.Either
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
-import net.minecraft.world.inventory.CraftingContainer
+import net.minecraft.world.inventory.TransientCraftingContainer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
 import ram.talia.hexal.api.config.HexalConfig
@@ -41,27 +41,26 @@ object OpCraftMote : ConstMediaAction {
     override val mediaCost: Int
         get() = HexalConfig.server.craftItemCost
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
         val input = args.getMoteOrList(0, argc) ?: return listOf<Iota>().asActionResult
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(env.caster?.position())
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(env.caster?.position(), "storage_unloaded")
 
         val griddedIotas = makeItemIotaCraftingGrid(input)
 
-        val container = CraftingContainer(AutoCraftingMenu(), 3, 3)
+        val container = TransientCraftingContainer(AutoCraftingMenu(), 3, 3)
 
         for ((idx, iota) in griddedIotas.withIndex()) {
             if (iota != null)
                 iota.record?.toStack()?.let { container.setItem(idx, it) }
         }
 
-        val recman = ctx.world.recipeManager
+        val recman = env.world.recipeManager
         val recipes = recman.getAllRecipesFor(RecipeType.CRAFTING)
-        val recipe = recipes.find { it.matches(container, ctx.world) } ?: return emptyList<Iota>().asActionResult
+        val recipe = recipes.find { it.matches(container, env.world) } ?: return emptyList<Iota>().asActionResult
 
-        val itemResult = recipe.assemble(container)
+        val itemResult = recipe.assemble(container, env.world.registryAccess())
         val remainingItems = recipe.getRemainingItems(container).filter { item -> !item.isEmpty }
 
         val timesToCraft = getMinCount(griddedIotas)

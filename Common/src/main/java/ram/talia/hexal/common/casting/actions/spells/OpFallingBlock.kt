@@ -1,9 +1,10 @@
 package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.mod.HexConfig
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.BlockParticleOption
@@ -27,12 +28,12 @@ import kotlin.math.min
 object OpFallingBlock : SpellAction {
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
 		val pos = args.getVec3(0, argc)
-		ctx.assertVecInRange(pos)
+		env.assertVecInRange(pos)
 
-		val centered = Vec3.atCenterOf(BlockPos(pos))
-		return Triple(
+		val centered = Vec3.atCenterOf(BlockPos.containing(pos))
+		return SpellAction.Result(
 			Spell(pos),
 			HexalConfig.server.fallingBlockCost,
 			listOf(ParticleSpray.burst(centered, 1.0))
@@ -40,16 +41,16 @@ object OpFallingBlock : SpellAction {
 	}
 
 	private data class Spell(val v: Vec3) : RenderedSpell {
-		override fun cast(ctx: CastingContext) {
-			val pos = BlockPos(v)
+		override fun cast(env: CastingEnvironment) {
+			val pos = BlockPos.containing(v)
 
-			val blockstate = ctx.world.getBlockState(pos)
-			if (!ctx.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isBreakingAllowed(ctx.world, pos, blockstate, ctx.caster))
+			val blockstate = env.world.getBlockState(pos)
+			if (!env.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isBreakingAllowed(env.world, pos, blockstate, env.caster))
 				return
 
 			val tier = HexConfig.server().opBreakHarvestLevel()
 
-			val stateBelow = ctx.world.getBlockState(pos.below())
+			val stateBelow = env.world.getBlockState(pos.below())
 
 			if ((
 					FallingBlock.isFree(stateBelow)
@@ -57,14 +58,14 @@ object OpFallingBlock : SpellAction {
 					|| stateBelow.`is`(BlockTags.SLABS)
 				)
 				&& !blockstate.isAir
-				&& blockstate.getDestroySpeed(ctx.world, pos) >= 0f // fix being able to break bedrock &c
-				&& ctx.world.getBlockEntity(pos) == null
+				&& blockstate.getDestroySpeed(env.world, pos) >= 0f // fix being able to break bedrock &c
+				&& env.world.getBlockEntity(pos) == null
 				&& IXplatAbstractions.INSTANCE.isCorrectTierForDrops(tier, blockstate)
-				&& canSilkTouch(ctx.world, pos, blockstate, tier.level, ctx.caster)
+				&& canSilkTouch(env.world, pos, blockstate, tier.level, env.caster)
 			) {
-				val falling: FallingBlockEntity = FallingBlockEntity.fall(ctx.world, pos, blockstate)
+				val falling: FallingBlockEntity = FallingBlockEntity.fall(env.world, pos, blockstate)
 				falling.time = 1
-				ctx.world.sendParticles(
+				env.world.sendParticles(
 					BlockParticleOption(ParticleTypes.FALLING_DUST, blockstate),
 					pos.x + 0.5,
 					pos.y + 0.5,

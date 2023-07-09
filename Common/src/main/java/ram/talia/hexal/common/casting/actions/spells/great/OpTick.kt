@@ -1,15 +1,13 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS", "UNCHECKED_CAST")
-
 package ram.talia.hexal.common.casting.actions.spells.great
 
-import at.petrak.hexcasting.api.spell.ParticleSpray
-import at.petrak.hexcasting.api.spell.RenderedSpell
-import at.petrak.hexcasting.api.spell.SpellAction
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getBlockPos
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
+import at.petrak.hexcasting.api.casting.castables.SpellAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getBlockPos
+import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -27,15 +25,15 @@ object OpTick : SpellAction {
         return HexalConfig.server.tickConstantCost + HexalConfig.server.tickCostPerTicked * timesTicked
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val pos = args.getBlockPos(0, argc)
-        val ictx = ctx as IMixinCastingContext
+        val ictx = env as IMixinCastingContext
 
-        ctx.assertVecInRange(pos)
+        env.assertVecInRange(pos.center)
 
         val cost = costFromTimesTicked(ictx.getTimesTicked(pos))
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(pos),
                 cost,
                 listOf(ParticleSpray.cloud(Vec3.atCenterOf(pos), 1.0, 5))
@@ -43,16 +41,16 @@ object OpTick : SpellAction {
     }
 
     private data class Spell(val pos: BlockPos) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
-            val ictx = ctx as IMixinCastingContext
+        override fun cast(env: CastingEnvironment) {
+            val ictx = env as IMixinCastingContext
             ictx.incTimesTicked(pos)
 
             // https://github.com/haoict/time-in-a-bottle/blob/1.19/src/main/java/com/haoict/tiab/entities/TimeAcceleratorEntity.java
-            val blockState = ctx.world.getBlockState(pos)
-            val level: ServerLevel = ctx.world
+            val blockState = env.world.getBlockState(pos)
+            val level: ServerLevel = env.world
             val targetBE = level.getBlockEntity(pos)
 
-            if (!HexalConfig.server.isAccelerateAllowed(Registry.BLOCK.getKey(blockState.block)))
+            if (!HexalConfig.server.isAccelerateAllowed(BuiltInRegistries.BLOCK.getKey(blockState.block)))
                 return
 
             if (targetBE != null) {

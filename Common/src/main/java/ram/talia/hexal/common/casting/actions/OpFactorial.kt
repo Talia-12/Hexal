@@ -1,10 +1,10 @@
 package ram.talia.hexal.common.casting.actions
 
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.DoubleIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import ram.talia.hexal.api.HexalAPI
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.DoubleIota
+import at.petrak.hexcasting.api.casting.iota.Iota
 import kotlin.math.*
 
 object OpFactorial : ConstMediaAction {
@@ -33,7 +33,7 @@ object OpFactorial : ConstMediaAction {
 		return exp(logGamma(x))
 	}
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+	override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
 		val arg = args.getDouble(0, argc)
 		val argInt = arg.roundToInt()
 		if (argInt >= 0 && DoubleIota.tolerates(arg, argInt.toDouble())) {

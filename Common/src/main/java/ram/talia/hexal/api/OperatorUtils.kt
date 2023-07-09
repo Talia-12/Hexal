@@ -9,6 +9,7 @@ import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.decoration.ItemFrame
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.npc.Villager
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -84,6 +85,16 @@ fun <T, R> Iterable<T>.reductions(initial: R, operation: (acc: R, T) -> R) : Seq
 inline val Map<MediafiedItemManager.Index, ItemRecord>.asActionResult get() = this.map { (index, _) -> MoteIota(index) }.asActionResult
 
 fun ItemStack.asActionResult(storageUUID: UUID) = listOf(MoteIota.makeIfStorageLoaded(this, storageUUID) ?: NullIota())
+
+fun List<Iota>.getVillager(idx: Int, argc: Int = 0): Villager {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    if (x is EntityIota) {
+        val e = x.entity
+        if (e is Villager)
+            return e
+    }
+    throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "villager")
+}
 
 fun List<Iota>.getBaseWisp(idx: Int, argc: Int = 0): BaseWisp {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }

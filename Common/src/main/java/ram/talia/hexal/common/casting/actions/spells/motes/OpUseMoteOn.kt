@@ -3,11 +3,10 @@ package ram.talia.hexal.common.casting.actions.spells.motes
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.misc.MediaConstants
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.utils.asTranslatedComponent
 import at.petrak.hexcasting.ktxt.UseOnContext
 import at.petrak.hexcasting.xplat.IXplatAbstractions
@@ -33,7 +32,7 @@ object OpUseMoteOn : VarargSpellAction {
     override fun execute(
             args: List<Iota>,
             argc: Int,
-            ctx: CastingEnvironment
+            env: CastingEnvironment
     ): SpellAction.Result {
         val item = args.getMote(0, argc)
 
@@ -44,13 +43,13 @@ object OpUseMoteOn : VarargSpellAction {
             // Entity Version
             val target = args.getEntity(1, argc)
 
-            ctx.assertEntityInRange(target)
+            env.assertEntityInRange(target)
 
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
-                throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+                throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
 
-            return Triple(
+            return SpellAction.Result(
                 EntityTargetSpell(target, item),
                 HexalConfig.server.useItemOnCost,
                 listOf(ParticleSpray.burst(Vec3.atCenterOf(target.onPos), 1.0))
@@ -63,9 +62,9 @@ object OpUseMoteOn : VarargSpellAction {
 
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
-                throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+                throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
 
-            return Triple(
+            return SpellAction.Result(
                 BlockTargetSpell(target, direction, item),
                 MediaConstants.DUST_UNIT,
                 listOf(ParticleSpray.burst(Vec3.atCenterOf(BlockPos(target)), 1.0))
@@ -74,21 +73,21 @@ object OpUseMoteOn : VarargSpellAction {
     }
 
     private data class EntityTargetSpell(val entity: Entity, val item: MoteIota) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
-            if (!ctx.isEntityInRange(entity))
+        override fun cast(env: CastingEnvironment) {
+            if (!env.isEntityInRange(entity))
                 return
 
             val itemStack = ItemStack(item.item, 1)
             itemStack.tag = item.tag
 
             // Swap item in hand to the new stack
-            val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
-            ctx.caster.setItemInHand(ctx.castingHand, itemStack)
+            val oldStack = env.caster.getItemInHand(env.castingHand)
+            env.caster.setItemInHand(env.castingHand, itemStack)
 
-            entity.interact(ctx.caster, InteractionHand.MAIN_HAND)
+            entity.interact(env.caster, InteractionHand.MAIN_HAND)
 
             // Swap back to the old item
-            ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+            env.caster.setItemInHand(env.castingHand, oldStack)
 
             item.tag = itemStack.tag
             if (itemStack.isEmpty)
@@ -97,22 +96,22 @@ object OpUseMoteOn : VarargSpellAction {
     }
 
     private data class BlockTargetSpell(val pos: BlockPos, val direction: Vec3, val item: MoteIota) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
-            if (!ctx.canEditBlockAt(pos))
+        override fun cast(env: CastingEnvironment) {
+            if (!env.canEditBlockAt(pos))
                 return
 
             val itemStack = ItemStack(item.item, 1)
             itemStack.tag = item.tag
 
             val context = UseOnContext(
-                ctx.world,
-                ctx.caster,
+                env.world,
+                env.caster,
                 InteractionHand.MAIN_HAND,
                 itemStack,
                 BlockHitResult(Vec3.atCenterOf(pos), Direction.getNearest(direction.x, direction.y, direction.z), pos, false)
             )
 
-            val isAllowed = IXplatAbstractions.INSTANCE.isPlacingAllowed(ctx.world, pos, itemStack, ctx.caster)
+            val isAllowed = IXplatAbstractions.INSTANCE.isPlacingAllowed(env.world, pos, itemStack, env.caster)
             if (!isAllowed)
                 return
             itemStack.useOn(context).consumesAction()

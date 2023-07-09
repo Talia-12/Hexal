@@ -1,8 +1,8 @@
 package ram.talia.hexal.common.network
 
 import at.petrak.hexcasting.api.HexAPI.modLoc
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.api.pigment.FrozenPigment
+import at.petrak.hexcasting.common.msgs.IMessage
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
@@ -14,7 +14,7 @@ import ram.talia.hexal.api.nextColour
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.times
 
-class MsgParticleLinesAck(val locs: List<Vec3>, val colouriser: FrozenColorizer): IMessage {
+class MsgParticleLinesAck(val locs: List<Vec3>, val colouriser: FrozenPigment): IMessage {
     override fun serialize(buf: FriendlyByteBuf) {
         buf.writeInt(locs.size)
         for (loc in locs) {
@@ -41,7 +41,7 @@ class MsgParticleLinesAck(val locs: List<Vec3>, val colouriser: FrozenColorizer)
                 locs.add(Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()))
             }
 
-            return MsgParticleLinesAck(locs, FrozenColorizer.fromNBT(buf.readNbt()!!))
+            return MsgParticleLinesAck(locs, FrozenPigment.fromNBT(buf.readNbt()!!))
         }
 
         @JvmStatic
@@ -54,7 +54,7 @@ class MsgParticleLinesAck(val locs: List<Vec3>, val colouriser: FrozenColorizer)
                     for (i in 0 .. steps) {
                         val pos = start + (i.toDouble() / steps) * (end - start)
                         val colour = self.colouriser.nextColour(level.random)
-                        level.addParticle(ConjureParticleOptions(colour, false),
+                        level.addParticle(ConjureParticleOptions(colour),
                                 pos.x, pos.y, pos.z, 0.0, 0.0, 0.0)
                     }
                 }

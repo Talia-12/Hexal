@@ -2,10 +2,9 @@ package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.Vec3Iota
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.Vec3Iota
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
@@ -27,15 +26,15 @@ object OpReturnMote : VarargSpellAction {
         return 3
     }
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): SpellAction.Result {
         val item = args.getMote(0, argc) ?: return null
         val pos = args.getVec3(1, argc)
 
         val numToReturn = if (argc == 3) args.getInt(2, argc) else null
 
-        ctx.assertVecInRange(pos)
+        env.assertVecInRange(pos)
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(item, pos, numToReturn),
                 HexalConfig.server.returnItemCost,
                 listOf(ParticleSpray.burst(pos, 0.5))
@@ -43,11 +42,11 @@ object OpReturnMote : VarargSpellAction {
     }
 
     private data class Spell(val item: MoteIota, val pos: Vec3, val numToReturn: Int?) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(env: CastingEnvironment) {
             val toDrop = item.getStacksToDrop(numToReturn?.let { min(it, HexalConfig.server.maxItemsReturned) } ?: HexalConfig.server.maxItemsReturned)
 
             for (stack in toDrop) {
-                ctx.world.addFreshEntity(ItemEntity(ctx.world, pos.x, pos.y, pos.z, stack))
+                env.world.addFreshEntity(ItemEntity(env.world, pos.x, pos.y, pos.z, stack))
             }
         }
     }

@@ -1,11 +1,11 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getBlockPos
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.asActionResult
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.getBlockPos
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import net.minecraft.core.Direction
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
@@ -17,16 +17,16 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpSetMoteStorage : ConstMediaAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
         val item = args.getMote(0, argc) ?: return null.asActionResult
         val storagePos = args.getBlockPos(1, argc)
 
-        ctx.assertVecInRange(storagePos)
+        env.assertVecInRange(storagePos.center)
 
-        if (!ctx.canEditBlockAt(storagePos) || !IXplatAbstractions.INSTANCE.isInteractingAllowed(ctx.world, storagePos, Direction.UP, ctx.castingHand, ctx.caster))
+        if (!env.canEditBlockAt(storagePos) || !IXplatAbstractions.INSTANCE.isInteractingAllowed(env.world, storagePos, Direction.UP, env.castingHand, env.caster))
             return listOf(item)
 
-        val storage = ctx.world.getBlockEntity(storagePos) as? BlockEntityMediafiedStorage ?: throw MishapInvalidIota.ofType(args[1], 0, "mediafied_storage")
+        val storage = env.world.getBlockEntity(storagePos) as? BlockEntityMediafiedStorage ?: throw MishapInvalidIota.ofType(args[1], 0, "mediafied_storage")
 
         val newItem = item.setStorage(storage.uuid)
 

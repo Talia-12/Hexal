@@ -1,9 +1,8 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
-import ram.talia.hexal.api.HexalAPI
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
@@ -15,16 +14,13 @@ import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerType<*>) : ConstMediaAction {
 	override val argc = triggerType.argc
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? IMixinCastingContext
+	override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
+		val mCast = env as? IMixinCastingContext
 
 		if (mCast == null || mCast.wisp == null)
 			throw MishapNoWisp()
 
-		HexalAPI.LOGGER.debug("Setting ${mCast.wisp} trigger to $triggerType")
-
-		mCast.wisp!!.setTrigger(triggerType.makeFromArgs(mCast.wisp!!, args, ctx))
+		mCast.wisp!!.setTrigger(triggerType.makeFromArgs(mCast.wisp!!, args, env))
 
 		return listOf()
 	}

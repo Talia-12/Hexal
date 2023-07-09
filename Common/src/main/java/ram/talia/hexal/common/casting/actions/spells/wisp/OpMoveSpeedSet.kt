@@ -1,8 +1,9 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
@@ -13,12 +14,11 @@ import kotlin.math.min
 object OpMoveSpeedSet : SpellAction {
     override val argc = 1
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val newMax = args.getPositiveDouble(0, OpMoveTargetSet.argc)
         val newMult = newMax / TickingWisp.BASE_MAX_SPEED_PER_TICK
 
-        val mCast = ctx as? IMixinCastingContext
+        val mCast = env as? IMixinCastingContext
 
         if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
             throw MishapNoWisp()
@@ -34,7 +34,7 @@ object OpMoveSpeedSet : SpellAction {
             (HexalConfig.server.moveSpeedSetCost * min(1.0, (newMult - oldMax) * (newMult - oldMax))).toInt()
         } else 0
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(tWisp, newMult),
                 cost,
                 listOf(ParticleSpray.burst(mCast.wisp!!.position(), min(1.0, ln(newMult))))
@@ -42,7 +42,7 @@ object OpMoveSpeedSet : SpellAction {
     }
 
     private data class Spell(val wisp: TickingWisp, val newMult: Double) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(env: CastingEnvironment) {
             wisp.currentMoveMultiplier = newMult.toFloat()
         }
     }

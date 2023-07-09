@@ -193,7 +193,7 @@ object LinkableRegistry {
 	}
 
 	@JvmStatic
-	fun linkableFromCastingContext(env: CastingEnvironment): ILinkable {
+	fun linkableFromCastingEnvironment(env: CastingEnvironment): ILinkable {
 		castingContextExtractionQueue.forEach { type -> type.linkableFromCastingContext(env)?.let { return it } }
 		throw Exception("At least one type should have accepted the env and returned itself (namely the player type).")
 	}

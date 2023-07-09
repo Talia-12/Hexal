@@ -3,14 +3,13 @@ package ram.talia.hexal.common.casting.actions.spells.gates
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.mod.HexTags
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.ParticleSpray
-import at.petrak.hexcasting.api.spell.RenderedSpell
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getVec3
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
-import at.petrak.hexcasting.common.network.MsgBlinkAck
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
+import at.petrak.hexcasting.api.casting.eval.env.PlayerBasedCastEnv
+import at.petrak.hexcasting.api.casting.getVec3
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapBadLocation
+import at.petrak.hexcasting.common.msgs.MsgBlinkS2C
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
@@ -32,19 +31,19 @@ object OpCloseGate : VarargSpellAction {
         return 2
     }
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): SpellAction.Result {
         val gate = args.getGate(0, argc)
-        val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
+        val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(env.world) ?: return null
         
         
         // only check if in ambit when the gate is drifting.
         if (gate.isDrifting)
-            ctx.assertVecInRange(targetPos)
+            env.assertVecInRange(targetPos)
 
-        if (!ctx.isVecInWorld(targetPos.subtract(0.0, 1.0, 0.0)))
-            throw MishapLocationTooFarAway(targetPos, "too_close_to_out")
+        if (!env.isVecInWorld(targetPos.subtract(0.0, 1.0, 0.0)))
+            throw MishapBadLocation(targetPos, "too_close_to_out")
 
-        val gatees = gate.getMarked(ctx.world)
+        val gatees = gate.getMarked(env.world)
         gate.clearMarked()
 
         var cost = HexalConfig.server.closeGateCost
@@ -58,7 +57,7 @@ object OpCloseGate : VarargSpellAction {
         meanEyeHeight /= burst.size
         burst.add(ParticleSpray.burst(targetPos.add(0.0, meanEyeHeight / 2.0, 0.0), 2.0))
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(gatees, targetPos, gate.isDrifting),
                 cost,
                 burst
@@ -68,13 +67,13 @@ object OpCloseGate : VarargSpellAction {
     private data class Spell(val gatees: Set<Entity>, val targetPos: Vec3, val dropItems: Boolean) : RenderedSpell {
         // stole all this from the default teleport; sadge that it isn't accessible.
 
-        override fun cast(ctx: CastingContext) {
+        override fun cast(env: CastingEnvironment) {
             for (gatee in gatees) {
-                teleport(gatee, gatees, targetPos - gatee.position(), ctx)
+                teleport(gatee, gatees, targetPos - gatee.position(), env)
             }
         }
 
-        fun teleport(teleportee: Entity, allTeleportees: Set<Entity>, delta: Vec3, ctx: CastingContext) {
+        fun teleport(teleportee: Entity, allTeleportees: Set<Entity>, delta: Vec3, env: CastingEnvironment) {
             val distance = delta.length()
 
             // TODO make this not a magic number (config?)
@@ -82,7 +81,7 @@ object OpCloseGate : VarargSpellAction {
                 teleportRespectSticky(teleportee, allTeleportees, delta)
             }
 
-            if (teleportee is ServerPlayer && teleportee == ctx.caster && distance < Action.MAX_DISTANCE && dropItems) {
+            if (teleportee is ServerPlayer && teleportee == env.caster && distance < PlayerBasedCastEnv.AMBIT_RADIUS && dropItems) {
                 // Drop items conditionally, based on distance teleported.
                 // MOST IMPORTANT: Never drop main hand item, since if it's a trinket, it will get duplicated later.
 
@@ -146,7 +145,7 @@ object OpCloseGate : VarargSpellAction {
 
         for (player in playersToUpdate) {
             player.connection.resetPosition()
-            IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, MsgBlinkAck(delta))
+            IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, MsgBlinkS2C(delta))
         }
     }
 }

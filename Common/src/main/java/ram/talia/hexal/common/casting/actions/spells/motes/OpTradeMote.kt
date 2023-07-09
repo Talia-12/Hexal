@@ -1,12 +1,11 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
-import at.petrak.hexcasting.api.spell.asActionResult
-import at.petrak.hexcasting.api.spell.getPositiveIntUnder
-import at.petrak.hexcasting.api.spell.getVillager
-import at.petrak.hexcasting.api.spell.iota.DoubleIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.getPositiveIntUnder
+import at.petrak.hexcasting.api.casting.iota.DoubleIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import net.minecraft.stats.Stats
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.trading.MerchantOffer
@@ -14,6 +13,7 @@ import net.minecraft.world.item.trading.MerchantOffers
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMoteOrMoteList
+import ram.talia.hexal.api.getVillager
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargConstMediaAction
@@ -32,8 +32,7 @@ object OpTradeMote : VarargConstMediaAction {
         return if (stack[0] is DoubleIota) 3 else 2
     }
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): List<Iota> {
+    override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): List<Iota> {
         val villager = args.getVillager(0, argc)
         val toTradeItemIotas = args.getMoteOrMoteList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
         val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
@@ -50,22 +49,22 @@ object OpTradeMote : VarargConstMediaAction {
             }
         }
 
-        ctx.assertEntityInRange(villager)
+        env.assertEntityInRange(villager)
 
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(env.caster.position())
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
 
         val isFull = MediafiedItemManager.isStorageFull(storage) ?: return null.asActionResult
         if (isFull)
-            throw MishapStorageFull(ctx.caster.position())
+            throw MishapStorageFull(env.caster.position())
 
 
         if (villager.offers.isEmpty())
             return emptyList<Iota>().asActionResult
 
-        villager.updateSpecialPrices(ctx.caster)
-        villager.tradingPlayer = ctx.caster
+        villager.updateSpecialPrices(env.caster)
+        villager.tradingPlayer = env.caster
 
         var outRecord: ItemRecord? = null
 
@@ -84,7 +83,7 @@ object OpTradeMote : VarargConstMediaAction {
 
             if (merchantoffer.take(toTrade0, toTrade1) || merchantoffer.take(toTrade0, toTrade1)) {
                 villager.notifyTrade(merchantoffer)
-                ctx.caster.awardStat(Stats.TRADED_WITH_VILLAGER)
+                env.caster.awardStat(Stats.TRADED_WITH_VILLAGER)
 
                 if (outRecord == null)
                     outRecord = ItemRecord(merchantoffer.result)

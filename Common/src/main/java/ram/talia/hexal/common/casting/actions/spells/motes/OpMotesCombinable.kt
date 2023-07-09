@@ -1,16 +1,16 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
-import at.petrak.hexcasting.api.spell.asActionResult
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.getMoteOrItemEntityOrItemFrame
 
 object OpMotesCombinable : ConstMediaAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
         val typer = args.getMote(0, OpCombineMotes.argc) ?: return false.asActionResult
         val typee = args.getMoteOrItemEntityOrItemFrame(1, OpCombineMotes.argc) ?: return false.asActionResult
 

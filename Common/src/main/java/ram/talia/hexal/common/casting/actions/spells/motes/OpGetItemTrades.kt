@@ -1,22 +1,22 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.spell.ConstMediaAction
-import at.petrak.hexcasting.api.spell.asActionResult
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getVillager
-import at.petrak.hexcasting.api.spell.iota.DoubleIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.ListIota
-import ram.talia.hexal.api.spell.iota.ItemTypeIota
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.DoubleIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.ListIota
+import ram.talia.hexal.api.getVillager
+import ram.talia.moreiotas.api.casting.iota.ItemTypeIota
 
 object OpGetItemTrades : ConstMediaAction {
     override val argc = 1
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
         val villager = args.getVillager(0, argc)
 
-        villager.updateSpecialPrices(ctx.caster)
-        villager.tradingPlayer = ctx.caster
+        env.caster?.let { villager.updateSpecialPrices(it) }
+        villager.tradingPlayer = env.caster
 
         val result = villager.offers.map { offer ->
             // map each MerchantOffer to [[[desiredItem0, count], [desiredItem1, count]], [returnedItem, count]]

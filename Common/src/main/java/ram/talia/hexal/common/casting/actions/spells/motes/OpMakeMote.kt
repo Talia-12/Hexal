@@ -1,14 +1,17 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation
-import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapInvalidIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.*
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.eval.OperationResult
+import at.petrak.hexcasting.api.casting.eval.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
+import at.petrak.hexcasting.api.casting.eval.vm.SpellContinuation
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
 import net.minecraft.world.item.ItemStack
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.config.HexalConfig
@@ -36,8 +39,9 @@ object OpMakeMote : Action {
     private val mediaCost: Int
         get() = HexalConfig.server.makeItemCost
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun operate(continuation: SpellContinuation, stack: MutableList<Iota>, ravenmind: Iota?, ctx: CastingContext): OperationResult {
+    override fun operate(env: CastingEnvironment, image: CastingImage, continuation: SpellContinuation): OperationResult {
+        val stack = image.stack.toMutableList()
+
         val argc = this.argc(stack.reversed())
         if (argc > stack.size)
             throw MishapNotEnoughArgs(argc, stack.size)
@@ -47,7 +51,7 @@ object OpMakeMote : Action {
         val iEntityEither = args.getItemEntityOrItemFrame(0, argc)
         val iEntity = iEntityEither.map({ it }, { it })
 
-        ctx.assertEntityInRange(iEntity)
+        env.assertEntityInRange(iEntity)
 
         val itemStack = iEntityEither.map( { it.item }, { it.item })
         val mote = if (argc == 2) args.getMote(1, argc) else null
@@ -63,7 +67,7 @@ object OpMakeMote : Action {
                     iEntityEither.map( { it.item.count = countRemaining }, { it.item.count = countRemaining } )
                 stack.add(mote)
             } else {
-                val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
+                val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
                 if (!MediafiedItemManager.isStorageLoaded(storage))
                     throw MishapNoBoundStorage(iEntity.position(), "storage_unloaded")
                 if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
@@ -95,6 +99,6 @@ object OpMakeMote : Action {
      * Exists solely to get casting sounds.
      */
     private object Spell : RenderedSpell {
-        override fun cast(ctx: CastingContext) { }
+        override fun cast(env: CastingEnvironment) { }
     }
 }
