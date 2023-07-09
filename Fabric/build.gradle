@@ -84,7 +84,7 @@ dependencies {
         exclude module: "phosphor"
     }
     modImplementation "$modID:moreiotas-fabric-$minecraftVersion:$moreIotasVersion"
-    modImplementation "vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FABRIC"
+    modImplementation "vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FABRIC-SNAPSHOT"
 
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
@@ -111,8 +111,8 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     })
 
-    modApi include("com.unascribed:lib39-core:$lib39Version+$minecraftVersion")
-    modApi include("com.unascribed:lib39-phantom:$lib39Version+$minecraftVersion")
+//    modApi include("com.unascribed:lib39-core:$lib39Version+$minecraftVersion")
+//    modApi include("com.unascribed:lib39-phantom:$lib39Version+$minecraftVersion")
 
     implementation 'org.jetbrains:annotations:23.0.0'
 
