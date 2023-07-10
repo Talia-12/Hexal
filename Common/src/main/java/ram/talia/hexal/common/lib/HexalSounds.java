@@ -1,15 +1,12 @@
 package ram.talia.hexal.common.lib;
 
 import at.petrak.hexcasting.common.lib.HexSounds;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -18,14 +15,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import ram.talia.hexal.api.HexalAPI;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -41,7 +37,7 @@ public class HexalSounds {
 	private static final Map<ResourceLocation, SoundEntry> SOUNDS = new LinkedHashMap<>();
 	
 	public static final SoundEntry WISP_CASTING_START = create("wisp_casting_start").subtitle("Wisp starts casting")
-					.playExisting(HexSounds.ACTUALLY_CAST, 0.5f, 1)
+					.playExisting(HexSounds.CAST_NORMAL, 0.5f, 1)
 					.category(SoundSource.PLAYERS)
 					.attenuationDistance(8)
 					.build();
@@ -72,40 +68,34 @@ public class HexalSounds {
 		return object;
 	}
 	
-	public static SoundEntryProvider provider(DataGenerator generator) {
-		return new SoundEntryProvider(generator);
+	public static SoundEntryProvider provider(PackOutput output) {
+		return new SoundEntryProvider(output);
 	}
 	
-	public record SoundEntryProvider(DataGenerator generator) implements DataProvider {
+	public record SoundEntryProvider(PackOutput output) implements DataProvider {
 		
 		@Override
-		public void run (@NotNull CachedOutput cache) {
-				generate(generator.getOutputFolder(), cache);
-			}
+		public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+			return generate(output.getOutputFolder(), cache);
+		}
 			
 		@Override
 		public @NotNull String getName () {
 				return "Hexal's Custom Sounds";
 			}
 			
-		public void generate (Path path, CachedOutput cache) {
+		public CompletableFuture<?> generate (Path path, CachedOutput cache) {
 //			Gson GSON = (new GsonBuilder()).setPrettyPrinting()
 //																		 .disableHtmlEscaping()
 //																		 .create();
 			path = path.resolve("assets/hexal");
-			
-			try {
-				JsonObject json = new JsonObject();
-				SOUNDS.entrySet()
-							.stream()
-							.sorted(Map.Entry.comparingByKey())
-							.forEach(entry -> entry.getValue().write(json));
-				DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
-				
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
+
+			JsonObject json = new JsonObject();
+			SOUNDS.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByKey())
+					.forEach(entry -> entry.getValue().write(json));
+			return DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
 		}
 			
 	}
@@ -248,7 +238,7 @@ public class HexalSounds {
 		}
 		
 		public void playFrom (Entity entity, float volume, float pitch) {
-			if (!entity.isSilent()) {play(entity.level, null, entity.blockPosition(), volume, pitch);}
+			if (!entity.isSilent()) {play(entity.level(), null, entity.blockPosition(), volume, pitch);}
 		}
 		
 		public void play (Level world, Player entity, Vec3i pos, float volume, float pitch) {
@@ -288,7 +278,7 @@ public class HexalSounds {
 			for (int i = 0; i < wrappedEvents.size(); i++) {
 				ConfiguredSoundEvent wrapped = wrappedEvents.get(i);
 				ResourceLocation location = getIdOf(i);
-				registry.accept(new SoundEvent(location), location);
+				registry.accept(SoundEvent.createVariableRangeEvent(location), location);
 			}
 		}
 		
@@ -349,7 +339,7 @@ public class HexalSounds {
 														 SoundSource category, float volume, float pitch, int attenuationDistance) {
 			super(id, subtitle, category, attenuationDistance);
 //			HexalAPI.LOGGER.info("custom sound entry created for id " + id);
-			this.event = new SoundEvent(id);
+			this.event = SoundEvent.createVariableRangeEvent(id);
 			this.variants = variants;
 			this.volume = volume;
 			this.pitch = pitch;
