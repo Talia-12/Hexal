@@ -12,6 +12,8 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
+import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.gates.GateManager
 import ram.talia.hexal.api.gates.GateSavedData
@@ -53,14 +55,18 @@ object FabricHexalInitializer : ModInitializer {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun initRegistries() {
         fabricOnlyRegistration()
 
+        val configuredFeatureRegistry = BuiltInRegistries.REGISTRY.get(Registries.CONFIGURED_FEATURE.location()) as Registry<ConfiguredFeature<*, *>>
+        val placedFeatureRegistry = BuiltInRegistries.REGISTRY.get(Registries.PLACED_FEATURE.location()) as Registry<PlacedFeature>
+
         HexalFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE))
-        HexalConfiguredFeatures.registerConfiguredFeatures(bind(Registries.CONFIGURED_FEATURE))
-        HexalPlacedFeatures.registerPlacedFeatures(bind(BuiltInRegistries.PLACED_FEATURE))
+        HexalConfiguredFeatures.registerConfiguredFeatures(bind(configuredFeatureRegistry))
+        HexalPlacedFeatures.registerPlacedFeatures(bind(placedFeatureRegistry))
         HexalPlacedFeatures.placeGeodesInBiome { feature, decoration ->
-            BuiltinRegistries.PLACED_FEATURE.getResourceKey(feature).ifPresent {
+            placedFeatureRegistry.getResourceKey(feature).ifPresent {
                 BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), decoration, it)
             }
         }
