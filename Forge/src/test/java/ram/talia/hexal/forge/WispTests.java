@@ -26,12 +26,12 @@ public class WispTests {
 	private static final List<Iota> defaultHex = List.of(OtherPatterns.REVEAL);
 	
 	@AfterBatch(batch = "wispBatch")
-	public static void afterWispTests (ServerLevel level) {
+	public static void afterWispTests(ServerLevel level) {
 		teardownPlayers();
 	}
 	
 	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", batch = "wispBatch")
-	public static void basicTickingWispTest (GameTestHelper helper) {
+	public static void basicTickingWispTest(GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
 		HexalAPI.LOGGER.debug("running basic ticking wisp test");

@@ -17,41 +17,48 @@ description = ""
 [[dependencies.hexal]]
 modId = "forge"
 mandatory = true
-versionRange = "[40,)"
+versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hexal]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2]"
+versionRange = "[1.20.1,1.21)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hexal]]
 modId = "paucal"
 mandatory = true
-versionRange = "[0.5.0,0.6.0)"
+versionRange = "[0.6.0,0.7.0)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hexal]]
 modId = "patchouli"
 mandatory = true
-versionRange = "[1.19.2-77,)"
+versionRange = "[1.20.1-80,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hexal]]
 modId = "hexcasting"
 mandatory = true
-versionRange = "[0.10.3]"
+versionRange = "[0.11.1-6,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hexal]]
-modId = "geckolib3"
+modId = "moreiotas"
 mandatory = true
-versionRange = "[3.1.40]"
+versionRange = "[0.1.0-2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.hexal]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[4.2.1]"
 ordering = "NONE"
 side = "BOTH"

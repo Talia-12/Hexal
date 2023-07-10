@@ -2,6 +2,7 @@ package ram.talia.hexal.forge;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,6 +17,7 @@ import ram.talia.hexal.forge.client.items.ItemRelayRenderer;
 import ram.talia.hexal.forge.client.items.IRenderPropertiesSetter;
 
 public class ForgeHexalClientInitializer {
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event) {
 		event.enqueueWork(RegisterClientStuff::init);
@@ -24,10 +26,11 @@ public class ForgeHexalClientInitializer {
 			cursedItemPropertiesNonsense();
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	private static void cursedItemPropertiesNonsense() {
 		// this is *so* dumb
 		//noinspection DataFlowIssue
-		((IRenderPropertiesSetter) (Object) HexalItems.RELAY).setRenderProperties(new IClientItemExtensions() {
+		((IRenderPropertiesSetter) HexalItems.RELAY).setRenderProperties(new IClientItemExtensions() {
 			private final BlockEntityWithoutLevelRenderer renderer = new ItemRelayRenderer();
 
 			@Override
@@ -37,6 +40,7 @@ public class ForgeHexalClientInitializer {
 		});
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers evt) {
 		RegisterClientStuff.registerBlockEntityRenderers(evt::registerBlockEntityRenderer);
