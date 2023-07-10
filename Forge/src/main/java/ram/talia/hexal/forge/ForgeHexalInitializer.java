@@ -1,7 +1,8 @@
 package ram.talia.hexal.forge;
 
+import at.petrak.hexcasting.common.lib.HexRegistries;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -15,7 +16,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.config.HexalConfig;
-import ram.talia.hexal.common.lib.hex.HexActions;
+import ram.talia.hexal.common.lib.hex.HexalActions;
 import ram.talia.hexal.common.lib.*;
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
 import ram.talia.hexal.common.lib.feature.HexalFeatures;
@@ -55,21 +56,22 @@ public class ForgeHexalInitializer {
 	}
 	
 	private static void initRegistry () {
-		bind(Registry.FEATURE_REGISTRY, HexalFeatures::registerFeatures);
-		bind(BuiltinRegistries.CONFIGURED_FEATURE, HexalConfiguredFeatures::registerConfiguredFeatures);
-		bind(BuiltinRegistries.PLACED_FEATURE, HexalPlacedFeatures::registerPlacedFeatures);
+		bind(Registries.FEATURE, HexalFeatures::registerFeatures);
+		bind(Registries.CONFIGURED_FEATURE, HexalConfiguredFeatures::registerConfiguredFeatures);
+		bind(Registries.PLACED_FEATURE, HexalPlacedFeatures::registerPlacedFeatures);
 		
-		bind(Registry.SOUND_EVENT_REGISTRY, HexalSounds::registerSounds);
-		bind(Registry.BLOCK_REGISTRY, HexalBlocks::registerBlocks);
-		bind(Registry.ITEM_REGISTRY, HexalBlocks::registerBlockItems);
-		bind(Registry.ITEM_REGISTRY, HexalItems::registerItems);
-		bind(Registry.BLOCK_ENTITY_TYPE_REGISTRY, HexalBlockEntities::registerBlockEntities);
-		bind(Registry.ENTITY_TYPE_REGISTRY, HexalEntities::registerEntities);
+		bind(Registries.SOUND_EVENT, HexalSounds::registerSounds);
+		bind(Registries.BLOCK, HexalBlocks::registerBlocks);
+		bind(Registries.ITEM, HexalBlocks::registerBlockItems);
+		bind(Registries.ITEM, HexalItems::registerItems);
+		bind(Registries.BLOCK_ENTITY_TYPE, HexalBlockEntities::registerBlockEntities);
+		bind(Registries.ENTITY_TYPE, HexalEntities::registerEntities);
 		
-		bind(Registry.RECIPE_SERIALIZER_REGISTRY, HexalRecipeSerializers::registerSerializers);
-		bind(Registry.RECIPE_TYPE_REGISTRY, HexalRecipeTypes::registerTypes);
+		bind(Registries.RECIPE_SERIALIZER, HexalRecipeSerializers::registerSerializers);
+		bind(Registries.RECIPE_TYPE, HexalRecipeTypes::registerTypes);
 
-		HexalIotaTypes.registerTypes();
+		bind(HexRegistries.IOTA_TYPE, HexalIotaTypes::registerTypes);
+		bind(HexRegistries.ACTION, HexalActions::register);
 	}
 	
 	private static void initListeners () {
@@ -84,8 +86,7 @@ public class ForgeHexalInitializer {
 				 ForgePacketHandler.init();
 			 }));
 		
-		modBus.addListener((FMLCommonSetupEvent evt) -> evt.enqueueWork(HexActions::registerPatterns));
-		
+
 		// We have to do these at some point when the registries are still open
 //		modBus.addGenericListener(Item.class, (GenericEvent<Item> evt) -> HexalRecipeSerializers.registerTypes());
 //		modBus.addListener((RegisterEvent evt) -> {

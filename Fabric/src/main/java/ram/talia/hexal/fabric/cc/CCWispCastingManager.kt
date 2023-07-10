@@ -21,7 +21,7 @@ class CCWispCastingManager(private val player: Player, var seonUUID: UUID? = nul
 			if (seonUUID == null)
 				return null
 			if (field?.isRemoved != false)
-				return (player as? ServerPlayer)?.let { it.getLevel().getEntity(seonUUID!!) as? BaseCastingWisp }
+				return (player as? ServerPlayer)?.let { it.serverLevel().getEntity(seonUUID!!) as? BaseCastingWisp }
 			return field
 		}
 		set(value) {
@@ -36,7 +36,7 @@ class CCWispCastingManager(private val player: Player, var seonUUID: UUID? = nul
 	override fun readFromNbt(tag: CompoundTag) {
 		if (player is ServerPlayer) {
 			if (tag.hasCompound(TAG_MANAGER))
-				manager?.readFromNbt(tag.getCompound(TAG_MANAGER), player.level as ServerLevel)
+				manager?.readFromNbt(tag.getCompound(TAG_MANAGER), player.level() as ServerLevel)
 			if (tag.hasUUID(TAG_SEON))
 				seonUUID = tag.getUUID(TAG_SEON)
 		}

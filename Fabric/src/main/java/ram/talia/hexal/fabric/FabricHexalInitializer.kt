@@ -1,23 +1,25 @@
 package ram.talia.hexal.fabric
 
-import at.petrak.hexcasting.api.spell.math.HexDir
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.math.HexDir
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.lib.hex.HexActions
+import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.core.Registry
-import net.minecraft.data.BuiltinRegistries
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.api.gates.GateManager
 import ram.talia.hexal.api.gates.GateSavedData
-import ram.talia.hexal.common.lib.hex.HexActions
 import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures
+import ram.talia.hexal.common.lib.hex.HexalActions
 import ram.talia.hexal.common.lib.hex.HexalIotaTypes
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import ram.talia.hexal.common.recipe.HexalRecipeTypes
@@ -37,8 +39,6 @@ object FabricHexalInitializer : ModInitializer {
         initListeners()
 
         initRegistries()
-
-        HexActions.registerPatterns()
     }
 
     private fun initListeners() {
@@ -56,30 +56,31 @@ object FabricHexalInitializer : ModInitializer {
     private fun initRegistries() {
         fabricOnlyRegistration()
 
-        HexalFeatures.registerFeatures(bind(Registry.FEATURE))
-        HexalConfiguredFeatures.registerConfiguredFeatures(bind(BuiltinRegistries.CONFIGURED_FEATURE))
-        HexalPlacedFeatures.registerPlacedFeatures(bind(BuiltinRegistries.PLACED_FEATURE))
+        HexalFeatures.registerFeatures(bind(BuiltInRegistries.FEATURE))
+        HexalConfiguredFeatures.registerConfiguredFeatures(bind(Registries.CONFIGURED_FEATURE))
+        HexalPlacedFeatures.registerPlacedFeatures(bind(BuiltInRegistries.PLACED_FEATURE))
         HexalPlacedFeatures.placeGeodesInBiome { feature, decoration ->
             BuiltinRegistries.PLACED_FEATURE.getResourceKey(feature).ifPresent {
                 BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), decoration, it)
             }
         }
 
-        HexalSounds.registerSounds(bind(Registry.SOUND_EVENT))
-        HexalBlocks.registerBlocks(bind(Registry.BLOCK))
-        HexalBlocks.registerBlockItems(bind(Registry.ITEM))
-        HexalItems.registerItems(bind(Registry.ITEM))
-        HexalBlockEntities.registerBlockEntities(bind(Registry.BLOCK_ENTITY_TYPE))
-        HexalEntities.registerEntities(bind(Registry.ENTITY_TYPE))
+        HexalSounds.registerSounds(bind(BuiltInRegistries.SOUND_EVENT))
+        HexalBlocks.registerBlocks(bind(BuiltInRegistries.BLOCK))
+        HexalBlocks.registerBlockItems(bind(BuiltInRegistries.ITEM))
+        HexalItems.registerItems(bind(BuiltInRegistries.ITEM))
+        HexalBlockEntities.registerBlockEntities(bind(BuiltInRegistries.BLOCK_ENTITY_TYPE))
+        HexalEntities.registerEntities(bind(BuiltInRegistries.ENTITY_TYPE))
 
-        HexalRecipeSerializers.registerSerializers(bind(Registry.RECIPE_SERIALIZER))
-        HexalRecipeTypes.registerTypes(bind(Registry.RECIPE_TYPE))
+        HexalRecipeSerializers.registerSerializers(bind(BuiltInRegistries.RECIPE_SERIALIZER))
+        HexalRecipeTypes.registerTypes(bind(BuiltInRegistries.RECIPE_TYPE))
 
-        HexalIotaTypes.registerTypes()
+        HexalIotaTypes.registerTypes(bind(HexIotaTypes.REGISTRY))
+        HexalActions.register(bind(HexActions.REGISTRY))
     }
 
     private fun fabricOnlyRegistration() {
-        HexActions.make(HexPattern.fromAngles("daqqqa", HexDir.WEST), modLoc("interop/fabric_only/phase_block"), OpPhaseBlock, false)
+        HexalActions.make("interop/fabric_only/phase_block", HexPattern.fromAngles("daqqqa", HexDir.WEST), OpPhaseBlock)
     }
 
 

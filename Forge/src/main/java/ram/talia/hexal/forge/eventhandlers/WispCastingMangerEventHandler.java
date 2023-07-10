@@ -38,7 +38,7 @@ public class WispCastingMangerEventHandler {
 	
 	private static WispCastingManager loadCastingManager(ServerPlayer player) {
 		WispCastingManager manager = new WispCastingManager(player);
-		manager.readFromNbt(player.getPersistentData().getCompound(TAG_CASTING_MANAGER), player.getLevel());
+		manager.readFromNbt(player.getPersistentData().getCompound(TAG_CASTING_MANAGER), player.serverLevel());
 		return manager;
 	}
 
@@ -74,7 +74,7 @@ public class WispCastingMangerEventHandler {
 
 		var seonUUID = player.getPersistentData().getUUID(TAG_SEON);
 
-		var entity = player.getLevel().getEntity(seonUUID);
+		var entity = player.serverLevel().getEntity(seonUUID);
 		if (entity == null) {
 			seonUUIDs.put(player.getUUID(), seonUUID);
 			return;
@@ -90,7 +90,7 @@ public class WispCastingMangerEventHandler {
 		var seonUUID = seonUUIDs.get(player.getUUID());
 		if (seonUUID == null)
 			return null;
-		var entity = player.getLevel().getEntity(seonUUID);
+		var entity = player.serverLevel().getEntity(seonUUID);
 
 		if (!(entity instanceof BaseCastingWisp seon))
 			return null;
@@ -104,7 +104,7 @@ public class WispCastingMangerEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getEntity().getLevel().isClientSide())
+		if (event.getEntity().level().isClientSide())
 			return;
 		
 		ServerPlayer player = (ServerPlayer) event.getEntity();
@@ -119,7 +119,7 @@ public class WispCastingMangerEventHandler {
 	 */
 	@SubscribeEvent
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (event.getEntity().getLevel().isClientSide())
+		if (event.getEntity().level().isClientSide())
 			return;
 		
 		ServerPlayer player = (ServerPlayer) event.getEntity();

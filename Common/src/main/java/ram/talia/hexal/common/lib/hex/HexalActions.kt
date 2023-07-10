@@ -32,7 +32,7 @@ import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.moreiotas.api.MoreIotasAPI
 import java.util.function.BiConsumer
 
-object HexActions {
+object HexalActions {
 
 	private val ACTIONS: MutableMap<ResourceLocation, ActionRegistryEntry> = mutableMapOf()
 
@@ -271,9 +271,9 @@ object HexActions {
 
 
 
-	private fun make(name: String, pattern: HexPattern, action: Action): ActionRegistryEntry = make(name, ActionRegistryEntry(pattern, action))
+	fun make(name: String, pattern: HexPattern, action: Action): ActionRegistryEntry = make(name, ActionRegistryEntry(pattern, action))
 
-	private fun make(name: String, are: ActionRegistryEntry): ActionRegistryEntry {
+	fun make(name: String, are: ActionRegistryEntry): ActionRegistryEntry {
 		return if (ACTIONS.put(MoreIotasAPI.modLoc(name), are) != null) {
 			throw IllegalArgumentException("Typo? Duplicate id $name")
 		} else {
@@ -281,7 +281,7 @@ object HexActions {
 		}
 	}
 
-	private fun make(name: String, oa: OperationAction): ActionRegistryEntry {
+	fun make(name: String, oa: OperationAction): ActionRegistryEntry {
 		val are = ActionRegistryEntry(oa.pattern, oa)
 		return if (ACTIONS.put(MoreIotasAPI.modLoc(name), are) != null) {
 			throw IllegalArgumentException("Typo? Duplicate id $name")
@@ -289,4 +289,5 @@ object HexActions {
 			are
 		}
 	}
+
 }

@@ -40,6 +40,6 @@ public class ForgeHexalClientInitializer {
 	@SubscribeEvent
 	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers evt) {
 		RegisterClientStuff.registerBlockEntityRenderers(evt::registerBlockEntityRenderer);
-		evt.registerBlockEntityRenderer(HexalBlockEntities.RELAY, BlockEntityRelayRenderer::new);
+		evt.registerBlockEntityRenderer(HexalBlockEntities.RELAY, context -> new BlockEntityRelayRenderer());
 	}
 }

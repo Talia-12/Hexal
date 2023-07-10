@@ -2,8 +2,6 @@ package ram.talia.hexal.common.lib.hex
 
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.IotaType
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
-import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 import ram.talia.hexal.api.HexalAPI.modLoc
@@ -14,8 +12,7 @@ import java.util.function.BiConsumer
 object HexalIotaTypes {
     @JvmStatic
     @ApiStatus.Internal
-    fun registerTypes() {
-        val r = BiConsumer { type: IotaType<*>, id: ResourceLocation -> Registry.register(HexIotaTypes.REGISTRY, id, type) }
+    fun registerTypes(r: BiConsumer<IotaType<*>, ResourceLocation>) {
         for ((key, value) in TYPES) {
             r.accept(value, key)
         }

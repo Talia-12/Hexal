@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import ram.talia.hexal.common.lib.hex.HexActions;
+import ram.talia.hexal.common.lib.hex.HexalActions;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public abstract class MixinCastingVM {
 				
 				// if the current iota is an unescaped OpCloseTransmit, break so that Action can be processed by the player's handler.
 				if (!escapeNext && iota.getType() == HexIotaTypes.PATTERN &&
-						Iota.tolerates(iota, new PatternIota(HexActions.LINK_COMM_CLOSE_TRANSMIT.prototype())))
+						Iota.tolerates(iota, new PatternIota(HexalActions.LINK_COMM_CLOSE_TRANSMIT.prototype())))
 					break;
 				
 				iter.remove();

@@ -3,19 +3,15 @@ package ram.talia.hexal.fabric
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import ram.talia.hexal.client.LinkablePacketHolder
 import ram.talia.hexal.client.RegisterClientStuff
-import ram.talia.hexal.common.blocks.entity.BlockEntityRelay
 import ram.talia.hexal.common.lib.HexalBlockEntities
-import ram.talia.hexal.common.lib.HexalItems
 import ram.talia.hexal.fabric.client.blocks.BlockEntityRelayRenderer
-import ram.talia.hexal.fabric.client.items.ItemRelayRenderer
 import ram.talia.hexal.fabric.network.FabricPacketHandler
-import software.bernie.geckolib3.renderers.geo.GeoItemRenderer
 
 object FabricHexalClientInitializer : ClientModInitializer {
     override fun onInitializeClient() {
@@ -32,9 +28,6 @@ object FabricHexalClientInitializer : ClientModInitializer {
             }
         })
 
-        @Suppress("UNCHECKED_CAST")
-        BlockEntityRendererRegistry.register(HexalBlockEntities.RELAY) { BlockEntityRelayRenderer() as BlockEntityRenderer<BlockEntityRelay> }
-
-        GeoItemRenderer.registerItemRenderer(HexalItems.RELAY, ItemRelayRenderer())
+        BlockEntityRenderers.register(HexalBlockEntities.RELAY) { BlockEntityRelayRenderer() }
     }
 }

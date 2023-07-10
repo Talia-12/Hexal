@@ -9,7 +9,7 @@ import ram.talia.hexal.api.linkable.PlayerLinkstore
 
 class CCPlayerLinkstore(player: Player) : ServerTickingComponent, ClientTickingComponent {
 	val linkstore = (player as? ServerPlayer)?.let { PlayerLinkstore(it) }
-	val renderCentre = if (player.level.isClientSide) PlayerLinkstore.RenderCentre(player) else null
+	val renderCentre = if (player.level().isClientSide) PlayerLinkstore.RenderCentre(player) else null
 
 	fun getTransmittingTo() = linkstore!!.transmittingTo
 

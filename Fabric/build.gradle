@@ -114,6 +114,8 @@ dependencies {
 //    modApi include("com.unascribed:lib39-core:$lib39Version+$minecraftVersion")
 //    modApi include("com.unascribed:lib39-phantom:$lib39Version+$minecraftVersion")
 
+    modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
+
     implementation 'org.jetbrains:annotations:23.0.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
