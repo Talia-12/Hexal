@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -26,6 +27,7 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
+import ram.talia.hexal.common.items.ItemRelay;
 
 import java.util.List;
 import java.util.ServiceLoader;
@@ -106,6 +108,8 @@ public interface IXplatAbstractions {
     //endregion
 
     //region Geckolib
+    @NotNull ItemRelay getItemRelay(Item.Properties properties);
+
     @NotNull Object getItemRelayRenderProvider();
 
     //endregion

@@ -2,7 +2,6 @@ package ram.talia.hexal.common.items
 
 import net.minecraft.world.item.BlockItem
 import ram.talia.hexal.common.lib.HexalBlocks
-import ram.talia.hexal.xplat.IXplatAbstractions
 import software.bernie.geckolib.animatable.GeoItem
 import software.bernie.geckolib.core.animatable.GeoAnimatable
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
@@ -13,23 +12,23 @@ import software.bernie.geckolib.core.animation.AnimationState
 import software.bernie.geckolib.core.animation.RawAnimation
 import software.bernie.geckolib.core.`object`.PlayState
 import software.bernie.geckolib.util.GeckoLibUtil
-import java.util.function.Consumer
-import java.util.function.Supplier
 
-class ItemRelay(properties: Properties) : BlockItem(HexalBlocks.RELAY, properties), GeoItem {
-    override fun registerControllers(p0: ControllerRegistrar?) {
-        TODO("Not yet implemented")
+abstract class ItemRelay(properties: Properties) : BlockItem(HexalBlocks.RELAY, properties), GeoItem {
+    private val cache = GeckoLibUtil.createInstanceCache(this)
+
+    override fun getAnimatableInstanceCache(): AnimatableInstanceCache? {
+        return cache
     }
 
-    override fun getAnimatableInstanceCache(): AnimatableInstanceCache {
-        TODO("Not yet implemented")
+    override fun registerControllers(data: ControllerRegistrar) {
+        data.add(AnimationController(this, "controller", 0) { event -> predicate(event) })
     }
 
-    override fun createRenderer(consumer: Consumer<Any>?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRenderProvider(): Supplier<Any> {
-        TODO("Not yet implemented")
+    private fun <E : GeoAnimatable?> predicate(event: AnimationState<E>): PlayState {
+        event.controller.setAnimation(
+                RawAnimation.begin()
+                        .then("animation.model.inv", Animation.LoopType.HOLD_ON_LAST_FRAME)
+        )
+        return PlayState.CONTINUE
     }
 }

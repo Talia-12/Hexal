@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -37,6 +38,7 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
+import ram.talia.hexal.common.items.ItemRelay;
 import ram.talia.hexal.common.network.MsgAddRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgRemoveRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
@@ -199,7 +201,12 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 		BoundStorageEventHandler.setBoundStorage(player, storage);
 	}
 
-    @Override
+	@Override
+	public @NotNull ItemRelay getItemRelay(Item.Properties properties) {
+		return new ForgeItemRelay(properties);
+	}
+
+	@Override
     public @NotNull Object getItemRelayRenderProvider() {
         return new IClientItemExtensions() {
 			private ItemRelayRenderer renderer;

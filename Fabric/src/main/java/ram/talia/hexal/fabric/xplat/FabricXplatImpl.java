@@ -22,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -36,6 +37,7 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
+import ram.talia.hexal.common.items.ItemRelay;
 import ram.talia.hexal.common.network.MsgAddRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgRemoveRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
@@ -233,6 +235,11 @@ public class FabricXplatImpl implements IXplatAbstractions {
     @Override
     public void setBoundStorage(ServerPlayer player, @Nullable UUID storage) {
         HexalCardinalComponents.BOUND_STORAGE.get(player).setStorage(storage);
+    }
+
+    @Override
+    public @NotNull ItemRelay getItemRelay(Item.Properties properties) {
+        return new FabricItemRelay(properties);
     }
 
     @Override
