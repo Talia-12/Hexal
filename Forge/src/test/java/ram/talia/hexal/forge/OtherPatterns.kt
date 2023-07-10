@@ -1,22 +1,17 @@
 package ram.talia.hexal.forge
 
 import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.api.PatternRegistry
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.PatternIota
-import at.petrak.hexcasting.api.spell.math.HexDir
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.casting.operators.eval.OpEval
-import at.petrak.hexcasting.common.casting.operators.lists.OpIndex
-import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
-import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIf
-import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
+import at.petrak.hexcasting.api.casting.ActionRegistryEntry
+import at.petrak.hexcasting.api.casting.iota.PatternIota
+import at.petrak.hexcasting.api.casting.math.HexDir
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.lib.hex.HexActions.*
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.common.lib.hex.HexalActions
 
 object OtherPatterns {
 	@JvmField
-	val REVEAL = patternOf(OpPrint)
+	val REVEAL = patternOf(PRINT)
 
 	@JvmField
 	val COMPASS = patternOf(HexAPI.modLoc("entity_pos/foot"))
@@ -33,7 +28,7 @@ object OtherPatterns {
 	@JvmField
 	val INEQUALITY = patternOf(HexAPI.modLoc("not_equals"))
 	@JvmField
-	val AUGERS = patternOf(OpBoolIf)
+	val AUGERS = patternOf(IF)
 
 	@JvmField
 	val NULLARY = patternOf(HexAPI.modLoc("const/null"))
@@ -48,13 +43,13 @@ object OtherPatterns {
 	@JvmField
 	val GEMINIS_DISINTEGRATION = patternOf(HexAPI.modLoc("duplicate"))
 	@JvmField
-	val FLOCKS_DISINTEGRATION = patternOf(OpSplat)
+	val FLOCKS_DISINTEGRATION = patternOf(SPLAT)
 
 	@JvmField
-	val SELECTION_DISTILLATION = patternOf(OpIndex)
+	val SELECTION_DISTILLATION = patternOf(INDEX)
 
 	@JvmField
-	val HERMES = patternOf(OpEval)
+	val HERMES = patternOf(EVAL)
 
 	@JvmField
 	val INTRO = PatternIota(HexPattern.fromAngles("qqq", HexDir.WEST))
@@ -64,23 +59,23 @@ object OtherPatterns {
 
 
 	@JvmField
-	val TIMEKEEPER = HexalActions.CURRENT_TICK
+	val TIMEKEEPER: PatternIota = PatternIota(HexalActions.CURRENT_TICK.prototype)
 
 	@JvmField
-	val ZONE_DSTL_WISP = HexalActions.ZONE_ENTITY_WISP
+	val ZONE_DSTL_WISP: PatternIota = PatternIota(HexalActions.ZONE_ENTITY_WISP.prototype)
 	@JvmField
-	val WISP_TRIGGER_COMM = HexalActions.WISP_TRIGGER_COMM
+	val WISP_TRIGGER_COMM: PatternIota = PatternIota(HexalActions.WISP_TRIGGER_COMM.prototype)
 
 	@JvmField
-	val LINK = HexalActions.LINK
+	val LINK: PatternIota = PatternIota(HexalActions.LINK.prototype)
 	@JvmField
-	val POPULARITY = HexalActions.LINK_NUM
+	val POPULARITY: PatternIota = PatternIota(HexalActions.LINK_NUM.prototype)
 
 	@JvmField
-	val SEND_IOTA = HexalActions.LINK_COMM_SEND
+	val SEND_IOTA: PatternIota = PatternIota(HexalActions.LINK_COMM_SEND.prototype)
 	@JvmField
-	val RECITATION = HexalActions.LINK_COMM_READ
+	val RECITATION: PatternIota = PatternIota(HexalActions.LINK_COMM_READ.prototype)
 
-	private fun patternOf(op: Action): PatternIota = PatternIota(PatternRegistry.lookupPattern(PatternRegistry.lookupPattern(op)!!).prototype)
-	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(PatternRegistry.lookupPattern(loc).prototype)
+	private fun patternOf(op: ActionRegistryEntry): PatternIota = PatternIota(op.prototype)
+	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(REGISTRY.get(loc)!!.prototype)
 }

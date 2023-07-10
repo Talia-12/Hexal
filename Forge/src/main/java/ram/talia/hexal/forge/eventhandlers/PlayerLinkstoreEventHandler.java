@@ -122,7 +122,7 @@ public class PlayerLinkstoreEventHandler {
 	
 	@OnlyIn(Dist.CLIENT)
 	private static void clientTick(Player player) throws Exception {
-		if (!player.level.isClientSide)
+		if (!player.level().isClientSide)
 			throw new Exception("PlayerLinkstoreEventHander.clientTick can only be called on the client"); // TODO
 		
 		// TODO: check if other players links on a server actually render, not sure if there is only a client player tick for your player.

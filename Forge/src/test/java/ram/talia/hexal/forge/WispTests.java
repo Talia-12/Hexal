@@ -1,7 +1,7 @@
 package ram.talia.hexal.forge;
 
 import at.petrak.hexcasting.api.misc.MediaConstants;
-import at.petrak.hexcasting.api.spell.iota.Iota;
+import at.petrak.hexcasting.api.casting.iota.Iota;
 import net.minecraft.gametest.framework.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -161,9 +161,9 @@ public class WispTests {
 	}
 	
 	private static void tickPlayer (ServerPlayer player) {
-		if (lastTicked == player.level.getGameTime())
+		if (lastTicked == player.level().getGameTime())
 			return;
-		lastTicked = player.level.getGameTime();
+		lastTicked = player.level().getGameTime();
 		
 		TickEvent.PlayerTickEvent event = new TickEvent.PlayerTickEvent(TickEvent.Phase.END, player);
 		
