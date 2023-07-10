@@ -185,7 +185,14 @@ dependencies {
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FORGE-SNAPSHOT")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$minecraftVersion-$patchouliVersion-FORGE-SNAPSHOT")
 
+    implementation fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion")
+
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-$minecraftVersion:$geckolibVersion")
+
+    // Optional interop
+
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:$curiosVersion+$minecraftVersion:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:$curiosVersion+$minecraftVersion")
 
     // Testing dependencies:
     testCompileOnly project(":Common")
