@@ -1,4 +1,4 @@
-package ram.talia.hexal.common.lib.feature;
+package ram.talia.hexal.common.lib;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.Feature;

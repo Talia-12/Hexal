@@ -58,7 +58,7 @@ public class WispTests {
 	}
 	
 	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", batch = "wispBatch")
-	public static void linkWispsMessageTest (GameTestHelper helper) {
+	public static void linkWispsMessageTest(GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
 		HexalAPI.LOGGER.debug("running link wisps message test");
@@ -93,7 +93,7 @@ public class WispTests {
 	
 	// changed this test to non-required since I haven't actually written it yet.
 	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", timeoutTicks = 1200, required = false) // TODO: change to its own template
-	public static void farmingWispTest (GameTestHelper helper) {
+	public static void farmingWispTest(GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
 		HexalAPI.LOGGER.debug("testing farming wisp");
@@ -116,12 +116,12 @@ public class WispTests {
 	}
 	
 	@Nullable
-	private static TickingWisp makeTickingWispAtRelativePos (GameTestHelper helper, FakePlayer fakePlayer, Vec3 pos) {
+	private static TickingWisp makeTickingWispAtRelativePos(GameTestHelper helper, FakePlayer fakePlayer, Vec3 pos) {
 		return makeTickingWispAtRelativePos(helper, fakePlayer, pos, defaultHex);
 	}
 	
 	@Nullable
-	private static TickingWisp makeTickingWispAtRelativePos (GameTestHelper helper, FakePlayer fakePlayer, Vec3 pos, List<Iota> hex) {
+	private static TickingWisp makeTickingWispAtRelativePos(GameTestHelper helper, FakePlayer fakePlayer, Vec3 pos, List<Iota> hex) {
 		Vec3 spawnPos = helper.absoluteVec(pos);
 		
 		HexalAPI.LOGGER.debug("making a wisp at " + spawnPos);
@@ -140,7 +140,7 @@ public class WispTests {
 	
 	private static long lastTicked = 0L;
 	
-	private static FakePlayer setupPlayer (ServerLevel level) {
+	private static FakePlayer setupPlayer(ServerLevel level) {
 		var fakePlayer = FakePlayerFactory.INSTANCE.getRandom(level);
 		PlayerEvent.PlayerLoggedInEvent event = new PlayerEvent.PlayerLoggedInEvent(fakePlayer);
 		WispCastingMangerEventHandler.playerLoggedIn(event);
@@ -160,7 +160,7 @@ public class WispTests {
 		fakePlayers.clear();
 	}
 	
-	private static void tickPlayer (ServerPlayer player) {
+	private static void tickPlayer(ServerPlayer player) {
 		if (lastTicked == player.level().getGameTime())
 			return;
 		lastTicked = player.level().getGameTime();

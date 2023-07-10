@@ -18,9 +18,7 @@ import ram.talia.hexal.api.HexalAPI;
 import ram.talia.hexal.api.config.HexalConfig;
 import ram.talia.hexal.common.lib.hex.HexalActions;
 import ram.talia.hexal.common.lib.*;
-import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures;
-import ram.talia.hexal.common.lib.feature.HexalFeatures;
-import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures;
+import ram.talia.hexal.common.lib.HexalFeatures;
 import ram.talia.hexal.common.lib.hex.HexalIotaTypes;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
 import ram.talia.hexal.common.recipe.HexalRecipeTypes;
@@ -57,9 +55,7 @@ public class ForgeHexalInitializer {
 	
 	private static void initRegistry () {
 		bind(Registries.FEATURE, HexalFeatures::registerFeatures);
-		bind(Registries.CONFIGURED_FEATURE, HexalConfiguredFeatures::registerConfiguredFeatures);
-		bind(Registries.PLACED_FEATURE, HexalPlacedFeatures::registerPlacedFeatures);
-		
+
 		bind(Registries.SOUND_EVENT, HexalSounds::registerSounds);
 		bind(Registries.BLOCK, HexalBlocks::registerBlocks);
 		bind(Registries.ITEM, HexalBlocks::registerBlockItems);
