@@ -1,10 +1,9 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
+import at.petrak.hexcasting.api.casting.eval.env.PlayerBasedCastEnv
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.utils.hasByte
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
@@ -18,12 +17,12 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.minus
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.casting.WispCastingManager
 import ram.talia.hexal.api.times
 import ram.talia.hexal.common.lib.HexalEntities
 import java.lang.Double.min
@@ -37,20 +36,20 @@ class TickingWisp : BaseCastingWisp {
 	fun setStack(iotas: MutableList<Iota>) {
 		serStack.set(iotas)
 
-		stackNumTrueNames = 0;
-		for (entity in serStack.getReferencedEntities(level as ServerLevel)) {
+		stackNumTrueNames = 0
+		for (entity in serStack.getReferencedEntities(level() as ServerLevel)) {
 			if ((entity is Player) && (entity != caster)) {
-				stackNumTrueNames++;
+				stackNumTrueNames++
 			}
 		}
 	}
 	fun setRavenmind(iota: Iota?) {
 		serRavenmind.set(iota ?: NullIota())
 
-		ravenmindNumTrueNames = 0;
-		for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
+		ravenmindNumTrueNames = 0
+		for (entity in serRavenmind.getReferencedEntities(level() as ServerLevel)) {
 			if ((entity is Player) && (entity!= caster)) {
-				ravenmindNumTrueNames++;
+				ravenmindNumTrueNames++
 			}
 		}
 	}
@@ -87,9 +86,9 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	override fun transmittingTargetReturnDisplay(): List<Component> {
-		if (level.isClientSide)
+		if (level().isClientSide)
 			throw Exception("TickingWisp.transmittingTargetReturnDisplay should only be called on server.") // TODO
-		return serStack.getIotas(level as ServerLevel).map(Iota::display)
+		return serStack.getIotas(level() as ServerLevel).map(Iota::display)
 	}
 
 	//region Trueplayer handling stuff
@@ -99,19 +98,19 @@ class TickingWisp : BaseCastingWisp {
 		set(value) { field = if (value >= 0) value else 0 }
 
 	override fun tick() {
-		if (firstTick && !level.isClientSide) {
-			stackNumTrueNames = 0;
-			for (entity in serStack.getReferencedEntities(level as ServerLevel)) {
+		if (firstTick && !level().isClientSide) {
+			stackNumTrueNames = 0
+			for (entity in serStack.getReferencedEntities(level() as ServerLevel)) {
 				if ((entity is Player) && (entity != caster)) {
-					stackNumTrueNames++;
+					stackNumTrueNames++
 				}
 			}
 
-			ravenmindNumTrueNames = 0;
-			for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
+			ravenmindNumTrueNames = 0
+			for (entity in serRavenmind.getReferencedEntities(level() as ServerLevel)) {
 				if ((entity is Player) && (entity!= caster)) {
-                    ravenmindNumTrueNames++;
-                }
+                    ravenmindNumTrueNames++
+				}
 			}
 		}
 
@@ -125,13 +124,13 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun childTick() {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid childTick called, caster is $caster")
-		if (level.isClientSide) return
+		if (level().isClientSide) return
 
 		// clear entities that have been removed from the world at least once per second
 		// to prevent any memory leak type errors
-		if (level.gameTime % 20 == 0L) {
-			serStack.refreshIotas(level as ServerLevel)
-			serRavenmind.refreshIota(level as ServerLevel)
+		if (level().gameTime % 20 == 0L) {
+			serStack.refreshIotas(level() as ServerLevel)
+			serRavenmind.refreshIota(level() as ServerLevel)
 		}
 
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
@@ -156,7 +155,7 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	// Seon wisps have the same max range as the caster.
-	override fun maxSqrCastingDistance() = if (seon) { Action.MAX_DISTANCE * Action.MAX_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
+	override fun maxSqrCastingDistance() = if (seon) { PlayerBasedCastEnv.AMBIT_RADIUS * PlayerBasedCastEnv.AMBIT_RADIUS } else { CASTING_RADIUS * CASTING_RADIUS }
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")

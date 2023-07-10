@@ -34,7 +34,7 @@ object FabricPacketHandler {
 		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler(MsgRemoveEverbookAck::deserialise, MsgRemoveEverbookAck::handle))
 		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler(MsgToggleMacroAck::deserialise, MsgToggleMacroAck::handle))
 		// Cast Sound
-		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundAck.ID, makeClientBoundHandler(MsgWispCastSoundAck::deserialise, MsgWispCastSoundAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundS2C.ID, makeClientBoundHandler(MsgWispCastSoundS2C::deserialise, MsgWispCastSoundS2C::handle))
 		// Render links
 		ClientPlayNetworking.registerGlobalReceiver(MsgAddRenderLinkAck.ID, makeClientBoundHandler(MsgAddRenderLinkAck::deserialise, MsgAddRenderLinkAck::handle))
 		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveRenderLinkAck.ID, makeClientBoundHandler(MsgRemoveRenderLinkAck::deserialise, MsgRemoveRenderLinkAck::handle))

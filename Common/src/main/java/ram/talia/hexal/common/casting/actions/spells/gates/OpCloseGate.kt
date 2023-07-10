@@ -18,8 +18,8 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getGate
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.spell.VarargSpellAction
-import ram.talia.hexal.api.spell.iota.GateIota
+import ram.talia.hexal.api.casting.castables.VarargSpellAction
+import ram.talia.hexal.api.casting.iota.GateIota
 
 object OpCloseGate : VarargSpellAction {
     override fun argc(stack: List<Iota>): Int {
@@ -33,7 +33,8 @@ object OpCloseGate : VarargSpellAction {
 
     override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): SpellAction.Result {
         val gate = args.getGate(0, argc)
-        val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(env.world) ?: return null
+        val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(env.world)
+            ?: throw IllegalStateException("non-drifting gates should always have a target pos.")
         
         
         // only check if in ambit when the gate is drifting.

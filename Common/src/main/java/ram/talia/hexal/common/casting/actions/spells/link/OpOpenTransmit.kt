@@ -5,9 +5,8 @@ import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.eval.env.PlayerBasedCastEnv
 import at.petrak.hexcasting.api.casting.iota.Iota
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.mishaps.MishapNoLinked
-import ram.talia.hexal.api.spell.mishaps.MishapNonPlayer
+import ram.talia.hexal.api.casting.mishaps.MishapNoLinked
+import ram.talia.hexal.api.casting.mishaps.MishapNonPlayer
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpOpenTransmit : ConstMediaAction {

@@ -9,7 +9,7 @@ import com.mojang.datafixers.util.Either
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln

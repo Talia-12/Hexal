@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.ListIota
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.ListIota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.hasByte
@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
@@ -28,12 +29,12 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
-import ram.talia.hexal.api.spell.casting.WispCastingManager
-import ram.talia.hexal.api.spell.casting.triggers.IWispTrigger
-import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
+import ram.talia.hexal.api.casting.wisp.WispCastingManager
+import ram.talia.hexal.api.casting.wisp.triggers.IWispTrigger
+import ram.talia.hexal.api.casting.wisp.triggers.WispTriggerRegistry
 import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
-import ram.talia.hexal.common.network.MsgWispCastSoundAck
+import ram.talia.hexal.common.network.MsgWispCastSoundS2C
 import ram.talia.hexal.xplat.IXplatAbstractions
 import java.lang.Integer.min
 import java.util.*
@@ -55,8 +56,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		get() {
 			return if (field != null && !field!!.isRemoved) {
 				field
-			} else if (casterUUID != null && level is ServerLevel) {
-				field = (level as ServerLevel).getEntity(casterUUID!!) as? Player
+			} else if (casterUUID != null && level() is ServerLevel) {
+				field = (level() as ServerLevel).getEntity(casterUUID!!) as? Player
 				field
 			} else {
 				null
@@ -90,7 +91,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		serHex.set(iotas)
 
 		hexNumTrueNames = 0
-		for (entity in serHex.getReferencedEntities(level as ServerLevel)) {
+		for (entity in serHex.getReferencedEntities(level() as ServerLevel)) {
 			if ((entity is Player) && (entity!= caster)) {
 				hexNumTrueNames++
 			}
@@ -116,8 +117,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		// clear entities that have been removed from the world at least once per second
 		// to prevent any memory leak type errors
-		if (!level.isClientSide && (tickCount % 20 == 0)) {
-			serHex.refreshIotas(level as ServerLevel)
+		if (!level().isClientSide && (tickCount % 20 == 0)) {
+			serHex.refreshIotas(level() as ServerLevel)
 			tryLoadTransferMediaFilters()
 		}
 
@@ -131,7 +132,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		oldPos = position()
 
 		if (!scheduledCast && caster != null) {
-			if (!level.isClientSide) {
+			if (!level().isClientSide) {
 				deductMedia()
 				sendMediaToNeighbours()
 			}
@@ -142,8 +143,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		tryCheckInsideBlocks() // let the nether portal know if this wisp is inside it.
 
 		// TODO: move all this into BaseWisp
-		if (level.isClientSide) {
-			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+		if (level().isClientSide) {
+			val colouriser = FrozenPigment.fromNBT(entityData.get(PIGMENT))
 			playWispParticles(colouriser)
 			playTrailParticles(colouriser)
 			clientLinkableHolder!!.renderLinks()
@@ -217,8 +218,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
 
 	private fun tryLoadTransferMediaFilters() {
-		blackListTransferMedia.tryLoad(level as ServerLevel)
-		whiteListTransferMedia.tryLoad(level as ServerLevel)
+		blackListTransferMedia.tryLoad(level() as ServerLevel)
+		whiteListTransferMedia.tryLoad(level() as ServerLevel)
 	}
 
 	private fun sendMediaToNeighbours() {
@@ -311,7 +312,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			initialStack: SerialisedIotaList,
 			initialRavenmind: SerialisedIota,
 	): Boolean {
-		if (level.isClientSide || caster == null || !canScheduleCast())
+		if (level().isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
 
 		IXplatAbstractions.INSTANCE.getWispCastingManager(caster as ServerPlayer)
@@ -325,21 +326,21 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 
 	fun scheduleCastSound() {
-		if (level.isClientSide)
+		if (level().isClientSide)
 			throw Exception("BaseWisp.scheduleCastSound should only be called on server.") // TODO
 //		HexalAPI.LOGGER.debug("scheduling casting sound, level is $level")
-		IXplatAbstractions.INSTANCE.sendPacketNear(position(), 32.0, level as ServerLevel, MsgWispCastSoundAck(this))
+		IXplatAbstractions.INSTANCE.sendPacketNear(position(), 32.0, level() as ServerLevel, MsgWispCastSoundS2C(this))
 	}
 
 	fun playCastSoundClient() {
-		if (!level.isClientSide)
+		if (!level().isClientSide)
 			throw Exception("BaseWisp.playCastSoundClient should only be called on client.") // TODO
 
 //		HexalAPI.LOGGER.debug("playing casting sound, level is $level")
 		if (soundInstance == null || soundInstance!!.isStopped) {
 			soundInstance = WispCastingSoundInstance(this)
 			Minecraft.getInstance().soundManager.play(soundInstance!!)
-			HexalSounds.WISP_CASTING_START.playAt(level, position(), .3f, 1f + (random.nextFloat() - 0.5f) * 0.2f, false)
+			HexalSounds.WISP_CASTING_START.playAt(level(), position(), .3f, 1f + (random.nextFloat() - 0.5f) * 0.2f, false)
 		}
 
 		soundInstance!!.keepAlive()
@@ -385,7 +386,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		activeTrigger = when (val activeTriggerTag = compound.get(TAG_ACTIVE_TRIGGER)) {
 			null -> null
-			else -> WispTriggerRegistry.fromNbt(activeTriggerTag.asCompound, level as ServerLevel)
+			else -> WispTriggerRegistry.fromNbt(activeTriggerTag.asCompound, level() as ServerLevel)
 		}
 
 		seon = if (compound.hasByte(TAG_SEON)) { compound.getBoolean(TAG_SEON) } else { false }
@@ -421,14 +422,14 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		entityData.define(SEON, false)
 	}
 
-	override fun getAddEntityPacket(): Packet<*> {
+	override fun getAddEntityPacket(): Packet<ClientGamePacketListener> {
 		super.getAddEntityPacket() // called to call LinkableEntity.linkableHolder.syncAll()
 		return ClientboundAddEntityPacket(this, caster?.id ?: 0)
 	}
 
 	override fun recreateFromPacket(packet: ClientboundAddEntityPacket) {
 		super.recreateFromPacket(packet)
-		val caster = level.getEntity(packet.data) as? Player
+		val caster = level().getEntity(packet.data) as? Player
 		if (caster != null) {
 			this.caster = caster
 		}

@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.casting.*
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
@@ -18,7 +19,8 @@ object OpSendIota : SpellAction {
 		val linkedIndex = args.getPositiveIntUnder(0, linkThis.numLinked(), argc)
 		val iota = args[1]
 
-		val other = linkThis.getLinked(linkedIndex) ?: return null
+		val other = linkThis.getLinked(linkedIndex)
+			?: throw MishapInvalidIota.of(args[0], 1, "linkable.index")
 
 		return SpellAction.Result(
 			Spell(other, iota),

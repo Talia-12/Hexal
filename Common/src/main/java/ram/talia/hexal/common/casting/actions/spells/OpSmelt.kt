@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBlockPosOrItemEntityOrItem
-import ram.talia.hexal.api.spell.iota.MoteIota
+import ram.talia.hexal.api.casting.iota.MoteIota
 import ram.talia.hexal.api.toIntCapped
 import ram.talia.hexal.api.util.Anyone
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -30,7 +30,7 @@ object OpSmelt : SpellAction {
     }
 
     override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
-        val toSmelt = args.getBlockPosOrItemEntityOrItem(0, argc) ?: return SpellAction.Result()
+        val toSmelt = args.getBlockPosOrItemEntityOrItem(0, argc)
 
         val pos = toSmelt.flatMap({ blockPos -> Vec3.atCenterOf(blockPos) }, { item -> item.position() }, { null })
         pos?.let { env.assertVecInRange(it) }

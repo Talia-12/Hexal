@@ -1,7 +1,5 @@
 package ram.talia.hexal.mixin;
 
-import at.petrak.hexcasting.api.spell.casting.CastingHarness;
-import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
+import ram.talia.hexal.api.casting.wisp.IMixinCastingContext;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 @Mixin(OperatorSideEffect.ConsumeMedia.class)

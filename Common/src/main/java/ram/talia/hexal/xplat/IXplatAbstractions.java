@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
-import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.List;

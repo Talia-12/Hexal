@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nbt.toNbtList
 import ram.talia.hexal.api.nbt.toUUIDList
-import ram.talia.hexal.api.spell.iota.GateIota
+import ram.talia.hexal.api.casting.iota.GateIota
 import java.util.UUID
 
 /**

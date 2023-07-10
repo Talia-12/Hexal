@@ -5,12 +5,13 @@ import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.*
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.Vec3Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMote
-import ram.talia.hexal.api.spell.VarargSpellAction
-import ram.talia.hexal.api.spell.iota.MoteIota
+import ram.talia.hexal.api.casting.castables.VarargSpellAction
+import ram.talia.hexal.api.casting.iota.MoteIota
 import kotlin.math.min
 
 /**
@@ -27,7 +28,8 @@ object OpReturnMote : VarargSpellAction {
     }
 
     override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): SpellAction.Result {
-        val item = args.getMote(0, argc) ?: return null
+        val item = args.getMote(0, argc) ?:
+            throw MishapInvalidIota.of(args[0], 1, "mote.empty")
         val pos = args.getVec3(1, argc)
 
         val numToReturn = if (argc == 3) args.getInt(2, argc) else null

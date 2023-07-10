@@ -18,9 +18,9 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.getItemEntityOrItemFrame
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
-import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
+import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
+import ram.talia.hexal.api.casting.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.api.casting.mishaps.MishapStorageFull
 
 /**
  * Mediafy an ItemEntity. This is an [Action] rather than a [ConstMediaAction] or a [SpellAction] so that it can both
@@ -67,11 +67,11 @@ object OpMakeMote : Action {
                     iEntityEither.map( { it.item.count = countRemaining }, { it.item.count = countRemaining } )
                 stack.add(mote)
             } else {
-                val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
+                val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage()
                 if (!MediafiedItemManager.isStorageLoaded(storage))
-                    throw MishapNoBoundStorage(iEntity.position(), "storage_unloaded")
+                    throw MishapNoBoundStorage("storage_unloaded")
                 if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
-                    throw MishapStorageFull(iEntity.position())
+                    throw MishapStorageFull(storage)
 
                 val itemIota = itemStack.asActionResult(storage)[0]
 

@@ -1,25 +1,29 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS")
 
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
+import net.minecraft.nbt.CompoundTag
+import ram.talia.hexal.api.casting.castables.UserDataConstMediaAction
+import ram.talia.hexal.api.casting.iota.MoteIota
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.api.casting.mishaps.MishapNoBoundStorage
 
-object OpGetStorageRemainingCapacity : ConstMediaAction {
+object OpGetStorageRemainingCapacity : UserDataConstMediaAction {
     override val argc = 0
 
-    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
+    override fun execute(args: List<Iota>, userData: CompoundTag, env: CastingEnvironment): List<Iota> {
 
-        val storageId = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(env.caster.position())
+        val storageId = if (userData.contains(MoteIota.TAG_TEMP_STORAGE))
+                userData.getUUID(MoteIota.TAG_TEMP_STORAGE)
+            else
+                env.caster?.let { MediafiedItemManager.getBoundStorage(it) }
+            ?: throw MishapNoBoundStorage()
         if (!MediafiedItemManager.isStorageLoaded(storageId))
-            throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
-        val storage = MediafiedItemManager.getStorage(storageId)?.get() ?: throw MishapNoBoundStorage(env.caster.position())
+            throw MishapNoBoundStorage("storage_unloaded")
+        val storage = MediafiedItemManager.getStorage(storageId)?.get() ?: throw MishapNoBoundStorage()
 
         return (HexalConfig.server.maxRecordsInMediafiedStorage - storage.storedItems.size).asActionResult
     }

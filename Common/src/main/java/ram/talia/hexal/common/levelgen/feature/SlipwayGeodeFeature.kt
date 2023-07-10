@@ -79,22 +79,27 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 		if (`$$21`) {
 			`$$29` = random.nextInt(4)
 			`$$30` = distributionPoints * 2 + 1
-			if (`$$29` == 0) {
-				`$$11`.add(origin.offset(`$$30`, 7, 0))
-				`$$11`.add(origin.offset(`$$30`, 5, 0))
-				`$$11`.add(origin.offset(`$$30`, 1, 0))
-			} else if (`$$29` == 1) {
-				`$$11`.add(origin.offset(0, 7, `$$30`))
-				`$$11`.add(origin.offset(0, 5, `$$30`))
-				`$$11`.add(origin.offset(0, 1, `$$30`))
-			} else if (`$$29` == 2) {
-				`$$11`.add(origin.offset(`$$30`, 7, `$$30`))
-				`$$11`.add(origin.offset(`$$30`, 5, `$$30`))
-				`$$11`.add(origin.offset(`$$30`, 1, `$$30`))
-			} else {
-				`$$11`.add(origin.offset(0, 7, 0))
-				`$$11`.add(origin.offset(0, 5, 0))
-				`$$11`.add(origin.offset(0, 1, 0))
+			when (`$$29`) {
+				0 -> {
+					`$$11`.add(origin.offset(`$$30`, 7, 0))
+					`$$11`.add(origin.offset(`$$30`, 5, 0))
+					`$$11`.add(origin.offset(`$$30`, 1, 0))
+				}
+				1 -> {
+					`$$11`.add(origin.offset(0, 7, `$$30`))
+					`$$11`.add(origin.offset(0, 5, `$$30`))
+					`$$11`.add(origin.offset(0, 1, `$$30`))
+				}
+				2 -> {
+					`$$11`.add(origin.offset(`$$30`, 7, `$$30`))
+					`$$11`.add(origin.offset(`$$30`, 5, `$$30`))
+					`$$11`.add(origin.offset(`$$30`, 1, `$$30`))
+				}
+				else -> {
+					`$$11`.add(origin.offset(0, 7, 0))
+					`$$11`.add(origin.offset(0, 5, 0))
+					`$$11`.add(origin.offset(0, 1, 0))
+				}
 			}
 		}
 		val `$$31`: MutableList<BlockPos> = Lists.newArrayList()
@@ -140,8 +145,8 @@ class SlipwayGeodeFeature(codec: Codec<SlipwayGeodeConfiguration>) : Feature<Sli
 							// put a slipway in the middle of the geode, this is the only change I've made to the generation
 							centre /= innerCount.toDouble()
 
-							HexalAPI.LOGGER.debug("making a slipway at ${BlockPos(centre)}, origin is $origin")
-							safeSetBlock(level, BlockPos(centre), HexalBlocks.SLIPWAY.defaultBlockState(), { true })
+							HexalAPI.LOGGER.debug("making a slipway at ${BlockPos.containing(centre)}, origin is $origin")
+							safeSetBlock(level, BlockPos.containing(centre), HexalBlocks.SLIPWAY.defaultBlockState(), { true })
 
 							return true
 						}

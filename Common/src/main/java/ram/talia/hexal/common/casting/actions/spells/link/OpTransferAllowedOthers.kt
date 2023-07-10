@@ -5,9 +5,10 @@ import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getPositiveIntUnder
 import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.getBaseCastingWisp
 import ram.talia.hexal.api.linkable.ILinkable
-import ram.talia.hexal.api.spell.mishaps.MishapOthersWisp
+import ram.talia.hexal.api.casting.mishaps.MishapOthersWisp
 import ram.talia.hexal.common.entities.BaseCastingWisp
 
 class OpTransferAllowedOthers(private val setAllowed: Boolean) : SpellAction {
@@ -22,7 +23,8 @@ class OpTransferAllowedOthers(private val setAllowed: Boolean) : SpellAction {
             throw MishapOthersWisp(wispThis.caster)
 
         val otherIndex = args.getPositiveIntUnder(1, argc, wispThis.numLinked())
-        val other = wispThis.getLinked(otherIndex) ?: return null
+        val other = wispThis.getLinked(otherIndex)
+            ?: throw MishapInvalidIota.of(args[0], 1, "linkable.index")
 
         return SpellAction.Result(
             Spell(wispThis, other, setAllowed),

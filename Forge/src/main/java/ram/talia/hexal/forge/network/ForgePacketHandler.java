@@ -46,8 +46,8 @@ public class ForgePacketHandler {
 				MsgToggleMacroAck::deserialise, makeClientBoundHandler(MsgToggleMacroAck::handle));
 
 		//cast sound
-		NETWORK.registerMessage(messageIdx++, MsgWispCastSoundAck.class, MsgWispCastSoundAck::serialize,
-				MsgWispCastSoundAck::deserialise, makeClientBoundHandler(MsgWispCastSoundAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgWispCastSoundS2C.class, MsgWispCastSoundS2C::serialize,
+				MsgWispCastSoundS2C::deserialise, makeClientBoundHandler(MsgWispCastSoundS2C::handle));
 
 		//syncing render links
 		NETWORK.registerMessage(messageIdx++, MsgAddRenderLinkAck.class, MsgAddRenderLinkAck::serialize,

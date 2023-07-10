@@ -1,8 +1,8 @@
 package ram.talia.hexal.fabric.xplat;
 
-import at.petrak.hexcasting.api.spell.iota.Iota;
-import at.petrak.hexcasting.api.spell.math.HexPattern;
-import at.petrak.hexcasting.common.network.IMessage;
+import at.petrak.hexcasting.api.casting.iota.Iota;
+import at.petrak.hexcasting.api.casting.math.HexPattern;
+import at.petrak.hexcasting.common.msgs.IMessage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
-import ram.talia.hexal.api.spell.casting.WispCastingManager;
+import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
 import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;

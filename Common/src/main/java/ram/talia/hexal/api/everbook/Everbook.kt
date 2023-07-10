@@ -11,14 +11,14 @@ import net.minecraft.nbt.StringTag
 import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota
+import ram.talia.hexal.api.casting.mishaps.MishapIllegalInterworldIota
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.UUID
 import kotlin.io.path.*
 
 /**
- * In a similar vein to [ram.talia.hexal.api.spell.casting.WispCastingManager], one instance of this class will be created per player; when that player leaves the world
+ * In a similar vein to [ram.talia.hexal.api.casting.wisp.WispCastingManager], one instance of this class will be created per player; when that player leaves the world
  * a packet will be sent to their client which will save the file representation of their Everbook. When a player joins the world their Everbook will be loaded by their
  * client and sent to the server. Takes in a player's [UUID] to randomise the file content with.
  */

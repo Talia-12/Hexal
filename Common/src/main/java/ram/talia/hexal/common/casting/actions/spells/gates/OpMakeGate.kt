@@ -8,10 +8,11 @@ import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapOthersName
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.gates.GateManager
-import ram.talia.hexal.api.spell.VarargConstMediaAction
+import ram.talia.hexal.api.casting.castables.VarargConstMediaAction
 
 object OpMakeGate : VarargConstMediaAction {
     override fun argc(stack: List<Iota>): Int {
@@ -24,7 +25,7 @@ object OpMakeGate : VarargConstMediaAction {
     override val mediaCost: Int
         get() = HexalConfig.server.makeGateCost
 
-    override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): List<Iota> {
+    override fun execute(args: List<Iota>, argc: Int, userData: CompoundTag, env: CastingEnvironment): List<Iota> {
         // if OpMakeGate receives a null, then it'll make a drifting gate that costs proportional to distance but can teleport anywhere in ambit.
         // if it receives a vec and no entity, all teleports will go to the position pointed to by that vec.
         // if it receives a vec and an entity, all teleports will go to that entity, offset by that vec.

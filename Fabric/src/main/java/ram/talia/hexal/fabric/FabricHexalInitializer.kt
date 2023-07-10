@@ -18,6 +18,7 @@ import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.feature.HexalConfiguredFeatures
 import ram.talia.hexal.common.lib.feature.HexalFeatures
 import ram.talia.hexal.common.lib.feature.HexalPlacedFeatures
+import ram.talia.hexal.common.lib.hex.HexalIotaTypes
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import ram.talia.hexal.common.recipe.HexalRecipeTypes
 import ram.talia.hexal.fabric.interop.phantom.OpPhaseBlock

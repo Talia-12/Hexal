@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.Level
 import ram.talia.hexal.api.HexalAPI.modLoc
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
 import ram.talia.hexal.common.blocks.entity.BlockEntityRelay
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions

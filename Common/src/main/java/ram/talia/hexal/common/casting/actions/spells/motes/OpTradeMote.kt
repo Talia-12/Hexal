@@ -1,26 +1,26 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.asActionResult
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getPositiveIntUnder
 import at.petrak.hexcasting.api.casting.iota.DoubleIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.stats.Stats
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.trading.MerchantOffer
 import net.minecraft.world.item.trading.MerchantOffers
 import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.casting.castables.VarargConstMediaAction
+import ram.talia.hexal.api.casting.iota.MoteIota
+import ram.talia.hexal.api.casting.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.api.casting.mishaps.MishapStorageFull
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMoteOrMoteList
 import ram.talia.hexal.api.getVillager
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.VarargConstMediaAction
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.iota.MoteIota
-import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
-import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
 
 object OpTradeMote : VarargConstMediaAction {
     override val mediaCost: Int
@@ -32,7 +32,7 @@ object OpTradeMote : VarargConstMediaAction {
         return if (stack[0] is DoubleIota) 3 else 2
     }
 
-    override fun execute(args: List<Iota>, argc: Int, env: CastingEnvironment): List<Iota> {
+    override fun execute(args: List<Iota>, argc: Int, userData: CompoundTag, env: CastingEnvironment): List<Iota> {
         val villager = args.getVillager(0, argc)
         val toTradeItemIotas = args.getMoteOrMoteList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
         val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
@@ -51,19 +51,23 @@ object OpTradeMote : VarargConstMediaAction {
 
         env.assertEntityInRange(villager)
 
-        val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(env.caster.position())
+        val storage = if (userData.contains(MoteIota.TAG_TEMP_STORAGE))
+            userData.getUUID(MoteIota.TAG_TEMP_STORAGE)
+        else
+            env.caster?.let { MediafiedItemManager.getBoundStorage(it) }
+                    ?: throw MishapNoBoundStorage()
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage("storage_unloaded")
 
         val isFull = MediafiedItemManager.isStorageFull(storage) ?: return null.asActionResult
         if (isFull)
-            throw MishapStorageFull(env.caster.position())
+            throw MishapStorageFull(storage)
 
 
         if (villager.offers.isEmpty())
             return emptyList<Iota>().asActionResult
 
-        villager.updateSpecialPrices(env.caster)
+        env.caster?.let { villager.updateSpecialPrices(it) }
         villager.tradingPlayer = env.caster
 
         var outRecord: ItemRecord? = null
@@ -83,7 +87,7 @@ object OpTradeMote : VarargConstMediaAction {
 
             if (merchantoffer.take(toTrade0, toTrade1) || merchantoffer.take(toTrade0, toTrade1)) {
                 villager.notifyTrade(merchantoffer)
-                env.caster.awardStat(Stats.TRADED_WITH_VILLAGER)
+                env.caster?.awardStat(Stats.TRADED_WITH_VILLAGER)
 
                 if (outRecord == null)
                     outRecord = ItemRecord(merchantoffer.result)
@@ -105,7 +109,7 @@ object OpTradeMote : VarargConstMediaAction {
         return outRecord?.let { record -> MoteIota.makeIfStorageLoaded(record, storage)?.let{ listOf(it) } } ?: null.asActionResult
     }
 
-    fun getFirstMatchingInStockOffer(offers: MerchantOffers, toTrade0: ItemStack, toTrade1: ItemStack): MerchantOffer? {
+    private fun getFirstMatchingInStockOffer(offers: MerchantOffers, toTrade0: ItemStack, toTrade1: ItemStack): MerchantOffer? {
         for (index in 0 until offers.size) {
             val offer = offers.getRecipeFor(toTrade0, toTrade1, index) ?: offers.getRecipeFor(toTrade1, toTrade0, index) ?: continue
             if (!offer.isOutOfStock)

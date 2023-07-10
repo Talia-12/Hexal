@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
-import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.UUID
 

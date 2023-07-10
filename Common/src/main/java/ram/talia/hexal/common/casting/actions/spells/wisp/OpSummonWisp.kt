@@ -1,4 +1,3 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS", "KotlinConstantConditions")
 
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
@@ -11,8 +10,8 @@ import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.addBounded
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.mishaps.MishapExcessiveReproduction
+import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
+import ram.talia.hexal.api.casting.mishaps.MishapExcessiveReproduction
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
 import java.lang.Integer.max
@@ -66,7 +65,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
                 true -> TickingWisp(env.world, pos, env.caster, media)
                 false -> ProjectileWisp(env.world, pos, vel, env.caster, media)
             }
-            wisp.setColouriser(pigment)
+            wisp.setPigment(pigment)
             wisp.setHex(hex.toMutableList())
             env.world.addFreshEntity(wisp)
         }

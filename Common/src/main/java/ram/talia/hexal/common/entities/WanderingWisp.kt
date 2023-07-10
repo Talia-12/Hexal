@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -62,7 +62,7 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 	override fun tick() {
 		super.tick()
 
-		if (!level.isClientSide && level.gameTime > startTick + MAX_TICKS_ALIVE) {
+		if (!level().isClientSide && level().gameTime > startTick + MAX_TICKS_ALIVE) {
 			discard()
 		}
 
@@ -70,10 +70,10 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 
 		move()
 
-		if (level.isClientSide) {
-			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
-			playWispParticles(colouriser)
-			playTrailParticles(colouriser)
+		if (level().isClientSide) {
+			val pigment = FrozenPigment.fromNBT(entityData.get(PIGMENT))
+			playWispParticles(pigment)
+			playTrailParticles(pigment)
 			clientLinkableHolder!!.renderLinks()
 		}
 	}

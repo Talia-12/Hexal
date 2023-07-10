@@ -9,7 +9,7 @@ import at.petrak.hexcasting.api.casting.mishaps.MishapNoAkashicRecord
 import at.petrak.hexcasting.api.casting.mishaps.MishapOthersName
 import at.petrak.hexcasting.common.blocks.akashic.BlockAkashicRecord
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota
+import ram.talia.hexal.api.casting.mishaps.MishapIllegalInterworldIota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpEverbookWrite : ConstMediaAction {

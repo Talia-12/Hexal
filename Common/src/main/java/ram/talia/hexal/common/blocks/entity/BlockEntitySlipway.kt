@@ -74,7 +74,7 @@ class BlockEntitySlipway(pos: BlockPos, state: BlockState) : HexBlockEntity(Hexa
 			val colouriser = getRandomPigment()
 
 			val wisp = WanderingWisp(level, Vec3.atCenterOf(blockPos))
-			wisp.setColouriser(colouriser)
+			wisp.setPigment(colouriser)
 			level.addFreshEntity(wisp)
 
 			sync()

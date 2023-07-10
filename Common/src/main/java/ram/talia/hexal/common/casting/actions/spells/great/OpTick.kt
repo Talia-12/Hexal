@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
 
 /**
  * Tick Acceleration!

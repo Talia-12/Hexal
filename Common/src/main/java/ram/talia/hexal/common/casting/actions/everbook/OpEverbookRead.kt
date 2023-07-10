@@ -12,7 +12,7 @@ import at.petrak.hexcasting.common.lib.HexSounds
 import net.minecraft.core.BlockPos
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota
+import ram.talia.hexal.api.casting.mishaps.MishapIllegalInterworldIota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpEverbookRead : SpellAction {

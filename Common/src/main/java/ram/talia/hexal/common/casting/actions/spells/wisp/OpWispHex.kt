@@ -7,7 +7,7 @@ import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.linkable.LinkableRegistry
-import ram.talia.hexal.api.spell.mishaps.MishapOthersWisp
+import ram.talia.hexal.api.casting.mishaps.MishapOthersWisp
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.xplat.IXplatAbstractions
 

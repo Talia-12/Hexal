@@ -9,7 +9,7 @@ import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
-import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
+import ram.talia.hexal.api.casting.mishaps.MishapLinkToSelf
 
 object OpLinkOthers : SpellAction {
 	override val argc = 2

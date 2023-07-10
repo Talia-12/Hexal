@@ -9,7 +9,7 @@ import at.petrak.hexcasting.api.casting.mishaps.MishapImmuneEntity
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getGate
-import ram.talia.hexal.api.spell.iota.GateIota
+import ram.talia.hexal.api.casting.iota.GateIota
 
 object OpMarkGate : SpellAction {
     override val argc = 2

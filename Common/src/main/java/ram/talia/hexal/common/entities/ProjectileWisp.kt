@@ -1,8 +1,8 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.EntityIota
-import at.petrak.hexcasting.api.spell.iota.Vec3Iota
+import at.petrak.hexcasting.api.casting.eval.env.PlayerBasedCastEnv
+import at.petrak.hexcasting.api.casting.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.Vec3Iota
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.player.Player
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.casting.WispCastingManager
+import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.common.lib.HexalEntities
 
 open class ProjectileWisp : BaseCastingWisp {
@@ -43,13 +43,13 @@ open class ProjectileWisp : BaseCastingWisp {
 	}
 
 	// Seon wisps have the same max range as the caster.
-	override fun maxSqrCastingDistance() = if (seon) { Action.MAX_DISTANCE * Action.MAX_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
+	override fun maxSqrCastingDistance() = if (seon) { PlayerBasedCastEnv.AMBIT_RADIUS * PlayerBasedCastEnv.AMBIT_RADIUS } else { CASTING_RADIUS * CASTING_RADIUS }
 
-	fun getHitResult(start: Vec3, end: Vec3): BlockHitResult = level.clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
+	fun getHitResult(start: Vec3, end: Vec3): BlockHitResult = level().clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
 
 	protected fun findHitEntity(start: Vec3, end: Vec3): EntityHitResult? =
 		ProjectileUtil.getEntityHitResult(
-			level,
+			level(),
 			this,
 			start,
 			end,
@@ -105,7 +105,7 @@ open class ProjectileWisp : BaseCastingWisp {
 	}
 	fun onHitEntity(result: EntityHitResult) {
 		setPos(result.location)
-		if (level.isClientSide)
+		if (level().isClientSide)
 			playTrailParticles()
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this), EntityIota(result.entity)))
@@ -115,7 +115,7 @@ open class ProjectileWisp : BaseCastingWisp {
 
 	fun onHitBlock(result: BlockHitResult) {
 		setPos(result.location)
-		if (level.isClientSide)
+		if (level().isClientSide)
 			playTrailParticles()
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this),

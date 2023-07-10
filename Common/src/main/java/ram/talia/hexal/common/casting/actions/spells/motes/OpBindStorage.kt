@@ -4,14 +4,15 @@ import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
 import at.petrak.hexcasting.api.casting.getBlockPos
 import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.casting.iota.MoteIota
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -35,22 +36,30 @@ class OpBindStorage(private val isTemporaryBinding: Boolean) : SpellAction {
 
     private data class Spell(val pos: BlockPos?, val isTemporaryBinding: Boolean) : RenderedSpell {
         override fun cast(env: CastingEnvironment) {
-            val caster = env.caster ?: return // TODO
+            throw IllegalStateException("call cast(env, image) instead.")
+        }
+
+        override fun cast(env: CastingEnvironment, image: CastingImage): CastingImage? {
+            val caster = env.caster ?: return null // TODO
 
             if (pos == null) {
                 MediafiedItemManager.setBoundStorage(caster, null)
-                return
+                return null
             }
 
             if (!env.canEditBlockAt(pos) || !IXplatAbstractions.INSTANCE.isInteractingAllowed(env.world, pos, Direction.UP, env.castingHand, env.caster))
-                return
+                return null
 
-            val storage = env.world.getBlockEntity(pos) as? BlockEntityMediafiedStorage ?: return
+            val storage = env.world.getBlockEntity(pos) as? BlockEntityMediafiedStorage ?: return null
 
-            if (isTemporaryBinding)
-                (env as IMixinCastingContext).setTemporaryBoundStorage(storage.uuid)
-            else
-                MediafiedItemManager.setBoundStorage(caster, storage.uuid)
+            if (isTemporaryBinding) {
+                val userData = image.userData.copy()
+                userData.putUUID(MoteIota.TAG_TEMP_STORAGE, storage.uuid)
+                return image.copy(userData = userData)
+            }
+
+            MediafiedItemManager.setBoundStorage(caster, storage.uuid)
+            return null
         }
     }
 }

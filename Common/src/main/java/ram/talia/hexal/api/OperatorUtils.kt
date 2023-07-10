@@ -17,11 +17,12 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.iota.GateIota
-import ram.talia.hexal.api.spell.iota.MoteIota
+import ram.talia.hexal.api.casting.iota.GateIota
+import ram.talia.hexal.api.casting.iota.MoteIota
 import ram.talia.hexal.api.util.Anyone
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.BaseWisp
+import ram.talia.moreiotas.api.casting.iota.ItemStackIota
 import ram.talia.moreiotas.api.casting.iota.ItemTypeIota
 import java.util.UUID
 import kotlin.math.abs
@@ -157,19 +158,20 @@ fun List<Iota>.getStrictlyPositiveLong(idx: Int, argc: Int = 0): Long {
     throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "int.strictly_positive")
 }
 
-fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<BlockPos, ItemEntity, MoteIota>? {
+fun List<Iota>.getBlockPosOrItemEntityOrItem(idx: Int, argc: Int = 0): Anyone<BlockPos, ItemEntity, MoteIota> {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
-    return when (x) {
+    val out = when (x) {
         is Vec3Iota -> Anyone.first(BlockPos.containing(x.vec3))
         is EntityIota -> {
             if (x.entity.isRemoved)
-                throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "entity.itemitemframe")
-            (x.entity as? ItemEntity)?.let { Anyone.second(it) } ?: throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
+                null
+            else
+                (x.entity as? ItemEntity)?.let { Anyone.second(it) }
         }
         is MoteIota -> x.selfOrNull()?.let { Anyone.third(it) }
-        is NullIota -> null
-        else -> throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
+        else -> null
     }
+    return out ?: throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "blockitementityitem")
 }
 
 fun List<Iota>.getItemEntityOrItemFrame(idx: Int, argc: Int = 0): Either<ItemEntity, ItemFrame> {
@@ -186,12 +188,14 @@ fun List<Iota>.getItemEntityOrItemFrame(idx: Int, argc: Int = 0): Either<ItemEnt
     throw MishapInvalidIota.of(x, if (argc == 0) idx else argc - (idx + 1), "entity.itemitemframe")
 }
 
-fun List<Iota>.getBlockTypeOrBlockItem(idx: Int, argc: Int = 0): Either<Block, MoteIota>? {
+fun List<Iota>.getBlockTypeOrBlockItemStackOrBlockMote(idx: Int, argc: Int = 0): Anyone<Block, ItemStack, MoteIota>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is ItemTypeIota)
-        return x.block ?.let { Either.left(it) }
+        return x.block?.let { Anyone.first(it) }
+    if (x is ItemStackIota)
+        return x.itemStack?.let { if (it.item is BlockItem) Anyone.second(it) else null }
     if (x is MoteIota)
-        return x.selfOrNull()?.let { if (it.item is BlockItem) Either.right(it) else null }
+        return x.selfOrNull()?.let { if (it.item is BlockItem) Anyone.third(it) else null }
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "type.block")
 }
 

@@ -20,9 +20,9 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.VarargSpellAction
-import ram.talia.hexal.api.spell.iota.MoteIota
-import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.api.casting.castables.VarargSpellAction
+import ram.talia.hexal.api.casting.iota.MoteIota
+import ram.talia.hexal.api.casting.mishaps.MishapNoBoundStorage
 
 object OpUseMoteOn : VarargSpellAction {
     override fun argc(stack: List<Iota>): Int {
@@ -47,7 +47,7 @@ object OpUseMoteOn : VarargSpellAction {
 
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
-                throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
+                throw MishapNoBoundStorage("storage_unloaded")
 
             return SpellAction.Result(
                 EntityTargetSpell(target, item),
@@ -62,7 +62,7 @@ object OpUseMoteOn : VarargSpellAction {
 
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
-                throw MishapNoBoundStorage(env.caster.position(), "storage_unloaded")
+                throw MishapNoBoundStorage("storage_unloaded")
 
             return SpellAction.Result(
                 BlockTargetSpell(target, direction, item),

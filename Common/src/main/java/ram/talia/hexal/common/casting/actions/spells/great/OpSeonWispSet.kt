@@ -6,7 +6,7 @@ import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBaseCastingWisp
-import ram.talia.hexal.api.spell.mishaps.MishapOthersWisp
+import ram.talia.hexal.api.casting.mishaps.MishapOthersWisp
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.xplat.IXplatAbstractions
 

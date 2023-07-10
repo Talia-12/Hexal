@@ -2,7 +2,6 @@
 
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.SpellList
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
@@ -11,19 +10,22 @@ import at.petrak.hexcasting.api.casting.iota.ListIota
 import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import com.mojang.datafixers.util.Either
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.TransientCraftingContainer
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.RecipeType
+import ram.talia.hexal.api.casting.castables.UserDataConstMediaAction
+import ram.talia.hexal.api.casting.iota.MoteIota
+import ram.talia.hexal.api.casting.iota.MoteIota.TAG_TEMP_STORAGE
+import ram.talia.hexal.api.casting.mishaps.MishapNoBoundStorage
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMoteOrList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
-import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
+import ram.talia.hexal.api.mediafieditems.MediafiedItemManager.getBoundStorage
+import ram.talia.hexal.api.mediafieditems.MediafiedItemManager.isStorageLoaded
 import ram.talia.hexal.api.mulBounded
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
-import ram.talia.hexal.api.spell.iota.MoteIota
-import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
 /**
  * Automate crafting with hex casting! Takes a list of item iotas that will be crafted with, returns a list containing the results of the craft.
@@ -36,16 +38,22 @@ import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
  *   S
  * you'd pass the list \[\[D, D, D\], \[null, S\], \[null, S\]\].
  */
-object OpCraftMote : ConstMediaAction {
+object OpCraftMote : UserDataConstMediaAction {
     override val argc = 1
     override val mediaCost: Int
         get() = HexalConfig.server.craftItemCost
 
-    override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
+    override fun execute(args: List<Iota>, userData: CompoundTag, env: CastingEnvironment): List<Iota> {
         val input = args.getMoteOrList(0, argc) ?: return listOf<Iota>().asActionResult
-        val storage = (env as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(env.caster?.position())
-        if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(env.caster?.position(), "storage_unloaded")
+
+        val storage = if (userData.contains(TAG_TEMP_STORAGE))
+                userData.getUUID(TAG_TEMP_STORAGE)
+            else
+                env.caster?.let { getBoundStorage(it) }
+            ?: throw MishapNoBoundStorage()
+
+        if (!isStorageLoaded(storage))
+            throw MishapNoBoundStorage("storage_unloaded")
 
         val griddedIotas = makeItemIotaCraftingGrid(input)
 

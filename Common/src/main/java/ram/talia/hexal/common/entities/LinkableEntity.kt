@@ -1,8 +1,9 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.Entity
@@ -27,7 +28,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	override fun tick() {
 		super.tick()
 
-		if (level.isClientSide) {
+		if (level().isClientSide) {
 			clientLinkableHolder!!.renderLinks()
 			return
 		}
@@ -45,7 +46,7 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 		compound.put(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
 	}
 
-	override fun getAddEntityPacket(): Packet<*> {
+	override fun getAddEntityPacket(): Packet<ClientGamePacketListener> {
 		// TODO: not very efficient, sends all players tracking the entity a new packet every time someone else starts tracking it; would be better to only send to the one new tracker.
 		linkableHolder!!.syncAll()
 		return ClientboundAddEntityPacket(this)

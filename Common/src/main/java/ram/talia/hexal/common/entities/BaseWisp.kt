@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.putCompound
@@ -34,7 +33,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 
 	override fun get() = this
 
-	override fun pigment(): FrozenPigment = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+	override fun pigment(): FrozenPigment = FrozenPigment.fromNBT(entityData.get(PIGMENT))
 
 	override fun getEyeHeight(pose: Pose, dim: EntityDimensions) = 0f
 
@@ -62,8 +61,8 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	 */
 	fun maxMove(step: Vec3): Vec3 {
 		val bBox = this.boundingBox
-		val voxelShapes = level.getEntityCollisions(this, bBox.expandTowards(deltaMovement))
-		return if (step.lengthSqr() == 0.0) step else collideBoundingBox(this, step, bBox, level, voxelShapes)
+		val voxelShapes = level().getEntityCollisions(this, bBox.expandTowards(deltaMovement))
+		return if (step.lengthSqr() == 0.0) step else collideBoundingBox(this, step, bBox, level(), voxelShapes)
 	}
 
 	fun renderCentre(): Vec3 = position()
@@ -73,7 +72,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		playTrailParticles(pigment())
 	}
 
-	protected open fun playWispParticles(colouriser: FrozenColorizer) {
+	protected open fun playWispParticles(pigment: FrozenPigment) {
 		val radius = (media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 100
 
 		val repeats = when (Minecraft.getInstance().options.particles().get() as ParticleStatus) {
@@ -83,10 +82,10 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 
 		for (i in 0..repeats) {
-			val colour: Int = colouriser.nextColour(random)
+			val colour: Int = pigment.nextColour(random)
 
-			level.addParticle(
-				ConjureParticleOptions(colour, true),
+			level().addParticle(
+				ConjureParticleOptions(colour),
 				(renderCentre().x + radius*random.nextGaussian()),
 				(renderCentre().y + radius*random.nextGaussian()),
 				(renderCentre().z + radius*random.nextGaussian()),
@@ -97,18 +96,18 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	protected open fun playTrailParticles(colouriser: FrozenColorizer) {
+	protected open fun playTrailParticles(pigment: FrozenPigment) {
 		val radius = ceil((media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
 
 		val delta = oldPos - position()
 		val dist = delta.length() * 12 * radius * radius * radius
 
 		for (i in 0..dist.toInt()) {
-			val colour: Int = colouriser.nextColour(random)
+			val colour: Int = pigment.nextColour(random)
 
 			val coeff = i / dist
-			level.addParticle(
-				ConjureParticleOptions(colour, false),
+			level().addParticle(
+				ConjureParticleOptions(colour),
 				(renderCentre().x + delta.x * coeff),
 				(renderCentre().y + delta.y * coeff),
 				(renderCentre().z + delta.z * coeff),
@@ -119,14 +118,14 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	fun setColouriser(colouriser: FrozenColorizer) {
-		entityData.set(COLOURISER, colouriser.serializeToNBT())
+	fun setPigment(pigment: FrozenPigment) {
+		entityData.set(PIGMENT, pigment.serializeToNBT())
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
 		super.readAdditionalSaveData(compound)
 
-		entityData.set(COLOURISER, compound.getCompound(TAG_COLOURISER))
+		entityData.set(PIGMENT, compound.getCompound(TAG_PIGMENT))
 
 		media = compound.getInt(TAG_MEDIA)
 
@@ -136,23 +135,23 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override fun addAdditionalSaveData(compound: CompoundTag) {
 		super.addAdditionalSaveData(compound)
 
-		compound.putCompound(TAG_COLOURISER, entityData.get(COLOURISER))
+		compound.putCompound(TAG_PIGMENT, entityData.get(PIGMENT))
 		compound.putInt(TAG_MEDIA, media)
 	}
 
 	override fun defineSynchedData() {
-		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
+		entityData.define(PIGMENT, FrozenPigment.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20 * MediaConstants.DUST_UNIT)
 	}
 
 	companion object {
 		@JvmStatic
-		val COLOURISER: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
+		val PIGMENT: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
 		@JvmStatic
 		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
 
-		const val TAG_COLOURISER = "colouriser"
+		const val TAG_PIGMENT = "pigment"
 		const val TAG_MEDIA = "media"
 	}
 }

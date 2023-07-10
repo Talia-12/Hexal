@@ -7,8 +7,6 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.minecraft.world.level.material.Material
-import net.minecraft.world.level.material.MaterialColor
 import net.minecraft.world.level.material.PushReaction
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
