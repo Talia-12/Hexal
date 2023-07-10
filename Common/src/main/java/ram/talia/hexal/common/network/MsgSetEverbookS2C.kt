@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.network
 
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.msgs.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 
-data class MsgSetEverbookAck(val key: HexPattern, val iota: CompoundTag) : IMessage {
+data class MsgSetEverbookS2C(val key: HexPattern, val iota: CompoundTag) : IMessage {
 	override fun serialize(buf: FriendlyByteBuf) {
 		buf.writeNbt(key.serializeToNBT())
 		buf.writeNbt(iota)
@@ -23,13 +23,13 @@ data class MsgSetEverbookAck(val key: HexPattern, val iota: CompoundTag) : IMess
 		val ID: ResourceLocation = HexalAPI.modLoc("setever")
 
 		@JvmStatic
-		fun deserialise(buffer: ByteBuf): MsgSetEverbookAck {
+		fun deserialise(buffer: ByteBuf): MsgSetEverbookS2C {
 			val buf = FriendlyByteBuf(buffer)
-			return MsgSetEverbookAck(HexPattern.fromNBT(buf.readNbt()!!), buf.readNbt()!!)
+			return MsgSetEverbookS2C(HexPattern.fromNBT(buf.readNbt()!!), buf.readNbt()!!)
 		}
 
 		@JvmStatic
-		fun handle(self: MsgSetEverbookAck) {
+		fun handle(self: MsgSetEverbookS2C) {
 			Minecraft.getInstance().execute {
 				IClientXplatAbstractions.INSTANCE.setClientEverbookIota(self.key, self.iota)
 			}

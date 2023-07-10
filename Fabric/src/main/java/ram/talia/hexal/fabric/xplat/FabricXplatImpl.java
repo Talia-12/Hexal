@@ -3,9 +3,12 @@ package ram.talia.hexal.fabric.xplat;
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.casting.math.HexPattern;
 import at.petrak.hexcasting.common.msgs.IMessage;
+import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -18,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,10 +34,10 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
-import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
-import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;
+import ram.talia.hexal.common.network.MsgAddRenderLinkS2C;
+import ram.talia.hexal.common.network.MsgRemoveRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
-import ram.talia.hexal.common.network.MsgToggleMacroAck;
+import ram.talia.hexal.common.network.MsgToggleMacroS2C;
 import ram.talia.hexal.fabric.cc.CCWispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
 import ram.talia.hexal.xplat.IXplatAbstractions;
@@ -41,6 +45,8 @@ import ram.talia.hexal.xplat.IXplatAbstractions;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import static at.petrak.hexcasting.xplat.IXplatAbstractions.HEXCASTING;
 
 public class FabricXplatImpl implements IXplatAbstractions {
 //    @Override
@@ -153,17 +159,17 @@ public class FabricXplatImpl implements IXplatAbstractions {
 
     @Override
     public void syncAddRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
-        sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgAddRenderLinkAck(sourceLink, sinkLink));
+        sendPacketTracking(BlockPos.containing(sourceLink.getPosition()), level, new MsgAddRenderLinkS2C(sourceLink, sinkLink));
     }
     
     @Override
     public void syncRemoveRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
-        sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgRemoveRenderLinkAck(sourceLink, sinkLink));
+        sendPacketTracking(BlockPos.containing(sourceLink.getPosition()), level, new MsgRemoveRenderLinkS2C(sourceLink, sinkLink));
     }
 
     @Override
     public void syncSetRenderLinks(ILinkable sourceLink, List<ILinkable> sinks, ServerLevel level) {
-        sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgSetRenderLinksAck(sourceLink, sinks));
+        sendPacketTracking(BlockPos.containing(sourceLink.getPosition()), level, new MsgSetRenderLinksAck(sourceLink, sinks));
     }
 
     //region Transmitting
@@ -185,7 +191,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     
     @Override
     public Iota getEverbookIota (ServerPlayer player, HexPattern key) {
-        return HexalCardinalComponents.EVERBOOK.get(player).getIota(key, player.getLevel());
+        return HexalCardinalComponents.EVERBOOK.get(player).getIota(key, player.serverLevel());
     }
     
     @Override
@@ -205,13 +211,13 @@ public class FabricXplatImpl implements IXplatAbstractions {
     
     @Override
     public List<Iota> getEverbookMacro (ServerPlayer player, HexPattern key) {
-        return HexalCardinalComponents.EVERBOOK.get(player).getMacro(key, player.getLevel());
+        return HexalCardinalComponents.EVERBOOK.get(player).getMacro(key, player.serverLevel());
     }
     
     @Override
     public void toggleEverbookMacro (ServerPlayer player, HexPattern key) {
         HexalCardinalComponents.EVERBOOK.get(player).toggleMacro(key);
-        IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroAck(key));
+        IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroS2C(key));
     }
 
     @Override
@@ -225,10 +231,34 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
 
     @Override
-    public boolean isBreakingAllowed (Level level, BlockPos pos, BlockState state, Player player) {
-        return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
+    public ServerPlayer getFakePlayer(ServerLevel level, UUID uuid) {
+        return getFakePlayer(level, new GameProfile(uuid, "[Hexal]"));
     }
-    
+
+    @Override
+    public ServerPlayer getFakePlayer(ServerLevel level, GameProfile profile) {
+        return FakePlayer.get(level, profile);
+    }
+
+    @Override
+    public boolean isBreakingAllowed(ServerLevel level, BlockPos pos, BlockState state, @Nullable Player player) {
+        if (player == null)
+            player = FakePlayer.get(level, HEXCASTING);
+        return PlayerBlockBreakEvents.BEFORE.invoker()
+                .beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
+    }
+
+    @Override
+    public boolean isPlacingAllowed(ServerLevel level, BlockPos pos, ItemStack stack, @Nullable Player player) {
+        if (player == null)
+            player = FakePlayer.get(level, HEXCASTING);
+        ItemStack cached = player.getMainHandItem();
+        player.setItemInHand(InteractionHand.MAIN_HAND, stack.copy());
+        var success = UseItemCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND);
+        player.setItemInHand(InteractionHand.MAIN_HAND, cached);
+        return success.getResult() == InteractionResult.PASS; // No other mod tried to consume this
+    }
+
     //    @Override
 //    public <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(BiFunction<BlockPos, BlockState, T> func,
 //        Block... blocks) {

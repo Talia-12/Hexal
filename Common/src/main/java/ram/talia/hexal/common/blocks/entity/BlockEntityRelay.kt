@@ -21,12 +21,10 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.*
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.*
 import ram.talia.hexal.api.linkable.ILinkable.LazyILinkableSet
-import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.times
 import ram.talia.hexal.common.blocks.BlockRelay
 import ram.talia.hexal.common.lib.HexalBlockEntities
 import java.util.*
@@ -183,7 +181,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             relayNetwork.nonRelays.add(other)
             relayNetwork.numNonRelays += 1
             setChanged()
-            if (other.currentMediaLevel() != -1) {
+            if (other.currentMediaLevel() != -1L) {
                 mediaExchangersLinkedDirectly.add(other)
                 relayNetwork.mediaExchangers.add(other)
                 relayNetwork.numMediaExchangers += 1
@@ -210,7 +208,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             relayNetwork.nonRelays.remove(other)
             relayNetwork.numNonRelays -= 1
             setChanged()
-            if (other.currentMediaLevel() != -1) {
+            if (other.currentMediaLevel() != -1L) {
                 mediaExchangersLinkedDirectly.remove(other)
                 relayNetwork.mediaExchangers.remove(other)
                 relayNetwork.numMediaExchangers -= 1
@@ -364,7 +362,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         var numNonRelays = nonRelays.size
         var numMediaExchangers = mediaExchangers.size
         var lastTickComputedAverageMedia = 0L
-        var computedAverageMedia = 0 // average media among all ILinkables connected to the relay network.
+        var computedAverageMedia = 0L // average media among all ILinkables connected to the relay network.
             /**
              * sets computedAverageMedia to the average amount of media among all [ILinkable]s connected to the relay network, if it hasn't been called before this tick.
              */
@@ -376,7 +374,8 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
                     return 0
                 }
 
-                field = mediaExchangers.fold(0) { c, m -> c + m.currentMediaLevel() } / numMediaExchangers
+                field = mediaExchangers.fold(0L to 0.0)
+                    { (cum, n), curr -> (cum / (n+1) * n).toLong().addBounded((curr.currentMediaLevel() / (n+1)).toLong()) to (n+1) }.first
                 return field
             }
 
@@ -392,7 +391,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         var lastTickAcceptedMedia = 0L
         val linkablesAcceptedFromThisTick: MutableSet<ILinkable> = mutableSetOf()
 
-        fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
+        fun canAcceptMedia(other: ILinkable, otherMediaLevel: Long): Long {
             if (lastTickAcceptedMedia < (root.level?.gameTime ?: 0L)) {
                 linkablesAcceptedFromThisTick.clear()
                 lastTickAcceptedMedia = root.level?.gameTime ?: 0L
@@ -407,10 +406,10 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             if (otherMediaLevel <= averageMediaWithoutOther)
                 return 0
 
-            return ((otherMediaLevel - averageMediaWithoutOther) * HexalConfig.server.mediaFlowRateOverLink).toInt()
+            return ((otherMediaLevel - averageMediaWithoutOther).mulBounded(HexalConfig.server.mediaFlowRateOverLink))
         }
 
-        fun acceptMedia(other: ILinkable, sentMedia: Int) {
+        fun acceptMedia(other: ILinkable, sentMedia: Long) {
             var remainingMedia = sentMedia
             for (mediaAcceptor in mediaExchangers.shuffled()) {
                 if (other == mediaAcceptor)

@@ -33,27 +33,27 @@ public class ForgePacketHandler {
 		int messageIdx = 0;
 		
 		// Client -> server
-		NETWORK.registerMessage(messageIdx++, MsgSendEverbookSyn.class, MsgSendEverbookSyn::serialize,
-				MsgSendEverbookSyn::deserialise, makeServerBoundHandler(MsgSendEverbookSyn::handle));
+		NETWORK.registerMessage(messageIdx++, MsgSendEverbookC2S.class, MsgSendEverbookC2S::serialize,
+				MsgSendEverbookC2S::deserialise, makeServerBoundHandler(MsgSendEverbookC2S::handle));
 		
 		// Server -> client
 		//everbook
-		NETWORK.registerMessage(messageIdx++, MsgSetEverbookAck.class, MsgSetEverbookAck::serialize,
-				MsgSetEverbookAck::deserialise, makeClientBoundHandler(MsgSetEverbookAck::handle));
-		NETWORK.registerMessage(messageIdx++, MsgRemoveEverbookAck.class, MsgRemoveEverbookAck::serialize,
-				MsgRemoveEverbookAck::deserialise, makeClientBoundHandler(MsgRemoveEverbookAck::handle));
-		NETWORK.registerMessage(messageIdx++, MsgToggleMacroAck.class, MsgToggleMacroAck::serialize,
-				MsgToggleMacroAck::deserialise, makeClientBoundHandler(MsgToggleMacroAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgSetEverbookS2C.class, MsgSetEverbookS2C::serialize,
+				MsgSetEverbookS2C::deserialise, makeClientBoundHandler(MsgSetEverbookS2C::handle));
+		NETWORK.registerMessage(messageIdx++, MsgRemoveEverbookS2C.class, MsgRemoveEverbookS2C::serialize,
+				MsgRemoveEverbookS2C::deserialise, makeClientBoundHandler(MsgRemoveEverbookS2C::handle));
+		NETWORK.registerMessage(messageIdx++, MsgToggleMacroS2C.class, MsgToggleMacroS2C::serialize,
+				MsgToggleMacroS2C::deserialise, makeClientBoundHandler(MsgToggleMacroS2C::handle));
 
 		//cast sound
 		NETWORK.registerMessage(messageIdx++, MsgWispCastSoundS2C.class, MsgWispCastSoundS2C::serialize,
 				MsgWispCastSoundS2C::deserialise, makeClientBoundHandler(MsgWispCastSoundS2C::handle));
 
 		//syncing render links
-		NETWORK.registerMessage(messageIdx++, MsgAddRenderLinkAck.class, MsgAddRenderLinkAck::serialize,
-				MsgAddRenderLinkAck::deserialise, makeClientBoundHandler(MsgAddRenderLinkAck::handle));
-		NETWORK.registerMessage(messageIdx++, MsgRemoveRenderLinkAck.class, MsgRemoveRenderLinkAck::serialize,
-				MsgRemoveRenderLinkAck::deserialise, makeClientBoundHandler(MsgRemoveRenderLinkAck::handle));
+		NETWORK.registerMessage(messageIdx++, MsgAddRenderLinkS2C.class, MsgAddRenderLinkS2C::serialize,
+				MsgAddRenderLinkS2C::deserialise, makeClientBoundHandler(MsgAddRenderLinkS2C::handle));
+		NETWORK.registerMessage(messageIdx++, MsgRemoveRenderLinkS2C.class, MsgRemoveRenderLinkS2C::serialize,
+				MsgRemoveRenderLinkS2C::deserialise, makeClientBoundHandler(MsgRemoveRenderLinkS2C::handle));
 		NETWORK.registerMessage(messageIdx++, MsgSetRenderLinksAck.class, MsgSetRenderLinksAck::serialize,
 				MsgSetRenderLinksAck::deserialise, makeClientBoundHandler(MsgSetRenderLinksAck::handle));
 

@@ -48,7 +48,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 			priority: Int,
 			hex: SerialisedIotaList,
 			initialStack: SerialisedIotaList,
-			initialRavenmind: CompoundTag,
+			initialRavenmind: CompoundTag?,
 	) {
 		if (caster == null)
 			return
@@ -124,10 +124,10 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 		)
 
 		val userData = CompoundTag()
-		userData.putCompound(HexAPI.RAVENMIND_USERDATA, cast.initialRavenmind)
+		cast.initialRavenmind?.let { userData.putCompound(HexAPI.RAVENMIND_USERDATA, it) }
 		val image = CastingImage().copy(
 			stack = cast.initialStack.getIotas(ctx.world),
-			userData = CompoundTag()
+			userData = userData
 		)
 
 		val harness = CastingVM(image, ctx)
@@ -172,7 +172,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 			val timeAdded: Long,
 			val hex: SerialisedIotaList,
 			val initialStack: SerialisedIotaList,
-			val initialRavenmind: CompoundTag,
+			val initialRavenmind: CompoundTag?,
 	) : Comparable<WispCast> {
 		/**
 		 * when loading from NBT, it calls ServerLevel.entity(UUID), which could return null.
@@ -185,7 +185,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 			timeAdded: Long,
 			hex: SerialisedIotaList,
 			initialStack: SerialisedIotaList,
-			initialRavenmind: CompoundTag
+			initialRavenmind: CompoundTag?
 		) : this(wisp.uuid, priority, timeAdded, hex, initialStack, initialRavenmind) {
 			this.wisp = wisp
 		}
@@ -204,7 +204,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 			tag.putLong(TAG_TIME_ADDED, timeAdded)
 			tag.put(TAG_HEX, hex.getTag())
 			tag.put(TAG_INITIAL_STACK, initialStack.getTag())
-			tag.putCompound(TAG_INITIAL_RAVENMIND, initialRavenmind)
+			initialRavenmind?.let { tag.putCompound(TAG_INITIAL_RAVENMIND, it) }
 
 			return tag
 		}
@@ -228,7 +228,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 						tag.getLong(TAG_TIME_ADDED),
 						SerialisedIotaList(tag.get(TAG_HEX) as? ListTag),
 						SerialisedIotaList(tag.get(TAG_INITIAL_STACK) as? ListTag),
-						tag.getCompound(TAG_INITIAL_RAVENMIND)
+						if (tag.contains(TAG_INITIAL_RAVENMIND)) tag.getCompound(TAG_INITIAL_RAVENMIND) else null
 					)
 				}
 
@@ -238,7 +238,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 					tag.getLong(TAG_TIME_ADDED),
 					SerialisedIotaList(tag.get(TAG_HEX) as? ListTag),
 					SerialisedIotaList(tag.get(TAG_INITIAL_STACK) as? ListTag),
-					tag.getCompound(TAG_INITIAL_RAVENMIND)
+					if (tag.contains(TAG_INITIAL_RAVENMIND)) tag.getCompound(TAG_INITIAL_RAVENMIND) else null
 				)
 			}
 		}

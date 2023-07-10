@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.network
 
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.msgs.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 
-class MsgToggleMacroAck(val key: HexPattern) : IMessage {
+class MsgToggleMacroS2C(val key: HexPattern) : IMessage {
 	override fun serialize(buf: FriendlyByteBuf) {
 		buf.writeNbt(key.serializeToNBT())
 	}
@@ -21,13 +21,13 @@ class MsgToggleMacroAck(val key: HexPattern) : IMessage {
 		val ID: ResourceLocation = HexalAPI.modLoc("togmac")
 
 		@JvmStatic
-		fun deserialise(buffer: ByteBuf): MsgToggleMacroAck {
+		fun deserialise(buffer: ByteBuf): MsgToggleMacroS2C {
 			val buf = FriendlyByteBuf(buffer)
-			return MsgToggleMacroAck(HexPattern.fromNBT(buf.readNbt()!!))
+			return MsgToggleMacroS2C(HexPattern.fromNBT(buf.readNbt()!!))
 		}
 
 		@JvmStatic
-		fun handle(self: MsgToggleMacroAck) {
+		fun handle(self: MsgToggleMacroS2C) {
 			Minecraft.getInstance().execute {
 				IClientXplatAbstractions.INSTANCE.toggleClientEverbookMacro(self.key)
 			}

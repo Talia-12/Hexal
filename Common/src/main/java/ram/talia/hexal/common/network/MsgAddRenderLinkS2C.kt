@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.network
 
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.common.msgs.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
@@ -10,8 +10,7 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
 
-class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: CompoundTag) : IMessage {
-
+class MsgAddRenderLinkS2C(val sourceLinkTag: CompoundTag, val sinkLinkTag: CompoundTag) : IMessage {
     constructor(sourceLink: ILinkable, sinkLink: ILinkable) : this(LinkableRegistry.wrapSync(sourceLink), LinkableRegistry.wrapSync(sinkLink))
 
     override fun getFabricId() = ID
@@ -25,16 +24,16 @@ class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: Co
 
     companion object {
         @JvmField
-        val ID: ResourceLocation = HexalAPI.modLoc("rmlink")
+        val ID: ResourceLocation = HexalAPI.modLoc("ralink")
 
         const val TAG_SOURCE_LINK = "source"
         const val TAG_SINK_LINK = "sink"
 
         @JvmStatic
-        fun deserialise(buffer: ByteBuf): MsgRemoveRenderLinkAck {
+        fun deserialise(buffer: ByteBuf): MsgAddRenderLinkS2C {
             val buf = FriendlyByteBuf(buffer)
             val tag = buf.readNbt() ?: throw NullPointerException("no Nbt tag on received MsgPlayerAddRenderLinkAck")
-            return MsgRemoveRenderLinkAck(
+            return MsgAddRenderLinkS2C(
                     tag.get(TAG_SOURCE_LINK) as? CompoundTag
                             ?: throw NullPointerException("no sourceLinkTag on received MsgPlayerAddRenderLinkAck"),
 
@@ -44,15 +43,17 @@ class MsgRemoveRenderLinkAck(val sourceLinkTag: CompoundTag, val sinkLinkTag: Co
         }
 
         @JvmStatic
-        fun handle(self: MsgRemoveRenderLinkAck) {
+        fun handle(self: MsgAddRenderLinkS2C) {
             Minecraft.getInstance().execute {
                 val mc = Minecraft.getInstance()
 
                 if (mc.level == null)
                     return@execute
 
-                // remove the sink from the source's list of IRenderCentres only if both are non-null.
-                LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.removeRenderLink(self.sinkLinkTag)
+                // add the sink to the source's list of IRenderCentres only if both are non-null.
+                LinkableRegistry.fromSync(self.sinkLinkTag, mc.level!!)?.let {
+                    LinkableRegistry.fromSync(self.sourceLinkTag, mc.level!!)?.clientLinkableHolder?.addRenderLink(self.sinkLinkTag, it)
+                }
             }
         }
     }

@@ -1,20 +1,18 @@
 package ram.talia.hexal.common.network
 
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.msgs.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.common.entities.BaseWisp
 import ram.talia.hexal.xplat.IClientXplatAbstractions
-import ram.talia.hexal.xplat.IXplatAbstractions
 
 /**
  * Remove a pattern from the player's Everbook - should only be sent server to client.
  */
-data class MsgRemoveEverbookAck(val key: HexPattern) : IMessage {
+data class MsgRemoveEverbookS2C(val key: HexPattern) : IMessage {
 	override fun serialize(buf: FriendlyByteBuf) {
 		buf.writeNbt(key.serializeToNBT())
 	}
@@ -26,13 +24,13 @@ data class MsgRemoveEverbookAck(val key: HexPattern) : IMessage {
 		val ID: ResourceLocation = HexalAPI.modLoc("remever")
 
 		@JvmStatic
-		fun deserialise(buffer: ByteBuf): MsgRemoveEverbookAck {
+		fun deserialise(buffer: ByteBuf): MsgRemoveEverbookS2C {
 			val buf = FriendlyByteBuf(buffer)
-			return MsgRemoveEverbookAck(HexPattern.fromNBT(buf.readNbt()!!))
+			return MsgRemoveEverbookS2C(HexPattern.fromNBT(buf.readNbt()!!))
 		}
 
 		@JvmStatic
-		fun handle(self: MsgRemoveEverbookAck) {
+		fun handle(self: MsgRemoveEverbookS2C) {
 			Minecraft.getInstance().execute {
 				IClientXplatAbstractions.INSTANCE.removeClientEverbookIota(self.key)
 			}

@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.HexAPI;
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.casting.math.HexPattern;
 import at.petrak.hexcasting.common.msgs.IMessage;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -129,9 +131,12 @@ public interface IXplatAbstractions {
 //
 //    String getModName(String namespace);
 //
-    boolean isBreakingAllowed(Level level, BlockPos pos, BlockState state, Player player);
-//
-//    boolean isPlacingAllowed(Level world, BlockPos pos, ItemStack blockStack, Player player);
+    ServerPlayer getFakePlayer(ServerLevel level, UUID uuid);
+    ServerPlayer getFakePlayer(ServerLevel level, GameProfile profile);
+
+    boolean isBreakingAllowed(ServerLevel level, BlockPos pos, BlockState state, @Nullable Player player);
+
+    boolean isPlacingAllowed(ServerLevel level, BlockPos pos, ItemStack stack, @Nullable Player player);
 
     // interop
 
@@ -153,5 +158,4 @@ public interface IXplatAbstractions {
             return provider.get();
         }
     }
-
 }

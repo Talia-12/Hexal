@@ -9,7 +9,8 @@ import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.utils.asTranslatedComponent
 import at.petrak.hexcasting.ktxt.UseOnContext
-import at.petrak.hexcasting.xplat.IXplatAbstractions
+import at.petrak.hexcasting.xplat.IXplatAbstractions.HEXCASTING
+import com.mojang.authlib.GameProfile
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.InteractionHand
@@ -21,8 +22,10 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.casting.castables.VarargSpellAction
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.api.casting.iota.MoteIota
 import ram.talia.hexal.api.casting.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpUseMoteOn : VarargSpellAction {
     override fun argc(stack: List<Iota>): Int {
@@ -80,14 +83,19 @@ object OpUseMoteOn : VarargSpellAction {
             val itemStack = ItemStack(item.item, 1)
             itemStack.tag = item.tag
 
-            // Swap item in hand to the new stack
-            val oldStack = env.caster.getItemInHand(env.castingHand)
-            env.caster.setItemInHand(env.castingHand, itemStack)
+            val caster = env.caster ?: if (env is WispCastEnv)
+                    IXplatAbstractions.INSTANCE.getFakePlayer(env.world, GameProfile(env.wisp.uuid, "[Wisp " + env.wisp.uuid.toString().substring(0, 4) + "]"))
+                else
+                    IXplatAbstractions.INSTANCE.getFakePlayer(env.world, HEXCASTING)
 
-            entity.interact(env.caster, InteractionHand.MAIN_HAND)
+            // Swap item in hand to the new stack
+            val oldStack = caster.getItemInHand(env.castingHand)
+            caster.setItemInHand(env.castingHand, itemStack)
+
+            entity.interact(caster, InteractionHand.MAIN_HAND)
 
             // Swap back to the old item
-            env.caster.setItemInHand(env.castingHand, oldStack)
+            caster.setItemInHand(env.castingHand, oldStack)
 
             item.tag = itemStack.tag
             if (itemStack.isEmpty)

@@ -1,9 +1,9 @@
 package ram.talia.hexal.fabric.cc
 
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent
 import net.fabricmc.api.EnvType
@@ -15,9 +15,9 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.everbook.Everbook
-import ram.talia.hexal.common.network.MsgRemoveEverbookAck
-import ram.talia.hexal.common.network.MsgSendEverbookSyn
-import ram.talia.hexal.common.network.MsgSetEverbookAck
+import ram.talia.hexal.common.network.MsgRemoveEverbookS2C
+import ram.talia.hexal.common.network.MsgSendEverbookC2S
+import ram.talia.hexal.common.network.MsgSetEverbookS2C
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 import ram.talia.hexal.xplat.IXplatAbstractions
 
@@ -38,7 +38,7 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 
 		everbook = Everbook.fromDisk(player.uuid)
 
-		IClientXplatAbstractions.INSTANCE.sendPacketToServer(MsgSendEverbookSyn(everbook!!))
+		IClientXplatAbstractions.INSTANCE.sendPacketToServer(MsgSendEverbookC2S(everbook!!))
 
 		HexalAPI.LOGGER.info("registering listener to DISCONNECT event.")
 		ClientPlayConnectionEvents.DISCONNECT.register { _, client -> HexalAPI.LOGGER.info("CCEverbook saveToDisk"); saveToDisk(client.player) }
@@ -46,24 +46,24 @@ class CCEverbook(private val player: Player) : AutoSyncedComponent, ClientTickin
 
 	fun getIota(key: HexPattern, level: ServerLevel) = everbook?.getIota(key, level) ?: NullIota()
 	fun setIota(key: HexPattern, iota: Iota) {
-		if (player.level.isClientSide) throw Exception("CCEverbook.setIota can only be called on the server") // TODO
+		if (player.level().isClientSide) throw Exception("CCEverbook.setIota can only be called on the server") // TODO
 
 		if (everbook != null) {
 			everbook!!.setIota(key, iota)
-			IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgSetEverbookAck(key, HexIotaTypes.serialize(iota)))
+			IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgSetEverbookS2C(key, IotaType.serialize(iota)))
 		}
 	}
 
 	fun setFullEverbook(everbook: Everbook) {
-		if (player.level.isClientSide) throw Exception("CCEverbook.setFullEverbook can only be called on the server") // TODO
+		if (player.level().isClientSide) throw Exception("CCEverbook.setFullEverbook can only be called on the server") // TODO
 		this.everbook = everbook
 	}
 
 	fun removeIota(key: HexPattern) {
-		if (player.level.isClientSide) throw Exception("CCEverbook.removeIota can only be called on the server") // TODO
+		if (player.level().isClientSide) throw Exception("CCEverbook.removeIota can only be called on the server") // TODO
 		everbook?.removeIota(key)
 
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgRemoveEverbookAck(key))
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player as ServerPlayer, MsgRemoveEverbookS2C(key))
 	}
 
 	fun getMacro(key: HexPattern, level: ServerLevel) = everbook?.getMacro(key, level)

@@ -4,6 +4,7 @@ import at.petrak.hexcasting.common.recipe.RecipeSerializerBase
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredient
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
 import com.google.gson.JsonObject
+import net.minecraft.core.RegistryAccess
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.GsonHelper
@@ -19,11 +20,11 @@ data class FreezeRecipe(val resId: ResourceLocation, val blockIn: StateIngredien
 
 	fun matches(blockIn: BlockState) = this.blockIn.test(blockIn)
 
-	override fun assemble(pContainer: Container) = ItemStack.EMPTY
+	override fun assemble(pContainer: Container, access: RegistryAccess): ItemStack = ItemStack.EMPTY
 
 	override fun canCraftInDimensions(pWidth: Int, pHeight: Int) = false
 
-	override fun getResultItem() = ItemStack.EMPTY.copy()
+	override fun getResultItem(access: RegistryAccess): ItemStack = ItemStack.EMPTY.copy()
 
 	override fun getId() = resId
 

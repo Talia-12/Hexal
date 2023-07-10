@@ -20,8 +20,8 @@ object FabricPacketHandler {
 	 */
 	@Suppress("MoveLambdaOutsideParentheses")
 	fun initServerBound() {
-		ServerPlayNetworking.registerGlobalReceiver(MsgSendEverbookSyn.ID, makeServerBoundHandler(
-			(MsgSendEverbookSyn)::deserialise, { msg: MsgSendEverbookSyn, server: MinecraftServer, sender: ServerPlayer -> msg.handle(server, sender) })
+		ServerPlayNetworking.registerGlobalReceiver(MsgSendEverbookC2S.ID, makeServerBoundHandler(
+			(MsgSendEverbookC2S)::deserialise, { msg: MsgSendEverbookC2S, server: MinecraftServer, sender: ServerPlayer -> msg.handle(server, sender) })
 		)
 	}
 
@@ -30,14 +30,14 @@ object FabricPacketHandler {
 	 */
 	fun initClientBound() {
 		// Everbook
-		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookAck.ID, makeClientBoundHandler(MsgSetEverbookAck::deserialise, MsgSetEverbookAck::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookAck.ID, makeClientBoundHandler(MsgRemoveEverbookAck::deserialise, MsgRemoveEverbookAck::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroAck.ID, makeClientBoundHandler(MsgToggleMacroAck::deserialise, MsgToggleMacroAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgSetEverbookS2C.ID, makeClientBoundHandler(MsgSetEverbookS2C::deserialise, MsgSetEverbookS2C::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveEverbookS2C.ID, makeClientBoundHandler(MsgRemoveEverbookS2C::deserialise, MsgRemoveEverbookS2C::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgToggleMacroS2C.ID, makeClientBoundHandler(MsgToggleMacroS2C::deserialise, MsgToggleMacroS2C::handle))
 		// Cast Sound
 		ClientPlayNetworking.registerGlobalReceiver(MsgWispCastSoundS2C.ID, makeClientBoundHandler(MsgWispCastSoundS2C::deserialise, MsgWispCastSoundS2C::handle))
 		// Render links
-		ClientPlayNetworking.registerGlobalReceiver(MsgAddRenderLinkAck.ID, makeClientBoundHandler(MsgAddRenderLinkAck::deserialise, MsgAddRenderLinkAck::handle))
-		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveRenderLinkAck.ID, makeClientBoundHandler(MsgRemoveRenderLinkAck::deserialise, MsgRemoveRenderLinkAck::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgAddRenderLinkS2C.ID, makeClientBoundHandler(MsgAddRenderLinkS2C::deserialise, MsgAddRenderLinkS2C::handle))
+		ClientPlayNetworking.registerGlobalReceiver(MsgRemoveRenderLinkS2C.ID, makeClientBoundHandler(MsgRemoveRenderLinkS2C::deserialise, MsgRemoveRenderLinkS2C::handle))
 		ClientPlayNetworking.registerGlobalReceiver(MsgSetRenderLinksAck.ID, makeClientBoundHandler(MsgSetRenderLinksAck::deserialise, MsgSetRenderLinksAck::handle))
 		// Particles spell
 		ClientPlayNetworking.registerGlobalReceiver(MsgSingleParticleAck.ID, makeClientBoundHandler(MsgSingleParticleAck::deserialise, MsgSingleParticleAck::handle))

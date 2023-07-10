@@ -76,13 +76,14 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		get() = entityData.get(SEON)
 		set(value) = entityData.set(SEON, value)
 
-	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>): Boolean = consumer.map({ wisp ->
+	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer?>): Boolean = consumer.map({ wisp ->
 		wisp.caster == this.caster ||
 		whiteListTransferMedia.contains(wisp) ||
 		(wisp.caster?.let { whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: false)
 	}, {
-		it == this.caster ||
-		whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it))
+		it != null &&
+			(it == this.caster ||
+			whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it)))
 	})
 
 	val serHex: SerialisedIotaList = SerialisedIotaList()
@@ -310,7 +311,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			priority: Int,
 			hex: SerialisedIotaList,
 			initialStack: SerialisedIotaList,
-			initialRavenmind: CompoundTag,
+			initialRavenmind: CompoundTag?,
 	): Boolean {
 		if (level().isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it

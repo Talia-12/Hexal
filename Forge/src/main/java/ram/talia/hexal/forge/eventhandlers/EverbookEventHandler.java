@@ -1,9 +1,9 @@
 package ram.talia.hexal.forge.eventhandlers;
 
-import at.petrak.hexcasting.api.spell.iota.Iota;
-import at.petrak.hexcasting.api.spell.iota.NullIota;
-import at.petrak.hexcasting.api.spell.math.HexPattern;
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
+import at.petrak.hexcasting.api.casting.iota.Iota;
+import at.petrak.hexcasting.api.casting.iota.IotaType;
+import at.petrak.hexcasting.api.casting.iota.NullIota;
+import at.petrak.hexcasting.api.casting.math.HexPattern;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,10 +14,10 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import ram.talia.hexal.api.everbook.Everbook;
-import ram.talia.hexal.common.network.MsgRemoveEverbookAck;
-import ram.talia.hexal.common.network.MsgSendEverbookSyn;
-import ram.talia.hexal.common.network.MsgSetEverbookAck;
-import ram.talia.hexal.common.network.MsgToggleMacroAck;
+import ram.talia.hexal.common.network.MsgRemoveEverbookS2C;
+import ram.talia.hexal.common.network.MsgSendEverbookC2S;
+import ram.talia.hexal.common.network.MsgSetEverbookS2C;
+import ram.talia.hexal.common.network.MsgToggleMacroS2C;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
 
@@ -47,34 +47,34 @@ public class EverbookEventHandler {
 	public static Iota getIota(ServerPlayer player, HexPattern key) {
 		if (everbooks.get(player.getUUID()) == null)
 			return new NullIota();
-		return everbooks.get(player.getUUID()).getIota(key, player.getLevel());
+		return everbooks.get(player.getUUID()).getIota(key, player.serverLevel());
 	}
 	
 	public static void setIota (ServerPlayer player, HexPattern key, Iota iota) {
 		if (everbooks.get(player.getUUID()) == null)
 			return;
 		everbooks.get(player.getUUID()).setIota(key, iota);
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookAck(key, HexIotaTypes.serialize(iota)));
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookS2C(key, IotaType.serialize(iota)));
 	}
 	
 	public static void removeIota (ServerPlayer player, HexPattern key) {
 		if (everbooks.get(player.getUUID()) == null)
 			return;
 		everbooks.get(player.getUUID()).removeIota(key);
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgRemoveEverbookAck(key));
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgRemoveEverbookS2C(key));
 	}
 	
 	public static List<Iota> getMacro (ServerPlayer player, HexPattern key) {
 		if (everbooks.get(player.getUUID()) == null)
 			return List.of();
-		return everbooks.get(player.getUUID()).getMacro(key, player.getLevel());
+		return everbooks.get(player.getUUID()).getMacro(key, player.serverLevel());
 	}
 	
 	public static void toggleMacro (ServerPlayer player, HexPattern key) {
 		if (everbooks.get(player.getUUID()) == null)
 			return;
 		everbooks.get(player.getUUID()).toggleMacro(key);
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroAck(key));
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgToggleMacroS2C(key));
 	}
 	
 	@SubscribeEvent
@@ -98,7 +98,7 @@ public class EverbookEventHandler {
 		
 		localEverbook = Everbook.fromDisk(event.player.getUUID());
 		// Doesn't work for SOME REASON with IClientXplatAbstractions.INSTANCE.sendPacketToServer
-		ForgePacketHandler.getNetwork().sendToServer(new MsgSendEverbookSyn(localEverbook));
+		ForgePacketHandler.getNetwork().sendToServer(new MsgSendEverbookC2S(localEverbook));
 	}
 	
 	@OnlyIn(Dist.CLIENT)

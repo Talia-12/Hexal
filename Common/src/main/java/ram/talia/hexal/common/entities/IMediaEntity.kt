@@ -17,7 +17,7 @@ interface IMediaEntity<T : Entity> {
 	 * Returns whether the IMediaEntity should struggle against being consumed
 	 * (i.e. cost proportional to stored media if it struggles, or fixed cost otherwise.)
 	 */
-	fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>): Boolean
+	fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer?>): Boolean
 
 	fun get(): T
 

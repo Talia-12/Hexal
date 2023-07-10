@@ -14,20 +14,19 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.nbt.SerialisedIota
+import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.common.lib.HexalEntities
 
 open class ProjectileWisp : BaseCastingWisp {
 	var isAffectedByGravity = true
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
-	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
+	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Long) : super(entityType, world, pos, caster, media) {
 		deltaMovement = vel
 	}
-	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Long) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
 		deltaMovement = vel
 	}
 
@@ -109,7 +108,7 @@ open class ProjectileWisp : BaseCastingWisp {
 			playTrailParticles()
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this), EntityIota(result.entity)))
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, SerialisedIota())
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, null)
 		}
 	}
 
@@ -120,7 +119,7 @@ open class ProjectileWisp : BaseCastingWisp {
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this),
 					Vec3Iota(Vec3.atCenterOf(result.blockPos))))
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, SerialisedIota())
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, null)
 		}
 	}
 

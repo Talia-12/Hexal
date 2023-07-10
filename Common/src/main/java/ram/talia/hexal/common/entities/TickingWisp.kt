@@ -33,8 +33,8 @@ class TickingWisp : BaseCastingWisp {
 	private var serStack: SerialisedIotaList = SerialisedIotaList()
 	private var serRavenmind: SerialisedIota = SerialisedIota()
 
-	fun setStack(iotas: MutableList<Iota>) {
-		serStack.set(iotas)
+	fun setStack(iotas: List<Iota>) {
+		serStack.set(iotas.toMutableList())
 
 		stackNumTrueNames = 0
 		for (entity in serStack.getReferencedEntities(level() as ServerLevel)) {
@@ -43,8 +43,11 @@ class TickingWisp : BaseCastingWisp {
 			}
 		}
 	}
-	fun setRavenmind(iota: Iota?) {
-		serRavenmind.set(iota ?: NullIota())
+	fun setRavenmind(iota: CompoundTag?) {
+		if (iota != null)
+			serRavenmind.set(iota)
+		else
+			serRavenmind.set(NullIota())
 
 		ravenmindNumTrueNames = 0
 		for (entity in serRavenmind.getReferencedEntities(level() as ServerLevel)) {
@@ -71,12 +74,12 @@ class TickingWisp : BaseCastingWisp {
 		world: Level,
 		pos: Vec3,
 		caster: Player,
-		media: Int,
+		media: Long,
 	) : super(entityType, world, pos, caster, media) {
 		setTargetMovePos(pos)
 	}
 
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, caster: Player, media: Long) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
 		setTargetMovePos(pos)
 	}
 
@@ -130,10 +133,9 @@ class TickingWisp : BaseCastingWisp {
 		// to prevent any memory leak type errors
 		if (level().gameTime % 20 == 0L) {
 			serStack.refreshIotas(level() as ServerLevel)
-			serRavenmind.refreshIota(level() as ServerLevel)
 		}
 
-		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
+		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind.getTag())
 	}
 
 	override fun move() {

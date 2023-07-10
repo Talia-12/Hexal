@@ -3,6 +3,7 @@ package ram.talia.hexal.forge.xplat;
 import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.casting.math.HexPattern;
 import at.petrak.hexcasting.common.msgs.IMessage;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,7 +20,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -30,8 +34,8 @@ import ram.talia.hexal.api.linkable.ILinkable;
 import ram.talia.hexal.api.linkable.PlayerLinkstore;
 import ram.talia.hexal.api.casting.wisp.WispCastingManager;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
-import ram.talia.hexal.common.network.MsgAddRenderLinkAck;
-import ram.talia.hexal.common.network.MsgRemoveRenderLinkAck;
+import ram.talia.hexal.common.network.MsgAddRenderLinkS2C;
+import ram.talia.hexal.common.network.MsgRemoveRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
 import ram.talia.hexal.forge.eventhandlers.BoundStorageEventHandler;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
@@ -42,6 +46,8 @@ import ram.talia.hexal.xplat.IXplatAbstractions;
 
 import java.util.List;
 import java.util.UUID;
+
+import static at.petrak.hexcasting.xplat.IXplatAbstractions.HEXCASTING;
 
 public class ForgeXplatImpl implements IXplatAbstractions {
 
@@ -120,17 +126,17 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 
 	@Override
 	public void syncAddRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
-		sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgAddRenderLinkAck(sourceLink, sinkLink));
+		sendPacketTracking(BlockPos.containing(sourceLink.getPosition()), level, new MsgAddRenderLinkS2C(sourceLink, sinkLink));
 	}
 	
 	@Override
 	public void syncRemoveRenderLink(ILinkable sourceLink, ILinkable sinkLink, ServerLevel level) {
-		sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgRemoveRenderLinkAck(sourceLink, sinkLink));
+		sendPacketTracking(BlockPos.containing(sourceLink.getPosition()), level, new MsgRemoveRenderLinkS2C(sourceLink, sinkLink));
 	}
 
 	@Override
 	public void syncSetRenderLinks(ILinkable sourceLink, List<ILinkable> sinks, ServerLevel level) {
-		sendPacketTracking(new BlockPos(sourceLink.getPosition()), level, new MsgSetRenderLinksAck(sourceLink, sinks));
+		sendPacketTracking(BlockPos.containing(sourceLink.getPosition()), level, new MsgSetRenderLinksAck(sourceLink, sinks));
 	}
 	
 	@Override
@@ -189,7 +195,32 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 
 	@Override
-	public boolean isBreakingAllowed (Level level, BlockPos pos, BlockState state, Player player) {
+	public ServerPlayer getFakePlayer(ServerLevel level, UUID uuid) {
+		return getFakePlayer(level, new GameProfile(uuid, "[Hexal]"));
+	}
+
+	@Override
+	public ServerPlayer getFakePlayer(ServerLevel level, GameProfile profile) {
+		return FakePlayerFactory.get(level, profile);
+	}
+
+	public boolean isBreakingAllowed(ServerLevel level, BlockPos pos, BlockState state, @Nullable Player player) {
+		if (player == null) {
+			player = FakePlayerFactory.get(level, HEXCASTING);
+		}
+
 		return !MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, player));
+	}
+
+	public boolean isPlacingAllowed(ServerLevel level, BlockPos pos, ItemStack stack, @Nullable Player player) {
+		if (player == null) {
+			player = FakePlayerFactory.get(level, HEXCASTING);
+		}
+
+		ItemStack cached = player.getMainHandItem();
+		player.setItemInHand(InteractionHand.MAIN_HAND, stack.copy());
+		PlayerInteractEvent.RightClickBlock evt = ForgeHooks.onRightClickBlock(player, InteractionHand.MAIN_HAND, pos, new BlockHitResult(Vec3.atCenterOf(pos), Direction.DOWN, pos, true));
+		player.setItemInHand(InteractionHand.MAIN_HAND, cached);
+		return !evt.isCanceled();
 	}
 }

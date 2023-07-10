@@ -45,7 +45,7 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 
 	override fun numRemainingIota() = 0
 
-	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = false
+	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer?>) = false
 
 	override fun currentMediaLevel(): Long = -1
 

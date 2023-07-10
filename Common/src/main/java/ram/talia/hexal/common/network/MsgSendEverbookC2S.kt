@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.network
 
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.common.msgs.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
@@ -10,7 +10,7 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.everbook.Everbook
 import ram.talia.hexal.xplat.IXplatAbstractions
 
-data class MsgSendEverbookSyn(val everbook: Everbook) : IMessage {
+data class MsgSendEverbookC2S(val everbook: Everbook) : IMessage {
 	override fun serialize(buf: FriendlyByteBuf) {
 		buf.writeNbt(everbook.serialiseToNBT())
 	}
@@ -28,9 +28,9 @@ data class MsgSendEverbookSyn(val everbook: Everbook) : IMessage {
 		val ID: ResourceLocation = HexalAPI.modLoc("sendever")
 
 		@JvmStatic
-		fun deserialise(buffer: ByteBuf): MsgSendEverbookSyn {
+		fun deserialise(buffer: ByteBuf): MsgSendEverbookC2S {
 			val buf = FriendlyByteBuf(buffer)
-			return MsgSendEverbookSyn(Everbook.fromNbt(buf.readNbt()!!))
+			return MsgSendEverbookC2S(Everbook.fromNbt(buf.readNbt()!!))
 		}
 	}
 }

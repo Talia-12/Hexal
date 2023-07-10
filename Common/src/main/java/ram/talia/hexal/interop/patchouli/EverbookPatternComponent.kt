@@ -1,17 +1,18 @@
 package ram.talia.hexal.interop.patchouli
 
-import at.petrak.hexcasting.api.spell.math.HexCoord
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.IotaType.getTypeFromTag
+import at.petrak.hexcasting.api.casting.math.HexCoord
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.KEY_DATA
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.getTypeFromTag
 import at.petrak.hexcasting.interop.patchouli.AbstractPatternComponent
-import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.datafixers.util.Pair
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
@@ -52,28 +53,31 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		onVariablesAvailable { it }
 	}
 
-	override fun render(poseStack: PoseStack, ctx: IComponentRenderContext, partialTicks: Float, mouseX: Int, mouseY: Int) {
+	override fun render(graphics: GuiGraphics, ctx: IComponentRenderContext, partialTicks: Float, mouseX: Int, mouseY: Int) {
+		val poseStack = graphics.pose()
 		poseStack.pushPose()
 		poseStack.translate(HEADER_X.toDouble(), HEADER_Y.toDouble(), 0.0)
 
 		val headerComponent = (if (isMacro) "hexal.everbook_pattern_entry.macro_header" else "hexal.everbook_pattern_entry.header").asTranslatedComponent(indexNum)
 
-		drawCenteredStringNoShadow(poseStack, headerComponent, 0, 0, 0)
+		drawCenteredStringNoShadow(graphics, headerComponent, 0, 0, 0)
 		poseStack.popPose()
 
-		drawWrappedIota(poseStack, iota, DATA_X, DATA_Y, 0)
+		drawWrappedIota(graphics, iota, DATA_X, DATA_Y, 0)
 
-		super.render(poseStack, ctx, partialTicks, mouseX, mouseY)
+		super.render(graphics, ctx, partialTicks, mouseX, mouseY)
 	}
 
 	override fun showStrokeOrder() = true
 
-	private fun drawCenteredStringNoShadow(ms: PoseStack, s: Component, x: Int, y: Int, colour: Int) {
+	private fun drawCenteredStringNoShadow(graphics: GuiGraphics, s: Component, x: Int, y: Int, colour: Int) {
 		val font = Minecraft.getInstance().font
-		font.draw(ms, s, x - font.width(s) / 2.0f, y.toFloat(), colour)
+		graphics.drawString(font, s, x - font.width(s) / 2, y, colour)
 	}
 
-	private fun drawWrappedIota(ms: PoseStack, iota: CompoundTag?, x: Int, y: Int, colour: Int) {
+	private fun drawWrappedIota(graphics: GuiGraphics, iota: CompoundTag?, x: Int, y: Int, colour: Int) {
+		val ms = graphics.pose()
+
 		if (iota == null)
 			return
 
@@ -87,7 +91,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 			ms.pushPose()
 			ms.translate(x.toDouble(), currentY.toDouble(), 0.0)
 			val toDraw = if (currentY < y + 5 * 9) { iotaText.next() } else { "...".red.visualOrderText }
-			font.draw(ms, toDraw, 0.0f, 0.0f, colour)
+			graphics.drawString(font, toDraw, 0, 0, colour)
 			ms.popPose()
 			currentY += 9
 		}
@@ -117,7 +121,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		for (i in 0 until listTag.size) {
 			val subtag = listTag[i]
 			val cSubtag = subtag.downcast(CompoundTag.TYPE)
-			val translation = HexIotaTypes.getDisplay(cSubtag)
+			val translation = IotaType.getDisplay(cSubtag)
 			var currentElement = translation.visualOrderText
 			val addl = if (i < listTag.size - 1) {
 				", "
