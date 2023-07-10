@@ -5,7 +5,8 @@
   "refmap": "hexal.mixins.refmap.json",
   "package": "ram.talia.hexal.forge.mixin",
   "mixins": [
-    "MixinItem"
+    "MixinItem",
+    "MixinItemRelay"
   ],
   "client": []
 }

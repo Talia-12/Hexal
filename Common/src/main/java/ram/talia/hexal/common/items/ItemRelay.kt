@@ -17,33 +17,19 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 class ItemRelay(properties: Properties) : BlockItem(HexalBlocks.RELAY, properties), GeoItem {
-
-    //region GeoItem
-    private val instanceCache: AnimatableInstanceCache = GeckoLibUtil.createInstanceCache(this)
-    private val renderProvider: Supplier<Any> = GeoItem.makeRenderer(this)
-
-    override fun getAnimatableInstanceCache(): AnimatableInstanceCache = instanceCache
-
-    override fun createRenderer(consumer: Consumer<Any>) {
-        consumer.accept(IXplatAbstractions.INSTANCE.itemRelayRenderProvider)
+    override fun registerControllers(p0: ControllerRegistrar?) {
+        TODO("Not yet implemented")
     }
 
-    override fun getRenderProvider(): Supplier<Any> = renderProvider
-
-
-    override fun registerControllers(data: ControllerRegistrar) {
-        data.add(AnimationController(this, "controller", 0, this::predicate))
+    override fun getAnimatableInstanceCache(): AnimatableInstanceCache {
+        TODO("Not yet implemented")
     }
 
-
-
-    private fun <E : GeoAnimatable> predicate(event: AnimationState<E>): PlayState {
-        event.controller.setAnimation(
-            RawAnimation.begin()
-                .then("animation.model.inv", Animation.LoopType.HOLD_ON_LAST_FRAME)
-        )
-
-        return PlayState.CONTINUE
+    override fun createRenderer(consumer: Consumer<Any>?) {
+        TODO("Not yet implemented")
     }
-    //endregion
+
+    override fun getRenderProvider(): Supplier<Any> {
+        TODO("Not yet implemented")
+    }
 }
