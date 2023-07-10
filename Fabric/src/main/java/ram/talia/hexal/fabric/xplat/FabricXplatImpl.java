@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
@@ -40,7 +42,10 @@ import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
 import ram.talia.hexal.common.network.MsgToggleMacroS2C;
 import ram.talia.hexal.fabric.cc.CCWispCastingManager;
 import ram.talia.hexal.fabric.cc.HexalCardinalComponents;
+import ram.talia.hexal.fabric.client.items.ItemRelayRenderer;
 import ram.talia.hexal.xplat.IXplatAbstractions;
+import software.bernie.example.client.renderer.item.JackInTheBoxRenderer;
+import software.bernie.geckolib.animatable.client.RenderProvider;
 
 import java.util.Collection;
 import java.util.List;
@@ -228,6 +233,21 @@ public class FabricXplatImpl implements IXplatAbstractions {
     @Override
     public void setBoundStorage(ServerPlayer player, @Nullable UUID storage) {
         HexalCardinalComponents.BOUND_STORAGE.get(player).setStorage(storage);
+    }
+
+    @Override
+    public @NotNull Object getItemRelayRenderProvider() {
+        return new RenderProvider() {
+            private ItemRelayRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null)
+                    this.renderer = new ItemRelayRenderer();
+
+                return this.renderer;
+            }
+        };
     }
 
     @Override

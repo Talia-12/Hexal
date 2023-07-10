@@ -21,16 +21,27 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.*
+import ram.talia.hexal.api.HexalAPI
+import ram.talia.hexal.api.addBounded
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.linkable.*
+import ram.talia.hexal.api.linkable.ClientLinkableHolder
+import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.ILinkable.LazyILinkableSet
-import ram.talia.hexal.common.blocks.BlockRelay
+import ram.talia.hexal.api.linkable.LinkableTypes
+import ram.talia.hexal.api.linkable.ServerLinkableHolder
+import ram.talia.hexal.api.mulBounded
+import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.lib.HexalBlockEntities
+import software.bernie.geckolib.animatable.GeoBlockEntity
+import software.bernie.geckolib.core.animatable.GeoAnimatable
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
+import software.bernie.geckolib.core.animation.*
+import software.bernie.geckolib.core.`object`.PlayState
+import software.bernie.geckolib.util.GeckoLibUtil
 import java.util.*
 import kotlin.math.min
 
-class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre, IAnimatable {
+class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(HexalBlockEntities.RELAY, pos, state), ILinkable, ILinkable.IRenderCentre, GeoBlockEntity {
     val pos: BlockPos = pos.immutable()
 
     private val random = RandomSource.create()
@@ -245,30 +256,31 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     //endregion
 
     //region IAnimatable
-    @Suppress("DEPRECATION", "removal")
-    private val factory: AnimationFactory = AnimationFactory(this)
+    private val instanceCache: AnimatableInstanceCache = GeckoLibUtil.createInstanceCache(this)
 
-    override fun registerControllers(data: AnimationData) {
-        data.addAnimationController(AnimationController(this, "controller", 0.0f, this::predicate))
+    override fun getAnimatableInstanceCache(): AnimatableInstanceCache = instanceCache
+
+    override fun registerControllers(data: AnimatableManager.ControllerRegistrar) {
+        data.add(AnimationController(this, "controller", 0, this::predicate))
     }
 
-    private fun <E : IAnimatable> predicate(event: AnimationEvent<E>): PlayState {
-        @Suppress("DEPRECATION", "removal")
+
+
+    private fun <E : GeoAnimatable> predicate(event: AnimationState<E>): PlayState {
         event.controller.setAnimation(
-                AnimationBuilder()
-                        .addAnimation("animation.model.place", false)
-                        .addAnimation("animation.model.idle", true)
+                RawAnimation.begin()
+                    .then("animation.model.place", Animation.LoopType.PLAY_ONCE)
+                    .then("animation.model.idle", Animation.LoopType.LOOP)
         )
 
         return PlayState.CONTINUE
     }
 
-    override fun getFactory(): AnimationFactory = factory
-
     private fun getBobberPosition(): Vec3 {
-        val manager = factory.getOrCreateAnimationData(this.pos.hashCode()) // this is how the unique ID is calculated in GeoBlockRenderer
-        val bobber = manager.boneSnapshotCollection["Bobber"]?.right ?: return Vec3.ZERO
-        return (bobber.positionOffsetY + 10) / 16.0 * Vec3.atLowerCornerOf(state.getValue(BlockRelay.FACING).normal)
+        return pos.center
+//        val manager = instanceCache.getManagerForId<BlockEntityRelay>(this.pos.hashCode()) // this is how the unique ID is calculated in GeoBlockRenderer
+//        val bobber = manager.boneSnapshotCollection["Bobber"]?.right ?: return Vec3.ZERO
+//        return (bobber.positionOffsetY + 10) / 16.0 * Vec3.atLowerCornerOf(state.getValue(BlockRelay.FACING).normal)
     }
     //endregion
 

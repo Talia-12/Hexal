@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.casting.iota.Iota;
 import at.petrak.hexcasting.api.casting.math.HexPattern;
 import at.petrak.hexcasting.common.msgs.IMessage;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -28,6 +30,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ram.talia.hexal.api.everbook.Everbook;
 import ram.talia.hexal.api.linkable.ILinkable;
@@ -37,12 +40,14 @@ import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.common.network.MsgAddRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgRemoveRenderLinkS2C;
 import ram.talia.hexal.common.network.MsgSetRenderLinksAck;
+import ram.talia.hexal.forge.client.items.ItemRelayRenderer;
 import ram.talia.hexal.forge.eventhandlers.BoundStorageEventHandler;
 import ram.talia.hexal.forge.eventhandlers.EverbookEventHandler;
 import ram.talia.hexal.forge.eventhandlers.PlayerLinkstoreEventHandler;
 import ram.talia.hexal.forge.eventhandlers.WispCastingMangerEventHandler;
 import ram.talia.hexal.forge.network.ForgePacketHandler;
 import ram.talia.hexal.xplat.IXplatAbstractions;
+import software.bernie.example.client.renderer.item.JackInTheBoxRenderer;
 
 import java.util.List;
 import java.util.UUID;
@@ -194,7 +199,22 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 		BoundStorageEventHandler.setBoundStorage(player, storage);
 	}
 
-	@Override
+    @Override
+    public @NotNull Object getItemRelayRenderProvider() {
+        return new IClientItemExtensions() {
+			private ItemRelayRenderer renderer;
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				if (this.renderer == null)
+					this.renderer = new ItemRelayRenderer();
+
+				return this.renderer;
+			}
+		};
+    }
+
+    @Override
 	public ServerPlayer getFakePlayer(ServerLevel level, UUID uuid) {
 		return getFakePlayer(level, new GameProfile(uuid, "[Hexal]"));
 	}
