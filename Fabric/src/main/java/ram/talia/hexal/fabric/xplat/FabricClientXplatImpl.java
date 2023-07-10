@@ -1,7 +1,7 @@
 package ram.talia.hexal.fabric.xplat;
 
-import at.petrak.hexcasting.api.spell.math.HexPattern;
-import at.petrak.hexcasting.common.network.IMessage;
+import at.petrak.hexcasting.api.casting.math.HexPattern;
+import at.petrak.hexcasting.common.msgs.IMessage;
 import at.petrak.hexcasting.fabric.client.ExtendedTexture;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
