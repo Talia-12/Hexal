@@ -47,7 +47,7 @@ interface ILinkable {
 	 * Media level of this [ILinkable], that is able to be sent to other [ILinkable]s. If this [ILinkable] will never
 	 * send media to others, return -1, regardless of the internal media level.
 	 */
-	fun currentMediaLevel(): Int
+	fun currentMediaLevel(): Long
 
 	/**
 	 * Returns <= 0 if this [ILinkable] can't accept any media, returns how much media
@@ -55,12 +55,12 @@ interface ILinkable {
 	 * is requesting to know how much media your [ILinkable] can store, and you should return
 	 * MAX_MEDIA - CURRENT_MEDIA.
 	 */
-	fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int
+	fun canAcceptMedia(other: ILinkable, otherMediaLevel: Long): Long
 
 	/**
 	 * Called to pass [sentMedia] media from [other] to this [ILinkable].
 	 */
-	fun acceptMedia(other: ILinkable, sentMedia: Int)
+	fun acceptMedia(other: ILinkable, sentMedia: Long)
 
 	//region default implementations
 

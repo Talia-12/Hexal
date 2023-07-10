@@ -160,11 +160,11 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
 
     override fun shouldRemove(): Boolean = this.isRemoved
 
-    override fun currentMediaLevel(): Int = relayNetwork.computedAverageMedia
+    override fun currentMediaLevel(): Long = relayNetwork.computedAverageMedia
 
-    override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = relayNetwork.canAcceptMedia(other, otherMediaLevel)
+    override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Long): Long = relayNetwork.canAcceptMedia(other, otherMediaLevel)
 
-    override fun acceptMedia(other: ILinkable, sentMedia: Int) = relayNetwork.acceptMedia(other, sentMedia)
+    override fun acceptMedia(other: ILinkable, sentMedia: Long) = relayNetwork.acceptMedia(other, sentMedia)
 
     override fun link(other: ILinkable, linkOther: Boolean) {
         super.link(other, linkOther)

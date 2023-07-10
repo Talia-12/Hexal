@@ -50,11 +50,11 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	override fun getPosition(): Vec3 = player.position()
 
 	override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
-	override fun currentMediaLevel() = -1
+	override fun currentMediaLevel(): Long = -1
 
-	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
+	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Long): Long = 0
 
-	override fun acceptMedia(other: ILinkable, sentMedia: Int) { }
+	override fun acceptMedia(other: ILinkable, sentMedia: Long) { }
 
 	fun loadAdditionalData(tag: CompoundTag) {
 		(tag.get(TAG_LINKABLE_HOLDER) as? CompoundTag)?.let {

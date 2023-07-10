@@ -25,7 +25,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	@Suppress("LeakingThis")
 	var oldPos: Vec3 = position()
 
-	override var media: Int
+	override var media: Long
 		get() = entityData.get(MEDIA)
 		set(value) = entityData.set(MEDIA, max(value, 0))
 
@@ -118,8 +118,9 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	fun setPigment(pigment: FrozenPigment) {
+	fun setPigment(pigment: FrozenPigment): FrozenPigment {
 		entityData.set(PIGMENT, pigment.serializeToNBT())
+		return pigment
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
@@ -127,7 +128,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 
 		entityData.set(PIGMENT, compound.getCompound(TAG_PIGMENT))
 
-		media = compound.getInt(TAG_MEDIA)
+		media = compound.getLong(TAG_MEDIA)
 
 		oldPos = position() // so that reloading a wisp doesn't result in it having a trail to the origin forever
 	}
@@ -136,12 +137,12 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		super.addAdditionalSaveData(compound)
 
 		compound.putCompound(TAG_PIGMENT, entityData.get(PIGMENT))
-		compound.putInt(TAG_MEDIA, media)
+		compound.putLong(TAG_MEDIA, media)
 	}
 
 	override fun defineSynchedData() {
 		entityData.define(PIGMENT, FrozenPigment.DEFAULT.get().serializeToNBT())
-		entityData.define(MEDIA, 20 * MediaConstants.DUST_UNIT)
+		entityData.define(MEDIA, 20L * MediaConstants.DUST_UNIT)
 	}
 
 	companion object {
@@ -149,7 +150,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		val PIGMENT: EntityDataAccessor<CompoundTag> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.COMPOUND_TAG)
 
 		@JvmStatic
-		val MEDIA: EntityDataAccessor<Int> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.INT)
+		val MEDIA: EntityDataAccessor<Long> = SynchedEntityData.defineId(BaseWisp::class.java, EntityDataSerializers.LONG)
 
 		const val TAG_PIGMENT = "pigment"
 		const val TAG_MEDIA = "media"

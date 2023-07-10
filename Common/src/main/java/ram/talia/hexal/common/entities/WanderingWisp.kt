@@ -21,8 +21,8 @@ import java.util.*
 import kotlin.math.abs
 
 class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : BaseWisp(entityType, level) {
-	override var media: Int
-		get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
+	override var media: Long
+        get() = MIN_MEDIA + (MAX_MEDIA - MIN_MEDIA) * tickCount / MAX_TICKS_ALIVE
 		set(_) {}
 
 	var acceleration: Vec3
@@ -47,11 +47,11 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>) = false
 
-	override fun currentMediaLevel() = -1
+	override fun currentMediaLevel(): Long = -1
 
-	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int = 0
+	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Long): Long = 0
 
-	override fun acceptMedia(other: ILinkable, sentMedia: Int) { }
+	override fun acceptMedia(other: ILinkable, sentMedia: Long) { }
 
 
 	constructor(world: Level, pos: Vec3) : this(HexalEntities.WANDERING_WISP, world) {
@@ -153,7 +153,7 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 		const val TAG_START_TICK = "start_tick"
 
 		const val MAX_TICKS_ALIVE = 300
-		const val MIN_MEDIA = 2 * MediaConstants.SHARD_UNIT
-		const val MAX_MEDIA = 5 * MediaConstants.SHARD_UNIT
+		const val MIN_MEDIA = 2L * MediaConstants.SHARD_UNIT
+		const val MAX_MEDIA = 5L * MediaConstants.SHARD_UNIT
 	}
 }

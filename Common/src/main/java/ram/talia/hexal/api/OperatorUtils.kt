@@ -26,6 +26,7 @@ import ram.talia.moreiotas.api.casting.iota.ItemStackIota
 import ram.talia.moreiotas.api.casting.iota.ItemTypeIota
 import java.util.UUID
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.roundToLong
 
 operator fun Double.times(vec: Vec3): Vec3 = vec.scale(this)
@@ -59,10 +60,35 @@ fun Long.addBounded(long: Long): Long {
  * If the multiplication would overflow, instead bound it at MAX/MIN.
  */
 fun Long.mulBounded(long: Long): Long {
-    return if (long > 0)
+    if (this == 0L || long == 0L)
+        return 0L
+
+    return if (this > 0 && long > 0)
         if (this * long < this) Long.MAX_VALUE else this * long
-    else
+    else if (this > 0 && long < 0)
+        if (this * long > long) Long.MIN_VALUE else this * long
+    else if (this < 0 && long > 0)
         if (this * long > this) Long.MIN_VALUE else this * long
+    else
+        if (this * long < -this) Long.MAX_VALUE else this * long
+}
+
+/**
+ * If the multiplication would overflow, instead bound it at MAX/MIN.
+ */
+fun Long.mulBounded(double: Double): Long {
+    if (double.absoluteValue <= 1)
+        return (this * double).toLong()
+    if (this == 0L)
+        return 0L
+    return if (this > 0 && double > 0)
+        if (this * double < this) Long.MAX_VALUE else (this * double).toLong()
+    else if (this > 0 && double < 0)
+        if (this * double > double) Long.MIN_VALUE else (this * double).toLong()
+    else if (this < 0 && double > 0)
+        if (this * double > this) Long.MIN_VALUE else (this * double).toLong()
+    else
+        if (this * double < -this) Long.MAX_VALUE else (this * double).toLong()
 }
 
 fun Long.toIntCapped(): Int {

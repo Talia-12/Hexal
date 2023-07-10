@@ -27,18 +27,18 @@ import net.minecraft.world.phys.*
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
-import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.api.casting.wisp.triggers.IWispTrigger
 import ram.talia.hexal.api.casting.wisp.triggers.WispTriggerRegistry
+import ram.talia.hexal.api.mulBounded
 import ram.talia.hexal.client.sounds.WispCastingSoundInstance
 import ram.talia.hexal.common.lib.HexalSounds
 import ram.talia.hexal.common.network.MsgWispCastSoundS2C
 import ram.talia.hexal.xplat.IXplatAbstractions
-import java.lang.Integer.min
 import java.util.*
 import kotlin.collections.ArrayDeque
+import kotlin.math.min
 import kotlin.math.pow
 
 
@@ -104,7 +104,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	override fun get() = this
 
-	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : this(entityType, world) {
+	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player, media: Long) : this(entityType, world) {
 		setPos(pos)
 		this.caster = caster
 		@Suppress("LeakingThis")
@@ -252,20 +252,20 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	private fun shouldBlockTransfer(other: ILinkable): Boolean
 		= blackListTransferMedia.contains(other) || (other.owner() != this.owner() && !whiteListTransferMedia.contains(other))
 
-	override fun currentMediaLevel() = media
+	override fun currentMediaLevel(): Long = media
 
-	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Int): Int {
-		if (otherMediaLevel == -1)
+	override fun canAcceptMedia(other: ILinkable, otherMediaLevel: Long): Long {
+		if (otherMediaLevel == -1L)
 			return (Int.MAX_VALUE - this.media)
 		if (shouldBlockTransfer(other))
 			return 0
 		if (otherMediaLevel <= this.media)
 			return 0
 
-		return ((otherMediaLevel - this.media) * HexalConfig.server.mediaFlowRateOverLink).toInt()
+		return ((otherMediaLevel - this.media).mulBounded(HexalConfig.server.mediaFlowRateOverLink))
 	}
 
-	override fun acceptMedia(other: ILinkable, sentMedia: Int) {
+	override fun acceptMedia(other: ILinkable, sentMedia: Long) {
 		media += sentMedia
 	}
 
@@ -310,7 +310,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 			priority: Int,
 			hex: SerialisedIotaList,
 			initialStack: SerialisedIotaList,
-			initialRavenmind: SerialisedIota,
+			initialRavenmind: CompoundTag,
 	): Boolean {
 		if (level().isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
