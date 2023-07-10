@@ -15,14 +15,14 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpPhaseBlock : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
+    override fun execute(args: List<Iota>, env: CastingEnvironment): SpellAction.Result {
         val pos = args.getBlockPos(0, argc)
         val time = args.getPositiveDouble(1, argc)
 
-        ctx.assertVecInRange(Vec3.atCenterOf(pos))
+        env.assertVecInRange(Vec3.atCenterOf(pos))
 
-        val bs: BlockState = ctx.world.getBlockState(pos)
-        if (bs.getDestroySpeed(ctx.world, pos) < 0.0f)
+        val bs: BlockState = env.world.getBlockState(pos)
+        if (bs.getDestroySpeed(env.world, pos) < 0.0f)
             throw MishapInvalidIota.of(args[1], 0, "unbreakable_block", pos)
 
         return SpellAction.Result(
@@ -38,7 +38,7 @@ object OpPhaseBlock : SpellAction {
             if (bs.getDestroySpeed(env.world, pos) < 0.0f)
                 return
 
-            env.world.phaseBlock(pos, ticks)
+//            env.world.phaseBlock(pos, ticks)
 
             IXplatAbstractions.INSTANCE.sendPacketTracking(pos, env.world, MsgPhaseBlockS2C(pos, ticks))
         }

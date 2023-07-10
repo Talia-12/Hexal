@@ -34,7 +34,7 @@ class MsgPhaseBlockS2C(val pos: BlockPos, val duration: Int): IMessage {
         fun handle(self: MsgPhaseBlockS2C) {
             Minecraft.getInstance().execute {
                 val level = Minecraft.getInstance().level ?: return@execute
-                level.phaseBlock(self.pos, self.duration)
+//                level.phaseBlock(self.pos, self.duration)
             }
         }
     }
