@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.casting.*
 import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
-import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.api.casting.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 
@@ -14,12 +14,10 @@ object OpMoveTargetSet : ConstMediaAction {
 	override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
 		val target = args.getVec3(0, argc)
 
-		val mCast = env as? IMixinCastingContext
-
-		if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
+		if (env !is WispCastEnv || env.wisp !is TickingWisp)
 			throw MishapNoWisp()
 
-		(mCast.wisp as TickingWisp).setTargetMovePos(target)
+		env.wisp.setTargetMovePos(target)
 
 		return listOf()
 	}

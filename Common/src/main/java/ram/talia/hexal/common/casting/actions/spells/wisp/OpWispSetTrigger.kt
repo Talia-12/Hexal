@@ -3,7 +3,7 @@ package ram.talia.hexal.common.casting.actions.spells.wisp
 import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
-import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.api.casting.wisp.triggers.WispTriggerRegistry
 import ram.talia.hexal.api.casting.mishaps.MishapNoWisp
 
@@ -15,12 +15,10 @@ class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerT
 	override val argc = triggerType.argc
 
 	override fun execute(args: List<Iota>, env: CastingEnvironment): List<Iota> {
-		val mCast = env as? IMixinCastingContext
-
-		if (mCast == null || mCast.wisp == null)
+		if (env !is WispCastEnv)
 			throw MishapNoWisp()
 
-		mCast.wisp!!.setTrigger(triggerType.makeFromArgs(mCast.wisp!!, args, env))
+		env.wisp.setTrigger(triggerType.makeFromArgs(env.wisp, args, env))
 
 		return listOf()
 	}

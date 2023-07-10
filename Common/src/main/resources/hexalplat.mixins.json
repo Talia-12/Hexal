@@ -5,8 +5,7 @@
   "refmap": "hexal.mixins.refmap.json",
   "package": "ram.talia.hexal.mixin",
   "mixins": [
-    "MixinCastingContext",
-    "MixinCastingHarness",
+    "MixinCastingVM",
     "MixinHexInterop",
     "MixinOperatorSideEffectConsumeMana",
     "MixinPlayerAdvancements"

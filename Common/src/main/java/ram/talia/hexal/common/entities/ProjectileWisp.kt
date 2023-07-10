@@ -23,10 +23,10 @@ open class ProjectileWisp : BaseCastingWisp {
 	var isAffectedByGravity = true
 
 	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level) : super(entityType, world)
-	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Long) : super(entityType, world, pos, caster, media) {
+	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player?, media: Long) : super(entityType, world, pos, caster, media) {
 		deltaMovement = vel
 	}
-	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Long) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player?, media: Long) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
 		deltaMovement = vel
 	}
 

@@ -73,13 +73,13 @@ class TickingWisp : BaseCastingWisp {
 		entityType: EntityType<out TickingWisp>,
 		world: Level,
 		pos: Vec3,
-		caster: Player,
+		caster: Player?,
 		media: Long,
 	) : super(entityType, world, pos, caster, media) {
 		setTargetMovePos(pos)
 	}
 
-	constructor(world: Level, pos: Vec3, caster: Player, media: Long) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, caster: Player?, media: Long) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
 		setTargetMovePos(pos)
 	}
 

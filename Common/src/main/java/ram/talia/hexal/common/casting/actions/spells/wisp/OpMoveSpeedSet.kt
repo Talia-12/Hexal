@@ -4,8 +4,8 @@ import at.petrak.hexcasting.api.casting.*
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
 import ram.talia.hexal.api.casting.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 import kotlin.math.ln
@@ -18,13 +18,10 @@ object OpMoveSpeedSet : SpellAction {
         val newMax = args.getPositiveDouble(0, OpMoveTargetSet.argc)
         val newMult = newMax / TickingWisp.BASE_MAX_SPEED_PER_TICK
 
-        val mCast = env as? IMixinCastingContext
-
-        if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
+        if (env !is WispCastEnv || env.wisp !is TickingWisp)
             throw MishapNoWisp()
 
-        val tWisp = mCast.wisp as TickingWisp
-        val oldMax = tWisp.maximumMoveMultiplier
+        val oldMax = env.wisp.maximumMoveMultiplier
 
         // cost scales quadratically with newMult, but as with Impulse a player can reduce the cost requirement with
         // many small increases to the max (limited to a minimum cost of moveSpeedSetCost if the maximum is being updated at
@@ -35,9 +32,9 @@ object OpMoveSpeedSet : SpellAction {
         } else 0
 
         return SpellAction.Result(
-                Spell(tWisp, newMult),
+                Spell(env.wisp, newMult),
                 cost,
-                listOf(ParticleSpray.burst(mCast.wisp!!.position(), min(1.0, ln(newMult))))
+                listOf(ParticleSpray.burst(env.wisp.position(), min(1.0, ln(newMult))))
         )
     }
 

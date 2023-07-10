@@ -6,7 +6,9 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
@@ -38,7 +40,8 @@ class HexalBlocks {
 		val SLIPWAY = blockNoItem("slipway", BlockSlipway(
 			//Material.Builder.notSolidBlocking is for some unimaginable reason package-private, so we're doing this instead
 			// setting the slipway as blocksMotion even though it doesn't so that fluids can't replace it.
-			BlockBehaviour.Properties.of(Material(MaterialColor.NONE, false, false, true, false, false, false, PushReaction.BLOCK))
+			BlockBehaviour.Properties.of()
+				.pushReaction(PushReaction.BLOCK)
 				.noLootTable()
 				.strength(-1.0f, 3600000.0f)
 				.noCollission()
@@ -47,11 +50,11 @@ class HexalBlocks {
 
 		@JvmField
 		val MEDIAFIED_STORAGE = blockItem("mediafied_storage", BlockMediafiedStorage(
-				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(30.0f)
+			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).noOcclusion().strength(30.0f)
 		))
 
 		val RELAY = blockNoItem("relay", BlockRelay(
-				BlockBehaviour.Properties.of(Material.AMETHYST).noOcclusion().strength(3.0f)
+			BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).noOcclusion().strength(3.0f)
 		))
 
 

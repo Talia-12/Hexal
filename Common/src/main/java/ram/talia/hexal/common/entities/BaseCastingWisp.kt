@@ -28,6 +28,7 @@ import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.nbt.SerialisedIotaList
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.api.casting.wisp.WispCastingManager
 import ram.talia.hexal.api.casting.wisp.triggers.IWispTrigger
 import ram.talia.hexal.api.casting.wisp.triggers.WispTriggerRegistry
@@ -105,7 +106,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	override fun get() = this
 
-	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player, media: Long) : this(entityType, world) {
+	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player?, media: Long) : this(entityType, world) {
 		setPos(pos)
 		this.caster = caster
 		@Suppress("LeakingThis")
@@ -282,7 +283,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	abstract fun move()
 
 	/**
-	 * Called in [ram.talia.hexal.mixin.MixinCastingContext.isVecInRangeWisp] to determine the
+	 * Called in [WispCastEnv] to determine the
 	 * maximum range the wisp should be able to affect and make them able to affect things inside that range.
 	 */
 	abstract fun maxSqrCastingDistance(): Double

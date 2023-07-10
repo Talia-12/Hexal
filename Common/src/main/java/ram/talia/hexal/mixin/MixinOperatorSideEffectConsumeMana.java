@@ -1,37 +1,52 @@
 package ram.talia.hexal.mixin;
 
-import net.minecraft.network.chat.Component;
+import at.petrak.hexcasting.api.casting.eval.sideeffects.OperatorSideEffect;
+import at.petrak.hexcasting.api.casting.eval.vm.CastingVM;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.api.casting.wisp.IMixinCastingContext;
-import ram.talia.hexal.common.entities.BaseCastingWisp;
+
+import static java.lang.Math.min;
+import static ram.talia.hexal.common.casting.actions.spells.great.OpConsumeWisp.TAG_CONSUMED_MEDIA;
 
 @Mixin(OperatorSideEffect.ConsumeMedia.class)
 public abstract class MixinOperatorSideEffectConsumeMana {
-	
-	/**
-	 * Makes it so that the cant_overcast message (i.e. message played when caster doesn't have enough media) doesn't play for cyclic wisps (and others that override
-	 * {@link BaseCastingWisp#getShouldComplainNotEnoughMedia()}
-	 */
+
+	@Shadow @Final private int amount;
+
+	private CastingVM harness;
+
 	@Inject(method = "performEffect",
-					at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;sendSystemMessage(Lnet/minecraft/network/chat/Component;)V"),
-					cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION, remap = false
+		at = @At(value = "HEAD"),
+		locals = LocalCapture.CAPTURE_FAILEXCEPTION, remap = false
 	)
-	private void performEffectWisp (CastingHarness harness, CallbackInfoReturnable<Boolean> cir, boolean overcastOk, int leftoverMana) {
-		IMixinCastingContext ctxi = (IMixinCastingContext)(Object) harness.getCtx();
-		
-		HexalAPI.LOGGER.debug("performEffectWisp called");
-		
-		if (ctxi.hasWisp()) {
-			//noinspection DataFlowIssue - wisp will never be null if the ctx has a wisp
-			if (ctxi.getWisp().getShouldComplainNotEnoughMedia())
-				harness.getCtx().getCaster().sendSystemMessage(Component.translatable("hexcasting.message.cant_overcast"));
-			
-			cir.setReturnValue(leftoverMana > 0);
+	private void performEffectWisp(CastingVM harness, CallbackInfoReturnable<Boolean> cir) {
+			this.harness = harness;
 		}
+
+	/**
+	 * Makes it so that if a wisp is consumed, that wisps media can be used later in the cast.
+	 */
+	@SuppressWarnings({"UnresolvedMixinReference", "MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
+	@Redirect(method = "performEffect",
+		at = @At(value = "FIELD", target = "Lat/petrak/hexcasting/api/casting/eval/sideeffects/OperatorSideEffect$ConsumeMedia;amount:I", opcode = 180), // GETFIELD
+		remap = false)
+	private int hexal$performEffect(OperatorSideEffect.ConsumeMedia media) {
+		var image = harness.getImage();
+		var userData = image.getUserData();
+		if (!userData.contains(TAG_CONSUMED_MEDIA))
+			return amount;
+
+		var consumedMedia = userData.getLong(TAG_CONSUMED_MEDIA);
+		var amountToUse = min(amount, consumedMedia);
+		consumedMedia -= amountToUse;
+		userData.putLong(TAG_CONSUMED_MEDIA, consumedMedia);
+
+		return (int) (amount - amountToUse);
 	}
 }

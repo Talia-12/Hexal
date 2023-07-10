@@ -9,8 +9,8 @@ import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.addBounded
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
 import ram.talia.hexal.api.casting.mishaps.MishapExcessiveReproduction
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
@@ -25,9 +25,8 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
         val media: Double
         val cost: Int
 
-        val mCast = env as? IMixinCastingContext
-        if (mCast != null && mCast.hasWisp() && mCast.wisp!!.summonedChildThisCast)
-            throw MishapExcessiveReproduction(mCast.wisp!!) // wisps can only summon one child per cast.
+        if (env is WispCastEnv && env.wisp.summonedChildThisCast)
+            throw MishapExcessiveReproduction(env.wisp) // wisps can only summon one child per cast.
 
         val spell = when (ticking) {
             true -> {
@@ -56,14 +55,13 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
     private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<Iota>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
         override fun cast(env: CastingEnvironment) {
             // wisps can only summon one child per cast
-            val mCast = env as? IMixinCastingContext
-            if (mCast != null && mCast.hasWisp())
-                mCast.wisp!!.summonedChildThisCast = true
+            if (env is WispCastEnv)
+                env.wisp.summonedChildThisCast = true
 
             val pigment = IXplatAbstractions.INSTANCE.getPigment(env.caster)
             val wisp = when (ticking) {
-                true -> TickingWisp(env.world, pos, env.caster, media)
-                false -> ProjectileWisp(env.world, pos, vel, env.caster, media)
+                true -> TickingWisp(env.world, pos, env.caster, media.toLong())
+                false -> ProjectileWisp(env.world, pos, vel, env.caster, media.toLong())
             }
             wisp.setPigment(pigment)
             wisp.setHex(hex.toMutableList())

@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.Level
 import ram.talia.hexal.api.HexalAPI.modLoc
-import ram.talia.hexal.api.casting.wisp.IMixinCastingContext
+import ram.talia.hexal.api.casting.eval.env.WispCastEnv
 import ram.talia.hexal.common.blocks.entity.BlockEntityRelay
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -31,8 +31,7 @@ object LinkableTypes {
 		override fun matchSync(centre: ILinkable.IRenderCentre, tag: Tag) = (centre as LinkableEntity).id == tag.asInt
 		override val canCast = true
 		override fun linkableFromCastingContext(env: CastingEnvironment): LinkableEntity? {
-			val mCast = env as? IMixinCastingContext
-			return mCast?.wisp
+			return (env as? WispCastEnv)?.wisp
 		}
 		override val castingContextPriority = 0
 		override fun linkableFromIota(iota: Iota, level: ServerLevel): LinkableEntity? = (iota as? EntityIota)?.entity as? LinkableEntity
