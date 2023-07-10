@@ -1,8 +1,8 @@
 package ram.talia.hexal.api.everbook
 
-import at.petrak.hexcasting.api.spell.iota.DoubleIota
-import at.petrak.hexcasting.api.spell.math.HexDir
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.iota.DoubleIota
+import at.petrak.hexcasting.api.casting.math.HexDir
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import net.minecraft.nbt.CompoundTag
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
