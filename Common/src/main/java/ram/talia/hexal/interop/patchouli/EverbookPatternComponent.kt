@@ -17,7 +17,10 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
+import net.minecraft.network.chat.TextColor
+import net.minecraft.network.chat.contents.TranslatableContents
 import net.minecraft.util.FormattedCharSequence
 import ram.talia.hexal.xplat.IClientXplatAbstractions
 import vazkii.patchouli.api.IComponentRenderContext
@@ -58,9 +61,11 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		poseStack.pushPose()
 		poseStack.translate(HEADER_X.toDouble(), HEADER_Y.toDouble(), 0.0)
 
-		val headerComponent = (if (isMacro) "hexal.everbook_pattern_entry.macro_header" else "hexal.everbook_pattern_entry.header").asTranslatedComponent(indexNum)
+		val headerComponent = (if (isMacro) "hexal.everbook_pattern_entry.macro_header" else "hexal.everbook_pattern_entry.header")
+				.asTranslatedComponent(indexNum)
+				.setStyle(Style.EMPTY.withFont(Minecraft.UNIFORM_FONT))
 
-		drawCenteredStringNoShadow(graphics, headerComponent, 0, 0, 0)
+		drawCenteredStringNoShadow(graphics, headerComponent.string, 0, 0, 0)
 		poseStack.popPose()
 
 		drawWrappedIota(graphics, iota, DATA_X, DATA_Y, 0)
@@ -70,9 +75,9 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 
 	override fun showStrokeOrder() = true
 
-	private fun drawCenteredStringNoShadow(graphics: GuiGraphics, s: Component, x: Int, y: Int, colour: Int) {
+	private fun drawCenteredStringNoShadow(graphics: GuiGraphics, s: String, x: Int, y: Int, colour: Int) {
 		val font = Minecraft.getInstance().font
-		graphics.drawString(font, s, x - font.width(s) / 2, y, colour)
+		graphics.drawString(font, s, x - font.width(s) / 2, y, colour, false)
 	}
 
 	private fun drawWrappedIota(graphics: GuiGraphics, iota: CompoundTag?, x: Int, y: Int, colour: Int) {
@@ -91,7 +96,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 			ms.pushPose()
 			ms.translate(x.toDouble(), currentY.toDouble(), 0.0)
 			val toDraw = if (currentY < y + 5 * 9) { iotaText.next() } else { "...".red.visualOrderText }
-			graphics.drawString(font, toDraw, 0, 0, colour)
+			graphics.drawString(font, toDraw, 0, 0, colour, false)
 			ms.popPose()
 			currentY += 9
 		}
@@ -104,7 +109,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		val data = tag[KEY_DATA]
 				?: return font.split(brokenIota(), maxWidth)
 		if (type != HexIotaTypes.LIST)
-			return font.split(type.display(data), maxWidth)
+			return font.split(type.display(data).copy().replaceStyle(::replaceWhite).withStyle { it.withFont(Minecraft.UNIFORM_FONT) }, maxWidth)
 		return getListDisplayWithMaxWidth(data, maxWidth, font)
 	}
 
@@ -113,15 +118,15 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		val listTag = tag.downcast(ListTag.TYPE)
 
 		val start = FormattedCharSequence.forward(if (listTag.isEmpty()) "[]" else "[",
-				Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE))
+				Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withFont(Minecraft.UNIFORM_FONT))
 		var cursor = font.width(start)
-		var currentLine = ArrayList(java.util.List.of(start))
+		var currentLine = ArrayList(listOf(start))
 		val out = ArrayList<FormattedCharSequence>()
 
 		for (i in 0 until listTag.size) {
 			val subtag = listTag[i]
 			val cSubtag = subtag.downcast(CompoundTag.TYPE)
-			val translation = IotaType.getDisplay(cSubtag)
+			val translation = IotaType.getDisplay(cSubtag).copy().replaceStyle(::replaceWhite).withStyle { it.withFont(Minecraft.UNIFORM_FONT) }
 			var currentElement = translation.visualOrderText
 			val addl = if (i < listTag.size - 1) {
 				", "
@@ -130,7 +135,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 				"]"
 			}
 			currentElement = FormattedCharSequence.composite(currentElement,
-					FormattedCharSequence.forward(addl, Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE)))
+					FormattedCharSequence.forward(addl, Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withFont(Minecraft.UNIFORM_FONT)))
 			val width = font.width(currentElement)
 			if (cursor + width > maxWidth) {
 				out.add(FormattedCharSequence.composite(currentLine))
@@ -155,7 +160,27 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 
 	private fun brokenIota(): Component {
 		return Component.translatable("hexcasting.spelldata.unknown")
-				.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
+			.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
+	}
+
+	private fun replaceWhite(style: Style): Style = if (style.color == TextColor.fromLegacyFormat(ChatFormatting.WHITE))
+		style.withColor(ChatFormatting.DARK_RED)
+		else style
+
+	private fun MutableComponent.replaceStyle(replacer: (Style) -> Style): MutableComponent {
+		val contents = this.contents
+
+		this.styledWith(replacer)
+
+		if (contents !is TranslatableContents)
+			return this
+
+		contents.args.forEach {
+			if (it is MutableComponent)
+				it.replaceStyle(replacer)
+		}
+
+		return this
 	}
 
 	companion object {

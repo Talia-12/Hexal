@@ -1,0 +1,446 @@
+{
+  "name": "hexal.entry.everbook_entries",
+  "category": "hexcasting:patterns",
+  "icon": "minecraft:end_portal_frame",
+  "sortnum": 16,
+  "advancement": "hexcasting:enlightenment",
+  "entry_color": "54398a",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "hexal.page.everbook_entries.0"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    },
+    {
+      "type": "hexcasting:everbook_entry"
+    }
+  ]
+}

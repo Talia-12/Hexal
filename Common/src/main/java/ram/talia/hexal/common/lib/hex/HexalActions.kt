@@ -13,6 +13,7 @@ import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntitiesBy
 import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntityAt
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI.modLoc
 import ram.talia.hexal.api.casting.wisp.triggers.WispTriggerTypes
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.common.casting.actions.*
@@ -29,7 +30,6 @@ import ram.talia.hexal.common.casting.actions.spells.link.*
 import ram.talia.hexal.common.casting.actions.spells.motes.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
 import ram.talia.hexal.common.entities.BaseWisp
-import ram.talia.moreiotas.api.MoreIotasAPI
 import java.util.function.BiConsumer
 
 object HexalActions {
@@ -38,10 +38,8 @@ object HexalActions {
 
 	@JvmStatic
 	fun register(r: BiConsumer<ActionRegistryEntry, ResourceLocation>) {
-		val var1: Iterator<*> = ACTIONS.entries.iterator()
-		while (var1.hasNext()) {
-			val (key, value) = var1.next() as Map.Entry<*, *>
-			r.accept(value as ActionRegistryEntry, key as ResourceLocation)
+		for ((key, value) in ACTIONS.entries) {
+			r.accept(value, key)
 		}
 	}
 
@@ -274,7 +272,7 @@ object HexalActions {
 	fun make(name: String, pattern: HexPattern, action: Action): ActionRegistryEntry = make(name, ActionRegistryEntry(pattern, action))
 
 	fun make(name: String, are: ActionRegistryEntry): ActionRegistryEntry {
-		return if (ACTIONS.put(MoreIotasAPI.modLoc(name), are) != null) {
+		return if (ACTIONS.put(modLoc(name), are) != null) {
 			throw IllegalArgumentException("Typo? Duplicate id $name")
 		} else {
 			are
@@ -283,7 +281,7 @@ object HexalActions {
 
 	fun make(name: String, oa: OperationAction): ActionRegistryEntry {
 		val are = ActionRegistryEntry(oa.pattern, oa)
-		return if (ACTIONS.put(MoreIotasAPI.modLoc(name), are) != null) {
+		return if (ACTIONS.put(modLoc(name), are) != null) {
 			throw IllegalArgumentException("Typo? Duplicate id $name")
 		} else {
 			are
