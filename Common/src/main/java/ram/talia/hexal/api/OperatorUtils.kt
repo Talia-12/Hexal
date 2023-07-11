@@ -7,6 +7,7 @@ import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
 import com.mojang.datafixers.util.Either
 import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.decoration.ItemFrame
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.npc.Villager
@@ -243,16 +244,18 @@ fun List<Iota>.getMote(idx: Int, argc: Int = 0): MoteIota? {
     throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "mote")
 }
 
-fun List<Iota>.getMoteOrItemEntityOrItemFrame(idx: Int, argc: Int = 0): Anyone<MoteIota, ItemEntity, ItemFrame>? {
+fun List<Iota>.getMoteOrItemStackOrItemEntity(idx: Int, argc: Int = 0): Anyone<MoteIota, ItemStack, Entity>? {
     val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
     if (x is MoteIota)
         return x.selfOrNull()?.let { Anyone.first(it) }
     if (x is NullIota)
         return null
+    if (x is ItemStackIota)
+        return Anyone.second(x.itemStack)
     if (x is EntityIota) {
         val e = x.entity
         if (e is ItemEntity)
-            return Anyone.second(e)
+            return Anyone.third(e)
         if (e is ItemFrame)
             return Anyone.third(e)
     }

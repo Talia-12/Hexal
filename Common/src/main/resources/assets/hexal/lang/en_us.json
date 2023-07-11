@@ -278,7 +278,7 @@
   "hexal.page.motes.mote/return": "Returns all the items from a mote to the world at the location of your choosing. If passed a number returns at most that many items. Costs a tenth of an $(l:items/amethyst)$(item)Amethyst Dust/$.",
   "hexal.page.motes.mote/count/get": "Accepts a mote and returns the number of items in the record referenced by that mote.",
   "hexal.page.motes.mote/combine": "Combines two motes into one, merging the mote records they point to. Any pointers to the second mote will become null, any pointers to the first will remain. This can make motes holding many more items than I could carry in a stack naturally!",
-  "hexal.page.motes.mote/combinable": "Returns true if the first mote can be combined with the items in the second argument (which can be a mote, item entity, or item frame), and false otherwise.",
+  "hexal.page.motes.mote/combinable": "Returns true if the first mote can be combined with the items in the second argument (which can be a mote, item stack, item entity, or item frame), and false otherwise.",
   "hexal.page.motes.mote/split": "Splits the specified number of items off of the passed mote, creating a new mote pointing to a new mote record.",
   "hexal.page.motes.mote/storage/get": "Get the position of the Mote Nexus that contains the passed mote.",
   "hexal.page.motes.mote/storage/set": "Move the record referenced by the passed mote to the Mote Nexus at the passed position. This returns a new mote pointing to that record, and invalidates all previous motes pointing to that record.",
