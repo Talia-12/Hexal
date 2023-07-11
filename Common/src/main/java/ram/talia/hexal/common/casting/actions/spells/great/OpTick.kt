@@ -24,7 +24,7 @@ object OpTick : SpellAction {
 
     const val TAG_TIMES_TICKED = "hexal:times_ticked"
 
-    private fun costFromTimesTicked(timesTicked: Int): Int {
+    private fun costFromTimesTicked(timesTicked: Int): Long {
         return HexalConfig.server.tickConstantCost + HexalConfig.server.tickCostPerTicked * timesTicked
     }
 
@@ -69,6 +69,7 @@ object OpTick : SpellAction {
 
             if (targetBE != null) {
                 // if is TileEntity (furnace, brewing stand, ...)
+                @Suppress("UNCHECKED_CAST")
                 val ticker = targetBE.blockState.getTicker(level, targetBE.type as BlockEntityType<BlockEntity>)
                 ticker?.tick(level, pos, targetBE.blockState, targetBE)
 

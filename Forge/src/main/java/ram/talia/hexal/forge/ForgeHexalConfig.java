@@ -250,28 +250,28 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getFallingBlockCost() {
-            return (int) (fallingBlockCost.get() * MediaConstants.DUST_UNIT);
+        public long getFallingBlockCost() {
+            return (long) (fallingBlockCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getFreezeCost() {
-            return (int) (freezeCost.get() * MediaConstants.DUST_UNIT);
+        public long getFreezeCost() {
+            return (long) (freezeCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getParticlesCost() {
-            return (int) (particlesCost.get() * MediaConstants.DUST_UNIT);
+        public long getParticlesCost() {
+            return (long) (particlesCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getPlaceTypeCost() {
-            return (int) (placeTypeCost.get() * MediaConstants.DUST_UNIT);
+        public long getPlaceTypeCost() {
+            return (long) (placeTypeCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSmeltCost() {
-            return (int) (smeltCost.get() * MediaConstants.DUST_UNIT);
+        public long getSmeltCost() {
+            return (long) (smeltCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -280,33 +280,33 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getMoveSpeedSetCost() {
-            return (int) (moveSpeedSetCost.get() * MediaConstants.DUST_UNIT);
+        public long getMoveSpeedSetCost() {
+            return (long) (moveSpeedSetCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSummonTickingWispCost() {
-            return (int) (summonTickingWispCost.get() * MediaConstants.DUST_UNIT);
+        public long getSummonTickingWispCost() {
+            return (long) (summonTickingWispCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSummonProjectileWispCost() {
-            return (int) (summonProjectileWispCost.get() * MediaConstants.DUST_UNIT);
+        public long getSummonProjectileWispCost() {
+            return (long) (summonProjectileWispCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSummonProjectileWispMinCost() {
-            return (int) (summonProjectileWispMinCost.get() * MediaConstants.DUST_UNIT);
+        public long getSummonProjectileWispMinCost() {
+            return (long) (summonProjectileWispMinCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTickingWispUpkeepPerTick() {
-            return (int) (tickingWispUpkeepPerTick.get() * MediaConstants.DUST_UNIT);
+        public long getTickingWispUpkeepPerTick() {
+            return (long) (tickingWispUpkeepPerTick.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getProjectileWispUpkeepPerTick() {
-            return (int) (projectileWispUpkeepPerTick.get() * MediaConstants.DUST_UNIT);
+        public long getProjectileWispUpkeepPerTick() {
+            return (long) (projectileWispUpkeepPerTick.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -315,8 +315,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getLinkUpkeepPerTick() {
-            return (int) (linkUpkeepPerTick.get() * MediaConstants.DUST_UNIT);
+        public long getLinkUpkeepPerTick() {
+            return (long) (linkUpkeepPerTick.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -335,38 +335,38 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getLinkCost() {
-            return (int) (linkCost.get() * MediaConstants.DUST_UNIT);
+        public long getLinkCost() {
+            return (long) (linkCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSendIotaCost() {
-            return (int) (sendIotaCost.get() * MediaConstants.DUST_UNIT);
+        public long getSendIotaCost() {
+            return (long) (sendIotaCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getUnlinkCost() {
-            return (int) (unlinkCost.get() * MediaConstants.DUST_UNIT);
+        public long getUnlinkCost() {
+            return (long) (unlinkCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMakeGateCost() {
-            return (int) (makeGateCost.get() * MediaConstants.DUST_UNIT);
+        public long getMakeGateCost() {
+            return (long) (makeGateCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMarkGateCost() {
-            return (int) (markGateCost.get() * MediaConstants.DUST_UNIT);
+        public long getMarkGateCost() {
+            return (long) (markGateCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getCloseGateCost() {
-            return (int) (closeGateCost.get() * MediaConstants.DUST_UNIT);
+        public long getCloseGateCost() {
+            return (long) (closeGateCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getCloseGateDistanceCostFactor() {
-            return (int) (closeGateDistanceCostFactor.get() * MediaConstants.DUST_UNIT);
+        public long getCloseGateDistanceCostFactor() {
+            return (long) (closeGateDistanceCostFactor.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -375,37 +375,37 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getBindStorageCost() {
-            return (int) (bindStorageCost.get() * MediaConstants.DUST_UNIT);
+        public long getBindStorageCost() {
+            return (long) (bindStorageCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getBindTemporaryStorageCost() {
-            return (int) (bindTemporaryStorageCost.get() * MediaConstants.DUST_UNIT);
+        public long getBindTemporaryStorageCost() {
+            return (long) (bindTemporaryStorageCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMakeItemCost() {
-            return (int) (makeItemCost.get() * MediaConstants.DUST_UNIT);
+        public long getMakeItemCost() {
+            return (long) (makeItemCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getReturnItemCost() {
-            return (int) (returnItemCost.get() * MediaConstants.DUST_UNIT);
+        public long getReturnItemCost() {
+            return (long) (returnItemCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getCraftItemCost() {
-            return (int) (craftItemCost.get() * MediaConstants.DUST_UNIT);
+        public long getCraftItemCost() {
+            return (long) (craftItemCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTradeItemCost() {
-            return (int) (tradeItemCost.get() * MediaConstants.DUST_UNIT);
+        public long getTradeItemCost() {
+            return (long) (tradeItemCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getUseItemOnCost() {return (int) (useItemOnCost.get() * MediaConstants.DUST_UNIT); }
+        public long getUseItemOnCost() {return (long) (useItemOnCost.get() * MediaConstants.DUST_UNIT); }
 
         @Override
         public int getMaxItemsReturned() {
@@ -418,8 +418,8 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getConsumeWispOwnCost() {
-            return (int) (consumeWispOwnCost.get() * MediaConstants.DUST_UNIT);
+        public long getConsumeWispOwnCost() {
+            return (long) (consumeWispOwnCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -428,18 +428,18 @@ public class ForgeHexalConfig implements HexalConfig.CommonConfigAccess {
         }
 
         @Override
-        public int getSeonWispSetCost() {
-            return (int) (seonWispSetCost.get() * MediaConstants.DUST_UNIT);
+        public long getSeonWispSetCost() {
+            return (long) (seonWispSetCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTickConstantCost() {
-            return (int) (tickConstantCost.get() * MediaConstants.DUST_UNIT);
+        public long getTickConstantCost() {
+            return (long) (tickConstantCost.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTickCostPerTicked() {
-            return (int) (tickCostPerTicked.get() * MediaConstants.DUST_UNIT);
+        public long getTickCostPerTicked() {
+            return (long) (tickCostPerTicked.get() * MediaConstants.DUST_UNIT);
         }
 
         @Override

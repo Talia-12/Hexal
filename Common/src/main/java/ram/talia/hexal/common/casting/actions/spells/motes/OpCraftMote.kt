@@ -40,7 +40,7 @@ import ram.talia.hexal.api.mulBounded
  */
 object OpCraftMote : UserDataConstMediaAction {
     override val argc = 1
-    override val mediaCost: Int
+    override val mediaCost: Long
         get() = HexalConfig.server.craftItemCost
 
     override fun execute(args: List<Iota>, userData: CompoundTag, env: CastingEnvironment): List<Iota> {

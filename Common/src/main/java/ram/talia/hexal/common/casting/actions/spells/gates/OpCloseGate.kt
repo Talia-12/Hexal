@@ -49,7 +49,7 @@ object OpCloseGate : VarargSpellAction {
 
         var cost = HexalConfig.server.closeGateCost
         if (gate.isDrifting) {
-            cost = gatees.fold(cost) { cumCost, gatee -> cumCost + (HexalConfig.server.closeGateDistanceCostFactor * gatee.position().distanceTo(targetPos)).toInt() }
+            cost = gatees.fold(cost) { cumCost, gatee -> cumCost + (HexalConfig.server.closeGateDistanceCostFactor * gatee.position().distanceTo(targetPos)).toLong() }
         }
 
         // make particle effects at every teleported entity.

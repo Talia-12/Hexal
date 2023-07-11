@@ -17,7 +17,7 @@ import net.minecraft.nbt.CompoundTag
  */
 interface UserDataConstMediaAction : Action {
     val argc: Int
-    val mediaCost: Int
+    val mediaCost: Long
         get() = 0
 
     fun execute(args: List<Iota>, userData: CompoundTag, env: CastingEnvironment): List<Iota>

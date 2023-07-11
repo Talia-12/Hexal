@@ -282,7 +282,6 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     //endregion
 
     override fun loadModData(tag: CompoundTag) {
-        HexalAPI.LOGGER.info("loading $tag at $pos on $level")
         if (tag.contains(TAG_PIGMENT))
             relayNetwork.pigment = FrozenPigment.fromNBT(tag.getCompound(TAG_PIGMENT))
         if (tag.contains(TAG_PIGMENT_TIME))

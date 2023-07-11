@@ -165,10 +165,10 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		cost += HexalConfig.server.linkUpkeepPerTick * numLinked()
 
 		HexalAPI.LOGGER.debug("Num contained players: ${wispNumContainedPlayers()}")
-		cost = (cost * HexalConfig.server.storingPlayerCostScaleFactor.pow(wispNumContainedPlayers().toDouble())).toInt()
+		cost = (cost * HexalConfig.server.storingPlayerCostScaleFactor.pow(wispNumContainedPlayers().toDouble())).toLong()
 
 		if (seon)
-			cost = (cost / HexalConfig.server.seonDiscountFactor).toInt()
+			cost = (cost / HexalConfig.server.seonDiscountFactor).toLong()
 		media -= cost
 	}
 
@@ -216,8 +216,8 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	}
 	//endregion
 
-	open val normalCostPerTick: Int get() = HexalConfig.server.projectileWispUpkeepPerTick
-	open val untriggeredCostPerTick: Int get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toInt()
+	open val normalCostPerTick: Long get() = HexalConfig.server.projectileWispUpkeepPerTick
+	open val untriggeredCostPerTick: Long get() = (normalCostPerTick * HexalConfig.server.untriggeredWispUpkeepDiscount).toLong()
 
 	private fun tryLoadTransferMediaFilters() {
 		blackListTransferMedia.tryLoad(level() as ServerLevel)

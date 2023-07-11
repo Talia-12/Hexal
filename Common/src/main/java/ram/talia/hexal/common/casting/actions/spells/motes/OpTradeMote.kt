@@ -23,7 +23,7 @@ import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 
 object OpTradeMote : VarargConstMediaAction {
-    override val mediaCost: Int
+    override val mediaCost: Long
         get() = HexalConfig.server.tradeItemCost
 
     override fun argc(stack: List<Iota>): Int {

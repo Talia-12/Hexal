@@ -22,7 +22,7 @@ object OpMakeGate : VarargConstMediaAction {
         return if (stack[0] is EntityIota) 2 else 1
     }
 
-    override val mediaCost: Int
+    override val mediaCost: Long
         get() = HexalConfig.server.makeGateCost
 
     override fun execute(args: List<Iota>, argc: Int, userData: CompoundTag, env: CastingEnvironment): List<Iota> {

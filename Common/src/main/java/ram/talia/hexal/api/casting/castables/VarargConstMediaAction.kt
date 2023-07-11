@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag
  * An action that always costs the same amount of media, but can accept a variable number of arguments depending on what is on top of the stack.
  */
 interface VarargConstMediaAction : Action {
-    val mediaCost: Int
+    val mediaCost: Long
         get() = 0
 
     /**

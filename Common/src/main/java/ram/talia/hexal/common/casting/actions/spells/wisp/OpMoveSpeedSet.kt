@@ -28,7 +28,7 @@ object OpMoveSpeedSet : SpellAction {
         // all to not incentivise very laggy stuff). If the newMult is older than the old max, there is no cost;
         // reducing speed is not penalised.
         val cost = if (newMult > oldMax) {
-            (HexalConfig.server.moveSpeedSetCost * min(1.0, (newMult - oldMax) * (newMult - oldMax))).toInt()
+            (HexalConfig.server.moveSpeedSetCost * min(1.0, (newMult - oldMax) * (newMult - oldMax))).toLong()
         } else 0
 
         return SpellAction.Result(

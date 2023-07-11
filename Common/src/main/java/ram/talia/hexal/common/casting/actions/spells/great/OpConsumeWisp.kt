@@ -31,7 +31,7 @@ object OpConsumeWisp : SpellAction {
 
 		val cost = when (consumed.fightConsume(consumer)) {
 			false  -> HexalConfig.server.consumeWispOwnCost
-			true   -> (HexalConfig.server.consumeWispOthersCostPerMedia * consumed.media).toInt()
+			true   -> (HexalConfig.server.consumeWispOthersCostPerMedia * consumed.media).toLong()
 		}
 
 		HexalAPI.LOGGER.debug("cost to consume {} is {}", consumed, cost)

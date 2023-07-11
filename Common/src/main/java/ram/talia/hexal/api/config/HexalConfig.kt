@@ -12,61 +12,61 @@ object HexalConfig {
         val generateSlipwayGeodes: Boolean
 
         // costs of misc spells
-        val fallingBlockCost: Int
-        val freezeCost: Int
-        val particlesCost: Int
-        val placeTypeCost: Int
-        val smeltCost: Int
+        val fallingBlockCost: Long
+        val freezeCost: Long
+        val particlesCost: Long
+        val placeTypeCost: Long
+        val smeltCost: Long
 
         // costs of fabric only spells
         val phaseBlockCostFactor: Double
 
         // costs of wisp spells
-        val moveSpeedSetCost: Int
-        val summonTickingWispCost: Int
-        val summonProjectileWispCost: Int
-        val summonProjectileWispMinCost: Int
+        val moveSpeedSetCost: Long
+        val summonTickingWispCost: Long
+        val summonProjectileWispCost: Long
+        val summonProjectileWispMinCost: Long
 
         // costs of wisp upkeep
-        val tickingWispUpkeepPerTick: Int
-        val projectileWispUpkeepPerTick: Int
+        val tickingWispUpkeepPerTick: Long
+        val projectileWispUpkeepPerTick: Long
         val untriggeredWispUpkeepDiscount: Double
-        val linkUpkeepPerTick: Int
+        val linkUpkeepPerTick: Long
         val seonDiscountFactor: Double
         val storingPlayerCostScaleFactor: Double
         val mediaFlowRateOverLink: Double
 
         // costs of link spells
-        val linkCost: Int
-        val sendIotaCost: Int
-        val unlinkCost: Int
+        val linkCost: Long
+        val sendIotaCost: Long
+        val unlinkCost: Long
 
         // costs of gate spells
-        val makeGateCost: Int
-        val markGateCost: Int
-        val closeGateCost: Int
-        val closeGateDistanceCostFactor: Int
+        val makeGateCost: Long
+        val markGateCost: Long
+        val closeGateCost: Long
+        val closeGateDistanceCostFactor: Long
         val maxGateOffset: Double
 
         // costs of item spells
-        val bindStorageCost: Int
-        val bindTemporaryStorageCost: Int
-        val makeItemCost: Int
-        val returnItemCost: Int
-        val craftItemCost: Int
-        val tradeItemCost: Int
-        val useItemOnCost: Int
+        val bindStorageCost: Long
+        val bindTemporaryStorageCost: Long
+        val makeItemCost: Long
+        val returnItemCost: Long
+        val craftItemCost: Long
+        val tradeItemCost: Long
+        val useItemOnCost: Long
 
         val maxItemsReturned: Int
 
         val maxRecordsInMediafiedStorage: Int
 
         // costs of great spells
-        val consumeWispOwnCost: Int
+        val consumeWispOwnCost: Long
         val consumeWispOthersCostPerMedia: Double
-        val seonWispSetCost: Int
-        val tickConstantCost: Int
-        val tickCostPerTicked: Int
+        val seonWispSetCost: Long
+        val tickConstantCost: Long
+        val tickCostPerTicked: Long
 
         // inverse probability of OpTick random ticking a block.
         val tickRandomTickIProb: Int
@@ -196,83 +196,83 @@ object HexalConfig {
     private object DummyServer : ServerConfigAccess {
         override val generateSlipwayGeodes: Boolean
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val fallingBlockCost: Int
+        override val fallingBlockCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val freezeCost: Int
+        override val freezeCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val particlesCost: Int
+        override val particlesCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val placeTypeCost: Int
+        override val placeTypeCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val smeltCost: Int
+        override val smeltCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val phaseBlockCostFactor: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val moveSpeedSetCost: Int
+        override val moveSpeedSetCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val summonTickingWispCost: Int
+        override val summonTickingWispCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val summonProjectileWispCost: Int
+        override val summonProjectileWispCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val summonProjectileWispMinCost: Int
+        override val summonProjectileWispMinCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val tickingWispUpkeepPerTick: Int
+        override val tickingWispUpkeepPerTick: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val projectileWispUpkeepPerTick: Int
+        override val projectileWispUpkeepPerTick: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val untriggeredWispUpkeepDiscount: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val linkUpkeepPerTick: Int
+        override val linkUpkeepPerTick: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val seonDiscountFactor: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val storingPlayerCostScaleFactor: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val linkCost: Int
+        override val linkCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val sendIotaCost: Int
+        override val sendIotaCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val unlinkCost: Int
+        override val unlinkCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val mediaFlowRateOverLink: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val makeGateCost: Int
+        override val makeGateCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val markGateCost: Int
+        override val markGateCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val closeGateCost: Int
+        override val closeGateCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val closeGateDistanceCostFactor: Int
+        override val closeGateDistanceCostFactor: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val maxGateOffset: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val bindStorageCost: Int
+        override val bindStorageCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val bindTemporaryStorageCost: Int
+        override val bindTemporaryStorageCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val makeItemCost: Int
+        override val makeItemCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val returnItemCost: Int
+        override val returnItemCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val craftItemCost: Int
+        override val craftItemCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val tradeItemCost: Int
+        override val tradeItemCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val useItemOnCost: Int
+        override val useItemOnCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val maxItemsReturned: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val maxRecordsInMediafiedStorage: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val consumeWispOwnCost: Int
+        override val consumeWispOwnCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val consumeWispOthersCostPerMedia: Double
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val seonWispSetCost: Int
+        override val seonWispSetCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val tickConstantCost: Int
+        override val tickConstantCost: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
-        override val tickCostPerTicked: Int
+        override val tickCostPerTicked: Long
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")
         override val tickRandomTickIProb: Int
             get() = throw IllegalStateException("Attempted to access property of Dummy Config Object")

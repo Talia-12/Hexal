@@ -261,23 +261,23 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getFallingBlockCost() {
-            return (int) (miscSpells.fallingBlockCost * MediaConstants.DUST_UNIT);
+        public long getFallingBlockCost() {
+            return (long) (miscSpells.fallingBlockCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getFreezeCost() {
-            return (int) (miscSpells.freezeCost * MediaConstants.DUST_UNIT);
+        public long getFreezeCost() {
+            return (long) (miscSpells.freezeCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getParticlesCost() {
-            return (int) (miscSpells.particlesCost * MediaConstants.DUST_UNIT);
+        public long getParticlesCost() {
+            return (long) (miscSpells.particlesCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getPlaceTypeCost() {
-            return (int) (miscSpells.placeTypeCost * MediaConstants.DUST_UNIT);
+        public long getPlaceTypeCost() {
+            return (long) (miscSpells.placeTypeCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -286,38 +286,38 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getSmeltCost() {
-            return (int) (miscSpells.smeltCost * MediaConstants.DUST_UNIT);
+        public long getSmeltCost() {
+            return (long) (miscSpells.smeltCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMoveSpeedSetCost() {
-            return (int) (wispSpells.moveSpeedSetCost * MediaConstants.DUST_UNIT);
+        public long getMoveSpeedSetCost() {
+            return (long) (wispSpells.moveSpeedSetCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSummonTickingWispCost() {
-            return (int) (wispSpells.summonTickingWispCost * MediaConstants.DUST_UNIT);
+        public long getSummonTickingWispCost() {
+            return (long) (wispSpells.summonTickingWispCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSummonProjectileWispCost() {
-            return (int) (wispSpells.summonProjectileWispCost * MediaConstants.DUST_UNIT);
+        public long getSummonProjectileWispCost() {
+            return (long) (wispSpells.summonProjectileWispCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSummonProjectileWispMinCost() {
-            return (int) (wispSpells.summonProjectileWispMinCost * MediaConstants.DUST_UNIT);
+        public long getSummonProjectileWispMinCost() {
+            return (long) (wispSpells.summonProjectileWispMinCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTickingWispUpkeepPerTick() {
-            return (int) (wispUpkeep.tickingWispUpkeepPerTick * MediaConstants.DUST_UNIT);
+        public long getTickingWispUpkeepPerTick() {
+            return (long) (wispUpkeep.tickingWispUpkeepPerTick * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getProjectileWispUpkeepPerTick() {
-            return (int) (wispUpkeep.projectileWispUpkeepPerTick * MediaConstants.DUST_UNIT);
+        public long getProjectileWispUpkeepPerTick() {
+            return (long) (wispUpkeep.projectileWispUpkeepPerTick * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -326,8 +326,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getLinkUpkeepPerTick() {
-            return (int) (wispUpkeep.linkUpkeepPerTick * MediaConstants.DUST_UNIT);
+        public long getLinkUpkeepPerTick() {
+            return (long) (wispUpkeep.linkUpkeepPerTick * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -346,38 +346,38 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getLinkCost() {
-            return (int) (linkSpells.linkCost * MediaConstants.DUST_UNIT);
+        public long getLinkCost() {
+            return (long) (linkSpells.linkCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getSendIotaCost() {
-            return (int) (linkSpells.sendIotaCost * MediaConstants.DUST_UNIT);
+        public long getSendIotaCost() {
+            return (long) (linkSpells.sendIotaCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getUnlinkCost() {
-            return (int) (linkSpells.unlinkCost * MediaConstants.DUST_UNIT);
+        public long getUnlinkCost() {
+            return (long) (linkSpells.unlinkCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMakeGateCost() {
-            return (int) (gateSpells.makeGateCost * MediaConstants.DUST_UNIT);
+        public long getMakeGateCost() {
+            return (long) (gateSpells.makeGateCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMarkGateCost() {
-            return (int) (gateSpells.markGateCost * MediaConstants.DUST_UNIT);
+        public long getMarkGateCost() {
+            return (long) (gateSpells.markGateCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getCloseGateCost() {
-            return (int) (gateSpells.closeGateCost * MediaConstants.DUST_UNIT);
+        public long getCloseGateCost() {
+            return (long) (gateSpells.closeGateCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getCloseGateDistanceCostFactor() {
-            return (int) (gateSpells.closeGateDistanceCostFactor * MediaConstants.DUST_UNIT);
+        public long getCloseGateDistanceCostFactor() {
+            return (long) (gateSpells.closeGateDistanceCostFactor * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -386,37 +386,37 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getBindStorageCost() {
-            return (int) (itemSpells.bindStorageCost * MediaConstants.DUST_UNIT);
+        public long getBindStorageCost() {
+            return (long) (itemSpells.bindStorageCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getBindTemporaryStorageCost() {
-            return (int) (itemSpells.bindTemporaryStorageCost * MediaConstants.DUST_UNIT);
+        public long getBindTemporaryStorageCost() {
+            return (long) (itemSpells.bindTemporaryStorageCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getMakeItemCost() {
-            return (int) (itemSpells.makeItemCost * MediaConstants.DUST_UNIT);
+        public long getMakeItemCost() {
+            return (long) (itemSpells.makeItemCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getReturnItemCost() {
-            return (int) (itemSpells.returnItemCost * MediaConstants.DUST_UNIT);
+        public long getReturnItemCost() {
+            return (long) (itemSpells.returnItemCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getCraftItemCost() {
-            return (int) (itemSpells.craftItemCost * MediaConstants.DUST_UNIT);
+        public long getCraftItemCost() {
+            return (long) (itemSpells.craftItemCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTradeItemCost() {
-            return (int) (itemSpells.tradeItemCost * MediaConstants.DUST_UNIT);
+        public long getTradeItemCost() {
+            return (long) (itemSpells.tradeItemCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getUseItemOnCost() { return (int) (itemSpells.useItemOnCost * MediaConstants.DUST_UNIT); }
+        public long getUseItemOnCost() { return (long) (itemSpells.useItemOnCost * MediaConstants.DUST_UNIT); }
 
         @Override
         public int getMaxItemsReturned() {
@@ -429,8 +429,8 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getConsumeWispOwnCost() {
-            return (int) (greatSpells.consumeWispOwnCost * MediaConstants.DUST_UNIT);
+        public long getConsumeWispOwnCost() {
+            return (long) (greatSpells.consumeWispOwnCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
@@ -439,18 +439,18 @@ public class FabricHexalConfig extends PartitioningSerializer.GlobalData {
         }
 
         @Override
-        public int getSeonWispSetCost() {
-            return (int) (greatSpells.seonWispSetCost * MediaConstants.DUST_UNIT);
+        public long getSeonWispSetCost() {
+            return (long) (greatSpells.seonWispSetCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTickConstantCost() {
-            return (int) (greatSpells.tickConstantCost * MediaConstants.DUST_UNIT);
+        public long getTickConstantCost() {
+            return (long) (greatSpells.tickConstantCost * MediaConstants.DUST_UNIT);
         }
 
         @Override
-        public int getTickCostPerTicked() {
-            return (int) (greatSpells.tickCostPerTicked * MediaConstants.DUST_UNIT);
+        public long getTickCostPerTicked() {
+            return (long) (greatSpells.tickCostPerTicked * MediaConstants.DUST_UNIT);
         }
 
         @Override
