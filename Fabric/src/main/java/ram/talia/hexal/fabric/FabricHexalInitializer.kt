@@ -4,6 +4,7 @@ import at.petrak.hexcasting.api.casting.math.HexDir
 import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.common.lib.hex.HexActions
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
+import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.core.Registry
@@ -15,6 +16,7 @@ import ram.talia.hexal.api.gates.GateSavedData
 import ram.talia.hexal.common.lib.*
 import ram.talia.hexal.common.lib.HexalFeatures
 import ram.talia.hexal.common.lib.hex.HexalActions
+import ram.talia.hexal.common.lib.hex.HexalArithmetics
 import ram.talia.hexal.common.lib.hex.HexalIotaTypes
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers
 import ram.talia.hexal.common.recipe.HexalRecipeTypes
@@ -65,6 +67,7 @@ object FabricHexalInitializer : ModInitializer {
 
         HexalIotaTypes.registerTypes(bind(HexIotaTypes.REGISTRY))
         HexalActions.register(bind(HexActions.REGISTRY))
+        HexalArithmetics.register(bind(IXplatAbstractions.INSTANCE.arithmeticRegistry))
     }
 
     private fun fabricOnlyRegistration() {

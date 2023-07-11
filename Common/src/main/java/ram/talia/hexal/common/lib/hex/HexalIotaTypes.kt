@@ -23,7 +23,7 @@ object HexalIotaTypes {
     @JvmField
     val GATE: IotaType<GateIota> = type("gate", GateIota.TYPE)
     @JvmField
-    val ITEM: IotaType<MoteIota> = type("item", MoteIota.TYPE)
+    val MOTE: IotaType<MoteIota> = type("item", MoteIota.TYPE)
 
     private fun <U : Iota, T : IotaType<U>> type(name: String, type: T): T {
         val old = TYPES.put(modLoc(name), type)

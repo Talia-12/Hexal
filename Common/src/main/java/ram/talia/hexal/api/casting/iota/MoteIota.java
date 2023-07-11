@@ -35,7 +35,7 @@ public class MoteIota extends Iota {
     public static final String TAG_TEMP_STORAGE = "hexal:temp_storage";
 
     public MoteIota(MediafiedItemManager.Index payload) {
-        super(HexalIotaTypes.ITEM, payload);
+        super(HexalIotaTypes.MOTE, payload);
     }
 
     public static @Nullable MoteIota makeIfStorageLoaded(ItemStack stack, UUID storageUUID) {

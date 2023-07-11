@@ -208,8 +208,8 @@ object HexalActions {
 	val GATE_UNMARK = make("gate/unmark", HexPattern.fromAngles("edeqqaq", HexDir.EAST), OpUnmarkGate)
 	@JvmField
 	val GATE_MARK_GET = make("gate/mark/get", HexPattern.fromAngles("edwwdeeede", HexDir.EAST), OpGetMarkedGate)
-	@JvmField
-	val GATE_MARK_NUM_GET = make("gate/mark/num/get", HexPattern.fromAngles("qawwaqqqaq", HexDir.WEST), OpGetNumMarkedGate)
+//	@JvmField
+//	val GATE_MARK_NUM_GET = make("gate/mark/num/get", HexPattern.fromAngles("qawwaqqqaq", HexDir.WEST), OpGetNumMarkedGate)
 	@JvmField
 	val GATE_CLOSE = make("gate/close", HexPattern.fromAngles("qqqwwqqqwqqawdedw", HexDir.WEST), OpCloseGate)
 
@@ -230,10 +230,10 @@ object HexalActions {
 	val MOTE_MAKE = make("mote/make", HexPattern.fromAngles("eaqa", HexDir.WEST), OpMakeMote)
 	@JvmField
 	val MOTE_RETURN = make("mote/return", HexPattern.fromAngles("qded", HexDir.EAST), OpReturnMote)
-	@JvmField
-	val MOTE_COUNT_GET = make("mote/count/get", HexPattern.fromAngles("qqqqwqqqqqaa", HexDir.NORTH_WEST), OpGetCountMote)
-	@JvmField
-	val MOTE_COMBINE = make("mote/combine", HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), OpCombineMotes)
+//	@JvmField
+//	val MOTE_COUNT_GET = make("mote/count/get", HexPattern.fromAngles("qqqqwqqqqqaa", HexDir.NORTH_WEST), OpGetCountMote)
+//	@JvmField
+//	val MOTE_COMBINE = make("mote/combine", HexPattern.fromAngles("aqaeqded", HexDir.NORTH_WEST), OpCombineMotes)
 	@JvmField
 	val MOTE_COMBINABLE = make("mote/combinable", HexPattern.fromAngles("dedqeaqa", HexDir.SOUTH_WEST), OpMotesCombinable)
 	@JvmField

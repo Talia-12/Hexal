@@ -19,6 +19,7 @@ import ram.talia.hexal.api.config.HexalConfig;
 import ram.talia.hexal.common.lib.hex.HexalActions;
 import ram.talia.hexal.common.lib.*;
 import ram.talia.hexal.common.lib.HexalFeatures;
+import ram.talia.hexal.common.lib.hex.HexalArithmetics;
 import ram.talia.hexal.common.lib.hex.HexalIotaTypes;
 import ram.talia.hexal.common.recipe.HexalRecipeSerializers;
 import ram.talia.hexal.common.recipe.HexalRecipeTypes;
@@ -68,6 +69,7 @@ public class ForgeHexalInitializer {
 
 		bind(HexRegistries.IOTA_TYPE, HexalIotaTypes::registerTypes);
 		bind(HexRegistries.ACTION, HexalActions::register);
+		bind(HexRegistries.ARITHMETIC, HexalArithmetics::register);
 	}
 	
 	private static void initListeners () {
