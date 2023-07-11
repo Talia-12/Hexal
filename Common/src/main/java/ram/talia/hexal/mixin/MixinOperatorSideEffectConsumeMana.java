@@ -17,7 +17,7 @@ import static ram.talia.hexal.common.casting.actions.spells.great.OpConsumeWisp.
 @Mixin(OperatorSideEffect.ConsumeMedia.class)
 public abstract class MixinOperatorSideEffectConsumeMana {
 
-	@Shadow @Final private int amount;
+	@Shadow @Final private long amount;
 
 	private CastingVM harness;
 
@@ -32,11 +32,10 @@ public abstract class MixinOperatorSideEffectConsumeMana {
 	/**
 	 * Makes it so that if a wisp is consumed, that wisps media can be used later in the cast.
 	 */
-	@SuppressWarnings({"UnresolvedMixinReference", "MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
 	@Redirect(method = "performEffect",
-		at = @At(value = "FIELD", target = "Lat/petrak/hexcasting/api/casting/eval/sideeffects/OperatorSideEffect$ConsumeMedia;amount:I", opcode = 180), // GETFIELD
+		at = @At(value = "FIELD", target = "Lat/petrak/hexcasting/api/casting/eval/sideeffects/OperatorSideEffect$ConsumeMedia;amount:J", opcode = 180), // GETFIELD
 		remap = false)
-	private int hexal$performEffect(OperatorSideEffect.ConsumeMedia media) {
+	private long hexal$performEffect(OperatorSideEffect.ConsumeMedia media) {
 		var image = harness.getImage();
 		var userData = image.getUserData();
 		if (!userData.contains(TAG_CONSUMED_MEDIA))
@@ -47,6 +46,6 @@ public abstract class MixinOperatorSideEffectConsumeMana {
 		consumedMedia -= amountToUse;
 		userData.putLong(TAG_CONSUMED_MEDIA, consumedMedia);
 
-		return (int) (amount - amountToUse);
+		return amount - amountToUse;
 	}
 }

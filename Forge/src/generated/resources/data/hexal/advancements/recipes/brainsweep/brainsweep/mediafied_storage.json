@@ -30,5 +30,6 @@
     "recipes": [
       "hexal:brainsweep/mediafied_storage"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

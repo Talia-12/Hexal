@@ -28,5 +28,6 @@
     "recipes": [
       "hexal:freeze/powder_snow_cauldron"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

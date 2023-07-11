@@ -15,7 +15,7 @@
       {
         "type": "event",
         "attenuation_distance": 8,
-        "name": "hexcasting:casting.cast"
+        "name": "hexcasting:casting.cast.normal"
       }
     ],
     "subtitle": "hexal.subtitle.wisp_casting_start"
