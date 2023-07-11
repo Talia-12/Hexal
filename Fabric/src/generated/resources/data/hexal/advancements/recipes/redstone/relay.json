@@ -28,5 +28,6 @@
     "recipes": [
       "hexal:relay"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
