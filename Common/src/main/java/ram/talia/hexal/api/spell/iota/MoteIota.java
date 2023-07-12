@@ -30,7 +30,7 @@ public class MoteIota extends Iota {
     static final String TAG_COUNT = "count";
 
     public MoteIota(MediafiedItemManager.Index payload) {
-        super(HexalIotaTypes.ITEM, payload);
+        super(HexalIotaTypes.MOTE, payload);
     }
 
     public static @Nullable MoteIota makeIfStorageLoaded(ItemStack stack, UUID storageUUID) {
