@@ -56,7 +56,7 @@
     "patchouli": ">=1.19.2-77",
     "paucal": "0.5.x",
     "hexcasting": "=0.10.3",
-    "geckolib3": "=3.1.40"
+    "geckolib3": ">=3.1.40"
   },
   "suggests": {
     "gravitychanger": "0.7.21+fabric",
