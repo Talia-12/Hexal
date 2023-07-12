@@ -10,6 +10,7 @@ import net.minecraft.nbt.Tag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.ItemRecord
@@ -90,8 +91,10 @@ class BlockEntityMediafiedStorage(pos: BlockPos, val state: BlockState) : HexBlo
      * When the BlockEntityMediafiedStorage is broken it should drop all its contents into the world.
      */
     fun dropAllContents(level: ServerLevel, pos: BlockPos) {
-        for ((record, _) in storedItems) {
-            val toDrop = MediafiedItemManager.getStacksToDrop(MediafiedItemManager.Index(uuid, record), Long.MAX_VALUE) ?: continue
+        for ((_, record) in storedItems) {
+            val toDrop = mutableListOf<ItemStack>()
+
+            record.addDrops(Long.MAX_VALUE, toDrop)
 
             for (stack in toDrop) {
                 level.addFreshEntity(ItemEntity(level, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), stack))
