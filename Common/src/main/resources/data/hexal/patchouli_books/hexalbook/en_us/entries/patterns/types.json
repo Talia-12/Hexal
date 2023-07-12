@@ -40,9 +40,17 @@
     },
     {
       "type": "hexcasting:pattern",
+      "op_id": "hexal:raycast/entity/type",
+      "anchor": "hexal:raycast/entity/type",
+      "input": "type, pos, dir",
+      "output": "entity | null",
+      "text": "hexal.page.types.raycast/entity/type"
+    },
+    {
+      "type": "hexcasting:pattern",
       "op_id": "hexal:get_entity/type",
       "anchor": "hexal:get_entity/type",
-      "input": "entitytype, pos",
+      "input": "type, pos",
       "output": "entity | null",
       "text": "hexal.page.types.get_entity/type"
     },
@@ -50,7 +58,7 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:zone_entity/type",
       "anchor": "hexal:zone_entity/type",
-      "input": "entitytype, pos, num",
+      "input": "type, pos, num",
       "output": "[entity]",
       "text": "hexal.page.types.zone_entity/type"
     },
@@ -58,7 +66,7 @@
       "type": "hexcasting:pattern",
       "op_id": "hexal:zone_entity/not_type",
       "anchor": "hexal:zone_entity/not_type",
-      "input": "entitytype, pos, num",
+      "input": "type, pos, num",
       "output": "[entity]",
       "text": "hexal.page.types.zone_entity/not_type"
     }
