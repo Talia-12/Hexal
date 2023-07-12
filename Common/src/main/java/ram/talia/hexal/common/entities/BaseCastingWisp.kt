@@ -55,7 +55,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	var caster: Player? = null
 		get() {
-			return if (field != null && !field!!.isRemoved) {
+			return if (field != null && !field!!.isRemoved && !field!!.isDeadOrDying) {
 				field
 			} else if (casterUUID != null && level() is ServerLevel) {
 				field = (level() as ServerLevel).getEntity(casterUUID!!) as? Player

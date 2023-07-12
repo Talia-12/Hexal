@@ -26,7 +26,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	private var cachedCaster: ServerPlayer? = null
 	private val caster: ServerPlayer?
 		get() {
-			return if (cachedCaster != null && !cachedCaster!!.isRemoved) {
+			return if (cachedCaster != null && !cachedCaster!!.isRemoved && !cachedCaster!!.isDeadOrDying) {
 				cachedCaster
 			} else {
 				cachedCaster = server?.playerList?.getPlayer(casterUUID)
@@ -70,7 +70,7 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	 * Called by CCWispCastingManager (Fabric) and WispCastingManagerEventHandler (Forge) each tick, evaluates up to WISP_EVALS_PER_TICK Wisp casts.
 	 */
 	fun executeCasts() {
-		if (caster == null)
+		if (caster == null || caster!!.tickCount <= 1)
 			return
 		if (caster!!.level().isClientSide) {
 			HexalAPI.LOGGER.info("HOW DID THIS HAPPEN")
