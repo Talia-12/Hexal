@@ -245,6 +245,8 @@ object HexalActions {
 	@JvmField
 	val MOTE_CRAFT = make("mote/craft", HexPattern.fromAngles("wwawdedwawdewwdwaqawdwwedwawdedwaww", HexDir.SOUTH_EAST), OpCraftMote)
 	@JvmField
+	val MOTE_CRAFT_PREVIEW = make("mote/craft/preview", HexPattern.fromAngles("wwdwaqawdwaqwwawdedwawwqawdwaqawdww", HexDir.NORTH_EAST), OpCraftMotePreview)
+	@JvmField
 	val MOTE_VILLAGER_LEVEL_GET = make("mote/villager/level/get", HexPattern.fromAngles("qqwdedwqqaww", HexDir.NORTH_WEST), OpGetVillagerLevel)
 	@JvmField
 	val MOTE_TRADE_GET = make("mote/trade/get", HexPattern.fromAngles("awdedwaawwqded", HexDir.SOUTH_EAST), OpGetItemTrades)

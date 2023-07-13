@@ -48,6 +48,23 @@ fun Int.addBounded(int: Int): Int {
 }
 
 /**
+ * If the multiplication would overflow, instead bound it at MAX/MIN.
+ */
+fun Int.mulBounded(int: Int): Int {
+    if (this == 0 || int == 0)
+        return 0
+
+    return if (this > 0 && int > 0)
+        if (this * int < this) Int.MAX_VALUE else this * int
+    else if (this > 0 && int < 0)
+        if (this * int > int) Int.MIN_VALUE else this * int
+    else if (this < 0 && int > 0)
+        if (this * int > this) Int.MIN_VALUE else this * int
+    else
+        if (this * int < -this) Int.MAX_VALUE else this * int
+}
+
+/**
  * If the addition would overflow, instead bound it at MAX/MIN.
  */
 fun Long.addBounded(long: Long): Long {
@@ -282,6 +299,17 @@ fun List<Iota>.getMoteOrList(idx: Int, argc: Int = 0): Either<MoteIota, SpellLis
         is NullIota -> null
         is ListIota -> Either.right(x.list)
         else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "motemotelistmotelistlist")
+    }
+}
+
+fun List<Iota>.getItemStackIotaOrMoteOrList(idx: Int, argc: Int = 0): Anyone<ItemStackIota, MoteIota, SpellList>? {
+    val x = this.getOrElse(idx) { throw MishapNotEnoughArgs(idx + 1, this.size) }
+    return when (x) {
+        is ItemStackIota -> Anyone.first(x)
+        is MoteIota -> x.selfOrNull()?.let { Anyone.second(it) }
+        is NullIota -> null
+        is ListIota -> Anyone.third(x.list)
+        else -> throw MishapInvalidIota.ofType(x, if (argc == 0) idx else argc - (idx + 1), "itemitemlistitemlistlist")
     }
 }
 

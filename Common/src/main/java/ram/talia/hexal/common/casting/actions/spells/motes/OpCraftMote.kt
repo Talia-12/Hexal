@@ -55,7 +55,7 @@ object OpCraftMote : UserDataConstMediaAction {
         if (!isStorageLoaded(storage))
             throw MishapNoBoundStorage("storage_unloaded")
 
-        val griddedIotas = makeItemIotaCraftingGrid(input)
+        val griddedIotas = makeMoteIotaCraftingGrid(input)
 
         val container = TransientCraftingContainer(AutoCraftingMenu(), 3, 3)
 
@@ -64,12 +64,7 @@ object OpCraftMote : UserDataConstMediaAction {
                 iota.record?.toStack()?.let { container.setItem(idx, it) }
         }
 
-        val recman = env.world.recipeManager
-        val recipes = recman.getAllRecipesFor(RecipeType.CRAFTING)
-        val recipe = recipes.find { it.matches(container, env.world) } ?: return emptyList<Iota>().asActionResult
-
-        val itemResult = recipe.assemble(container, env.world.registryAccess())
-        val remainingItems = recipe.getRemainingItems(container).filter { item -> !item.isEmpty }
+        val (itemResult, remainingItems) = getCraftResult(container, env) ?: return emptyList<Iota>().asActionResult
 
         val timesToCraft = getMinCount(griddedIotas)
 
@@ -82,7 +77,18 @@ object OpCraftMote : UserDataConstMediaAction {
         return remainingMoteIotas.asActionResult
     }
 
-    private fun makeItemIotaCraftingGrid(input: Either<MoteIota, SpellList>): Array<MoteIota?> {
+    internal fun getCraftResult(container: TransientCraftingContainer, env: CastingEnvironment): Pair<ItemStack, List<ItemStack>>? {
+        val recman = env.world.recipeManager
+        val recipes = recman.getAllRecipesFor(RecipeType.CRAFTING)
+        val recipe = recipes.find { it.matches(container, env.world) } ?: return null
+
+        val itemResult = recipe.assemble(container, env.world.registryAccess())
+        val remainingItems = recipe.getRemainingItems(container).filter { item -> !item.isEmpty }
+
+        return itemResult to remainingItems
+    }
+
+    private fun makeMoteIotaCraftingGrid(input: Either<MoteIota, SpellList>): Array<MoteIota?> {
         val out = Array<MoteIota?>(9) { _ -> null }
 
         for ((idy, iota) in input.map({ listOf(IndexedValue(0, it)) }, { it.withIndex() })) {
@@ -119,7 +125,7 @@ object OpCraftMote : UserDataConstMediaAction {
     private fun getMinCount(griddedIotas: Array<MoteIota?>): Long = griddedIotas.minOf { iota -> iota?.count ?: Long.MAX_VALUE }
 
     // from AE2 https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/9965a2fd4d3fbf9eadd0a0e7190e0812537f836e/src/main/java/appeng/menu/AutoCraftingMenu.java#L30
-    private class AutoCraftingMenu : AbstractContainerMenu(null, 0) {
+    internal class AutoCraftingMenu : AbstractContainerMenu(null, 0) {
         override fun quickMoveStack(player: Player, index: Int): ItemStack = ItemStack.EMPTY
 
         override fun stillValid(player: Player) = false
