@@ -51,14 +51,14 @@
 
   "hexal.spelldata.entity_type": "类型",
   "hexal.spelldata.gate": "门径 %d",
-  "hexal.spelldata.item": "%s x%d",
-
+  "hexal.spelldata.mote": "%s x%d",
 
   "hexcasting.spell.hexal:type/iota": "分类学家之纯化",
   "hexcasting.spell.hexal:type/entity": "内科医师之纯化",
   "hexcasting.spell.hexal:type/block_item": "分拣员之纯化",
   "hexcasting.spell.hexal:type/item_held": "分拣员之精思",
 
+  "hexcasting.spell.hexal:raycast/entity/type": "侦查员之提整",
   "hexcasting.spell.hexal:get_entity/type": "实体之馏化：类型",
   "hexcasting.spell.hexal:zone_entity/type": "区域之提整：类型",
   "hexcasting.spell.hexal:zone_entity/not_type": "区域之提整：非类型",
@@ -305,9 +305,10 @@
   "hexal.page.types.type/block_item": "移除栈顶位置向量，$(l:hexal:hexal.entry.motes)$(item)物元/$，物品实体或物品展示框。并返回该处方块的类型或对应物品类型。（如草方块、石头、木棍等。）",
   "hexal.page.types.type/item_held": "若施法者副手中有物品，则将其类型压入栈顶；若无，则压入施法用手中物品的类型。",
 
-  "hexal.page.types.get_entity/type": "从栈顶获取实体类型和位置向量，返回该位置符合该类型的实体（若有）。",
-  "hexal.page.types.zone_entity/type": "从栈顶获取实体类型、位置向量及最大距离，返回该位置给定距离范围内所有符合给定类型的实体的列表。",
-  "hexal.page.types.zone_entity/not_type": "从栈顶获取实体类型、位置向量及最大距离，返回该位置给定距离范围内所有不符合给定类型的实体的列表。",
+  "hexal.page.types.raycast/entity/type": "移除栈顶实体类型（或物品类型）、位置向量和方向向量，返回该位置朝向该方向处符合该类型的实体或物品实体（若有）。",
+  "hexal.page.types.get_entity/type": "从栈顶获取实体类型（或物品类型）和位置向量，返回该位置符合该类型的实体或物品实体（若有）。",
+  "hexal.page.types.zone_entity/type": "从栈顶获取实体类型（或物品类型）、位置向量及最大距离，返回该位置给定距离范围内所有符合给定类型的实体或物品实体的列表。",
+  "hexal.page.types.zone_entity/not_type": "从栈顶获取实体类型（或物品类型）、位置向量及最大距离，返回该位置给定距离范围内所有不符合给定类型的实体或物品实体的列表。",
 
 
   "hexal.entry.everbook": "永恒之书",
