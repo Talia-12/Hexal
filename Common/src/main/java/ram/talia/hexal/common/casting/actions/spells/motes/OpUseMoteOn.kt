@@ -1,6 +1,5 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.spell.*
 import at.petrak.hexcasting.api.spell.casting.CastingContext
 import at.petrak.hexcasting.api.spell.iota.EntityIota
@@ -13,7 +12,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
@@ -59,13 +57,15 @@ object OpUseMoteOn : VarargSpellAction {
             val direction = args.getVec3(2, argc)
             val target = args.getBlockPos(1, argc)
 
+            ctx.assertVecInRange(target)
+
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
                 throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 
             return Triple(
                 BlockTargetSpell(target, direction, item),
-                MediaConstants.DUST_UNIT,
+                HexalConfig.server.useItemOnCost,
                 listOf(ParticleSpray.burst(Vec3.atCenterOf(BlockPos(target)), 1.0))
             )
         }
@@ -76,8 +76,7 @@ object OpUseMoteOn : VarargSpellAction {
             if (!ctx.isEntityInRange(entity))
                 return
 
-            val itemStack = ItemStack(item.item, 1)
-            itemStack.tag = item.tag
+            val itemStack = item.record?.toStack(1) ?: return
 
             // Swap item in hand to the new stack
             val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
@@ -99,8 +98,10 @@ object OpUseMoteOn : VarargSpellAction {
             if (!ctx.canEditBlockAt(pos))
                 return
 
-            val itemStack = ItemStack(item.item, 1)
-            itemStack.tag = item.tag
+            val itemStack = item.record?.toStack(1) ?: return
+            val oldMoteStack = itemStack.copy()
+            val oldHandStack = ctx.caster.getItemInHand(ctx.castingHand)
+            ctx.caster.setItemInHand(ctx.castingHand, itemStack.copy())
 
             val context = UseOnContext(
                 ctx.world,
@@ -111,13 +112,19 @@ object OpUseMoteOn : VarargSpellAction {
             )
 
             val isAllowed = IXplatAbstractions.INSTANCE.isPlacingAllowed(ctx.world, pos, itemStack, ctx.caster)
-            if (!isAllowed)
-                return
-            itemStack.useOn(context).consumesAction()
-            item.tag = itemStack.tag
+            if (isAllowed) {
+                itemStack.useOn(context)
+                val newHandStack = ctx.caster.getItemInHand(ctx.castingHand)
+                // some mods apparently do silly buggers and edit the player's hand contents directly when useOn is called
+                val newStack = if (newHandStack == oldMoteStack) itemStack else newHandStack
 
-            if (itemStack.isEmpty)
-                item.removeItems(1)
+                item.tag = newStack.tag
+
+                if (newStack.isEmpty)
+                    item.removeItems(1)
+            }
+
+            ctx.caster.setItemInHand(ctx.castingHand, oldHandStack)
         }
     }
 }
