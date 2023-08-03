@@ -58,7 +58,7 @@
     "paucal": "0.6.x",
     "hexcasting": ">=0.11.1-6",
     "moreiotas": ">=0.1.0-2",
-    "geckolib": "=4.2.1"
+    "geckolib": ">=4.2.1"
   },
   "suggests": {
     "gravitychanger": "0.7.21+fabric",

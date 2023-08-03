@@ -145,7 +145,8 @@ public class FabricXplatImpl implements IXplatAbstractions {
         BaseCastingWisp old = manager.getSeon();
         if (old != null)
             old.setSeon(false);
-        wisp.setSeon(true);
+        if (wisp != null)
+            wisp.setSeon(true);
         manager.setSeon(wisp);
     }
 
