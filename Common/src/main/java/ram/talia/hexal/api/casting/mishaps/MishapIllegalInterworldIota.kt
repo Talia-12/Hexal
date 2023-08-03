@@ -2,6 +2,7 @@ package ram.talia.hexal.api.casting.mishaps
 
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.iota.EntityIota
 import at.petrak.hexcasting.api.casting.iota.GarbageIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.ListIota
@@ -28,7 +29,7 @@ class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
 
             while (poolToSearch.isNotEmpty()) {
                 val iotaToCheck = poolToSearch.removeFirst()
-                if (iotaToCheck is GateIota || iotaToCheck is MoteIota)
+                if (iotaToCheck is GateIota || iotaToCheck is MoteIota || iotaToCheck is EntityIota)
                     return iotaToCheck
                 if (iotaToCheck is ListIota)
                     poolToSearch.addAll(iotaToCheck.list)
@@ -41,6 +42,7 @@ class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
             return when (iota) {
                 is GateIota -> GarbageIota()
                 is MoteIota -> GarbageIota()
+                is EntityIota -> GarbageIota()
                 is ListIota -> iota.list.map { replaceInNestedIota(it) }.asActionResult[0]
                 else -> iota
             }
