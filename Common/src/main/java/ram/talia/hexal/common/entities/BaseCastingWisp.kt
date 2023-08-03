@@ -76,12 +76,12 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		set(value) = entityData.set(SEON, value)
 
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>): Boolean = consumer.map({ wisp ->
-		wisp.caster == this.caster ||
-		whiteListTransferMedia.contains(wisp) ||
-		(wisp.caster?.let { whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: false)
+		wisp.caster != this.caster &&
+		!whiteListTransferMedia.contains(wisp) &&
+		(wisp.caster?.let { !whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: true)
 	}, {
-		it == this.caster ||
-		whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it))
+		it != this.caster &&
+		!whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it))
 	})
 
 	val serHex: SerialisedIotaList = SerialisedIotaList()
@@ -314,12 +314,9 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		if (level.isClientSide || caster == null || !canScheduleCast())
 			return false // return dummy data, not expecting anything to be done with it
 
+		scheduledCast = true
 		IXplatAbstractions.INSTANCE.getWispCastingManager(caster as ServerPlayer)
 				.scheduleCast(this, priority, hex, initialStack, initialRavenmind)
-
-//			HexalAPI.LOGGER.info("cast successfully scheduled, hex was $rHex, stack was $rInitialStack, ravenmind was $rInitialRavenmind")
-
-		scheduledCast = true
 
 		return scheduledCast
 	}

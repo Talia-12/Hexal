@@ -4,7 +4,6 @@ import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
 import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
 import at.petrak.hexcasting.api.utils.hasByte
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
@@ -37,20 +36,20 @@ class TickingWisp : BaseCastingWisp {
 	fun setStack(iotas: MutableList<Iota>) {
 		serStack.set(iotas)
 
-		stackNumTrueNames = 0;
+		stackNumTrueNames = 0
 		for (entity in serStack.getReferencedEntities(level as ServerLevel)) {
 			if ((entity is Player) && (entity != caster)) {
-				stackNumTrueNames++;
+				stackNumTrueNames++
 			}
 		}
 	}
 	fun setRavenmind(iota: Iota?) {
 		serRavenmind.set(iota ?: NullIota())
 
-		ravenmindNumTrueNames = 0;
+		ravenmindNumTrueNames = 0
 		for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
 			if ((entity is Player) && (entity!= caster)) {
-				ravenmindNumTrueNames++;
+				ravenmindNumTrueNames++
 			}
 		}
 	}
@@ -100,18 +99,18 @@ class TickingWisp : BaseCastingWisp {
 
 	override fun tick() {
 		if (firstTick && !level.isClientSide) {
-			stackNumTrueNames = 0;
+			stackNumTrueNames = 0
 			for (entity in serStack.getReferencedEntities(level as ServerLevel)) {
 				if ((entity is Player) && (entity != caster)) {
-					stackNumTrueNames++;
+					stackNumTrueNames++
 				}
 			}
 
-			ravenmindNumTrueNames = 0;
+			ravenmindNumTrueNames = 0
 			for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
 				if ((entity is Player) && (entity!= caster)) {
-                    ravenmindNumTrueNames++;
-                }
+                    ravenmindNumTrueNames++
+				}
 			}
 		}
 
