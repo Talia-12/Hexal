@@ -68,7 +68,7 @@ public interface IXplatAbstractions {
      * Takes in a caster and wisp, and sets that caster's Seon (wisp that costs significantly less to maintain) to the
      * accepted wisp. The old Seon if one exists is unmarked.
      */
-    void setSeon(ServerPlayer caster, BaseCastingWisp wisp);
+    void setSeon(ServerPlayer caster, @Nullable BaseCastingWisp wisp);
 
     @Nullable
     BaseCastingWisp getSeon(ServerPlayer caster);

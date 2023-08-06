@@ -51,8 +51,9 @@ public class WispCastingMangerEventHandler {
 		return ref.get();
 	}
 
-	public static void setSeon(ServerPlayer player, BaseCastingWisp wisp) {
+	public static void setSeon(ServerPlayer player, @Nullable BaseCastingWisp wisp) {
 		var oldRef = seons.get(player.getUUID());
+		// make the old seon no longer seon if it exists.
 		if (oldRef == null) {
 			var oldSeon = refreshSeonFromLevel(player);
 			if (oldSeon != null) {
@@ -63,9 +64,16 @@ public class WispCastingMangerEventHandler {
 			if (oldSeon != null)
 				oldSeon.setSeon(false);
 		}
-		wisp.setSeon(true);
-		seonUUIDs.put(player.getUUID(), wisp.getUUID());
-		seons.put(player.getUUID(), new WeakReference<>(wisp));
+
+		// make the new wisp seon if it exists.
+		if (wisp != null) {
+			wisp.setSeon(true);
+			seonUUIDs.put(player.getUUID(), wisp.getUUID());
+			seons.put(player.getUUID(), new WeakReference<>(wisp));
+		} else {
+			seonUUIDs.remove(player.getUUID());
+			seons.remove(player.getUUID());
+		}
 	}
 
 	private static void loadSeon(ServerPlayer player) {
