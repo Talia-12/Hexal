@@ -99,7 +99,7 @@ public class ForgeXplatImpl implements IXplatAbstractions {
 	}
 
 	@Override
-	public void setSeon(ServerPlayer caster, BaseCastingWisp wisp) {
+	public void setSeon(ServerPlayer caster, @Nullable BaseCastingWisp wisp) {
 		WispCastingMangerEventHandler.setSeon(caster, wisp);
 	}
 

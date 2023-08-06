@@ -127,7 +127,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
 
     @Override
-    public void setSeon(ServerPlayer caster, BaseCastingWisp wisp) {
+    public void setSeon(ServerPlayer caster, @Nullable BaseCastingWisp wisp) {
         CCWispCastingManager manager = HexalCardinalComponents.WISP_CASTING_MANAGER.get(caster);
         BaseCastingWisp old = manager.getSeon();
         if (old != null)
