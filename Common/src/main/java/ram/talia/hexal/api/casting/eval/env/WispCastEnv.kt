@@ -29,14 +29,14 @@ class WispCastEnv(val wisp: BaseCastingWisp, level: ServerLevel) : CastingEnviro
 
     override fun mishapSprayPos(): Vec3 = wisp.position()
 
-    override fun extractMedia(cost: Long): Long {
+    override fun extractMediaEnvironment(cost: Long): Long {
         val mediaAvailable = wisp.media
         val mediaToTake: Long = cost.coerceAtMost(mediaAvailable)
         wisp.addMedia(-mediaToTake)
         return cost - mediaToTake
     }
 
-    override fun isVecInRange(vec: Vec3): Boolean {
+    override fun isVecInRangeEnvironment(vec: Vec3): Boolean {
         val caster = caster
         if (caster != null) {
             val sentinel = HexAPI.instance().getSentinel(caster)
@@ -48,7 +48,7 @@ class WispCastEnv(val wisp: BaseCastingWisp, level: ServerLevel) : CastingEnviro
         return vec.distanceToSqr(wisp.position()) <= wisp.maxSqrCastingDistance()
     }
 
-    override fun hasEditPermissionsAt(pos: BlockPos): Boolean
+    override fun hasEditPermissionsAtEnvironment(pos: BlockPos): Boolean
         = this.caster?.gameMode?.gameModeForPlayer != GameType.ADVENTURE && this.caster?.let { world.mayInteract(it, pos) } ?: true
 
     override fun getCastingHand(): InteractionHand = InteractionHand.MAIN_HAND
