@@ -188,6 +188,7 @@ dependencies {
     implementation fg.deobf("top.theillusivec4.caelus:caelus-forge:$caelusVersion")
 
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-$minecraftVersion:$geckolibVersion")
+    implementation fg.deobf("com.eliotlash.mclib:mclib:20") // dependency of geckolib that isn't being transitivelyied properly
 
     // Optional interop
 
