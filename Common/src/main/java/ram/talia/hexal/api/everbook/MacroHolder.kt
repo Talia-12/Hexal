@@ -83,7 +83,7 @@ class MacroHolder(val everbook: Everbook) {
 
 			if (macros.keys.contains(possibleKey)) {
 				if (currentKeys.contains(possibleKey)) {
-					HexalAPI.LOGGER.info("key $possibleKey inside iota list for $key resulted in infinite recursion.")
+					HexalAPI.LOGGER.debug("key $possibleKey inside iota list for $key resulted in infinite recursion.")
 					currentKeys.remove(key)
 					macros[key] = null
 					return

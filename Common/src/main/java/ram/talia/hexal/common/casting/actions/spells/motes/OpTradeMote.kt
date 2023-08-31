@@ -85,7 +85,7 @@ object OpTradeMote : VarargConstMediaAction {
             if (merchantoffer.isOutOfStock)
                 break
 
-            if (merchantoffer.take(toTrade0, toTrade1) || merchantoffer.take(toTrade0, toTrade1)) {
+            if (merchantoffer.take(toTrade0, toTrade1) || merchantoffer.take(toTrade1, toTrade0)) {
                 villager.notifyTrade(merchantoffer)
                 env.caster?.awardStat(Stats.TRADED_WITH_VILLAGER)
 

@@ -78,7 +78,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     }
 
     fun debug() {
-        HexalAPI.LOGGER.info("relay network: $relayNetwork")
+        HexalAPI.LOGGER.debug("relay network: {}", relayNetwork)
     }
 
     private fun combineNetworks(other: BlockEntityRelay) {
