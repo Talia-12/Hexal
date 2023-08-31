@@ -150,7 +150,7 @@ class Everbook(val uuid: UUID, private val entries: MutableMap<String, Pair<HexP
 		}
 
 		val tag = this.serialiseToNBT()
-		HexalAPI.LOGGER.info("saving everbook $tag at $everbookPath")
+		HexalAPI.LOGGER.debug("saving everbook {} at {}", tag, everbookPath)
 		everbookEncrypterDecrypter.encrypt(tag, everbookPath.toFile())
 	}
 
@@ -189,7 +189,7 @@ class Everbook(val uuid: UUID, private val entries: MutableMap<String, Pair<HexP
 			val everbookEncrypterDecrypter = FileEncrypterDecrypter(FileEncrypterDecrypter.getKey(uuid, "AES"), "AES/CBC/PKCS5Padding")
 			val tag = everbookEncrypterDecrypter.decryptCompound(everbookPath.toFile()) ?: return Everbook(uuid)
 
-			HexalAPI.LOGGER.info("loading everbook $tag for $uuid from $everbookPath")
+			HexalAPI.LOGGER.debug("loading everbook {} for {} from {}", tag, uuid, everbookPath)
 
 			return fromNbt(tag)
 		}
