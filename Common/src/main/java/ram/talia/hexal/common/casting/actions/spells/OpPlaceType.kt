@@ -88,7 +88,7 @@ object OpPlaceType : SpellAction {
             if (!bstate.canBeReplaced(placeContext))
                 return
 
-            if (blockOrMoteIota.isA && !env.withdrawItem({ it == placeeStack }, 1, false))
+            if (blockOrMoteIota.isA && !env.withdrawItem({ ItemStack.isSameItem(it, placeeStack) }, 1, false))
                 return
 
             val res = spoofedStack.useOn(placeContext)
