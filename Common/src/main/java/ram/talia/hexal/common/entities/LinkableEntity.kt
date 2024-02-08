@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.linkable.*
 
 abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(entityType, level), ILinkable, ILinkable.IRenderCentre {
@@ -37,18 +38,33 @@ abstract class LinkableEntity(entityType: EntityType<*>, level: Level) : Entity(
 	}
 
 	override fun readAdditionalSaveData(compound: CompoundTag) {
+		if (linkableHolder == null) {
+			HexalAPI.LOGGER.warn("Trying to load linkable data on client for $this.")
+			return
+		}
+
 		(compound.get(TAG_LINKABLE_HOLDER) as? CompoundTag)?.let {
 			linkableHolder!!.readFromNbt(it)
 		}
 	}
 
 	override fun addAdditionalSaveData(compound: CompoundTag) {
+		if (linkableHolder == null) {
+			HexalAPI.LOGGER.warn("Trying to save linkable data on client for $this.")
+			return
+		}
+
 		compound.put(TAG_LINKABLE_HOLDER, linkableHolder!!.writeToNbt())
 	}
 
 	override fun getAddEntityPacket(): Packet<ClientGamePacketListener> {
-		// TODO: not very efficient, sends all players tracking the entity a new packet every time someone else starts tracking it; would be better to only send to the one new tracker.
-		linkableHolder!!.syncAll()
+		if (linkableHolder == null) {
+			HexalAPI.LOGGER.warn("Trying to send linkable AddEntityPacket from client for $this.")
+		} else {
+			// TODO: not very efficient, sends all players tracking the entity a new packet every time someone else starts tracking it; would be better to only send to the one new tracker.
+			linkableHolder!!.syncAll()
+		}
+
 		return ClientboundAddEntityPacket(this)
 	}
 

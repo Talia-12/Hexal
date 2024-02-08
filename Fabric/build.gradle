@@ -79,8 +79,8 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     compileOnly project(":Common")
 
-    modImplementation "$modID:paucal-fabric-$minecraftVersion:$paucalVersion"
-    modImplementation("$modID:hexcasting-fabric-$minecraftVersion:$hexcastingVersion") {
+    modImplementation "at.petra-k.paucal:paucal-fabric-$minecraftVersion:$paucalVersion"
+    modImplementation("at.petra-k.hexcasting:hexcasting-fabric-$minecraftVersion:$hexcastingVersion") {
         exclude module: "phosphor"
     }
     modImplementation "$modID:moreiotas-fabric-$minecraftVersion:$moreIotasVersion"
@@ -89,8 +89,11 @@ dependencies {
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
 
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-api:$cardinalComponentsVersion"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-api:$cardinalComponentsVersion"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion"
+//    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-util:$cardinalComponentsVersion"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-item:$cardinalComponentsVersion"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-block:$cardinalComponentsVersion"
 
     modImplementation "$modID:serialization-hooks:$serializationHooksVersion"
     include "$modID:serialization-hooks:$serializationHooksVersion"
