@@ -14,7 +14,6 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
-import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -109,7 +108,7 @@ open class ProjectileWisp : BaseCastingWisp {
 			playTrailParticles()
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this), EntityIota(result.entity)))
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, SerialisedIota())
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
 		}
 	}
 
@@ -120,7 +119,7 @@ open class ProjectileWisp : BaseCastingWisp {
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this),
 					Vec3Iota(Vec3.atCenterOf(result.blockPos))))
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, SerialisedIota())
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
 		}
 	}
 

@@ -10,16 +10,17 @@ import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.addBounded
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.spell.RavenmindSpellAction
 import ram.talia.hexal.api.spell.casting.IMixinCastingContext
 import ram.talia.hexal.api.spell.mishaps.MishapExcessiveReproduction
 import ram.talia.hexal.common.entities.ProjectileWisp
 import ram.talia.hexal.common.entities.TickingWisp
 import java.lang.Integer.max
 
-class OpSummonWisp(val ticking: Boolean) : SpellAction {
+class OpSummonWisp(val ticking: Boolean) : RavenmindSpellAction {
     override val argc = if (ticking) 3 else 4
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ravenmind: Iota?, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val hex = args.getList(0, argc)
         val pos = args.getVec3(1, argc)
         val media: Double
@@ -33,14 +34,14 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
             true -> {
                 media = args.getPositiveDouble(2, argc)
                 cost = HexalConfig.server.summonTickingWispCost.addBounded ((media * MediaConstants.DUST_UNIT).toInt())
-                Spell(true, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt())
+                Spell(true, pos, hex.toList(), ravenmind, (media * MediaConstants.DUST_UNIT).toInt())
             }
             false -> {
                 val vel = args.getVec3(2, argc)
                 media = args.getPositiveDouble(3, argc)
                 cost = max((HexalConfig.server.summonProjectileWispCost * vel.lengthSqr()).toInt(), HexalConfig.server.summonProjectileWispMinCost)
                             .addBounded((media * MediaConstants.DUST_UNIT).toInt())
-                Spell(false, pos, hex.toList(), (media * MediaConstants.DUST_UNIT).toInt(), vel)
+                Spell(false, pos, hex.toList(), ravenmind, (media * MediaConstants.DUST_UNIT).toInt(), vel)
             }
         }
 
@@ -53,7 +54,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
         )
     }
 
-    private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<Iota>, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
+    private data class Spell(val ticking: Boolean, val pos: Vec3, val hex: List<Iota>, val ravenmind: Iota?, val media: Int, val vel: Vec3 = Vec3.ZERO) : RenderedSpell {
         override fun cast(ctx: CastingContext) {
             // wisps can only summon one child per cast
             val mCast = ctx as? IMixinCastingContext
@@ -67,6 +68,7 @@ class OpSummonWisp(val ticking: Boolean) : SpellAction {
             }
             wisp.setColouriser(colouriser)
             wisp.setHex(hex.toMutableList())
+            wisp.setRavenmind(ravenmind)
             ctx.world.addFreshEntity(wisp)
         }
     }

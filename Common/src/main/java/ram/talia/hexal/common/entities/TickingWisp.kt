@@ -3,7 +3,6 @@ package ram.talia.hexal.common.entities
 import at.petrak.hexcasting.api.spell.Action
 import at.petrak.hexcasting.api.spell.iota.EntityIota
 import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
 import at.petrak.hexcasting.api.utils.hasByte
 import at.petrak.hexcasting.api.utils.hasFloat
 import net.minecraft.nbt.CompoundTag
@@ -19,7 +18,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.minus
-import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
 import ram.talia.hexal.api.plus
 import ram.talia.hexal.api.spell.casting.WispCastingManager
@@ -31,7 +29,6 @@ class TickingWisp : BaseCastingWisp {
 	override val shouldComplainNotEnoughMedia = false
 
 	private var serStack: SerialisedIotaList = SerialisedIotaList()
-	private var serRavenmind: SerialisedIota = SerialisedIota()
 
 	fun setStack(iotas: MutableList<Iota>) {
 		serStack.set(iotas)
@@ -43,8 +40,9 @@ class TickingWisp : BaseCastingWisp {
 			}
 		}
 	}
-	fun setRavenmind(iota: Iota?) {
-		serRavenmind.set(iota ?: NullIota())
+
+	override fun setRavenmind(iota: Iota?) {
+		super.setRavenmind(iota)
 
 		ravenmindNumTrueNames = 0
 		for (entity in serRavenmind.getReferencedEntities(level as ServerLevel)) {
@@ -82,7 +80,6 @@ class TickingWisp : BaseCastingWisp {
 
 	init {
 		serStack.set(mutableListOf(EntityIota(this)))
-		serRavenmind.set(NullIota())
 	}
 
 	override fun transmittingTargetReturnDisplay(): List<Component> {
@@ -130,7 +127,6 @@ class TickingWisp : BaseCastingWisp {
 		// to prevent any memory leak type errors
 		if (level.gameTime % 20 == 0L) {
 			serStack.refreshIotas(level as ServerLevel)
-			serRavenmind.refreshIota(level as ServerLevel)
 		}
 
 		scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind)
@@ -197,11 +193,6 @@ class TickingWisp : BaseCastingWisp {
 			null -> serStack.set(mutableListOf())
 			else -> serStack.set(stackTag as ListTag)
 		}
-		when (val ravenmindTag = compound.get(TAG_RAVENMIND)) {
-			null -> serRavenmind.set(NullIota())
-			else -> serRavenmind.set(ravenmindTag as CompoundTag)
-		}
-
 		entityData.set(HAS_TARGET_MOVE_POS, when(compound.hasByte(TAG_HAS_TARGET_MOVE_POS)) {
 			true -> compound.getBoolean(TAG_HAS_TARGET_MOVE_POS)
 			false -> false
@@ -232,7 +223,6 @@ class TickingWisp : BaseCastingWisp {
 		super.addAdditionalSaveData(compound)
 
 		compound.put(TAG_STACK, serStack.getTag())
-		compound.put(TAG_RAVENMIND, serRavenmind.getTag())
 		compound.putBoolean(TAG_HAS_TARGET_MOVE_POS, entityData.get(HAS_TARGET_MOVE_POS))
 		compound.putFloat(TAG_TARGET_MOVE_POS_X, entityData.get(TARGET_MOVE_POS_X))
 		compound.putFloat(TAG_TARGET_MOVE_POS_Y, entityData.get(TARGET_MOVE_POS_Y))
@@ -261,7 +251,6 @@ class TickingWisp : BaseCastingWisp {
 		val MAXIMUM_MOVE_MULTIPLIER: EntityDataAccessor<Float> = SynchedEntityData.defineId(TickingWisp::class.java, EntityDataSerializers.FLOAT)
 
 		const val TAG_STACK = "stack"
-		const val TAG_RAVENMIND = "ravenmind"
 		const val TAG_HAS_TARGET_MOVE_POS = "has_target_move_pos"
 		const val TAG_TARGET_MOVE_POS_X = "target_move_pos_x"
 		const val TAG_TARGET_MOVE_POS_Y = "target_move_pos_y"
