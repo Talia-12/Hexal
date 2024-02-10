@@ -108,7 +108,7 @@ open class ProjectileWisp : BaseCastingWisp {
 			playTrailParticles()
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this), EntityIota(result.entity)))
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, null)
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind.getTag())
 		}
 	}
 
@@ -119,7 +119,7 @@ open class ProjectileWisp : BaseCastingWisp {
 		else {
 			val serStack = SerialisedIotaList(mutableListOf(EntityIota(this),
 					Vec3Iota(Vec3.atCenterOf(result.blockPos))))
-			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, null)
+			scheduleCast(CASTING_SCHEDULE_PRIORITY, serHex, serStack, serRavenmind.getTag())
 		}
 	}
 
