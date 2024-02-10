@@ -40,7 +40,7 @@ class SerialisedIotaList(var tag: ListTag?) {
         return iota
     }
 
-    val size = tag?.size ?: 0
+    val size get() = tag?.size ?: 0
 
     fun copy(serIotaList: SerialisedIotaList) {
         tag = serIotaList.tag?.copy()
