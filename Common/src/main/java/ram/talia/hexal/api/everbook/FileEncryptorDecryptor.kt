@@ -26,7 +26,7 @@ internal class FileEncrypterDecrypter(private val secretKey: SecretKey, cipher: 
 	fun encrypt(content: String, file: File) {
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 		val iv = cipher.iv
-		file.parentFile.mkdirs()
+		file.absoluteFile.parentFile.mkdirs()
 		file.createNewFile()
 		FileOutputStream(file).use { fileOut ->
 			CipherOutputStream(fileOut, cipher).use { cipherOut ->
@@ -40,7 +40,7 @@ internal class FileEncrypterDecrypter(private val secretKey: SecretKey, cipher: 
 	fun encrypt(content: CompoundTag, file: File) {
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 		val iv = cipher.iv
-		file.parentFile.mkdirs()
+		file.absoluteFile.parentFile.mkdirs()
 		file.createNewFile()
 		FileOutputStream(file).use { fileOut ->
 			fileOut.write(iv)
