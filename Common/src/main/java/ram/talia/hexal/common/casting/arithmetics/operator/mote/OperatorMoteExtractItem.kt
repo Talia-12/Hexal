@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator
 
 object OperatorMoteExtractItem : OperatorUnary(all(ofType(MOTE)), OperatorMoteExtractItem), UnaryOperator<Iota> {
     override fun apply(iota: Iota): Iota {
-        val mote = Operator.downcast(iota, MOTE)
+        val mote = downcast(iota, MOTE)
         val stack = ItemStack(mote.item, mote.count.toIntCapped())
         stack.tag = mote.tag
 

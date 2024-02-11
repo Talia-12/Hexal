@@ -39,74 +39,84 @@ operator fun Vec3.unaryMinus(): Vec3 = this.scale(-1.0)
 
 /**
  * If the addition would overflow, instead bound it at MAX/MIN.
+ * https://codereview.stackexchange.com/questions/92686/saturated-arithmetic
  */
 fun Int.addBounded(int: Int): Int {
-    return if (int > 0)
-        if (this + int < this) Int.MAX_VALUE else this + int
-    else
-        if (this + int > this) Int.MIN_VALUE else this + int
+    // Sum ignoring overflow/underflow
+    val sum: Int = this + int
+
+
+    // Long.MIN_VALUE if result positive (potential underflow)
+    // Long.MAX_VALUE if result negative (potential overflow)
+    val limit = Int.MIN_VALUE xor (sum shr 31)
+
+
+    // -1 if overflow/underflow occurred, 0 otherwise
+    val overflow: Int = ((this xor sum) and (this xor int).inv()) shr 31
+
+
+    // limit if overflowed/underflowed, else s
+    return ((limit xor sum) and overflow) xor sum
 }
 
 /**
  * If the multiplication would overflow, instead bound it at MAX/MIN.
+ * https://codereview.stackexchange.com/questions/92686/saturated-arithmetic
  */
 fun Int.mulBounded(int: Int): Int {
-    if (this == 0 || int == 0)
-        return 0
+    val result: Int = this * int
 
-    return if (this > 0 && int > 0)
-        if (this * int < this) Int.MAX_VALUE else this * int
-    else if (this > 0 && int < 0)
-        if (this * int > int) Int.MIN_VALUE else this * int
-    else if (this < 0 && int > 0)
-        if (this * int > this) Int.MIN_VALUE else this * int
-    else
-        if (this * int < -this) Int.MAX_VALUE else this * int
+    // See https://goo.gl/ZMEZEa
+    val nlz = (Integer.numberOfLeadingZeros(this) + Integer.numberOfLeadingZeros(this.inv())
+            + Integer.numberOfLeadingZeros(int) + Integer.numberOfLeadingZeros(int.inv()))
+    if (nlz > 33) return result
+    if (nlz < 32) return saturate(this xor int)
+    if ((this == Int.MIN_VALUE) && (int < 0)) return Int.MAX_VALUE
+    if (int != 0 && result / int != this) return saturate(this xor int)
+    return result
+}
+
+private fun saturate(sign: Int): Int {
+    return if (sign > 0) Int.MAX_VALUE else Int.MIN_VALUE
 }
 
 /**
  * If the addition would overflow, instead bound it at MAX/MIN.
+ * https://codereview.stackexchange.com/questions/92686/saturated-arithmetic
  */
 fun Long.addBounded(long: Long): Long {
-    return if (long > 0)
-        if (this + long < this) Long.MAX_VALUE else this + long
-    else
-        if (this + long > this) Long.MIN_VALUE else this + long
+    // Sum ignoring overflow/underflow
+    val sum: Long = this + long
+
+
+    // Long.MIN_VALUE if result positive (potential underflow)
+    // Long.MAX_VALUE if result negative (potential overflow)
+    val limit = Long.MIN_VALUE xor (sum shr 63)
+
+
+    // -1 if overflow/underflow occurred, 0 otherwise
+    val overflow: Long = ((this xor sum) and (this xor long).inv()) shr 63
+
+
+    // limit if overflowed/underflowed, else s
+    return ((limit xor sum) and overflow) xor sum
 }
 
 /**
  * If the multiplication would overflow, instead bound it at MAX/MIN.
+ * https://codereview.stackexchange.com/questions/92686/saturated-arithmetic
  */
 fun Long.mulBounded(long: Long): Long {
-    if (this == 0L || long == 0L)
-        return 0L
+    val result: Long = this * long
 
-    return if (this > 0 && long > 0)
-        if (this * long < this) Long.MAX_VALUE else this * long
-    else if (this > 0 && long < 0)
-        if (this * long > long) Long.MIN_VALUE else this * long
-    else if (this < 0 && long > 0)
-        if (this * long > this) Long.MIN_VALUE else this * long
-    else
-        if (this * long < -this) Long.MAX_VALUE else this * long
-}
-
-/**
- * If the multiplication would overflow, instead bound it at MAX/MIN.
- */
-fun Long.mulBounded(double: Double): Long {
-    if (double.absoluteValue <= 1)
-        return (this * double).toLong()
-    if (this == 0L)
-        return 0L
-    return if (this > 0 && double > 0)
-        if (this * double < this) Long.MAX_VALUE else (this * double).toLong()
-    else if (this > 0 && double < 0)
-        if (this * double > double) Long.MIN_VALUE else (this * double).toLong()
-    else if (this < 0 && double > 0)
-        if (this * double > this) Long.MIN_VALUE else (this * double).toLong()
-    else
-        if (this * double < -this) Long.MAX_VALUE else (this * double).toLong()
+    // See https://goo.gl/ZMEZEa
+    val nlz = (java.lang.Long.numberOfLeadingZeros(this) + java.lang.Long.numberOfLeadingZeros(this.inv())
+            + java.lang.Long.numberOfLeadingZeros(long) + java.lang.Long.numberOfLeadingZeros(long.inv()))
+    if (nlz > 65) return result
+    if (nlz < 64) return saturate(this xor long)
+    if ((this == Long.MIN_VALUE) && (long < 0)) return Long.MAX_VALUE
+    if (long != 0L && result / long != this) return saturate(this xor long)
+    return result
 }
 
 fun Long.toIntCapped(): Int {
@@ -118,6 +128,12 @@ fun Long.toIntCapped(): Int {
         toInt()
     }
 }
+
+private fun saturate(sign: Long): Long {
+    return if (sign > 0) Long.MAX_VALUE else Long.MIN_VALUE
+}
+
+fun Long.mulBounded(double: Double): Long = this.toDouble().times(double).toLong()
 
 fun <T, R> Iterable<T>.reductions(initial: R, operation: (acc: R, T) -> R) : Sequence<R> = sequence {
     var last = initial
