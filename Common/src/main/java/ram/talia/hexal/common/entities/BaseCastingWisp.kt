@@ -82,12 +82,16 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 		set(value) = entityData.set(SEON, value)
 
 	override fun fightConsume(consumer: Either<BaseCastingWisp, ServerPlayer>): Boolean = consumer.map({ wisp ->
+		blackListContains(wisp) || wisp.caster?.let { blackListContains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: false ||
 		wisp.caster != this.caster &&
-		!whiteListTransferMedia.contains(wisp) &&
-		(wisp.caster?.let { !whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: true)
+			(
+				!whiteListContains(wisp) ||
+				(wisp.caster?.let { !whiteListContains(IXplatAbstractions.INSTANCE.getLinkstore(it as ServerPlayer)) } ?: false)
+			)
 	}, {
+		blackListContains(IXplatAbstractions.INSTANCE.getLinkstore(it)) ||
 		it != this.caster &&
-		!whiteListTransferMedia.contains(IXplatAbstractions.INSTANCE.getLinkstore(it))
+		!whiteListContains(IXplatAbstractions.INSTANCE.getLinkstore(it))
 	})
 
 	val serHex: SerialisedIotaList = SerialisedIotaList()
